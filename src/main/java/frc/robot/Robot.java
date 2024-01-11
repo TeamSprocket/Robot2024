@@ -5,8 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.Constants.RobotState;
+// import frc.robot.commands.macro.FollowPath;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -16,6 +19,10 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
+
+    Timer.delay(0.5);
+    m_robotContainer.getSwerveDrive().initGyro();
+    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
   }
 
   @Override
@@ -24,7 +31,9 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    Constants.robotState = RobotState.DISABLED;
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -34,7 +43,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
+    Constants.robotState = RobotState.AUTON;
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+    Timer.delay(0.5);
+    m_robotContainer.getSwerveDrive().initGyro();
+    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
+    m_robotContainer.getSwerveDrive().zeroDriveMotors();;
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
@@ -49,6 +64,8 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+    Constants.robotState = RobotState.TELEOP;
+
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
