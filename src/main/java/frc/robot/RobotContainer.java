@@ -16,18 +16,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.instant.SwitchTargetHeadingDirection;
 import frc.robot.commands.instant.ZeroGyro;
 import frc.robot.commands.persistent.DriveTeleop;
-// import frc.robot.commands.persistent.WristManual;
 import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.SwerveDrive.Directions;
 
 public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
-  public static final CommandXboxController secondary = new CommandXboxController(1);
+  public final static CommandXboxController secondary = new CommandXboxController(1);
 
   SwerveDrive swerveDrive = new SwerveDrive();
-  // public static Wrist wrist = new Wrist();
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -65,8 +62,6 @@ public class RobotContainer {
     driver.button(RobotMap.Controller.X).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.LEFT));
     driver.button(RobotMap.Controller.B).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.RIGHT));
     driver.button(RobotMap.Controller.A).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.BACK));
-
-    // wrist.setDefaultCommand(new WristManual(() -> secondary.getRawAxis(1)));
   }
   
   public void resetModulesToAbsolute() {

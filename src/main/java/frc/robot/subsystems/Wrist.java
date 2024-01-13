@@ -3,17 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
-// TODO: merge with main
 
 import java.util.function.Supplier;
-
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 // import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.util.Conversions;
 
 public class Wrist extends SubsystemBase {
@@ -51,7 +48,7 @@ public class Wrist extends SubsystemBase {
     return deg;
   }
 
-  public void setWristState(WristStates wristStates) {
+  public void setWristState(WristStates wristStates, Supplier<Double> joyvalue) {
     this.wristStates = wristStates;
     double output;
 
@@ -89,14 +86,13 @@ public class Wrist extends SubsystemBase {
         break;
       case MANUAL:
 
-        manual();
+        manual(joyvalue);
         break;
     }
   }
 
-  public void manual() { // TODO: find deadband + correct speed
+  public void manual(Supplier<Double> joyvalue) { // TODO: find deadband + correct speed
 
-    Supplier<Double> joyvalue = () -> RobotContainer.secondary.getRawAxis(1);
     double speed = joyvalue.get();
     double finalspeed;
 
@@ -114,7 +110,5 @@ public class Wrist extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-  }
+  public void periodic() {}
 }
