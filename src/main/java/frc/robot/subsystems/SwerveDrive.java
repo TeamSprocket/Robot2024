@@ -1,6 +1,6 @@
 
 package frc.robot.subsystems;
-
+//imports
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -24,12 +24,12 @@ import frc.robot.Constants.RobotState;
 import frc.util.ShuffleboardPIDTuner;
 
 public class SwerveDrive extends SubsystemBase {
-
+  //instance variables with speed in all directions
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
   PIDController headingController;
 
-
+  //sets different states that the drivebase could be in
   public static enum Directions {
     FORWARD,
     LEFT, 
@@ -37,9 +37,10 @@ public class SwerveDrive extends SubsystemBase {
     BACK
   } 
 
-  
+  //initiializing the gyro
   private final ADIS16470_IMU gyro = new ADIS16470_IMU();
   
+  //setting motors and encoders for every module
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
         RobotMap.Drivetrain.FRONT_LEFT_TALON_T,
@@ -69,13 +70,14 @@ public class SwerveDrive extends SubsystemBase {
         Constants.Drivetrain.BACK_RIGHT_D_IS_REVERSED
   );
 
-
+  //setting the odometry to measure where the robot is on the field
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     Constants.Drivetrain.kDriveKinematics,
     new Rotation2d(getHeading()),
     getModulePositions()
     );
 
+    //heading swithcer?
   public SwerveDrive() {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
@@ -99,6 +101,8 @@ public class SwerveDrive extends SubsystemBase {
     );
   }
 
+  //putting values of encoders and measures the speed and everything about the state of the drivetrain
+  //at any given moment into the smartdashboard
   @Override
   public void periodic() {
     SmartDashboard.putNumber("DEBUG - xSpeed", xSpeed);
@@ -110,7 +114,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
 
-    
+    //sets speeds when robot is in teleop
     if (Constants.robotState == RobotState.TELEOP) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
       SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -132,6 +136,7 @@ public class SwerveDrive extends SubsystemBase {
   /**
    * @return Heading in radians [0, 2PI) 
    */
+  //making a gyroANgle and basically putting it within a 0 to 360 range and also setting it to radians
   public double getHeading() { // ? why 0
     double angle = gyro.getAngle() + 180.0;
     
@@ -145,6 +150,7 @@ public class SwerveDrive extends SubsystemBase {
     return angle;
   }
 
+  //sets the positions for swerve for every motor 
   public SwerveModulePosition[] getModulePositions() {
     SwerveModulePosition[] modulePositions = {
       new SwerveModulePosition(frontLeft.getDrivePosMeters(), new Rotation2d(frontLeft.getTurnRad())),
@@ -155,7 +161,7 @@ public class SwerveDrive extends SubsystemBase {
     return modulePositions;
   }
 
-
+//switches the state of which direction the drivebase is going in at a given moment
   public void switchDirection(Directions direction) {
     switch (direction) {
       case FORWARD:
@@ -166,35 +172,39 @@ public class SwerveDrive extends SubsystemBase {
         targetHeadingRad = Math.PI;
         break;
 
-      case LEFT:
-        targetHeadingRad = Math.PI / 2.0;
-        break;
+      // case LEFT:
+      //   targetHeadingRad = Math.PI / 2.0;
+      //   break;
 
-      case RIGHT:
-        targetHeadingRad = 3.0 * Math.PI / 2.0;
-        break;
+      // case RIGHT:
+      //   targetHeadingRad = 3.0 * Math.PI / 2.0;
+      //   break;
     }
   }
   
-
+  //initializes the gyro to measure the angle
   public void initGyro() {
     gyro.reset();
     gyro.calibrate();
     gyro.reset();
   }
 
+  //zeroes the gyro so it can measure without interference
   public void zeroGyro() {
     gyro.reset();
   }
 
+  //calibrates the gyro to measure
   public void calibrateGyro() {
     gyro.calibrate();
   }
 
+  //set target heading rad
   public void setTargetHeadingRad(double targetHeadingRad) {
     this.targetHeadingRad = targetHeadingRad;
   }
 
+  //zeroes all motors to be straight (so not donson)
   public void resetModulesToAbsolute() {
     frontLeft.zeroTurnMotorABS();
     Timer.delay(0.1);
@@ -213,14 +223,17 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   // Stuff for Pathplanner
+  //finds position on field relative to pathplanner
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
+  //resets position on the field
   public void resetPose(Pose2d pose) {
     odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), getPose());
   }
 
+  //gets the state of all the motors from the enum set earlier
   public ChassisSpeeds getChassisSpeeds() {
     SwerveModuleState[] moduleStates = {
       frontLeft.getModuleState(),
@@ -231,6 +244,7 @@ public class SwerveDrive extends SubsystemBase {
     return Constants.Drivetrain.kDriveKinematics.toChassisSpeeds(moduleStates);
   }
   
+  //sets all states to 0 to reset it
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
     SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -242,7 +256,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
 
-
+  //???
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     frontLeft.setState(desiredStates[0]);//currently setting 
     frontRight.setState(desiredStates[1]);
@@ -250,6 +264,7 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setState(desiredStates[3]);
   }
 
+  //updates the speeds of all the motors
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {
     this.xSpeed = xSpeed;
     this.ySpeed = ySpeed;
