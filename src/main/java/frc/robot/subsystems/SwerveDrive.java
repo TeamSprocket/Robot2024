@@ -2,6 +2,8 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.Constants.RobotState;
+import frc.util.ShuffleboardPIDTuner;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -87,7 +90,7 @@ public class SwerveDrive extends SubsystemBase {
       () -> {
         // Boolean supplier for whether field is mirrored (mirrored = on red)
         var alliance = DriverStation.getAlliance();
-        if (!alliance.equals(DriverStation.Alliance.Blue) && !alliance.equals(DriverStation.Alliance.Red)) {
+        if (!alliance.equals(DriverStation.Alliance.Invalid)) {
             return alliance.equals(DriverStation.Alliance.Red);
         }
         return false;
@@ -130,7 +133,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getAngle(gyro.getYawAxis()) + 180.0;
+    double angle = gyro.getAngle() + 180.0;
     
     angle %= 360.0;
     if (angle < 0) {
