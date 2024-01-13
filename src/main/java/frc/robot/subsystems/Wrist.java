@@ -3,11 +3,12 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+// TODO: merge with main
 
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix6.hardware.TalonFX;
+// import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -97,16 +98,19 @@ public class Wrist extends SubsystemBase {
 
     Supplier<Double> joyvalue = () -> RobotContainer.secondary.getRawAxis(1);
     double speed = joyvalue.get();
+    double finalspeed;
 
     if (speed < -0.03) {
-      motor.set(-Constants.Wrist.motorSpeed);
+      turnPID.setSetpoint(turnPID.getSetpoint() + 0.01);
     }
     else if (speed > 0.03) {
-      motor.set(Constants.Wrist.motorSpeed);
+      turnPID.setSetpoint(turnPID.getSetpoint() + 0.01);
     }
     else {
-      motor.set(0);
+      turnPID.setSetpoint(turnPID.getSetpoint() + 0.01);
     }
+    finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
+    motor.set(finalspeed);
   }
 
   @Override
