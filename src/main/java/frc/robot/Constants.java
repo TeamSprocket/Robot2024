@@ -137,6 +137,12 @@ public class Constants {
         // public static final double kDDriveToTargetT = 0.0;
     }
 
+    public static final class Wrist {
+        public static int motor = 0;
+        public static double kPwrist = 0;
+        public static double kIwrist = 0;
+        public static double kDwrist = 0;
+    }
 
 }
 
