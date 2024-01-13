@@ -12,10 +12,44 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
 public class Intake extends SubsystemBase{
+
+    public enum IntakeState {
+        NONE,
+        STOWED,
+        INTAKE,
+        WAIT_HANDOFF,
+        HANDOFF
+    }
+
     private TalonFX pivotIntake;
     private TalonFX rollIntake;
 
+    private IntakeState intakeState;
+
     public Intake() {
-        
+
+        intakeState = IntakeState.NONE;
+    }
+
+    @Override
+    public void periodic() {
+
+        switch (intakeState) {
+            case NONE:
+
+                break;
+            case STOWED:
+
+                break;
+            case INTAKE:
+
+                break;
+            case WAIT_HANDOFF:
+
+                break;
+            case HANDOFF:
+
+                break;
+        }
     }
 }
