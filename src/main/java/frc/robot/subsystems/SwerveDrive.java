@@ -1,6 +1,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -208,6 +209,14 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.zeroDriveMotor();
     backRight.zeroDriveMotor();
   }
+
+  public void setNeutralMode(NeutralMode neutralMode) {
+    frontLeft.setNeutralMode(neutralMode);
+    frontRight.setNeutralMode(neutralMode);
+    backLeft.setNeutralMode(neutralMode);
+    backRight.setNeutralMode(neutralMode);
+  }
+
 
   // Stuff for Pathplanner
   public Pose2d getPose() {

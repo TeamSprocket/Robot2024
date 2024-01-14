@@ -18,7 +18,40 @@ public class Constants {
     // Global
     public static RobotState robotState = RobotState.DISABLED;
 
-    public static final class Claw {}
+
+    public static final class Superstructure {
+        
+    }
+
+
+    public static final class Elevator {
+
+    }
+
+    public static final class Wrist {
+        
+    }
+
+    public static final class Shooter {
+        public static final boolean kIsShooterInverted = false;
+        public static final boolean kIsIndexerInverted = false;
+
+        public static final double kPShooter = 0.0;
+        public static final double kIShooter = 0.0;
+        public static final double kDShooter = 0.0; 
+
+        public static final double kPIndexer = 0.0;
+        public static final double kIIndexer = 0.0;
+        public static final double kDIndexer = 0.0; 
+    }
+
+    public static final class Intake {
+        
+    }
+
+
+
+
 
     public static final class Drivetrain {
         // Measurements

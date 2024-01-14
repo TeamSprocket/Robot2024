@@ -27,8 +27,8 @@ public class Superstructure extends SubsystemBase {
 
   // ELevator: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
   // Wrist: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
-  // Shooter: NONE, STANDBY, HANDOFF, SPINUP, 
-  // Intake: NONE
+  // Shooter: NONE, STANDBY, HANDOFF, SPINUP, SCORE_SPEAKER, SCORE_AMP
+  // Intake: NONE, STOWED, INTAKE, WAIT_HANDOFF, HANDOFF
 
 
 
@@ -116,10 +116,10 @@ public class Superstructure extends SubsystemBase {
       
 
       case MANUAL:
-        // ELevator: 
-        // Wrist: 
-        // Shooter: 
-        // Intake: 
+        // get spd from joystick supplier 
+        // (supplier obj passed thru parameter, stored as instance var)
+
+        // Incrament pid setpoint by joystick reading
       break;
       
 
