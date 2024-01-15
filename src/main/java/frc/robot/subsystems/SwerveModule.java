@@ -22,35 +22,54 @@ import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
 
 public class SwerveModule extends SubsystemBase {
-  //sets the drive motor and turn motor and encoder and controller
+  /**
+   * sets the drive motor, turn moter, encoder and controller
+   */
   private final WPI_TalonFX driveMotor;
   private final WPI_TalonFX turnMotor;
   private final PIDController turnPIDController; 
   private final CANCoder cancoder;
   private Supplier<Double> cancoderOffsetDeg;
 
-  //sets the id's so code can detect the different motors
+  /**
+   * sets the motor and cancoder id's to detect the different motors
+   * @param driveMotorID 
+   * @param turnMotorID
+   * @param cancoderID
+   * @param cancoderOffsetDeg
+   * @param driveIsReversed
+   */
   public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, Supplier<Double> cancoderOffsetDeg, boolean driveIsReversed) {
     this.driveMotor = new WPI_TalonFX(driveMotorID);
     this.turnMotor = new WPI_TalonFX(turnMotorID);
     this.cancoder = new CANCoder(cancoderID);
     this.cancoderOffsetDeg = cancoderOffsetDeg; 
     
-    this.driveMotor.setInverted(driveIsReversed); //inverts motors
+    /**
+     * inverts motors
+     */
+    this.driveMotor.setInverted(driveIsReversed);
 
-    //makes smooth turning possible
+    /**
+     * makes smooth turning possible
+     */
     turnPIDController = new PIDController(Constants.Drivetrain.kPTurnMotor, Constants.Drivetrain.kITurnMotor, Constants.Drivetrain.kDTurnMotor);
     turnPIDController.enableContinuousInput(-180, 180);
     turnMotor.setInverted(true);
     
-    //cancoder values and cancoder zeroes
+    /**
+     * cancoder values and zeroes
+     */
     cancoder.configFactoryDefault();
     CANCoderConfiguration cancoderConfig = new CANCoderConfiguration();
     cancoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360; //Signed_PlusMinus180?
     cancoder.configAllSettings(cancoderConfig);
   }
 
-  //smartdashboard readings and stuff
+  /**
+   * smartdashboard return values
+   * displays ResetTicks, TurnPosDeg2, ABSDeg, TurnTicks1, initialDeg, Degree
+   */
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -71,7 +90,6 @@ public class SwerveModule extends SubsystemBase {
   /**
    * @return Wheel pos in degrees (-180, 180)
    */
-  //gets the degrees at which the robot is facing in from -180 to 180 degrees
   public double getTurnPosition() {
     double deg = Conversions.falconToDegrees(turnMotor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
      deg %= 360;
@@ -86,7 +104,6 @@ public class SwerveModule extends SubsystemBase {
   /**
    * @return Wheel pos in rad [0, 2PI)
    */
-  //turns the positions into radians
   public double getTurnRad() {
     double angle = getTurnPosition();
     angle = Math.toRadians(angle);
@@ -97,7 +114,6 @@ public class SwerveModule extends SubsystemBase {
   /**
    * @return Drive position in meters 
    */
-  //???
   public double getDrivePosMeters() {
     double motorTicks = driveMotor.getSelectedSensorPosition();
     double circum = Constants.Drivetrain.kWheelDiameterMeters * Math.PI;
@@ -107,36 +123,48 @@ public class SwerveModule extends SubsystemBase {
     
   }
 
-  //gets the state of the different modules
+  /**
+   * gets the state of the different modules
+   */
   public SwerveModuleState getModuleState() {
     double moduleSpdMPS = Conversions.falconToMPS(driveMotor.getSelectedSensorVelocity(), (Constants.Drivetrain.kWheelDiameterMeters * Math.PI), Constants.Drivetrain.kDriveMotorGearRatio);
     return new SwerveModuleState(moduleSpdMPS, new Rotation2d(Math.toRadians(getTurnPosition())));
   }
 
-  //gets the degrees at which the robot is at according to cancoder
+  /**
+   * gets the degrees at which the robot is at according to the CANCoder
+   */
   public double getCANCoderDegrees() {
     double offsetDeg = cancoder.getAbsolutePosition() - cancoderOffsetDeg.get();
     offsetDeg = (offsetDeg < 0) ? (offsetDeg % 360) + 360 : offsetDeg;
     return offsetDeg;
   }
 
-  //zeroes the turning so that the robot faces at 0 degrees
+  /**
+   * zeroes the turning motor so that the robot faces at 0 degrees
+   */
   public void zeroTurnMotorABS() {
     double ticks = Conversions.degreesToFalcon(getCANCoderDegrees(), Constants.Drivetrain.kTurningMotorGearRatio);
     Timer.delay(0.1);
     turnMotor.setSelectedSensorPosition(ticks);
   }
 
-  //zeroes the drive motor
+  /**
+   * zeroes drive motor
+   */
   public void zeroDriveMotor() {
     driveMotor.setSelectedSensorPosition(0.0);
   }
 
-  //???
+  /**
+   * sets the speed and the state of the swerveDrive (controls swerve)
+   * @param moduleState
+   */
   public void setState(SwerveModuleState moduleState) {
     // SmartDashboard.putNumber("unOptimized Angle", getTurnPosition());
     SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
     // SwerveModuleState state = moduleState;
+
 
     // double fullTargetAngle = state.angle.getRadians();
     
