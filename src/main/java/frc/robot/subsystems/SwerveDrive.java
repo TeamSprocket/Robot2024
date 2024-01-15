@@ -87,10 +87,10 @@ public class SwerveDrive extends SubsystemBase {
       Constants.Drivetrain.kPathFollowerConfig,
       () -> {
         // Boolean supplier for whether field is mirrored (mirrored = on red)
-        // var alliance = DriverStation.getAlliance();
-        // if (!alliance.equals(DriverStation.Alliance.Blue) && !alliance.equals(DriverStation.Alliance.Red)) {
-        //     return alliance.equals(DriverStation.Alliance.Red);
-        // }
+        var alliance = DriverStation.getAlliance();
+        if (alliance.equals(DriverStation.Alliance.Blue) || alliance.equals(DriverStation.Alliance.Red)) {
+            return alliance.equals(DriverStation.Alliance.Red);
+        }
         return false;
     },
     this
@@ -107,6 +107,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry X (m)", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose", odometry.getPoseMeters().toString());
 
     
     if (Constants.robotState == RobotState.TELEOP) {
@@ -224,7 +225,9 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
-    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), getPose());
+    // zeroDriveMotors();
+    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), pose);
+    // odometry.
   }
 
   public ChassisSpeeds getChassisSpeeds() {

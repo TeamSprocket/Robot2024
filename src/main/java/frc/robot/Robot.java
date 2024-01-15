@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -24,6 +25,7 @@ public class Robot extends TimedRobot {
 
     Timer.delay(0.5);
     m_robotContainer.getSwerveDrive().initGyro();
+    m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
   }
@@ -48,15 +50,15 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Constants.robotState = RobotState.AUTON;
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-    Timer.delay(0.4);
-    m_robotContainer.getSwerveDrive().initGyro();
-    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
+    m_robotContainer.getSwerveDrive().initGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
+
+    Timer.delay(0.1);
+    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     Timer.delay(0.1);
 
+    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }

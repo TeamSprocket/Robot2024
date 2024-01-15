@@ -131,13 +131,6 @@ public class SwerveModule extends SubsystemBase {
   public void setState(SwerveModuleState moduleState) {
     SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
     
-    double speed = state.speedMetersPerSecond;
-    if (speed > 0.2) {
-      speed = 0.2;
-    } else if (speed < -0.2) {
-      speed = -0.2;
-    }
-    
     driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
 
     turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
