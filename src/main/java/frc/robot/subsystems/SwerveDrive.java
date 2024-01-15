@@ -242,9 +242,9 @@ public class SwerveDrive extends SubsystemBase {
     SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
     frontLeft.setState(moduleStates[0]);
-    frontLeft.setState(moduleStates[0]);
-    frontLeft.setState(moduleStates[0]);
-    frontLeft.setState(moduleStates[0]);
+    frontRight.setState(moduleStates[1]);
+    backLeft.setState(moduleStates[2]);
+    backRight.setState(moduleStates[3]);
   }
 
 
