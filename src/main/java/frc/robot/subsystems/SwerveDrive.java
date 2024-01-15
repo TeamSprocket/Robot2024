@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
 
 public class SwerveDrive extends SubsystemBase {
@@ -78,6 +79,10 @@ public class SwerveDrive extends SubsystemBase {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
+    ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kPHeading);
+    ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
+    ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kDHeading);
+
     // Config Pathplanner
     AutoBuilder.configureHolonomic(
       this::getPose,
@@ -108,7 +113,8 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
 
-    
+    updateShuffleboardPIDConstants();
+
     if (Constants.robotState == RobotState.TELEOP) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
       SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -264,14 +270,11 @@ public class SwerveDrive extends SubsystemBase {
     this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
 
   }
-
-
-
-  
-
-
-
-
+  public void updateShuffleboardPIDConstants() {
+    headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
+    headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
+    headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
+  }
 }
 
 
