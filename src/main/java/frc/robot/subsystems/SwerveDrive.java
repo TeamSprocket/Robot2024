@@ -87,10 +87,10 @@ public class SwerveDrive extends SubsystemBase {
       Constants.Drivetrain.kPathFollowerConfig,
       () -> {
         // Boolean supplier for whether field is mirrored (mirrored = on red)
-        var alliance = DriverStation.getAlliance();
-        if (!alliance.equals(DriverStation.Alliance.Blue) && !alliance.equals(DriverStation.Alliance.Red)) {
-            return alliance.equals(DriverStation.Alliance.Red);
-        }
+        // var alliance = DriverStation.getAlliance();
+        // if (!alliance.equals(DriverStation.Alliance.Blue) && !alliance.equals(DriverStation.Alliance.Red)) {
+        //     return alliance.equals(DriverStation.Alliance.Red);
+        // }
         return false;
     },
     this
@@ -240,11 +240,9 @@ public class SwerveDrive extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
     SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    this.targetHeadingRad = getHeading();
 
-    frontLeft.setState(moduleStates[0]);
-    frontRight.setState(moduleStates[1]);
-    backLeft.setState(moduleStates[2]);
-    backRight.setState(moduleStates[3]);
+    setModuleStates(moduleStates);
   }
 
 
