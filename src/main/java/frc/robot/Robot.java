@@ -21,8 +21,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     Timer.delay(0.5);
-    m_robotContainer.getSwerveDrive().initGyro();
-    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
+
   }
 
   @Override
@@ -43,13 +42,9 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    Constants.robotState = RobotState.AUTON;
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
 
     Timer.delay(0.5);
-    m_robotContainer.getSwerveDrive().initGyro();
-    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
-    m_robotContainer.getSwerveDrive().zeroDriveMotors();;
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
