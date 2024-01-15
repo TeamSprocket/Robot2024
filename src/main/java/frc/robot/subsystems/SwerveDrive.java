@@ -92,10 +92,10 @@ public class SwerveDrive extends SubsystemBase {
       Constants.Drivetrain.kPathFollowerConfig,
       () -> {
         // Boolean supplier for whether field is mirrored (mirrored = on red)
-        // var alliance = DriverStation.getAlliance();
-        // if (!alliance.equals(DriverStation.Alliance.Blue) && !alliance.equals(DriverStation.Alliance.Red)) {
-        //     return alliance.equals(DriverStation.Alliance.Red);
-        // }
+        var alliance = DriverStation.getAlliance();
+        if (alliance.equals(DriverStation.Alliance.Blue) || alliance.equals(DriverStation.Alliance.Red)) {
+            return alliance.equals(DriverStation.Alliance.Red);
+        }
         return false;
     },
     this
@@ -112,6 +112,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry X (m)", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose", odometry.getPoseMeters().toString());
 
     updateShuffleboardPIDConstants();
 
@@ -137,7 +138,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getAngle(gyro.getYawAxis()) + 180.0;
+    double angle = gyro.getAngle(gyro.getYawAxis()) * (-1.0) + 180.0;
     
     angle %= 360.0;
     if (angle < 0) {
@@ -230,7 +231,9 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void resetPose(Pose2d pose) {
-    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), getPose());
+    // zeroDriveMotors();
+    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), pose);
+    // odometry.
   }
 
   public ChassisSpeeds getChassisSpeeds() {
@@ -267,7 +270,7 @@ public class SwerveDrive extends SubsystemBase {
     this.targetHeadingRad += tSpeed;
     this.targetHeadingRad %= (2.0 * Math.PI);
     this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
+    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad); // Inverted PID output because ¯\_(ツ)_/¯
 
   }
   public void updateShuffleboardPIDConstants() {
