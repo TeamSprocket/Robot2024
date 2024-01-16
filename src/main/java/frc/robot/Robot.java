@@ -60,6 +60,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Constants.robotState = RobotState.TELEOP;
+    m_robotContainer.configureBindings();
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

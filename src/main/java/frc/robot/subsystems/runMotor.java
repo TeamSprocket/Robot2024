@@ -6,6 +6,8 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,13 +30,11 @@ import frc.util.ShuffleboardPIDTuner;
 
 public class runMotor extends SubsystemBase {
  
-  private static WPI_TalonFX driveMotorL;
-  // private static WPI_TalonFX driveMotorR;
-  
-  public runMotor(int driveMotorLID, int driveMotorRID) {
-    ShuffleboardPIDTuner.addSlider("Motor Power", 0.0, 1.0, 0);
-    this.driveMotorL = new WPI_TalonFX(driveMotorLID);
-    //this.driveMotorR = new WPI_TalonFX(driveMotorRID);
+  private static CANSparkMax shooterLeft = new CANSparkMax(1 , MotorType.kBrushless);
+  private static CANSparkMax shooterRight = new CANSparkMax(2, MotorType.kBrushless);
+  public runMotor() {
+    
+    shooterRight.setInverted(true);
   
   }
 
@@ -43,12 +43,12 @@ public class runMotor extends SubsystemBase {
    */
 
   public void periodic() {
-    driveMotorL.set(ShuffleboardPIDTuner.get("Motor Power"));
-    SmartDashboard.putNumber("Motor Output", ShuffleboardPIDTuner.get("Motor Power"));
+    
   }
 
   public static void run(double output){
-    
+    shooterLeft.set(output);
+    shooterRight.set(output);
     //driveMotorR.set(-output);
   }
 

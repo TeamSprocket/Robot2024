@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.RobotMap.Wrist;
+import frc.robot.commands.persistent.DriveTeleop;
 // import frc.robot.commands.persistent.DriveTeleop;
 import frc.robot.subsystems.runMotor;
 
@@ -21,24 +22,16 @@ import frc.robot.subsystems.runMotor;
 
 public class RobotContainer {
 
-  private final runMotor motor = new runMotor(46, 47);
+  private final runMotor motor = new runMotor();
 
 
   public RobotContainer() {
     configureBindings();
     
   }
-
-  public void initAutons() {
-
-    
-  }
-
-
-
   
   public void configureBindings() {
-    // motor.setDefaultCommand(new DriveTeleop());
+    motor.setDefaultCommand(new DriveTeleop());
 		
   
 
