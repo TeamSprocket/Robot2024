@@ -21,6 +21,7 @@ public class Wrist extends SubsystemBase {
   PIDController turnPID;
   double targetAngle;
   Supplier<Double> joyvalue;
+  double output;
   
 
   public enum WristStates {
@@ -50,45 +51,46 @@ public class Wrist extends SubsystemBase {
 
   public void setWristState(WristStates wristStates, Supplier<Double> joyvalue) {
     this.wristStates = wristStates;
-    double output;
 
     switch(wristStates) { // TODO: figure out target angles
 
       case NONE:
 
         targetAngle = 0;
-        output = turnPID.calculate(getAngleofMotor(), targetAngle);
+        turnPID.setSetpoint(targetAngle);
         break;
       case STOWED:
 
         targetAngle = 0;
-        output = turnPID.calculate(getAngleofMotor(), targetAngle);
+        turnPID.setSetpoint(targetAngle);
         break;
       case HANDOFF:
 
         targetAngle = 0;
-        output = turnPID.calculate(getAngleofMotor(), targetAngle);
+        turnPID.setSetpoint(targetAngle);
         break;
       case SPEAKER:
 
         targetAngle = 0;
-        output = turnPID.calculate(getAngleofMotor(), targetAngle);
+        turnPID.setSetpoint(targetAngle);
         break;
       case SPEAKER_HIGH:
 
         targetAngle = 0;
-        output = turnPID.calculate(getAngleofMotor(), targetAngle);
+        turnPID.setSetpoint(targetAngle);
         break;
       case AMP:
 
         targetAngle = 0;
-        output = turnPID.calculate(getAngleofMotor(), targetAngle);
+        turnPID.setSetpoint(targetAngle);
         break;
       case MANUAL:
 
         manual(joyvalue);
         break;
     }
+
+    motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
   }
 
   public void manual(Supplier<Double> joyvalue) { // TODO: find deadband + correct speed
