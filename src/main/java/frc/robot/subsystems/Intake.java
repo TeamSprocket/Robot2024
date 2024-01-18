@@ -11,11 +11,13 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
 
 /** Add your docs here. */
@@ -23,7 +25,7 @@ public class Intake extends SubsystemBase {
 
     private final WPI_TalonFX claw = new WPI_TalonFX(RobotMap.Claw.CLAW);
 
-    WPI_TalonFX pivot = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
+    private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     PIDController pivotPID = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
 
@@ -42,9 +44,11 @@ public class Intake extends SubsystemBase {
     private IntakeState intakeState;
 
     public Intake() {
-
         intakeState = IntakeState.NONE;
+
         claw.setInverted(false);
+        pivotIntake.setInverted(false);
+
         claw.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
         claw.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
 
@@ -71,23 +75,40 @@ public class Intake extends SubsystemBase {
         return claw.getSelectedSensorVelocity();
     }
 
+    public double getPivotPosition() {
+        return pivotIntake.getSelectedSensorPosition();
+    }
+
+    public double getPivotAngle() {
+        return Conversions.falconToDegrees(getPivotPosition(), Constants.Intake.kPivotIntakeGearRatio); 
+    }
+
+    public void setPivotAngle(double currentAngle, double setpoint){
+        double output = pivotPID.calculate(currentAngle, setpoint);
+        pivotIntake.set(output); 
+    }
+
     @Override
     public void periodic() {
 
         switch (intakeState) {
             case NONE:
+            pivotIntake.set(0);
 
                 break;
             case STOWED:
+                setPivotAngle(getPivotAngle(), 0);//stowed setpoint
+                
 
                 break;
             case INTAKE:
+                setPivotAngle(getPivotAngle(), 0);//intake setpoint
                 claw.set(ControlMode.PercentOutput, activeSpeed);
                 SmartDashboard.putNumber("[Claw] RPM", getVelocity());
 
                 break;
             case WAIT_HANDOFF:
-
+                setPivotAngle(getPivotAngle(), 0); //handoff setpoint
                 break;
             case HANDOFF:
 
