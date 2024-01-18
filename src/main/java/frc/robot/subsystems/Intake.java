@@ -11,8 +11,10 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
 
@@ -20,6 +22,11 @@ import frc.util.ShuffleboardPIDTuner;
 public class Intake extends SubsystemBase {
 
     private final WPI_TalonFX claw = new WPI_TalonFX(RobotMap.Claw.CLAW);
+
+    WPI_TalonFX pivot = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
+
+    PIDController pivotPID = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
+
     double idleSpeed = 0;
     double activeSpeed = 0;
 
@@ -31,8 +38,6 @@ public class Intake extends SubsystemBase {
         HANDOFF
     }
 
-    private TalonFX pivotIntake;
-    private TalonFX rollIntake;
 
     private IntakeState intakeState;
 
@@ -59,7 +64,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void clearStickyFaults() {
-        rollIntake.clearStickyFaults();
+        claw.clearStickyFaults();
     }
 
     public double getVelocity() {
@@ -89,4 +94,10 @@ public class Intake extends SubsystemBase {
                 break;
         }
     }
+
+    public void setState(IntakeState state) {
+        intakeState = state;
+    }
+    
+
 }
