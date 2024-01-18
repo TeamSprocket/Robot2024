@@ -29,10 +29,6 @@ public class Constants {
 
     }
 
-    public static final class Wrist {
-        
-    }
-
     public static final class Shooter {
         public static final boolean kIsShooterInverted = false;
         public static final boolean kIsIndexerInverted = false;
