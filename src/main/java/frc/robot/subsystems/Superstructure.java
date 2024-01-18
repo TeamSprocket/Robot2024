@@ -122,7 +122,7 @@ public class Superstructure extends SubsystemBase {
       case MANUAL:
         // ELevator: 
         // Wrist: 
-        wrist.setWristState(WristStates.MANUAL, () -> RobotContainer.secondary.getRawAxis(1));
+        wrist.setState(WristStates.MANUAL);
         // Shooter: 
         // Intake: 
       break;

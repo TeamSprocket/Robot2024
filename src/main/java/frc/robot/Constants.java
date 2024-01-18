@@ -143,6 +143,7 @@ public class Constants {
         public static double kIwrist = 0;
         public static double kDwrist = 0;
         public static double motorSpeed = 0.1;
+        public static double targetAngle = 0.0;
     }
 
 }

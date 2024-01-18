@@ -22,7 +22,6 @@ public class Wrist extends SubsystemBase {
   double targetAngle; // prob dont need, just set pid setpoint directly
   Supplier<Double> joyvalue;
   double output;
-  
 
   public enum WristStates {
     NONE,
@@ -36,11 +35,53 @@ public class Wrist extends SubsystemBase {
 
   public Wrist() {
     turnPID = new PIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist); // capitalized W in wrist
-    turnPID.enableContinuousInput(-180, 180); // wrist isnt continuous, dont need this :P
+  }
+
+  @Override
+  public void periodic() {
+
+    switch(wristStates) { // TODO: figure out target angles
+
+      case NONE:
+        motor.set(0);
+        break;
+
+      case STOWED:
+        turnPID.setSetpoint(Constants.Wrist.targetAngle); // make a constant for the target
+        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        break;
+
+      case HANDOFF:
+        turnPID.setSetpoint(Constants.Wrist.targetAngle); // make a constant for the target
+        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        break;
+
+      case SPEAKER:
+        turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        break;
+
+      case SPEAKER_HIGH:
+        turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        break;
+        
+      case AMP:
+        turnPID.setSetpoint(Constants.Wrist.targetAngle); // make a constant for the target
+        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        break;
+
+      case MANUAL:
+        manual();
+        break;
+    }
+  }
+
+  public void setState(WristStates wristStates) {
+    this.wristStates = wristStates;
   }
 
   public double getAngleofMotor() { // TODO: make sure angles are correct 
-    // Put methods under constructor and periodic for organization
 
     double deg = Conversions.falconToDegrees(motor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg %= 360;
@@ -50,71 +91,12 @@ public class Wrist extends SubsystemBase {
     return deg;
   }
 
-  public void setWristState(WristStates wristStates, Supplier<Double> joyvalue) { // just put this in periodic, dont need function for it 
-    this.wristStates = wristStates;
-    // Remove wriststate instance var, make function setState(state) instead, have switch case check state instance var
-    // make joystickSupplier instance var
-
-    switch(wristStates) { // TODO: figure out target angles
-
-      case NONE:
-        // none = motor.set(0) 
-        targetAngle = 0; // remove
-        turnPID.setSetpoint(targetAngle); // remove
-        break;
-
-      case STOWED:
-        targetAngle = 0; // remove, set pid directly
-        turnPID.setSetpoint(targetAngle); // make a constant for the target
-        break;
-
-      case HANDOFF:
-        targetAngle = 0; // remove, set pid directly
-        turnPID.setSetpoint(targetAngle); // make a constant for the target
-        break;
-
-      case SPEAKER:
-        targetAngle = 0; // use conversion file to get angle, dont use preset since the shooting angle changes depending on current pos
-        turnPID.setSetpoint(targetAngle);
-        break;
-
-      case SPEAKER_HIGH:
-        targetAngle = 0; // use conversion file to get angle, dont use preset since the shooting angle changes depending on current pos
-        turnPID.setSetpoint(targetAngle);
-        break;
-        
-      case AMP:
-        targetAngle = 0; // remove, set pid directly
-        turnPID.setSetpoint(targetAngle); // make a constant for the target
-        break;
-
-      case MANUAL:
-        manual(joyvalue);
-        break;
-
-    }
-
-    motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint())); // move this under each case that needs it, since some cases dont run motor at all
-  }
-
-  public void manual(Supplier<Double> joyvalue) { // TODO: find deadband + correct speed
-    // use joystickSupplier instance var, dont need param
+  public void manual() { // TODO: find deadband + correct speed
     double speed = joyvalue.get();
-    double finalspeed; // dont need to define here, see line 110
 
-    if (speed < -0.03) { // Dont need if statement, simply one line of turnPID.setSetpoint(turnPID.getSetpoint() + speed);
-      turnPID.setSetpoint(turnPID.getSetpoint() + 0.01);
-    }
-    else if (speed > 0.03) {
-      turnPID.setSetpoint(turnPID.getSetpoint() + 0.01);
-    }
-    else {
-      turnPID.setSetpoint(turnPID.getSetpoint() + 0.01); 
-    }
-    finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()); // define here :)
+    turnPID.setSetpoint(turnPID.getSetpoint() + speed);
+
+    double finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
     motor.set(finalspeed);
   }
-
-  @Override
-  public void periodic() {}
 }
