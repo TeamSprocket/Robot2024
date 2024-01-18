@@ -33,11 +33,8 @@ public class runMotor extends SubsystemBase {
   private static CANSparkMax shooterLeft = new CANSparkMax(1 , MotorType.kBrushless);
   private static CANSparkMax shooterRight = new CANSparkMax(2, MotorType.kBrushless);
   public runMotor() {
-    
     shooterRight.setInverted(true);
-  
   }
-
   /**
    * puts values of everything like speed and angle into the smartdashboard
    */
@@ -49,7 +46,6 @@ public class runMotor extends SubsystemBase {
   public static void run(double output){
     shooterLeft.set(output);
     shooterRight.set(output);
-    //driveMotorR.set(-output);
   }
 
 

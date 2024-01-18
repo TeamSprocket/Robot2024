@@ -18,7 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTeleop extends CommandBase {
 
-
+  runMotor runmotor;
+  
   public DriveTeleop() {
     
     ShuffleboardPIDTuner.addSlider("Motor Power", 0.0, 1.0, 0);
