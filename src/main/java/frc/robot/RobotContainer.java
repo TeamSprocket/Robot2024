@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.instant.SwitchTargetHeadingDirection;
 import frc.robot.commands.instant.ZeroGyro;
-import frc.robot.commands.macro.ZeroWheelsTEST;
 import frc.robot.commands.persistent.DriveTeleop;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveDrive.Directions;
@@ -57,7 +56,6 @@ public class RobotContainer {
 			() -> -driver.getLeftX(), 
 			() -> driver.getLeftY(), 
 			() -> driver.getRightX()));
-    // driver.x().onTrue(new ZeroWheelsTEST(swerveDrive));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.button(RobotMap.Controller.Y).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.FORWARD));
     driver.button(RobotMap.Controller.X).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.LEFT));

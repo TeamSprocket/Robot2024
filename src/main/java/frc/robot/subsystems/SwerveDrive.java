@@ -1,9 +1,8 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -16,13 +15,12 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.ADIS16448_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
-import frc.robot.Constants.RobotState;
 import frc.util.ShuffleboardPIDTuner;
+import frc.robot.Constants.RobotState;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -81,6 +79,10 @@ public class SwerveDrive extends SubsystemBase {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
+    ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kPTranslationPP);
+    ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kITranslationPP);
+    ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kDTranslationPP);
+
     // Config Pathplanner
     AutoBuilder.configureHolonomic(
       this::getPose,
@@ -91,7 +93,7 @@ public class SwerveDrive extends SubsystemBase {
       () -> {
         // Boolean supplier for whether field is mirrored (mirrored = on red)
         var alliance = DriverStation.getAlliance();
-        if (!alliance.equals(DriverStation.Alliance.Blue) && !alliance.equals(DriverStation.Alliance.Red)) {
+        if (alliance.equals(DriverStation.Alliance.Blue) || alliance.equals(DriverStation.Alliance.Red)) {
             return alliance.equals(DriverStation.Alliance.Red);
         }
         return false;
@@ -110,8 +112,10 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry X (m)", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose", odometry.getPoseMeters().toString());
 
-    
+    updateShuffleboardPIDConstants();
+
     if (Constants.robotState == RobotState.TELEOP) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
       SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
@@ -134,7 +138,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getAngle(gyro.getYawAxis()) + 180.0;
+    double angle = gyro.getAngle(gyro.getYawAxis()) * (-1.0) + 180.0;
     
     angle %= 360.0;
     if (angle < 0) {
@@ -213,13 +217,23 @@ public class SwerveDrive extends SubsystemBase {
     backRight.zeroDriveMotor();
   }
 
+  public void setNeutralMode(NeutralMode neutralMode) {
+    frontLeft.setNeutralMode(neutralMode);
+    frontRight.setNeutralMode(neutralMode);
+    backLeft.setNeutralMode(neutralMode);
+    backRight.setNeutralMode(neutralMode);
+  }
+
+
   // Stuff for Pathplanner
   public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
   public void resetPose(Pose2d pose) {
-    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), getPose());
+    // zeroDriveMotors();
+    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), pose);
+    // odometry.
   }
 
   public ChassisSpeeds getChassisSpeeds() {
@@ -235,11 +249,9 @@ public class SwerveDrive extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
     SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    this.targetHeadingRad = getHeading();
 
-    frontLeft.setState(moduleStates[0]);
-    frontLeft.setState(moduleStates[0]);
-    frontLeft.setState(moduleStates[0]);
-    frontLeft.setState(moduleStates[0]);
+    setModuleStates(moduleStates);
   }
 
 
@@ -258,17 +270,14 @@ public class SwerveDrive extends SubsystemBase {
     this.targetHeadingRad += tSpeed;
     this.targetHeadingRad %= (2.0 * Math.PI);
     this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
+    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad); // Inverted PID output because ¯\_(ツ)_/¯
 
   }
-
-
-
-  
-
-
-
-
+  public void updateShuffleboardPIDConstants() {//
+    headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
+    headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
+    headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
+  }
 }
 
 
