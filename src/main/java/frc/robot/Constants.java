@@ -20,6 +20,16 @@ public class Constants {
     public static RobotState robotState = RobotState.DISABLED;
 
     public static final class Claw {}
+    
+    public static final class Elevator {
+        public static final double kPElevator = 0.0;
+        public static final double kIElevator = 0.0;
+        public static final double kDLeft = 0.0;
+        public static final double kPIndexer = 0.0;
+        public static final double kDRight = 0.0;
+
+
+    }
 
     public static final class Drivetrain {
         // Measurements

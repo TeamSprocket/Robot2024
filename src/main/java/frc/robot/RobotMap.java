@@ -55,6 +55,8 @@ public final class RobotMap {
   public static final class Elevator{
     public static final int ELEVATOR_LEFT = 40;
     public static final int ELEVATOR_RIGHT = 41;
+    public static final int Left = 0;
+    public static final int Right = 0;
   }
 
   public static final class Arm{

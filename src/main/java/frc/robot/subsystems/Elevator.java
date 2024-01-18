@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
@@ -12,6 +13,8 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 
 public class Elevator extends SubsystemBase {
+  Supplier <Double> joyvalue;
+  double output;
 
   public static enum ElevatorStates {
     NONE,
@@ -27,10 +30,10 @@ public class Elevator extends SubsystemBase {
   private ElevatorStates lastState = ElevatorStates.NONE;
 
   private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
-  private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.ELEVATOR.Right);
+  private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
 
-  PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Shooter.kIElevator, Constants.Elevator.kDLeft);
-  PIDController pidControllerRight = new PIDController(Constants.Elevator.kPIndexer, Constants.Shooter.kIElevator, Constants.Elevator.kDRight);
+  PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDLeft);
+  PIDController pidControllerRight = new PIDController(Constants.Elevator.kPIndexer, Constants.Elevator.kIElevator, Constants.Elevator.kDRight);
   
   public Elevator() {
     motorRight.follow(motorLeft);
@@ -46,34 +49,38 @@ public class Elevator extends SubsystemBase {
         
       case STOWED:
         pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
-        double motorLeftMotorOutput = PIDControllerLeft.calculate(motorLeft.getSelectedSensorPosition(), );
-        motorLeft.set(motorLeftMotorOutput);
-        pidControllerLeft.setSelectedSensorPosition()
+        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
+
       case HANDOFF:
-        
+        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        break;
+
       case SPEAKER:
+        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        break;  
         
       case SPEAKER_HIGH:
+        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        break;
         
       case AMP:
+        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        break; 
         
       case MANUAL:
-       
+        manual();
         break;
     }
    
   }
-
-  public void goingup() {
-    motorLeft.set(0.5);
-  }
-
-  public void goingdown() {
-    motorLeft.set(-0.5);
-  }
-
-  public void stop() {
-    motorLeft.set(0);
+  public void manual() { // TODO: find deadband + correct speed
+    double speed = joyvalue.get();
+    pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
+    motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
   }
 }
