@@ -39,49 +39,22 @@ public final class RobotMap {
     public static final int FRONT_RIGHT_ABS_ENCODER_ID = 3;
     public static final int BACK_LEFT_ABS_ENCODER_ID = 0;
     public static final int BACK_RIGHT_ABS_ENCODER_ID = 2;
-
-    // public static final int kTurnP = 0;
-    // public static final int kTurnI = 0;
-    // public static final int kTurnD = 0;
-    
-
-    // public static final int FRONT_LEFT_TALON_E = 9;
-    // public static final int FRONT_RIGHT_TALON_E = 10;
-    // public static final int BACK_LEFT_TALON_E = 11;
-    // public static final int BACK_RIGHT_TALON_E = 12;
-
   }
 
-  public static final class Elevator{
-    public static final int ELEVATOR_LEFT = 40;
-    public static final int ELEVATOR_RIGHT = 41;
+  public static final class Elevator {
+    public static final int ELEVATOR_LEFT = 0;
+    public static final int ELEVATOR_RIGHT = 0;
   }
 
-  public static final class Arm{
-    public static final int ARM_LEFT = 42;
-    public static final int ARM_RIGHT = 43;
+  public static final class Wrist {
+    public static final int WRIST = 0;
   }
 
-  public static final class Wrist{
-    public static final int WRIST = 44;
+  public static final class Shooter {
+    public static final int SHOOTER = 0;
+    public static final int INDEXER = 0;
   }
 
-  public static final class Claw{
-    public static final int CLAW = 45; // or 46
-
-
-    //public static final int PISTON_LEFT = 14;
-    //public static final int PISTON_RIGHT = 15;
-
-  }
-  public static final class LEDStrip {
-    public static final int LED = 9;
-  }
-
-  public static final class PCH {
-    //public static final int PCH_CAN = 1;
-    //public static final int PRESSURE_SENSOR_CHANNEL = 0;
-  }
   
 
   public static final class Controller {

@@ -31,8 +31,8 @@ public class Superstructure extends SubsystemBase {
 
   // ELevator: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
   // Wrist: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
-  // Shooter: NONE, STANDBY, HANDOFF, SPINUP, 
-  // Intake: NONE
+  // Shooter: NONE, STANDBY, HANDOFF, SPINUP, SCORE_SPEAKER, SCORE_AMP
+  // Intake: NONE, STOWED, INTAKE, WAIT_HANDOFF, HANDOFF
 
 
 
