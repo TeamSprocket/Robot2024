@@ -30,8 +30,8 @@ import frc.util.ShuffleboardPIDTuner;
 
 public class runMotor extends SubsystemBase {
  
-  private static CANSparkMax shooterLeft = new CANSparkMax(1 , MotorType.kBrushless);
-  private static CANSparkMax shooterRight = new CANSparkMax(2, MotorType.kBrushless);
+  private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless);
+  private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless);
   public runMotor() {
     shooterRight.setInverted(true);
   }
@@ -43,7 +43,7 @@ public class runMotor extends SubsystemBase {
     
   }
 
-  public static void run(double output){
+  public void run(double output){
     shooterLeft.set(output);
     shooterRight.set(output);
   }

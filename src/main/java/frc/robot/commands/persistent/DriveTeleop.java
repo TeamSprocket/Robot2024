@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTeleop extends CommandBase {
 
-  runMotor runmotor;
+  runMotor runMotor = new runMotor();
   
   public DriveTeleop() {
     
