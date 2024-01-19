@@ -17,11 +17,9 @@ public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor);
   // TalonFX motor = new TalonFX(Constants.Wrist.motor);
-  WristStates wristStates; // Just call this state, put on line 36 for organization 
+  WristStates wristStates;
   PIDController turnPID;
-  double targetAngle; // prob dont need, just set pid setpoint directly
   Supplier<Double> joyvalue;
-  double output;
 
   public enum WristStates {
     NONE,
@@ -33,8 +31,9 @@ public class Wrist extends SubsystemBase {
     MANUAL
   }
 
-  public Wrist() {
-    turnPID = new PIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist); // capitalized W in wrist
+  public Wrist(Supplier<Double> joyvalue) {
+    turnPID = new PIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist);
+    this.joyvalue = joyvalue;
   }
 
   @Override
@@ -91,10 +90,10 @@ public class Wrist extends SubsystemBase {
     return deg;
   }
 
-  public void manual() { // TODO: find deadband + correct speed
+  public void manual() {
     double speed = joyvalue.get();
 
-    turnPID.setSetpoint(turnPID.getSetpoint() + speed);
+    turnPID.setSetpoint(turnPID.getSetpoint() + (Constants.Wrist.motorSpeed * speed));
 
     double finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
     motor.set(finalspeed);
