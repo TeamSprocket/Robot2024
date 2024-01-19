@@ -5,9 +5,8 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-// import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -16,8 +15,8 @@ import frc.util.Conversions;
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor);
-  // TalonFX motor = new TalonFX(Constants.Wrist.motor);
   WristStates wristStates;
+  WristStates lastState;
   PIDController turnPID;
   Supplier<Double> joyvalue;
 
@@ -34,6 +33,9 @@ public class Wrist extends SubsystemBase {
   public Wrist(Supplier<Double> joyvalue) {
     turnPID = new PIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist);
     this.joyvalue = joyvalue;
+
+    motor.setInverted(Constants.Wrist.kIsWristInverted);
+    motor.setNeutralMode(NeutralMode.Brake);
   }
 
   @Override
@@ -46,32 +48,46 @@ public class Wrist extends SubsystemBase {
         break;
 
       case STOWED:
-        turnPID.setSetpoint(Constants.Wrist.targetAngle); // make a constant for the target
-        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        if (lastState != WristStates.STOWED) {
+          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        }
+        motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case HANDOFF:
-        turnPID.setSetpoint(Constants.Wrist.targetAngle); // make a constant for the target
-        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        if (lastState != WristStates.HANDOFF) {
+          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        }
+        motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case SPEAKER:
-        turnPID.setSetpoint(Constants.Wrist.targetAngle);
-        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        if (lastState != WristStates.SPEAKER) {
+          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        }
+        motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case SPEAKER_HIGH:
-        turnPID.setSetpoint(Constants.Wrist.targetAngle);
-        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        if (lastState != WristStates.SPEAKER_HIGH) {
+          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        }
+        motor.set(turnPID.calculate(getAngleofMotor()));
         break;
         
       case AMP:
-        turnPID.setSetpoint(Constants.Wrist.targetAngle); // make a constant for the target
-        motor.set(turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint()));
+        if (lastState != WristStates.AMP) {
+          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+        }
+        motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case MANUAL:
-        manual();
+        double speed = joyvalue.get();
+        turnPID.setSetpoint(turnPID.getSetpoint() + (Constants.Wrist.motorSpeed * speed));
+
+        double finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
+        motor.set(finalspeed);
         break;
     }
   }
@@ -88,14 +104,5 @@ public class Wrist extends SubsystemBase {
       deg -= (360); 
     }
     return deg;
-  }
-
-  public void manual() {
-    double speed = joyvalue.get();
-
-    turnPID.setSetpoint(turnPID.getSetpoint() + (Constants.Wrist.motorSpeed * speed));
-
-    double finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
-    motor.set(finalspeed);
   }
 }

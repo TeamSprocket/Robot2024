@@ -18,15 +18,12 @@ public class Superstructure extends SubsystemBase {
   }
   public SSStates state = SSStates.NONE;
 
-  Wrist wrist = new Wrist();
+  Wrist wrist = new Wrist(() -> RobotContainer.secondary.getRawAxis(0));
 
   Timer timer = new Timer();
 
-  
-
   public Superstructure() {
     timer.reset();
-
   }
 
   // ELevator: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
