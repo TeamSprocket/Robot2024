@@ -35,8 +35,9 @@ public class Elevator extends SubsystemBase {
   PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDLeft);
   PIDController pidControllerRight = new PIDController(Constants.Elevator.kPIndexer, Constants.Elevator.kIElevator, Constants.Elevator.kDRight);
   
-  public Elevator() {
+  public Elevator(Supplier<Double> joyvalue) {
     motorRight.follow(motorLeft);
+    this.joyvalue = joyvalue;
   }
 
   @Override
