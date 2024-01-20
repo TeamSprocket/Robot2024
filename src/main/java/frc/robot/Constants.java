@@ -24,8 +24,16 @@ public class Constants {
         public static final double kPElevator = 0.0;
         public static final double kIElevator = 0.0;
         public static final double kDLeft = 0.0;
-        public static final double kPIndexer = 0.0;
         public static final double kDRight = 0.0;
+        
+        public static final double kStowedHeight = 0.0;
+        public static final double kHandoffHeight = 0.0;
+        public static final double kSpeakerHeight = 0.0;
+        public static final double kSpeakerHighHeight = 0.0;
+        public static final double kAmpHeight = 0.0;
+
+
+        
 
 
     }

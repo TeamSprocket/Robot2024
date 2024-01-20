@@ -15,6 +15,7 @@ import frc.robot.RobotMap;
 public class Elevator extends SubsystemBase {
   Supplier <Double> joyvalue;
   double output;
+  
 
   public static enum ElevatorStates {
     NONE,
@@ -29,16 +30,19 @@ public class Elevator extends SubsystemBase {
   private ElevatorStates state = ElevatorStates.NONE;
   private ElevatorStates lastState = ElevatorStates.NONE;
 
+
   private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
   private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
 
   PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDLeft);
-  PIDController pidControllerRight = new PIDController(Constants.Elevator.kPIndexer, Constants.Elevator.kIElevator, Constants.Elevator.kDRight);
+  PIDController pidControllerRight = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDRight);
   
   public Elevator(Supplier<Double> joyvalue) {
     motorRight.follow(motorLeft);
     this.joyvalue = joyvalue;
   }
+
+
 
   @Override
   public void periodic() {
@@ -49,29 +53,28 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kStowedHeight);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
 
       case HANDOFF:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kHandoffHeight);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
 
       case SPEAKER:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kSpeakerHeight);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;  
         
       case SPEAKER_HIGH:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kSpeakerHighHeight);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
         
       case AMP:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kHeight);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
-        break; 
         
       case MANUAL:
         manual();
