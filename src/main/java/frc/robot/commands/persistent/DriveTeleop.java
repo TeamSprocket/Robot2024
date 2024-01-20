@@ -10,7 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
-import frc.robot.subsystems.runMotor;
+import frc.robot.subsystems.RunMotor;
 import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -18,11 +18,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTeleop extends CommandBase {
 
-  runMotor runMotor = new runMotor();
+  RunMotor runMotor;
   
-  public DriveTeleop() {
+  public DriveTeleop(RunMotor runMotor) {
+    this.runMotor = runMotor;
     
-    ShuffleboardPIDTuner.addSlider("Motor Power", 0.0, 1.0, 0);
+    ShuffleboardPIDTuner.addSlider("Motor Power", -1.0, 1.0, 0);
+
+    addRequirements(runMotor);
   }
 
   @Override

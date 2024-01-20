@@ -28,12 +28,13 @@ import frc.robot.RobotMap;
 import frc.robot.Constants.RobotState;
 import frc.util.ShuffleboardPIDTuner;
 
-public class runMotor extends SubsystemBase {
+public class RunMotor extends SubsystemBase {
  
   private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless);
   private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless);
-  public runMotor() {
+  public RunMotor() {
     shooterRight.setInverted(true);
+    shooterLeft.follow(shooterRight, false);
   }
   /**
    * puts values of everything like speed and angle into the smartdashboard
