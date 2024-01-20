@@ -4,7 +4,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -31,6 +30,41 @@ public class Constants {
 
     }
 
+    public static final class Superstructure {
+        
+    }
+
+
+    public static final class Elevator {
+
+    }
+
+    public static final class Wrist {
+        
+    }
+
+    public static final class Shooter {
+        public static final boolean kIsShooterInverted = false;
+        public static final boolean kIsIndexerInverted = false;
+
+        public static final double kPShooter = 0.0;
+        public static final double kIShooter = 0.0;
+        public static final double kDShooter = 0.0; 
+
+        public static final double kPIndexer = 0.0;
+        public static final double kIIndexer = 0.0;
+        public static final double kDIndexer = 0.0; 
+    }
+
+    public static final class Intake {
+        
+
+    }
+
+
+
+
+
     public static final class Drivetrain {
         // Measurements
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
@@ -54,11 +88,11 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.12136; 
 
-        public static final double kPTranslationPP = 0.0; 
+        public static final double kPTranslationPP = 0.05; 
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0; 
 
-        public static final double kPRotationPP = 0.0; 
+        public static final double kPRotationPP = 0.01; 
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0;
 
