@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
@@ -30,6 +31,8 @@ public class Intake extends SubsystemBase {
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     PIDController pivotPID = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
+
+    TalonFXConfiguration config = new TalonFXConfiguration();
 
     private IntakeState intakeState;
 
@@ -74,10 +77,14 @@ public class Intake extends SubsystemBase {
 
     public void clearStickyFaults() {
         rollIntake.clearStickyFaults();
+        pivotIntake.clearStickyFaults();
     }
 
-    public double getVelocity() {
+    public double getPivotVelocity() {
         return pivotIntake.getSelectedSensorVelocity();
+    }
+    public double getRollVelocity() {
+        return rollIntake.getSelectedSensorVelocity();
     }
 
     public double getPivotPosition() {
@@ -85,7 +92,10 @@ public class Intake extends SubsystemBase {
     }
 
     public double getPivotAngle() {
-        return Conversions.falconToDegrees(getPivotPosition(), Constants.Intake.kPivotIntakeGearRatio); 
+        double deg = Conversions.falconToDegrees(getPivotPosition(), Constants.Intake.kPivotIntakeGearRatio);
+        deg %= 360;
+        deg = (deg < 0) ? deg + 360 : deg; 
+        return deg;
     }
 
     public void setPivotAngle(double currentAngle, double setpoint){
@@ -108,7 +118,8 @@ public class Intake extends SubsystemBase {
                 break;
             case INTAKE:
                 setPivotAngle(getPivotAngle(), 0);//intake setpoint
-                rollIntake.set(ControlMode.PercentOutput, activeSpeed);
+                //rollIntake.set(ControlMode.PercentOutput, activeSpeed);
+                hasGamePiece();
                 SmartDashboard.putNumber("[Claw] RPM", getVelocity());
 
                 break;
@@ -124,4 +135,12 @@ public class Intake extends SubsystemBase {
     public void setState(IntakeState state) {
         intakeState = state;
     }
+
+    public void hasGamePiece() {
+        if (rollIntake.getStatorCurrent() > Constants.Intake.kCurrentThreshold) { 
+            rollIntake.set(0);
+        } else {
+            rollIntake.set(ControlMode.PercentOutput, activeSpeed);
+        }
+}
 }
