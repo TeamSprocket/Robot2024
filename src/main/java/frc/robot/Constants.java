@@ -34,11 +34,6 @@ public class Constants {
         
     }
 
-
-    public static final class Elevator {
-
-    }
-
     public static final class Wrist {
         
     }
