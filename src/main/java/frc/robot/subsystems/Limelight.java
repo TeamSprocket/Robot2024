@@ -1,10 +1,13 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -22,6 +25,15 @@ public class Limelight extends SubsystemBase {
     SwerveDrive swerveDrive;
     PIDController pidController;
     double pose[];
+
+    // public SwerveDrivePoseEstimator poseEstimator = new SwerveDrivePoseEstimator(null, null, null, getPose());
+    private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+    Constants.Drivetrain.kDriveKinematics,
+    new Rotation2d(swerveDrive.getHeading()),
+    swerveDrive.getModulePositions()
+    );
+
+    odometry.addVisionMeasurement();
 
     public Limelight(SwerveDrive swerveDrive) {
 

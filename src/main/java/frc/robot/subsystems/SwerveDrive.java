@@ -5,6 +5,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -27,7 +28,7 @@ public class SwerveDrive extends SubsystemBase {
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
   PIDController headingController;
-
+  SwerveDriveKinematics m_kinematics;
 
   public static enum Directions {
     FORWARD,
@@ -123,14 +124,8 @@ public class SwerveDrive extends SubsystemBase {
       setModuleStates(moduleStates);
     }
 
-
     // Update Odometer
-    
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-
-
-    
-    
   }
 
 
