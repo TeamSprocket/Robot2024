@@ -41,9 +41,11 @@ public final class RobotMap {
     public static final int BACK_RIGHT_ABS_ENCODER_ID = 2;
   }
 
-  public static final class Elevator {
-    public static final int ELEVATOR_LEFT = 0;
-    public static final int ELEVATOR_RIGHT = 0;
+  public static final class Elevator{
+    public static final int ELEVATOR_LEFT = 40;
+    public static final int ELEVATOR_RIGHT = 41;
+    public static final int Left = 0;
+    public static final int Right = 0;
   }
 
   public static final class Wrist {
@@ -55,8 +57,6 @@ public final class RobotMap {
     public static final int INDEXER = 0;
     public static final int BEAM_BREAK = 0;
   }
-
-  
 
   public static final class Controller {
     public static final int DRIVER = 0;
