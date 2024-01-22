@@ -77,11 +77,11 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.12136; 
 
-        public static final double kPTranslationPP = 0.05; 
+        public static final double kPTranslationPP = 2.7; 
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0; 
 
-        public static final double kPRotationPP = 0.01; 
+        public static final double kPRotationPP = 1.0; 
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0;
 
