@@ -36,6 +36,11 @@ public class Constants {
         public static final boolean kIsShooterInverted = false;
         public static final boolean kIsIndexerInverted = false;
 
+        public static final double kIndexerSpeedHandoff = 0.0;
+        public static final double kIndexerSpeedScoreSpeaker = 0.0;
+        public static final double kIndexerSpeedScoreAmp = 0.0;
+        
+
         public static final double kPShooter = 0.0;
         public static final double kIShooter = 0.0;
         public static final double kDShooter = 0.0; 

@@ -53,6 +53,7 @@ public final class RobotMap {
   public static final class Shooter {
     public static final int SHOOTER = 0;
     public static final int INDEXER = 0;
+    public static final int BEAM_BREAK = 0;
   }
 
   
