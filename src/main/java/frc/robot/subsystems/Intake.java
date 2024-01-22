@@ -120,7 +120,7 @@ public class Intake extends SubsystemBase {
                 setPivotAngle(getPivotAngle(), 0);//intake setpoint
                 //rollIntake.set(ControlMode.PercentOutput, activeSpeed);
                 hasGamePiece();
-                SmartDashboard.putNumber("[Claw] RPM", getVelocity());
+                // SmartDashboard.putNumber("[Claw] RPM", getVelocity());
 
                 break;
             case WAIT_HANDOFF:

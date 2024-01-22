@@ -53,7 +53,8 @@ public final class RobotMap {
   }
 
   public static final class Intake {
-    public static final int INTAKE = 0;
+    public static final int ROLL_INTAKE = 0;
+    public static final int PIVOT_INTAKE = 0;
   }
 
   public static final class Shooter {

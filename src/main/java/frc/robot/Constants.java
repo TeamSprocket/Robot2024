@@ -65,7 +65,12 @@ public class Constants {
 
 
     public static final class Intake {
-        
+        public static final double kPivotIntakeGearRatio = 0.0;
+        public static final double kCurrentThreshold = 0.0;
+
+        public static final double kPPivot = 0.0;
+        public static final double kIPivot = 0.0;
+        public static final double kDPivot = 0.0; 
 
     }
 
