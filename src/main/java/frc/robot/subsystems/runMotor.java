@@ -33,7 +33,7 @@ public class RunMotor extends SubsystemBase {
   private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless);
   private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless);
   public RunMotor() {
-    shooterRight.setInverted(true);
+    shooterRight.setInverted(false); //true for Prototype 1 (flywheel) but false for Prototype 2 (updown)
     shooterLeft.follow(shooterRight, false);
   }
   /**
