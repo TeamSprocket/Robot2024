@@ -14,6 +14,10 @@ import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,7 +34,9 @@ public class Intake extends SubsystemBase {
 
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-    PIDController pivotPID = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
+
+    private final ProfiledPIDController pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, Constants.Intake.kPivotProfileConstrants, 0.02);
+    private final SimpleMotorFeedforward pivotFeedForward = new SimpleMotorFeedforward(0,0);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -58,6 +64,7 @@ public class Intake extends SubsystemBase {
 
    
     public double getPivotPosition() {
+        
         return pivotIntake.getSelectedSensorPosition();
     }
 
@@ -69,8 +76,9 @@ public class Intake extends SubsystemBase {
     }
 
     public void runPivotToSetpoint(double setpoint){
-        double output = pivotPID.calculate(getPivotAngle(), setpoint);
-        pivotIntake.set(output); 
+        /*Don't know which calculate methods to use */
+        double output = pivotPIDProfiled.calculate(getPivotPosition(), setpoint); 
+        pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
     }
 
     @Override
