@@ -52,9 +52,15 @@ public final class RobotMap {
     public static final int WRIST = 0;
   }
 
+  public static final class Intake {
+    public static final int ROLL_INTAKE = 0;
+    public static final int PIVOT_INTAKE = 0;
+  }
+
   public static final class Shooter {
     public static final int SHOOTER = 0;
     public static final int INDEXER = 0;
+    public static final int BEAM_BREAK = 0;
   }
 
   public static final class Controller {

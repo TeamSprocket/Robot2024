@@ -22,6 +22,7 @@ import frc.robot.subsystems.SwerveDrive.Directions;
 public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
+  public final static CommandXboxController secondary = new CommandXboxController(1);
 
   SwerveDrive swerveDrive = new SwerveDrive();
 
