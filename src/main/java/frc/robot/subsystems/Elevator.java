@@ -11,6 +11,13 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import frc.robot.Constants;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
 public class Elevator extends SubsystemBase {
   Supplier <Double> joyvalue;
@@ -91,6 +98,8 @@ public class Elevator extends SubsystemBase {
     this.state = state;
   }
 
+  
+
 
   public void manual() { // TODO: find deadband + correct speed
     double speed = joyvalue.get();
@@ -100,3 +109,5 @@ public class Elevator extends SubsystemBase {
 
   
 }
+
+
