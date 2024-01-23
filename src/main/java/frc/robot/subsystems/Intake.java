@@ -8,18 +8,12 @@ import java.util.ResourceBundle.Control;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
-import com.revrobotics.CANSparkMax;
-
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-
-
 
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -32,21 +26,13 @@ import frc.util.ShuffleboardPIDTuner;
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
 
-    private final CANSparkMax rollIntake = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE);
+    private final WPI_TalonFX rollIntake = new WPI_TalonFX(RobotMap.Intake.ROLL_INTAKE);
+
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     PIDController pivotPID = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
-
-    private final TrapezoidProfile pivotProfile = new TrapezoidProfile(new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel));
-    
-    private TrapezoidProfile.State pivotGoal = new TrapezoidProfile.State();
-    private SimpleMotorFeedforward pivotFeedforward = new SimpleMotorFeedforward();
-    
-
-    
-
 
     private IntakeState intakeState;
 
@@ -87,8 +73,6 @@ public class Intake extends SubsystemBase {
         }
 
         activeSpeed = idleSpeed + output;
-        pivotProfile.
-        
     }
 
     public void clearStickyFaults() {
@@ -116,8 +100,7 @@ public class Intake extends SubsystemBase {
 
     public void setPivotAngle(double currentAngle, double setpoint){
         double output = pivotPID.calculate(currentAngle, setpoint);
-        pivotIntake.set(output);
-         
+        pivotIntake.set(output); 
     }
 
     @Override
