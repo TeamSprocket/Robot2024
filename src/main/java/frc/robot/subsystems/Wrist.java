@@ -8,6 +8,9 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.util.Conversions;
@@ -17,7 +20,13 @@ public class Wrist extends SubsystemBase {
   WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor);
   WristStates wristStates;
   WristStates lastState;
-  PIDController turnPID;
+
+  ProfiledPIDController turnPID;
+  TrapezoidProfile.Constraints trapezoidProfileConstraints;
+  private TrapezoidProfile.State current = new TrapezoidProfile.State();
+  private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+  private double time = 0.0;
+
   Supplier<Double> joyvalue;
 
   public enum WristStates {
@@ -31,7 +40,8 @@ public class Wrist extends SubsystemBase {
   }
 
   public Wrist(Supplier<Double> joyvalue) {
-    turnPID = new PIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist);
+    trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityRadPerSecond, Constants.Wrist.kMaxAccelerationRadPerSecSquared);
+    turnPID = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
     this.joyvalue = joyvalue;
 
     motor.setInverted(Constants.Wrist.kIsWristInverted);
@@ -49,42 +59,47 @@ public class Wrist extends SubsystemBase {
 
       case STOWED:
         if (lastState != WristStates.STOWED) {
-          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          turnPID.setGoal(goal);
         }
         motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case HANDOFF:
         if (lastState != WristStates.HANDOFF) {
-          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          turnPID.setGoal(goal);
         }
         motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case SPEAKER:
         if (lastState != WristStates.SPEAKER) {
-          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          turnPID.setGoal(goal);
         }
         motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case SPEAKER_HIGH:
         if (lastState != WristStates.SPEAKER_HIGH) {
-          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          turnPID.setGoal(goal);
         }
         motor.set(turnPID.calculate(getAngleofMotor()));
         break;
         
       case AMP:
         if (lastState != WristStates.AMP) {
-          turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
+          turnPID.setGoal(goal);
         }
         motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
       case MANUAL:
         double speed = joyvalue.get();
-        turnPID.setSetpoint(turnPID.getSetpoint() + (Constants.Wrist.motorSpeed * speed));
+        turnPID.setGoal(turnPID.getGoal().position + (Constants.Wrist.motorSpeed * speed));
 
         double finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
         motor.set(finalspeed);
