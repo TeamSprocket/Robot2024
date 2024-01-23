@@ -1,8 +1,12 @@
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.subsystems.Elevator.ElevatorStates;
+import frc.robot.subsystems.Wrist.WristStates;
+import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.Intake.IntakeStates;
 
 public class Superstructure extends SubsystemBase {
   public static enum SSStates {
@@ -15,14 +19,22 @@ public class Superstructure extends SubsystemBase {
     MANUAL
   }
   public SSStates state = SSStates.NONE;
+  public SSStates lastState = SSStates.NONE;
 
   Timer timer = new Timer();
 
-  
+  Elevator elevator;
+  Wrist wrist;
+  Shooter shooter;
+  Intake intake;
 
-  public Superstructure() {
+  public Superstructure(Elevator elevator, Wrist wrist, Shooter shooter, Intake intake) {
+    this.elevator = elevator;
+    this.wrist = wrist;
+    this.shooter = shooter;
+    this.intake = intake;
+
     timer.reset();
-
   }
 
   // ELevator: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
@@ -36,40 +48,64 @@ public class Superstructure extends SubsystemBase {
   public void periodic() {
     switch (state) {
       case NONE:
-        // ELevator: NONE
-        // Wrist: NONE
-        // Shooter: NONE
-        // Intake: NONE
+        elevator.setState(ElevatorStates.NONE);
+        wrist.setState(WristStates.NONE);
+        shooter.setState(ShooterStates.NONE);
+        intake.setState(IntakeStates.NONE);
       break;
       
 
       case STOWED:
-        // ELevator: STOWED
-        // Wrist: STOWED
-        // Shooter: STANDBY, NONE if still coasting
-        // Intake: STOWED
+        elevator.setState(ElevatorStates.STOWED);
+        wrist.setState(WristStates.STOWED);
+        shooter.setState(ShooterStates.STANDBY);
+        intake.setState(IntakeStates.STOWED);
       break;
       
 
       case INTAKE:
-        // ELevator: STOWED
-        // Wrist: STOWED
-        // Shooter: STANDBY
-        // Intake: INTAKE
+        // Reset tolerance timer
+        if (lastState != SSStates.INTAKE) {
+          timer.reset();
+          timer.stop();
+        }
+
+        // Start tolerance timer
+        if (intake.hasDetectedNote()) {
+          timer.start();
+        }
+
+        elevator.setState(ElevatorStates.STOWED);
+        wrist.setState(WristStates.STOWED);
+        shooter.setState(ShooterStates.STANDBY);
+        intake.setState(IntakeStates.INTAKE);
+
+        if (timer.get() > Constants.Superstructure.kIntakeTimeToStowToleranceSec) {
+          setState(SSStates.STOWED);
+        } 
       break;
       
 
       case HANDOFF:
-        // ELevator: HANDOFF
-        // Wrist: HANDOFF
-        // Shooter: HANDOFF
-        // Intake: HANDOFF
+        if (!shooter.beamBroken()) {
+          timer.reset();
+          timer.stop();
+        } else {
+          // Note in shooter 
+          timer.start();
+        }
+
+        elevator.setState(ElevatorStates.STOWED);
+        wrist.setState(WristStates.STOWED);
+        shooter.setState(ShooterStates.STANDBY);
+        intake.setState(IntakeStates.INTAKE);
+        
       break;
       
 
       case WAIT_SPEAKER:
         // ELevator: SPEAKER
-        // Wrist: SPEAKER
+        wrist.setState(WristStates.SPEAKER);
         // Shooter: SPINUP
         // Intake: STOWED
       break;
@@ -77,7 +113,7 @@ public class Superstructure extends SubsystemBase {
 
       case WAIT_SPEAKER_HIGH:
         // ELevator: SPEAKER_HIGH
-        // Wrist: SPEAKER
+        wrist.setState(WristStates.SPEAKER);
         // Shooter: SPINUP
         // Intake: STOWED
       break;
@@ -85,7 +121,7 @@ public class Superstructure extends SubsystemBase {
 
       case WAIT_AMP:
         // ELevator: AMP
-        // Wrist: AMP
+        wrist.setState(WristStates.AMP);
         // Shooter: 
         // Intake: 
       break;
@@ -93,7 +129,7 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_SPEAKER:
         // ELevator: SPEAKER_HIGH
-        // Wrist: SPEAKER
+        wrist.setState(WristStates.SPEAKER);
         // Shooter: SCORE_SPEAKER
         // Intake: 
       break;
@@ -101,7 +137,7 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_SPEAKER_HIGH:
         // ELevator: 
-        // Wrist: 
+        wrist.setState(WristStates.SPEAKER_HIGH); 
         // Shooter: 
         // Intake: 
       break;
@@ -109,21 +145,22 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_AMP:
         // ELevator: 
-        // Wrist: 
+        wrist.setState(WristStates.AMP);
         // Shooter: SCORE_AMP
         // Intake: 
       break;
       
 
       case MANUAL:
-        // get spd from joystick supplier 
-        // (supplier obj passed thru parameter, stored as instance var)
-
-        // Incrament pid setpoint by joystick reading
+        // ELevator:  
+        wrist.setState(WristStates.MANUAL);
+        // Shooter: 
+        // Intake: 
       break;
-      
-
     }
+
+
+    lastState = state;
   }
 
 
@@ -137,6 +174,10 @@ public class Superstructure extends SubsystemBase {
    */
   public void setState(SSStates state) {
       this.state = state;
+  }
+
+  public boolean allElementsAtTarget() {
+    re
   }
 
 

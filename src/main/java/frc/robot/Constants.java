@@ -18,23 +18,46 @@ public class Constants {
     // Global
     public static RobotState robotState = RobotState.DISABLED;
 
-
     public static final class Superstructure {
-        
+        public static final double kIntakeTimeToStowToleranceSec = 0.2;
     }
-
-
+    
     public static final class Elevator {
+        public static final double kElevatorHeightStowed = 0.0;
+        public static final double kElevatorHeightHandoff = 0.0;
+        public static final double kElevatorHeightSpeaker = 0.0;
+        public static final double kElevatorHeightSpeakerHigh = 0.0;
+        public static final double kElevatorHeightAmp = 0.0;
+        public static final double kElevatorHeightTrap = 0.0;
 
+        public static final double kPElevator = 0.0;
+        public static final double kIElevator = 0.0;
+        public static final double kDElevator = 0.0;
     }
+
 
     public static final class Wrist {
-        
+        public static int motor = 0;
+        public static boolean kIsWristInverted = true;
+
+        public static double kPwrist = 0;
+        public static double kIwrist = 0;
+        public static double kDwrist = 0;
+
+        public static double motorSpeed = 0.1;
+        public static double targetAngle = 0.0;
     }
+
+
 
     public static final class Shooter {
         public static final boolean kIsShooterInverted = false;
         public static final boolean kIsIndexerInverted = false;
+
+        public static final double kIndexerSpeedHandoff = 0.0;
+        public static final double kIndexerSpeedScoreSpeaker = 0.0;
+        public static final double kIndexerSpeedScoreAmp = 0.0;
+        
 
         public static final double kPShooter = 0.0;
         public static final double kIShooter = 0.0;
@@ -45,8 +68,25 @@ public class Constants {
         public static final double kDIndexer = 0.0; 
     }
 
+
     public static final class Intake {
-        
+        public static final double kPivotAngleStowed = 0.0;
+        public static final double kPivotAngleIntake = 0.0;
+        public static final double kPivotAngleWaitHandoff = 0.0;
+        public static final double kPivotAngleHandoff = 0.0;
+
+        public static final double kRollSpeedStowed = 0.0;
+        public static final double kRollSpeedIntake = 0.0;
+        public static final double kRollSpeedWaitHandoff = 0.0;
+        public static final double kRollSpeedHandoff = 0.0;
+
+
+        public static final double kPivotIntakeGearRatio = 0.0;
+        public static final double kCurrentThreshold = 0.0;
+
+        public static final double kPPivot = 0.0;
+        public static final double kIPivot = 0.0;
+        public static final double kDPivot = 0.0; 
 
     }
 
@@ -77,11 +117,11 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.12136; 
 
-        public static final double kPTranslationPP = 0.05; 
+        public static final double kPTranslationPP = 2.7; 
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0; 
 
-        public static final double kPRotationPP = 0.01; 
+        public static final double kPRotationPP = 1.0; 
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0;
 
@@ -170,7 +210,7 @@ public class Constants {
         // public static final double kDDriveToTargetT = 0.0;
     }
 
-
+    
 }
 
 

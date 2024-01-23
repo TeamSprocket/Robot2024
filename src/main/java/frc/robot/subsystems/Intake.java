@@ -34,12 +34,12 @@ public class Intake extends SubsystemBase {
 
     TalonFXConfiguration config = new TalonFXConfiguration();
 
-    private IntakeState intakeState;
+    private IntakeStates state = IntakeStates.NONE;
 
     double idleSpeed = 0;
     double activeSpeed = 0;
 
-    public enum IntakeState {
+    public enum IntakeStates {
         NONE,
         STOWED,
         INTAKE,
@@ -49,44 +49,14 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        intakeState = IntakeState.NONE;
-
         rollIntake.setInverted(false);
         pivotIntake.setInverted(false);
 
-        rollIntake.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
-        rollIntake.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
-        
-        pivotIntake.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
-        pivotIntake.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
-
-        ShuffleboardPIDTuner.addSlider("kIdleSpeed", 0, 1, 0.1);
-
-        //intake.setNeutralMode(NeutralMode.Brake);
+        rollIntake.setNeutralMode(NeutralMode.Coast);
+        pivotIntake.setNeutralMode(NeutralMode.Brake);
     }
 
-    public void moveClaw(double output) {
-        if (output > 0) {
-            idleSpeed = ShuffleboardPIDTuner.get("kIdleSpeed");
-        } else if (output < 0) {
-            idleSpeed = -ShuffleboardPIDTuner.get("kIdleSpeed");
-        }
-
-        activeSpeed = idleSpeed + output;
-    }
-
-    public void clearStickyFaults() {
-        rollIntake.clearStickyFaults();
-        pivotIntake.clearStickyFaults();
-    }
-
-    public double getPivotVelocity() {
-        return pivotIntake.getSelectedSensorVelocity();
-    }
-    public double getRollVelocity() {
-        return rollIntake.getSelectedSensorVelocity();
-    }
-
+   
     public double getPivotPosition() {
         return pivotIntake.getSelectedSensorPosition();
     }
@@ -98,49 +68,52 @@ public class Intake extends SubsystemBase {
         return deg;
     }
 
-    public void setPivotAngle(double currentAngle, double setpoint){
-        double output = pivotPID.calculate(currentAngle, setpoint);
+    public void runPivotToSetpoint(double setpoint){
+        double output = pivotPID.calculate(getPivotAngle(), setpoint);
         pivotIntake.set(output); 
     }
 
     @Override
     public void periodic() {
 
-        switch (intakeState) {
+        switch (state) {
             case NONE:
-            pivotIntake.set(0);
-
+                pivotIntake.set(0);
+                rollIntake.set(0);
                 break;
+
+
             case STOWED:
-                setPivotAngle(getPivotAngle(), 0);//stowed setpoint
-                
-
+                runPivotToSetpoint(Constants.Intake.kPivotAngleStowed);
+                rollIntake.set(Constants.Intake.kRollSpeedStowed);
                 break;
+
+
             case INTAKE:
-                setPivotAngle(getPivotAngle(), 0);//intake setpoint
-                //rollIntake.set(ControlMode.PercentOutput, activeSpeed);
-                hasGamePiece();
-                SmartDashboard.putNumber("[Claw] RPM", getVelocity());
-
+                runPivotToSetpoint(Constants.Intake.kPivotAngleIntake);
+                rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
+
             case WAIT_HANDOFF:
-                setPivotAngle(getPivotAngle(), 0); //handoff setpoint
+                runPivotToSetpoint(Constants.Intake.kPivotAngleWaitHandoff); 
+                rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
                 break;
-            case HANDOFF:
 
+
+            case HANDOFF:
+                runPivotToSetpoint(Constants.Intake.kPivotAngleHandoff); 
+                rollIntake.set(Constants.Intake.kRollSpeedHandoff);
                 break;
         }
     }
     
-    public void setState(IntakeState state) {
-        intakeState = state;
+    public void setState(IntakeStates state) {
+        this.state = state;
     }
 
-    public void hasGamePiece() {
-        if (rollIntake.getStatorCurrent() > Constants.Intake.kCurrentThreshold) { 
-            rollIntake.set(0);
-        } else {
-            rollIntake.set(ControlMode.PercentOutput, activeSpeed);
-        }
-}
+    public boolean hasDetectedNote() {
+       return rollIntake.getStatorCurrent() > Constants.Intake.kCurrentThreshold;
+    }
+
+
 }
