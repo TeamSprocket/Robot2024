@@ -138,7 +138,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getAngle(gyro.getYawAxis()) * (-1.0) + 180.0;
+    double angle = gyro.getAngle(gyro.getYawAxis()) + 180.0;
     
     angle %= 360.0;
     if (angle < 0) {
@@ -270,7 +270,7 @@ public class SwerveDrive extends SubsystemBase {
     this.targetHeadingRad += tSpeed;
     this.targetHeadingRad %= (2.0 * Math.PI);
     this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad); // Inverted PID output because ¯\_(ツ)_/¯
+    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
 
   }
   public void updateShuffleboardPIDConstants() {//
