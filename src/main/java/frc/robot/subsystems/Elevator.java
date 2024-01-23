@@ -23,18 +23,18 @@ public class Elevator extends SubsystemBase {
     SPEAKER,
     SPEAKER_HIGH,
     AMP,
+    TRAP,
     MANUAL
   }
 
   private ElevatorStates state = ElevatorStates.NONE;
-  private ElevatorStates lastState = ElevatorStates.NONE;
 
   private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
   private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
 
-  PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDLeft);
-  PIDController pidControllerRight = new PIDController(Constants.Elevator.kPIndexer, Constants.Elevator.kIElevator, Constants.Elevator.kDRight);
+  PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator);
   
+
   public Elevator() {
     motorRight.follow(motorLeft);
   }
@@ -48,27 +48,32 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightStowed);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
 
       case HANDOFF:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightHandoff);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
 
       case SPEAKER:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightSpeaker);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;  
         
       case SPEAKER_HIGH:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightSpeakerHigh);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break;
         
       case AMP:
-        pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition());
+        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightAmp);
+        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        break; 
+
+      case TRAP:
+        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightTrap);
         motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
         break; 
         
@@ -78,9 +83,17 @@ public class Elevator extends SubsystemBase {
     }
    
   }
+
+  public void setState(ElevatorStates state) {
+    this.state = state;
+  }
+
+
   public void manual() { // TODO: find deadband + correct speed
     double speed = joyvalue.get();
     pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
     motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
   }
+
+  
 }

@@ -19,15 +19,20 @@ public class Constants {
     public static RobotState robotState = RobotState.DISABLED;
 
     public static final class Superstructure {
-        
+        public static final double kIntakeTimeToStowToleranceSec = 0.2;
     }
     
     public static final class Elevator {
+        public static final double kElevatorHeightStowed = 0.0;
+        public static final double kElevatorHeightHandoff = 0.0;
+        public static final double kElevatorHeightSpeaker = 0.0;
+        public static final double kElevatorHeightSpeakerHigh = 0.0;
+        public static final double kElevatorHeightAmp = 0.0;
+        public static final double kElevatorHeightTrap = 0.0;
+
         public static final double kPElevator = 0.0;
         public static final double kIElevator = 0.0;
-        public static final double kDLeft = 0.0;
-        public static final double kPIndexer = 0.0;
-        public static final double kDRight = 0.0;
+        public static final double kDElevator = 0.0;
     }
 
 
@@ -65,6 +70,17 @@ public class Constants {
 
 
     public static final class Intake {
+        public static final double kPivotAngleStowed = 0.0;
+        public static final double kPivotAngleIntake = 0.0;
+        public static final double kPivotAngleWaitHandoff = 0.0;
+        public static final double kPivotAngleHandoff = 0.0;
+
+        public static final double kRollSpeedStowed = 0.0;
+        public static final double kRollSpeedIntake = 0.0;
+        public static final double kRollSpeedWaitHandoff = 0.0;
+        public static final double kRollSpeedHandoff = 0.0;
+
+
         public static final double kPivotIntakeGearRatio = 0.0;
         public static final double kCurrentThreshold = 0.0;
 

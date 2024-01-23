@@ -58,18 +58,16 @@ public class Shooter extends SubsystemBase {
 
 
       case STANDBY:
+        if (lastState == ShooterStates.HANDOFF) {
+          indexerPID.setSetpoint(indexerMotor.getSelectedSensorPosition());
+        }
         holdIndexerPosition();
         break;
 
 
 
       case HANDOFF:
-        if (beamBroken()) {
-          setState(ShooterStates.STANDBY);
-          indexerPID.setSetpoint(indexerMotor.getSelectedSensorPosition());
-        } else {
-          indexerMotor.set(Constants.Shooter.kIndexerSpeedHandoff);
-        }
+        indexerMotor.set(Constants.Shooter.kIndexerSpeedHandoff);
         break;
 
 
