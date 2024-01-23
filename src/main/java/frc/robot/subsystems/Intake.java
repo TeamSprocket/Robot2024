@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import java.util.ResourceBundle.Control;
 
+//phoenix imports for pivot intake
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -15,6 +16,14 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 
+//spark max imports for roll intake
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxLimitSwitch;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkBase.IdleMode;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxLimitSwitch.Type;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,7 +35,7 @@ import frc.util.ShuffleboardPIDTuner;
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
 
-    private final WPI_TalonFX rollIntake = new WPI_TalonFX(RobotMap.Intake.ROLL_INTAKE);
+    private final CANSparkMax rollIntake = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless);
 
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
@@ -52,7 +61,7 @@ public class Intake extends SubsystemBase {
         rollIntake.setInverted(false);
         pivotIntake.setInverted(false);
 
-        rollIntake.setNeutralMode(NeutralMode.Coast);
+        rollIntake.setIdleMode(IdleMode.kCoast);
         pivotIntake.setNeutralMode(NeutralMode.Brake);
     }
 
@@ -112,7 +121,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasDetectedNote() {
-       return rollIntake.getStatorCurrent() > Constants.Intake.kCurrentThreshold;
+       return rollIntake.getOutputCurrent() > Constants.Intake.kCurrentThreshold;
     }
 
 
