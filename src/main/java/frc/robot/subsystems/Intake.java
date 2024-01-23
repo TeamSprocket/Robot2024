@@ -43,8 +43,8 @@ public class Intake extends SubsystemBase {
 
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-
-    private final ProfiledPIDController pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, Constants.Intake.kPivotProfileConstrants, 0.02);
+    private final TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
+    private final ProfiledPIDController pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints, 0.02);
     private final SimpleMotorFeedforward pivotFeedForward = new SimpleMotorFeedforward(0,0);
 
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -73,7 +73,6 @@ public class Intake extends SubsystemBase {
 
    
     public double getPivotPosition() {
-        
         return pivotIntake.getSelectedSensorPosition();
     }
 
