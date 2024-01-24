@@ -7,25 +7,23 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.util.Conversions;
 
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
-  WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor);
+  WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor1);
+  WPI_TalonFX motor1 = new WPI_TalonFX(Constants.Wrist.motor2);
+  
   WristStates wristStates;
   WristStates lastState;
 
   ProfiledPIDController turnPID;
   TrapezoidProfile.Constraints trapezoidProfileConstraints;
-  private TrapezoidProfile.State current = new TrapezoidProfile.State();
-  private TrapezoidProfile.State goal = new TrapezoidProfile.State();
-  private double time = 0.0;
+  TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
   Supplier<Double> joyvalue;
 
@@ -97,7 +95,7 @@ public class Wrist extends SubsystemBase {
         motor.set(turnPID.calculate(getAngleofMotor()));
         break;
 
-      case MANUAL:
+      case MANUAL: // TODO: add limit
         double speed = joyvalue.get();
         turnPID.setGoal(turnPID.getGoal().position + (Constants.Wrist.motorSpeed * speed));
 
@@ -107,11 +105,7 @@ public class Wrist extends SubsystemBase {
     }
   }
 
-  public void setState(WristStates wristStates) {
-    this.wristStates = wristStates;
-  }
-
-  public double getAngleofMotor() { // TODO: make sure angles are correct 
+  public double getAngleofMotor() {
 
     double deg = Conversions.falconToDegrees(motor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg %= 360;
@@ -119,5 +113,9 @@ public class Wrist extends SubsystemBase {
       deg -= (360); 
     }
     return deg;
+  }
+
+  public void setState(WristStates wristStates) {
+    this.wristStates = wristStates;
   }
 }

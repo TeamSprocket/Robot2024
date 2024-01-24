@@ -167,7 +167,8 @@ public class Constants {
     }
 
     public static final class Wrist {
-        public static int motor = 0;
+        public static int motor1 = 0;
+        public static int motor2 = 1;
         public static boolean kIsWristInverted = true;
 
         public static double kPwrist = 0;
