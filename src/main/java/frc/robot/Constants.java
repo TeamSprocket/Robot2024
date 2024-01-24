@@ -83,7 +83,7 @@ public class Constants {
 
         public static final double kPRotationPP = 3.6; //3.0
         public static final double kIRotationPP = 0.0;
-        public static final double kDRotationPP = 1.5; //0.0
+        public static final double kDRotationPP = 0.0; //0.0
 
         public static final double kLimelightAlignP = 0.0075;
         public static final double kLimelightAlignI = 0.0;
