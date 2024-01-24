@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -15,9 +17,8 @@ import frc.util.Conversions;
 
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
-  WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor1);
-  WPI_TalonFX motor1 = new WPI_TalonFX(Constants.Wrist.motor2);
-  
+  WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor);
+
   WristStates wristStates;
   WristStates lastState;
 
@@ -44,6 +45,9 @@ public class Wrist extends SubsystemBase {
 
     motor.setInverted(Constants.Wrist.kIsWristInverted);
     motor.setNeutralMode(NeutralMode.Brake);
+    
+    motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
+    motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
   }
 
   @Override
