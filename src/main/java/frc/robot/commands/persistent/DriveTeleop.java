@@ -24,6 +24,7 @@ public class DriveTeleop extends CommandBase {
     this.runMotor = runMotor;
     
     ShuffleboardPIDTuner.addSlider("Motor Power", -1.0, 1.0, 0);
+    ShuffleboardPIDTuner.addSlider("Indexer Power", -1.0, 1.0, 0);
 
     addRequirements(runMotor);
   }
@@ -34,7 +35,7 @@ public class DriveTeleop extends CommandBase {
   
   @Override
   public void execute() {
-    runMotor.run(ShuffleboardPIDTuner.get("Motor Power"));
+    runMotor.run(ShuffleboardPIDTuner.get("Motor Power"), ShuffleboardPIDTuner.get("Indexer Power"));
   }
   
 

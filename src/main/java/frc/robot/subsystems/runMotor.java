@@ -30,11 +30,13 @@ import frc.util.ShuffleboardPIDTuner;
 
 public class RunMotor extends SubsystemBase {
  
-  private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless);
-  private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless);
+  private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless); //top
+  private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless); //bottom
+  private WPI_TalonFX indexer = new WPI_TalonFX(1);
+
   public RunMotor() {
-    shooterRight.setInverted(false); //true for Prototype 1 (flywheel) but false for Prototype 2 (updown)
-    shooterLeft.follow(shooterRight, false);
+    shooterRight.setInverted(true); //true for Prototype 1 (flywheel) but false for Prototype 2 (updown)
+    shooterLeft.follow(shooterRight, false); //false for Prorotype 1
   }
   /**
    * puts values of everything like speed and angle into the smartdashboard
@@ -44,9 +46,10 @@ public class RunMotor extends SubsystemBase {
     
   }
 
-  public void run(double output){
+  public void run(double output, double indexerPower){
     shooterLeft.set(output);
     shooterRight.set(output);
+    indexer.set(-indexerPower);
   }
 
 
