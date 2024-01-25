@@ -4,8 +4,11 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotState;
@@ -15,6 +18,13 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  private WPI_TalonFX frontleft = new WPI_TalonFX(20);
+  private WPI_TalonFX frontright = new WPI_TalonFX(21);
+  private WPI_TalonFX backleft = new WPI_TalonFX(23);
+  private WPI_TalonFX backright = new WPI_TalonFX(22);
+
+  private XboxController joystick1 = new XboxController(0);
 
   @Override
   public void robotInit() {
@@ -43,7 +53,6 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
 
-
     Timer.delay(0.5);
 
     if (m_autonomousCommand != null) {
@@ -68,7 +77,18 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    double speed = -joystick1.getRawAxis(5) * 0.6;
+    double turn = joystick1.getRawAxis(0) * 0.3;
+
+    double left = speed + turn;
+    double right = speed - turn;
+
+    frontleft.set(left);
+    frontright.set(left);
+    backleft.set(-right);
+    backright.set(-right);
+  }
 
   @Override
   public void teleopExit() {}
