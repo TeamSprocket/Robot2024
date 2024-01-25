@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.instant.SwitchTargetHeadingDirection;
 import frc.robot.commands.instant.ZeroGyro;
 import frc.robot.commands.persistent.DriveTeleop;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.SwerveDrive.Directions;
 
@@ -24,6 +25,7 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(0);
 
   SwerveDrive swerveDrive = new SwerveDrive();
+  Limelight limelight = new Limelight(swerveDrive);
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
