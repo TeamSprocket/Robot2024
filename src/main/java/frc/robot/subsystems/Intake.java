@@ -47,6 +47,11 @@ public class Intake extends SubsystemBase {
     private final ProfiledPIDController pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints, 0.02);
     private final SimpleMotorFeedforward pivotFeedForward = new SimpleMotorFeedforward(0,0);
 
+    //private final TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotProfileConstraints);
+    //private final TrapezoidProfile.State goal = new TrapezoidProfile.State();
+    //private final TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+
+
     TalonFXConfiguration config = new TalonFXConfiguration();
 
     private IntakeStates state = IntakeStates.NONE;
@@ -85,7 +90,8 @@ public class Intake extends SubsystemBase {
 
     public void runPivotToSetpoint(double setpoint){
         /*Don't know which calculate methods to use */
-        double output = pivotPIDProfiled.calculate(getPivotPosition(), setpoint); 
+        //setpoint = pivotProfile.calculate(0.02, setpoint, goal);
+        double output = pivotPIDProfiled.calculate(getPivotAngle(), setpoint); 
         pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
     }
 
