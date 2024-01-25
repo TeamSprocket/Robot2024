@@ -77,7 +77,7 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.12136; 
 
-        public static final double kPTranslationPP = 4.0; //4.0
+        public static final double kPTranslationPP = 3.0; //4.0
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0; 
 
