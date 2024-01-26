@@ -40,21 +40,22 @@ import frc.util.ShuffleboardPIDTuner;
 public class Intake extends SubsystemBase {
 
     private final CANSparkMax rollIntake = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless);
-
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-    private final TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
-    private final ProfiledPIDController pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints, 0.02);
-    private final SimpleMotorFeedforward pivotFeedForward = new SimpleMotorFeedforward(0,0);
+    ProfiledPIDController pivotPIDProfiled;
 
+    
+    
+    //private final SimpleMotorFeedforward pivotFeedForward = new SimpleMotorFeedforward(0,0);
     //private final TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotProfileConstraints);
     //private final TrapezoidProfile.State goal = new TrapezoidProfile.State();
     //private final TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
 
-    TalonFXConfiguration config = new TalonFXConfiguration();
+    //TalonFXConfiguration config = new TalonFXConfiguration();
 
     private IntakeStates state = IntakeStates.NONE;
+    private IntakeStates lastState = IntakeStates.NONE;
 
     double idleSpeed = 0;
     double activeSpeed = 0;
@@ -69,8 +70,11 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        rollIntake.setInverted(false);
-        pivotIntake.setInverted(false);
+        TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
+        pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
+
+        rollIntake.setInverted(Constants.Intake.kIsRollInverted);
+        pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
 
         rollIntake.setIdleMode(IdleMode.kCoast);
         pivotIntake.setNeutralMode(NeutralMode.Brake);
@@ -88,12 +92,12 @@ public class Intake extends SubsystemBase {
         return deg;
     }
 
-    public void runPivotToSetpoint(double setpoint){
-        /*Don't know which calculate methods to use */
-        //setpoint = pivotProfile.calculate(0.02, setpoint, goal);
-        double output = pivotPIDProfiled.calculate(getPivotAngle(), setpoint); 
-        pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
-    }
+    // public void runPivotToSetpoint(double setpoint){
+    //     /*Don't know which calculate methods to use */
+    //     //setpoint = pivotProfile.calculate(0.02, setpoint, goal);
+    //     double output = pivotPIDProfiled.calculate(getPivotAngle(), setpoint); 
+    //     pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
+    // }
 
     @Override
     public void periodic() {
@@ -104,29 +108,42 @@ public class Intake extends SubsystemBase {
                 rollIntake.set(0);
                 break;
 
-
             case STOWED:
-                runPivotToSetpoint(Constants.Intake.kPivotAngleStowed);
+                if (lastState != IntakeStates.STOWED) {
+                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleStowed);
+                }
+                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedStowed);
                 break;
 
-
             case INTAKE:
-                runPivotToSetpoint(Constants.Intake.kPivotAngleIntake);
+                if (lastState != IntakeStates.INTAKE) {
+                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleIntake);
+                }
+                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
 
             case WAIT_HANDOFF:
-                runPivotToSetpoint(Constants.Intake.kPivotAngleWaitHandoff); 
+                if (lastState != IntakeStates.WAIT_HANDOFF) {
+                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
+                }
+                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
                 break;
 
 
             case HANDOFF:
-                runPivotToSetpoint(Constants.Intake.kPivotAngleHandoff); 
+                if (lastState != IntakeStates.HANDOFF) {
+                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleHandoff);
+                }
+                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedHandoff);
                 break;
         }
+
+        
+        lastState = state;
     }
     
     public void setState(IntakeStates state) {
