@@ -167,15 +167,13 @@ public class Constants {
     }
 
     public static final class Wrist {
-        public static int motor = 0;
         public static boolean kIsWristInverted = true;
 
         public static double kPwrist = 0;
         public static double kIwrist = 0;
         public static double kDwrist = 0;
 
-        public static double motorSpeed = 0.1;
-        public static double targetAngle = 0.0;
+        public static final double kManualMultiplier = 0.001;
 
         public static double kMaxVelocityRadPerSecond = 0.0;
         public static double kMaxAccelerationRadPerSecSquared = 0.0;

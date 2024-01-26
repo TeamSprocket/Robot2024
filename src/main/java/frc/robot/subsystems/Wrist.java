@@ -11,23 +11,24 @@ import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotMap;
 import frc.util.Conversions;
 
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
-  WPI_TalonFX motor = new WPI_TalonFX(Constants.Wrist.motor);
+  WPI_TalonFX motor = new WPI_TalonFX(RobotMap.Wrist.WRIST);
 
-  WristStates wristStates;
+  WristStates state;
   WristStates lastState;
 
-  ProfiledPIDController turnPID;
-  TrapezoidProfile.Constraints trapezoidProfileConstraints;
-  TrapezoidProfile.State goal = new TrapezoidProfile.State();
+  ProfiledPIDController wristController;
+  // TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
-  Supplier<Double> joyvalue;
+  Supplier<Double> joystickSupplier;
 
   public enum WristStates {
     NONE,
@@ -39,22 +40,22 @@ public class Wrist extends SubsystemBase {
     MANUAL
   }
 
-  public Wrist(Supplier<Double> joyvalue) {
-    trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityRadPerSecond, Constants.Wrist.kMaxAccelerationRadPerSecSquared);
-    turnPID = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
-    this.joyvalue = joyvalue;
+  public Wrist(Supplier<Double> joystickSupplier) {
+    TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityRadPerSecond, Constants.Wrist.kMaxAccelerationRadPerSecSquared);
+    wristController = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
+    this.joystickSupplier = joystickSupplier;
 
     motor.setInverted(Constants.Wrist.kIsWristInverted);
     motor.setNeutralMode(NeutralMode.Brake);
     
-    motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
-    motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
+    // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
+    // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
   }
 
   @Override
   public void periodic() {
 
-    switch(wristStates) { // TODO: figure out target angles
+    switch(state) { // TODO: figure out target angles
 
       case NONE:
         motor.set(0);
@@ -62,56 +63,63 @@ public class Wrist extends SubsystemBase {
 
       case STOWED:
         if (lastState != WristStates.STOWED) {
-          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
-          turnPID.setGoal(goal);
+          // wristController.setSetpoint(Constants.Wrist.targetAngle);
+          wristController.setGoal(Constants.Wrist.kTargetAngleStowed);
         }
-        motor.set(turnPID.calculate(getAngleofMotor()));
+        motor.set(wristController.calculate(getWristAngle()));
         break;
 
       case HANDOFF:
         if (lastState != WristStates.HANDOFF) {
-          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
-          turnPID.setGoal(goal);
+          // wristController.setSetpoint(Constants.Wrist.targetAngle);
+          wristController.setGoal(Constants.Wrist.kTargetAngleHandoff);
         }
-        motor.set(turnPID.calculate(getAngleofMotor()));
+        motor.set(wristController.calculate(getWristAngle()));
         break;
 
       case SPEAKER:
         if (lastState != WristStates.SPEAKER) {
-          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
-          turnPID.setGoal(goal);
+          // wristController.setSetpoint(Constants.Wrist.targetAngle);
+          wristController.setGoal(Constants.Wrist.kTargetAngleSpeaker);
         }
-        motor.set(turnPID.calculate(getAngleofMotor()));
+        motor.set(wristController.calculate(getWristAngle()));
         break;
 
       case SPEAKER_HIGH:
         if (lastState != WristStates.SPEAKER_HIGH) {
-          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
-          turnPID.setGoal(goal);
+          // wristController.setSetpoint(Constants.Wrist.targetAngle);
+          wristController.setGoal(Constants.Wrist.kTargetAngleSpeakerHigh);
         }
-        motor.set(turnPID.calculate(getAngleofMotor()));
+        motor.set(wristController.calculate(getWristAngle()));
         break;
         
       case AMP:
         if (lastState != WristStates.AMP) {
-          // turnPID.setSetpoint(Constants.Wrist.targetAngle);
-          turnPID.setGoal(goal);
+          // wristController.setSetpoint(Constants.Wrist.targetAngle);
+          wristController.setGoal(Constants.Wrist.kTargetAngleAmp);
         }
-        motor.set(turnPID.calculate(getAngleofMotor()));
+        motor.set(wristController.calculate(getWristAngle()));
         break;
 
       case MANUAL: // TODO: add limit
-        double speed = joyvalue.get();
-        turnPID.setGoal(turnPID.getGoal().position + (Constants.Wrist.motorSpeed * speed));
+        double speed = joystickSupplier.get();
+        speed *= Constants.Wrist.kManualMultiplier;
+        wristController.setGoal(wristController.getGoal().position + (speed));
 
-        double finalspeed = turnPID.calculate(getAngleofMotor(), turnPID.getSetpoint());
+        double finalspeed = wristController.calculate(getWristAngle());
         motor.set(finalspeed);
         break;
     }
+
+
+    lastState = state;
   }
 
-  public double getAngleofMotor() {
-
+  /**
+   * TODO: Test CW or CCW signage 
+   * @return Angle of the wrist in degrees, CW+, CCW-
+   */
+  public double getWristAngle() {
     double deg = Conversions.falconToDegrees(motor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg %= 360;
     if (deg > 180) {
@@ -120,11 +128,11 @@ public class Wrist extends SubsystemBase {
     return deg;
   }
 
-  public void setState(WristStates wristStates) {
-    this.wristStates = wristStates;
+  public void setState(WristStates state) {
+    this.state = state;
   }
 
   public void debug() {
-    SmartDashboard.putNumber("Angle in Degrees", getAngleofMotor());
+    SmartDashboard.putNumber("Angle in Degrees", getWristAngle());
   }
 }
