@@ -25,7 +25,7 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(0);
 
   SwerveDrive swerveDrive = new SwerveDrive();
-  Limelight limelight = new Limelight(swerveDrive);
+  Limelight limelight = new Limelight();
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -36,7 +36,6 @@ public class RobotContainer {
   }
 
   public void initAutons() {
-
     Command figureEightTestAuton = new PathPlannerAuto("FigEightTestAuton");
     Command turn90and1MTestAuton = new PathPlannerAuto("Turn 90 and 1M Test Auton");
 
