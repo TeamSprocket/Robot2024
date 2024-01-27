@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -100,6 +101,8 @@ public class SwerveDrive extends SubsystemBase {
     },
     this
     );
+
+    initNamedCommands();
   }
 
   @Override
@@ -127,10 +130,13 @@ public class SwerveDrive extends SubsystemBase {
     // Update Odometer
     
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    
+  }
 
 
-    
-    
+
+  public void initNamedCommands() {
+    // NamedCommands.registerCommand("ToggleShuffleboardVar", new ToggleShuffleboardVar());
   }
 
 

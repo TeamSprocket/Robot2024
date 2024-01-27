@@ -16,6 +16,24 @@
           "data": {
             "pathName": "FigEightTest"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ToggleShuffleboardVar"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "FigEightTest"
+          }
         }
       ]
     }

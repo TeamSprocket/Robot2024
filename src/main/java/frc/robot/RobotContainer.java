@@ -5,6 +5,7 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -33,8 +34,9 @@ public class RobotContainer {
     initAutons();
   }
 
-  public void initAutons() {
+  
 
+  public void initAutons() {
     Command figureEightTestAuton = new PathPlannerAuto("FigEightTestAuton");
     Command turn90and1MTestAuton = new PathPlannerAuto("Turn 90 and 1M Test Auton");
 
@@ -43,6 +45,7 @@ public class RobotContainer {
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autonChooser);
   }
+
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
