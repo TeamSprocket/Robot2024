@@ -32,14 +32,15 @@ public class RunMotor extends SubsystemBase {
  
   private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless); //top
   private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless); //bottom
-  private WPI_TalonFX indexer = new WPI_TalonFX(1);
+  private WPI_TalonFX indexer = new WPI_TalonFX(45);
 
   public RunMotor() {
+    // POWER CYCLE IF NOT WORK also set to 0.462 for green wheel prototype
     shooterRight.setInverted(true); //true for Prototype 1 (flywheel) but false for Prototype 2 (updown)
-    shooterLeft.follow(shooterRight, false); //false for Prorotype 1
+    shooterLeft.setInverted(true); //false for Prorotype 1
   }
   /**
-   * puts values of everything like speed and angle into the smartdashboard
+   * puts values of everything like speed and agle into the smartdashboard
    */
 
   public void periodic() {
