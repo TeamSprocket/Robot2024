@@ -6,12 +6,12 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+// import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+// import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+// import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -102,8 +102,7 @@ public class Wrist extends SubsystemBase {
         break;
 
       case MANUAL: // TODO: add limit
-        double speed = joystickSupplier.get();
-        speed *= Constants.Wrist.kManualMultiplier;
+        double speed = joystickSupplier.get() * Constants.Wrist.kManualMultiplier;
         wristController.setGoal(wristController.getGoal().position + (speed));
 
         double finalspeed = wristController.calculate(getWristAngle());

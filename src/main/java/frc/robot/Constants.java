@@ -177,6 +177,12 @@ public class Constants {
 
         public static double kMaxVelocityRadPerSecond = 0.0;
         public static double kMaxAccelerationRadPerSecSquared = 0.0;
+        
+        public static double kTargetAngleStowed = 0.0;
+        public static double kTargetAngleHandoff = 0.0;
+        public static double kTargetAngleSpeaker = 0.0;
+        public static double kTargetAngleSpeakerHigh = 0.0;
+        public static double kTargetAngleAmp = 0.0;
     }
 }
 
