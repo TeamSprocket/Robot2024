@@ -32,6 +32,7 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     initAutons();
+    initNamedCommands();
   }
 
   
@@ -44,6 +45,10 @@ public class RobotContainer {
     autonChooser.addOption("Turn 90 and 1M Test", turn90and1MTestAuton);
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autonChooser);
+  }
+
+  public void initNamedCommands() {
+    // NamedCommands.registerCommand(null, null);
   }
 
 
