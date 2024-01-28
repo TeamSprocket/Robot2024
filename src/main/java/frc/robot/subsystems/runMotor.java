@@ -44,7 +44,7 @@ public class RunMotor extends SubsystemBase {
    */
 
   public void periodic() {
-    
+    SmartDashboard.putNumber("Shooter Motor RPS", (shooterLeft.getEncoder().getVelocity() / 60.0));
   }
 
   public void run(double output, double indexerPower){
