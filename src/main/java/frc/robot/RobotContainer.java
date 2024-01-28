@@ -10,9 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.instant.SwitchTargetHeadingDirection;
 import frc.robot.commands.instant.ZeroGyro;
 import frc.robot.commands.persistent.DriveTeleop;
@@ -36,6 +34,7 @@ public class RobotContainer {
   }
 
   public void initAutons() {
+
     Command figureEightTestAuton = new PathPlannerAuto("FigEightTestAuton");
     Command turn90and1MTestAuton = new PathPlannerAuto("Turn 90 and 1M Test Auton");
 
