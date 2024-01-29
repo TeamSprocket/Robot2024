@@ -40,11 +40,12 @@ public class Elevator extends SubsystemBase {
 
   ProfiledPIDController profiledPIDController;
   
-  Supplier <Double> joystickSupplier;
+  Supplier<Double> leftBumperSupplier;
+  Supplier<Double> rightBumperSupplier;
 
 
 
-  public Elevator(Supplier<Double> joystickSupplier) {
+  public Elevator(Supplier<Double> leftBumperSupplier, Supplier<Double> rightBumperSupplier) {
     motorLeft.setNeutralMode(NeutralMode.Brake);
     motorRight.setNeutralMode(NeutralMode.Brake);
 
@@ -56,7 +57,8 @@ public class Elevator extends SubsystemBase {
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
 
-    this.joystickSupplier = joystickSupplier;
+    this.leftBumperSupplier = leftBumperSupplier;
+    this.rightBumperSupplier = rightBumperSupplier;
   }
 
 
@@ -114,7 +116,10 @@ public class Elevator extends SubsystemBase {
   }
 
   public void manual() { // TODO: find deadband + correct speed
-    double speed = joystickSupplier.get();
+    double speedL = -1.0 * leftBumperSupplier.get();
+    double speedR = rightBumperSupplier.get();
+    double speed = speedL + speedR;
+    speed *= Constants.Elevator.kManualMultiplier;
     Util.deadband(speed, -0.1, 0.1);
 
     profiledPIDController.setGoal(motorLeft.getSelectedSensorPosition() + speed);

@@ -8,6 +8,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -24,6 +25,8 @@ import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
 
 public class SwerveDrive extends SubsystemBase {
+
+  Limelight limelight;
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
@@ -76,7 +79,9 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  public SwerveDrive() {
+  public SwerveDrive(Limelight limelight) {
+    this.limelight = limelight;
+
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
@@ -129,6 +134,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    updateOdometryWithVision();
     
   }
 
@@ -224,6 +230,12 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setNeutralMode(neutralMode);
   }
 
+  public void updateOdometryWithVision() {
+    Translation2d pos = limelight.getTranslation2d();
+    if (pos.getX() != 0.0 && pos.getY() != 0.0) {
+      resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+    }
+  }
 
   // Stuff for Pathplanner
   public Pose2d getPose() {

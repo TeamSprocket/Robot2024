@@ -15,8 +15,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.instant.SwitchTargetHeadingDirection;
 import frc.robot.commands.instant.ZeroGyro;
 import frc.robot.commands.persistent.DriveTeleop;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.SwerveDrive.Directions;
 
 public class RobotContainer {
@@ -24,8 +28,15 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(0);
   public final static CommandXboxController secondary = new CommandXboxController(1);
 
-  SwerveDrive swerveDrive = new SwerveDrive();
   Limelight limelight = new Limelight();
+  SwerveDrive swerveDrive = new SwerveDrive(limelight);
+
+  Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
+  Wrist arm = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
+  Intake intake = new Intake();
+
+
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 

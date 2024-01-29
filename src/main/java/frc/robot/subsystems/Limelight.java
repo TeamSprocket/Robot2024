@@ -20,15 +20,13 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        
         SmartDashboard.putNumber("Pose X", table.getEntry("tx").getDouble(0.0));
         SmartDashboard.putNumber("Pose Y", table.getEntry("ty").getDouble(0.0));
-        SmartDashboard.putNumber("Filtered X", getTranslation().getX());
-        SmartDashboard.putNumber("Filtered Y", getTranslation().getY());
+        SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
+        SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
     }
 
-    public Translation2d getTranslation() {
-
+    public Translation2d getTranslation2d() {
         Optional<Alliance> color = DriverStation.getAlliance();
         double[] botPose;
 

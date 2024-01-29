@@ -1,6 +1,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -8,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,26 +42,30 @@ public class Shooter extends SubsystemBase {
 
   DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
 
+  Supplier<Translation2d> botPoseSupplier;
+
   // double shooterInc = 0.0;
 
 
-  public Shooter() {
+  public Shooter(Supplier<Translation2d> botPoseSupplier) {
     shooterMotor.setInverted(Constants.Shooter.kIsShooterInverted);
     indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
 
     shooterMotor.setNeutralMode(NeutralMode.Coast);
     indexerMotor.setNeutralMode(NeutralMode.Brake);
+
+    this.botPoseSupplier = botPoseSupplier;
   }
 
 
   @Override
   public void periodic() {
     switch (state) {
+
       case NONE:
         shooterMotor.set(0);
         indexerMotor.set(0);
         break;
-
 
 
       case STANDBY:
@@ -81,22 +88,34 @@ public class Shooter extends SubsystemBase {
       
       case SPINUP:
         holdIndexerPosition();
-        // shooterPID.setSetpoint(getSpinupVelocityMPS()); //TARGET FROM LIMELIGHT
+        
+        // Spin up shooter
+        shooterPID.setSetpoint(getShooterTargetMPS());
+        shooterMotor.set(shooterPID.calculate(getShooterMPS()));
       break;
 
 
       case SCORE_SPEAKER:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
+
+        // Spin up shooter
+        shooterPID.setSetpoint(getShooterTargetMPS());
+        shooterMotor.set(shooterPID.calculate(getShooterMPS()));
       break;
 
       
       case SCORE_SPEAKER_HIGH:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
+
+        // Spin up shooter
+        shooterPID.setSetpoint(getShooterTargetMPS());
+        shooterMotor.set(shooterPID.calculate(getShooterMPS()));
       break;
 
 
       case SCORE_AMP:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreAmp);
+        shooterMotor.set(Constants.Shooter.kShooterSpeedScoreAmp);
       break;
 
       
@@ -138,7 +157,9 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShooterTargetMPS() {
-    
+    double dist = Conversions.poseToDistance(botPoseSupplier.get(), Constants.ShootingSetpoints.targetPoint);
+    double targetMPS = Constants.ShootingSetpoints.getValues(dist)[1];
+    return targetMPS;
   }
 
 

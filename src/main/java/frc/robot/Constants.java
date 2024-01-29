@@ -45,6 +45,8 @@ public class Constants {
         public static final double kIElevator = 0.0;
         public static final double kDElevator = 0.0;
 
+        public static final double kManualMultiplier = 0.1;
+
         public static final double kAtGoalTolerance = 0.005;
 
         public static final double kElevatorGearRatio = 0.0;
@@ -88,6 +90,7 @@ public class Constants {
         public static final double kIndexerSpeedHandoff = 0.0;
         public static final double kIndexerSpeedScoreSpeaker = 0.0;
         public static final double kIndexerSpeedScoreAmp = 0.0;
+        public static final double kShooterSpeedScoreAmp = 0.0;
         
         public static final double kShooterGearRatio = 1.0;
         public static final double kIndexerGearRatio = 1.0;

@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.NeutralMode;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +31,7 @@ public class Wrist extends SubsystemBase {
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
   Supplier<Double> joystickSupplier;
+  Supplier<Translation2d> botPoseSupplier;
 
   public enum WristStates {
     NONE,
@@ -41,7 +43,7 @@ public class Wrist extends SubsystemBase {
     CLIMB
   }
 
-  public Wrist(Supplier<Double> joystickSupplier) {
+  public Wrist(Supplier<Double> joystickSupplier, Supplier<Translation2d> botPoseSupplier) {
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityDeg, Constants.Wrist.kMaxAccelerationDeg);
     profiledPIDController = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
@@ -63,42 +65,42 @@ public class Wrist extends SubsystemBase {
         break;
 
       case STOWED:
-        if (lastState != WristStates.STOWED) {
+        // if (lastState != WristStates.STOWED) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
           profiledPIDController.setGoal(Constants.Wrist.kTargetAngleStowed);
-        }
+        // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
       case HANDOFF:
-        if (lastState != WristStates.HANDOFF) {
+        // if (lastState != WristStates.HANDOFF) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
           profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
-        }
+        // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
       case SPEAKER:
-        if (lastState != WristStates.SPEAKER) {
+        // if (lastState != WristStates.SPEAKER) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeaker);
-        }
+          profiledPIDController.setGoal(getWristTargetDeg());
+        // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
       case SPEAKER_HIGH:
-        if (lastState != WristStates.SPEAKER_HIGH) {
+        // if (lastState != WristStates.SPEAKER_HIGH) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerHigh);
-        }
+          profiledPIDController.setGoal(getWristTargetDeg());
+        // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
         
       case AMP:
-        if (lastState != WristStates.AMP) {
+        // if (lastState != WristStates.AMP) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
           profiledPIDController.setGoal(Constants.Wrist.kTargetAngleAmp);
-        }
+        // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
@@ -136,6 +138,12 @@ public class Wrist extends SubsystemBase {
       return state;
   }
 
+  public double getWristTargetDeg() {
+    double dist = Conversions.poseToDistance(botPoseSupplier.get(), Constants.ShootingSetpoints.targetPoint);
+    double targetDeg = Constants.ShootingSetpoints.getValues(dist)[0];
+    return targetDeg;
+  }
+
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees", getWristAngle());
   }
@@ -144,6 +152,7 @@ public class Wrist extends SubsystemBase {
     double goal = profiledPIDController.getGoal().position;
     return Util.inRange(getWristAngle(), (goal - Constants.Wrist.kAtGoalTolerance), (goal + Constants.Wrist.kAtGoalTolerance));
   }
+  
 
 
 
