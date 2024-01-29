@@ -44,21 +44,8 @@ public class Intake extends SubsystemBase {
 
     ProfiledPIDController pivotPIDProfiled;
 
-    
-    
-    //private final SimpleMotorFeedforward pivotFeedForward = new SimpleMotorFeedforward(0,0);
-    //private final TrapezoidProfile pivotProfile = new TrapezoidProfile(pivotProfileConstraints);
-    //private final TrapezoidProfile.State goal = new TrapezoidProfile.State();
-    //private final TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-
-
-    //TalonFXConfiguration config = new TalonFXConfiguration();
-
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
-
-    double idleSpeed = 0;
-    double activeSpeed = 0;
 
     public enum IntakeStates {
         NONE,
@@ -76,17 +63,14 @@ public class Intake extends SubsystemBase {
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
 
-        rollIntake.setIdleMode(IdleMode.kCoast);
+        rollIntake.setIdleMode(IdleMode.kBrake);
         pivotIntake.setNeutralMode(NeutralMode.Brake);
-    }
 
-   
-    public double getPivotPosition() {
-        return pivotIntake.getSelectedSensorPosition();
     }
+    
 
     public double getPivotAngle() {
-        double deg = Conversions.falconToDegrees(getPivotPosition(), Constants.Intake.kPivotIntakeGearRatio);
+        double deg = Conversions.falconToDegrees(pivotIntake.getSelectedSensorPosition(), Constants.Intake.kPivotIntakeGearRatio);
         deg %= 360;
         deg = (deg < 0) ? deg + 360 : deg; 
         return deg;
@@ -109,34 +93,34 @@ public class Intake extends SubsystemBase {
                 break;
 
             case STOWED:
-                if (lastState != IntakeStates.STOWED) {
+                // if (lastState != IntakeStates.STOWED) {
                     pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleStowed);
-                }
+                // }
                 pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedStowed);
                 break;
 
             case INTAKE:
-                if (lastState != IntakeStates.INTAKE) {
+                // if (lastState != IntakeStates.INTAKE) {
                     pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleIntake);
-                }
+                // }
                 pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
 
             case WAIT_HANDOFF:
-                if (lastState != IntakeStates.WAIT_HANDOFF) {
+                // if (lastState != IntakeStates.WAIT_HANDOFF) {
                     pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
-                }
+                // }
                 pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
                 break;
 
 
             case HANDOFF:
-                if (lastState != IntakeStates.HANDOFF) {
+                // if (lastState != IntakeStates.HANDOFF) {
                     pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleHandoff);
-                }
+                // }
                 pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedHandoff);
                 break;
