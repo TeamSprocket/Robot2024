@@ -1,10 +1,12 @@
-
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
+import frc.robot.Constants;
+import frc.robot.subsystems.Elevator.ElevatorStates;
 import frc.robot.subsystems.Wrist.WristStates;
+import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.Intake.IntakeStates;
 
 public class Superstructure extends SubsystemBase {
   public static enum SSStates {
@@ -17,12 +19,21 @@ public class Superstructure extends SubsystemBase {
     MANUAL
   }
   public SSStates state = SSStates.NONE;
-
-  Wrist wrist = new Wrist(() -> RobotContainer.secondary.getRawAxis(0));
+  public SSStates lastState = SSStates.NONE;
 
   Timer timer = new Timer();
 
-  public Superstructure() {
+  Elevator elevator;
+  Wrist wrist;
+  Shooter shooter;
+  Intake intake;
+
+  public Superstructure(Elevator elevator, Wrist wrist, Shooter shooter, Intake intake) {
+    this.elevator = elevator;
+    this.wrist = wrist;
+    this.shooter = shooter;
+    this.intake = intake;
+
     timer.reset();
   }
 
@@ -37,34 +48,58 @@ public class Superstructure extends SubsystemBase {
   public void periodic() {
     switch (state) {
       case NONE:
-        // ELevator: NONE
+        elevator.setState(ElevatorStates.NONE);
         wrist.setState(WristStates.NONE);
-        // Shooter: NONE
-        // Intake: NONE
+        shooter.setState(ShooterStates.NONE);
+        intake.setState(IntakeStates.NONE);
       break;
       
 
       case STOWED:
-        // ELevator: STOWED
+        elevator.setState(ElevatorStates.STOWED);
         wrist.setState(WristStates.STOWED);
-        // Shooter: STANDBY, NONE if still coasting
-        // Intake: STOWED
+        shooter.setState(ShooterStates.STANDBY);
+        intake.setState(IntakeStates.STOWED);
       break;
       
 
       case INTAKE:
-        // ELevator: STOWED
+        // Reset tolerance timer
+        if (lastState != SSStates.INTAKE) {
+          timer.reset();
+          timer.stop();
+        }
+
+        // Start tolerance timer
+        if (intake.hasDetectedNote()) {
+          timer.start();
+        }
+
+        elevator.setState(ElevatorStates.STOWED);
         wrist.setState(WristStates.STOWED);
-        // Shooter: STANDBY
-        // Intake: INTAKE
+        shooter.setState(ShooterStates.STANDBY);
+        intake.setState(IntakeStates.INTAKE);
+
+        if (timer.get() > Constants.Superstructure.kIntakeTimeToStowToleranceSec) {
+          setState(SSStates.STOWED);
+        } 
       break;
       
 
       case HANDOFF:
-        // ELevator: HANDOFF
-        wrist.setState(WristStates.HANDOFF);
-        // Shooter: HANDOFF
-        // Intake: HANDOFF
+        if (!shooter.beamBroken()) {
+          timer.reset();
+          timer.stop();
+        } else {
+          // Note in shooter 
+          timer.start();
+        }
+
+        elevator.setState(ElevatorStates.STOWED);
+        wrist.setState(WristStates.STOWED);
+        shooter.setState(ShooterStates.STANDBY);
+        intake.setState(IntakeStates.INTAKE);
+        
       break;
       
 
@@ -123,6 +158,9 @@ public class Superstructure extends SubsystemBase {
         // Intake: 
       break;
     }
+
+
+    lastState = state;
   }
 
 
@@ -136,6 +174,10 @@ public class Superstructure extends SubsystemBase {
    */
   public void setState(SSStates state) {
       this.state = state;
+  }
+
+  public boolean allElementsAtTarget() {
+    re
   }
 
 
