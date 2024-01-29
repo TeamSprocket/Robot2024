@@ -41,7 +41,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public Wrist(Supplier<Double> joystickSupplier) {
-    TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityRadPerSecond, Constants.Wrist.kMaxAccelerationRadPerSecSquared);
+    TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityDeg, Constants.Wrist.kMaxAccelerationDeg);
     wristController = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
 

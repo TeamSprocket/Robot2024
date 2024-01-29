@@ -37,15 +37,22 @@ public class Constants {
 
 
     public static final class Wrist {
-        public static int motor = 0;
         public static boolean kIsWristInverted = true;
 
         public static double kPwrist = 0;
         public static double kIwrist = 0;
         public static double kDwrist = 0;
 
-        public static double motorSpeed = 0.1;
-        public static double targetAngle = 0.0;
+        public static final double kManualMultiplier = 0.001;
+
+        public static double kMaxVelocityDeg = 0.0;
+        public static double kMaxAccelerationDeg = 0.0;
+        
+        public static double kTargetAngleStowed = 0.0;
+        public static double kTargetAngleHandoff = 0.0;
+        public static double kTargetAngleSpeaker = 0.0;
+        public static double kTargetAngleSpeakerHigh = 0.0;
+        public static double kTargetAngleAmp = 0.0;
     }
 
 
@@ -80,9 +87,15 @@ public class Constants {
         public static final double kRollSpeedWaitHandoff = 0.0;
         public static final double kRollSpeedHandoff = 0.0;
 
+        public static final boolean kIsRollInverted = false;
+        public static final boolean kIsPivotInverted = false;
+
+        public static final double kPivotMaxVelocity = 0.0;
+        public static final double kPivotMaxAccel = 0.0;
+        
 
         public static final double kPivotIntakeGearRatio = 0.0;
-        public static final double kCurrentThreshold = 0.0;
+        public static final double kHasNoteCurrentThreshold = 0.0;
 
         public static final double kPPivot = 0.0;
         public static final double kIPivot = 0.0;
@@ -210,24 +223,6 @@ public class Constants {
         // public static final double kDDriveToTargetT = 0.0;
     }
 
-    public static final class Wrist {
-        public static boolean kIsWristInverted = true;
-
-        public static double kPwrist = 0;
-        public static double kIwrist = 0;
-        public static double kDwrist = 0;
-
-        public static final double kManualMultiplier = 0.001;
-
-        public static double kMaxVelocityRadPerSecond = 0.0;
-        public static double kMaxAccelerationRadPerSecSquared = 0.0;
-        
-        public static double kTargetAngleStowed = 0.0;
-        public static double kTargetAngleHandoff = 0.0;
-        public static double kTargetAngleSpeaker = 0.0;
-        public static double kTargetAngleSpeakerHigh = 0.0;
-        public static double kTargetAngleAmp = 0.0;
-    }
 }
 
 

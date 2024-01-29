@@ -135,7 +135,7 @@ public class Intake extends SubsystemBase {
     }
 
     public boolean hasDetectedNote() {
-       return rollIntake.getOutputCurrent() > Constants.Intake.kCurrentThreshold;
+       return rollIntake.getOutputCurrent() > Constants.Intake.kHasNoteCurrentThreshold;
     }
 
 
