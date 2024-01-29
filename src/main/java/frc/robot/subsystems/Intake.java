@@ -67,21 +67,6 @@ public class Intake extends SubsystemBase {
         pivotIntake.setNeutralMode(NeutralMode.Brake);
 
     }
-    
-
-    public double getPivotAngle() {
-        double deg = Conversions.falconToDegrees(pivotIntake.getSelectedSensorPosition(), Constants.Intake.kPivotIntakeGearRatio);
-        deg %= 360;
-        deg = (deg < 0) ? deg + 360 : deg; 
-        return deg;
-    }
-
-    // public void runPivotToSetpoint(double setpoint){
-    //     /*Don't know which calculate methods to use */
-    //     //setpoint = pivotProfile.calculate(0.02, setpoint, goal);
-    //     double output = pivotPIDProfiled.calculate(getPivotAngle(), setpoint); 
-    //     pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
-    // }
 
     @Override
     public void periodic() {
@@ -133,6 +118,22 @@ public class Intake extends SubsystemBase {
     public void setState(IntakeStates state) {
         this.state = state;
     }
+
+
+    public double getPivotAngle() {
+        double deg = Conversions.falconToDegrees(pivotIntake.getSelectedSensorPosition(), Constants.Intake.kPivotIntakeGearRatio);
+        deg %= 360;
+        deg = (deg < 0) ? deg + 360 : deg; 
+        return deg;
+    }
+
+    // public void runPivotToSetpoint(double setpoint){
+    //     /*Don't know which calculate methods to use */
+    //     //setpoint = pivotProfile.calculate(0.02, setpoint, goal);
+    //     double output = pivotPIDProfiled.calculate(getPivotAngle(), setpoint); 
+    //     pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
+    // }
+    
 
     public boolean hasDetectedNote() {
        return rollIntake.getOutputCurrent() > Constants.Intake.kHasNoteCurrentThreshold;

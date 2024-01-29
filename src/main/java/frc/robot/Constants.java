@@ -7,6 +7,7 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import frc.util.Conversions;
 
 public class Constants {
     public static enum RobotState {
@@ -33,6 +34,15 @@ public class Constants {
         public static final double kPElevator = 0.0;
         public static final double kIElevator = 0.0;
         public static final double kDElevator = 0.0;
+
+        public static final double kElevatorGearRatio = 0.0;
+        public static final double kElevatorGearCircumM = Conversions.inchesToMeters(0.0);
+
+        public static final boolean kIsInvertedLeft = false;
+        public static final boolean kIsInvertedRight = false;
+
+        public static final double kMaxVelocity = 0.0;
+        public static final double kMaxAccel = 0.0;
     }
 
 

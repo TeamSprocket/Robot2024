@@ -15,4 +15,10 @@ public class Superstructure extends SubsystemBase {
     MANUAL
   }
   public SSStates state = SSStates.NONE;
+
+
+  
+
+
+
 }

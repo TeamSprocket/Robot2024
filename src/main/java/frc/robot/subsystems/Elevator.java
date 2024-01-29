@@ -7,10 +7,13 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.util.Conversions;
+import frc.util.Util;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.Constants;
@@ -20,10 +23,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
 public class Elevator extends SubsystemBase {
-  Supplier <Double> joyvalue;
-  double output;
-  
-
   public static enum ElevatorStates {
     NONE,
     STOWED,
@@ -34,18 +33,30 @@ public class Elevator extends SubsystemBase {
     TRAP,
     MANUAL
   }
-
   private ElevatorStates state = ElevatorStates.NONE;
 
   private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
   private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
 
-  PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator);
+  ProfiledPIDController profiledPIDController;
   
+  Supplier <Double> joystickSupplier;
 
-  public Elevator() {
+
+
+  public Elevator(Supplier<Double> joystickSupplier) {
+    motorLeft.setNeutralMode(NeutralMode.Brake);
+    motorRight.setNeutralMode(NeutralMode.Brake);
+
+    motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
+    motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
+
     motorRight.follow(motorLeft);
-    this.joyvalue = joyvalue;
+
+    TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
+    profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
+
+    this.joystickSupplier = joystickSupplier;
   }
 
 
@@ -59,33 +70,33 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightStowed);
-        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightStowed);
+        motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;
 
       case HANDOFF:
-        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightHandoff);
-        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
+        motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;
 
       case SPEAKER:
-        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightSpeaker);
-        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeaker);
+        motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;  
         
       case SPEAKER_HIGH:
-        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightSpeakerHigh);
-        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeakerHigh);
+        motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;
         
       case AMP:
-        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightAmp);
-        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightAmp);
+        motorLeft.set(profiledPIDController.calculate(getHeight()));
         break; 
 
       case TRAP:
-        pidControllerLeft.setSetpoint(Constants.Elevator.kElevatorHeightTrap);
-        motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition()));
+        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightTrap);
+        motorLeft.set(profiledPIDController.calculate(getHeight()));
         
       case MANUAL:
         manual();
@@ -98,14 +109,23 @@ public class Elevator extends SubsystemBase {
     this.state = state;
   }
 
-  
-
-
   public void manual() { // TODO: find deadband + correct speed
-    double speed = joyvalue.get();
-    pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
-    motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
+    double speed = joystickSupplier.get();
+    Util.deadband(speed, -0.1, 0.1);
+
+    profiledPIDController.setGoal(motorLeft.getSelectedSensorPosition() + speed);
+    motorLeft.set(profiledPIDController.calculate(getHeight()));
   }
+
+  public double getHeight() {
+    return Conversions.falconToMeters(motorLeft.getSelectedSensorPosition(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+  }
+
+
+
+
+
+
 
   
 }
