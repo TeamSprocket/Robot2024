@@ -35,6 +35,7 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
+import frc.util.Util;
 
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
@@ -42,7 +43,7 @@ public class Intake extends SubsystemBase {
     private final CANSparkMax rollIntake = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless);
     private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-    ProfiledPIDController pivotPIDProfiled;
+    ProfiledPIDController profiledPIDController;
 
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
@@ -58,7 +59,7 @@ public class Intake extends SubsystemBase {
 
     public Intake() {
         TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
-        pivotPIDProfiled = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
+        profiledPIDController = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
@@ -79,34 +80,34 @@ public class Intake extends SubsystemBase {
 
             case STOWED:
                 // if (lastState != IntakeStates.STOWED) {
-                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleStowed);
+                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleStowed);
                 // }
-                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
+                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedStowed);
                 break;
 
             case INTAKE:
                 // if (lastState != IntakeStates.INTAKE) {
-                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleIntake);
+                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleIntake);
                 // }
-                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
+                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
 
             case WAIT_HANDOFF:
                 // if (lastState != IntakeStates.WAIT_HANDOFF) {
-                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
+                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
                 // }
-                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
+                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
                 break;
 
 
             case HANDOFF:
                 // if (lastState != IntakeStates.HANDOFF) {
-                    pivotPIDProfiled.setGoal(Constants.Intake.kPivotAngleHandoff);
+                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleHandoff);
                 // }
-                pivotIntake.set(pivotPIDProfiled.calculate(getPivotAngle()));
+                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
                 rollIntake.set(Constants.Intake.kRollSpeedHandoff);
                 break;
         }
@@ -117,6 +118,10 @@ public class Intake extends SubsystemBase {
     
     public void setState(IntakeStates state) {
         this.state = state;
+    }
+
+    public IntakeStates getState() {
+        return state;
     }
 
 
@@ -138,6 +143,11 @@ public class Intake extends SubsystemBase {
     public boolean hasDetectedNote() {
        return rollIntake.getOutputCurrent() > Constants.Intake.kHasNoteCurrentThreshold;
     }
+
+  public boolean atGoal() {
+    double goal = profiledPIDController.getGoal().position;
+    return Util.inRange(getPivotAngle(), (goal - Constants.Intake.kAtGoalTolerance), (goal + Constants.Intake.kAtGoalTolerance));
+  }
 
 
 }

@@ -1,6 +1,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.util.Conversions;
+import frc.util.Util;
 
 public class Shooter extends SubsystemBase {
   // NONE - no motor output, STANDBY - resist gamepiece movement in indexer, HANDOFF - intaking from intake, SPINUP - spinup shooter for speaker scoring
@@ -21,6 +24,7 @@ public class Shooter extends SubsystemBase {
     HANDOFF,
     SPINUP, 
     SCORE_SPEAKER,
+    SCORE_SPEAKER_HIGH,
     SCORE_AMP
   }
   private ShooterStates state = ShooterStates.NONE;
@@ -62,12 +66,15 @@ public class Shooter extends SubsystemBase {
           indexerPID.setSetpoint(indexerMotor.getSelectedSensorPosition());
         }
         holdIndexerPosition();
+
+        shooterMotor.set(0);
         break;
 
 
 
       case HANDOFF:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedHandoff);
+        shooterMotor.set(0);
         break;
 
 
@@ -79,6 +86,11 @@ public class Shooter extends SubsystemBase {
 
 
       case SCORE_SPEAKER:
+        indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
+      break;
+
+      
+      case SCORE_SPEAKER_HIGH:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
       break;
 
@@ -104,9 +116,35 @@ public class Shooter extends SubsystemBase {
       this.state = state;
   }
 
-  public boolean atVelocity() {
-    return false;
+
+
+
+
+  public ShooterStates getState() {
+      return state;
   }
+
+  public double getShooterRPS() {
+    double shooterVelocityCounts = shooterMotor.getSelectedSensorVelocity();
+    double rpm = Conversions.falconToRPM(shooterVelocityCounts, Constants.Shooter.kShooterGearRatio);
+    double rps = rpm / 60.0;
+    return rps;
+  }
+
+  public double getShooterMPS() {
+    double rps = getShooterRPS();
+    double mps = rps * Constants.Shooter.kShooterWheelDiameter * Math.PI;
+    return mps;
+  }
+
+  public double getShooterTargetMPS() {
+    
+  }
+
+
+
+
+
 
   public boolean beamBroken() {
     return !beamBreak.get();
@@ -115,6 +153,12 @@ public class Shooter extends SubsystemBase {
   public void holdIndexerPosition() {
     double indexerMotorOutput = indexerPID.calculate(indexerMotor.getSelectedSensorPosition());
     indexerMotor.set(indexerMotorOutput);
+  }
+
+  public boolean atGoalShooter() {
+    double goal = shooterPID.getSetpoint();
+    boolean inRange = Util.inRange(getShooterMPS(), (goal - Constants.Shooter.kAtGoalTolerance), (goal + Constants.Shooter.kAtGoalTolerance));
+    return inRange;
   }
 
 

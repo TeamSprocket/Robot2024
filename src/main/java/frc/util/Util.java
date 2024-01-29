@@ -32,6 +32,9 @@ public final class Util {
       return value;
   }
   
+  /**
+   * Limits the value to the given min and max
+   */
   public static double minmax(double value, double min, double max) {
     if (value > max) {
       return max;
@@ -40,6 +43,13 @@ public final class Util {
     } else {
       return value;
     }
+  }
+
+  /**
+   * Returns if the value is in the given range (between the given min and max)
+   */
+  public static boolean inRange(double value, double min, double max) {
+    return (value > min && value < max);
   }
 
 

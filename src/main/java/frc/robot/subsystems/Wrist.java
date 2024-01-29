@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.Conversions;
+import frc.util.Util;
 
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
@@ -25,7 +26,7 @@ public class Wrist extends SubsystemBase {
   WristStates state;
   WristStates lastState;
 
-  ProfiledPIDController wristController;
+  ProfiledPIDController profiledPIDController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
   Supplier<Double> joystickSupplier;
@@ -37,12 +38,12 @@ public class Wrist extends SubsystemBase {
     SPEAKER,
     SPEAKER_HIGH,
     AMP,
-    MANUAL
+    CLIMB
   }
 
   public Wrist(Supplier<Double> joystickSupplier) {
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityDeg, Constants.Wrist.kMaxAccelerationDeg);
-    wristController = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
+    profiledPIDController = new ProfiledPIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
 
     motor.setInverted(Constants.Wrist.kIsWristInverted);
@@ -64,48 +65,48 @@ public class Wrist extends SubsystemBase {
       case STOWED:
         if (lastState != WristStates.STOWED) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          wristController.setGoal(Constants.Wrist.kTargetAngleStowed);
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleStowed);
         }
-        motor.set(wristController.calculate(getWristAngle()));
+        motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
       case HANDOFF:
         if (lastState != WristStates.HANDOFF) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          wristController.setGoal(Constants.Wrist.kTargetAngleHandoff);
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
         }
-        motor.set(wristController.calculate(getWristAngle()));
+        motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
       case SPEAKER:
         if (lastState != WristStates.SPEAKER) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          wristController.setGoal(Constants.Wrist.kTargetAngleSpeaker);
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeaker);
         }
-        motor.set(wristController.calculate(getWristAngle()));
+        motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
       case SPEAKER_HIGH:
         if (lastState != WristStates.SPEAKER_HIGH) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          wristController.setGoal(Constants.Wrist.kTargetAngleSpeakerHigh);
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerHigh);
         }
-        motor.set(wristController.calculate(getWristAngle()));
+        motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
         
       case AMP:
         if (lastState != WristStates.AMP) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          wristController.setGoal(Constants.Wrist.kTargetAngleAmp);
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleAmp);
         }
-        motor.set(wristController.calculate(getWristAngle()));
+        motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
-      case MANUAL: // TODO: add limit
+      case CLIMB: // TODO: add limit
         double speed = joystickSupplier.get() * Constants.Wrist.kManualMultiplier;
-        wristController.setGoal(wristController.getGoal().position + (speed));
+        profiledPIDController.setGoal(profiledPIDController.getGoal().position + (speed));
 
-        double finalspeed = wristController.calculate(getWristAngle());
+        double finalspeed = profiledPIDController.calculate(getWristAngle());
         motor.set(finalspeed);
         break;
     }
@@ -131,7 +132,19 @@ public class Wrist extends SubsystemBase {
     this.state = state;
   }
 
+  public WristStates getState() {
+      return state;
+  }
+
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees", getWristAngle());
   }
+
+  public boolean atGoal() {
+    double goal = profiledPIDController.getGoal().position;
+    return Util.inRange(getWristAngle(), (goal - Constants.Wrist.kAtGoalTolerance), (goal + Constants.Wrist.kAtGoalTolerance));
+  }
+
+
+
 }

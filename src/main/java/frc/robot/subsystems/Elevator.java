@@ -31,7 +31,7 @@ public class Elevator extends SubsystemBase {
     SPEAKER_HIGH,
     AMP,
     TRAP,
-    MANUAL
+    CLIMB
   }
   private ElevatorStates state = ElevatorStates.NONE;
 
@@ -98,7 +98,7 @@ public class Elevator extends SubsystemBase {
         profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightTrap);
         motorLeft.set(profiledPIDController.calculate(getHeight()));
         
-      case MANUAL:
+      case CLIMB:
         manual();
         break;
     }
@@ -107,6 +107,10 @@ public class Elevator extends SubsystemBase {
 
   public void setState(ElevatorStates state) {
     this.state = state;
+  }
+
+  public ElevatorStates getState() {
+      return state;
   }
 
   public void manual() { // TODO: find deadband + correct speed
@@ -119,6 +123,12 @@ public class Elevator extends SubsystemBase {
 
   public double getHeight() {
     return Conversions.falconToMeters(motorLeft.getSelectedSensorPosition(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+  }
+
+
+  public boolean atGoal() {
+    double goal = profiledPIDController.getGoal().position;
+    return Util.inRange(getHeight(), (goal - Constants.Elevator.kAtGoalTolerance), (goal + Constants.Elevator.kAtGoalTolerance));
   }
 
 

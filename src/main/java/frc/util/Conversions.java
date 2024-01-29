@@ -1,5 +1,8 @@
 package frc.util;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+
 public class Conversions {
 
     /**
@@ -115,12 +118,29 @@ public class Conversions {
         return meters / (circumference / (gearRatio * 2048.0));
     }
 
-    /** */
     public static double inchesToMeters(double inches) {
         return (inches * 0.0254);
     }
 
 
+
+
+
+
+
+
+
+    // CRESCENDO specific methods
+
+    public static double poseToDistance(Translation2d botPose, Translation3d targetPoint) {
+        double x1 = botPose.getX();
+        double y1 = botPose.getY();
+        double x2 = targetPoint.getX();
+        double y2 = targetPoint.getY();
+
+        double dist = Math.sqrt(Math.pow((x1 - x2), 2) + Math.pow((y1 - y2), 2));
+        return dist;
+    }
 
 
 
