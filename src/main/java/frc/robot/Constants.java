@@ -28,10 +28,6 @@ public class Constants {
 
     }
 
-    public static final class Wrist {
-        
-    }
-
     public static final class Shooter {
         public static final boolean kIsShooterInverted = false;
         public static final boolean kIsIndexerInverted = false;
@@ -170,7 +166,24 @@ public class Constants {
         // public static final double kDDriveToTargetT = 0.0;
     }
 
+    public static final class Wrist {
+        public static boolean kIsWristInverted = true;
 
+        public static double kPwrist = 0;
+        public static double kIwrist = 0;
+        public static double kDwrist = 0;
+
+        public static final double kManualMultiplier = 0.001;
+
+        public static double kMaxVelocityRadPerSecond = 0.0;
+        public static double kMaxAccelerationRadPerSecSquared = 0.0;
+        
+        public static double kTargetAngleStowed = 0.0;
+        public static double kTargetAngleHandoff = 0.0;
+        public static double kTargetAngleSpeaker = 0.0;
+        public static double kTargetAngleSpeakerHigh = 0.0;
+        public static double kTargetAngleAmp = 0.0;
+    }
 }
 
 

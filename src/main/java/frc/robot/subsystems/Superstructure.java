@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.Wrist.WristStates;
 
 public class Superstructure extends SubsystemBase {
   public static enum SSStates {
@@ -16,13 +18,12 @@ public class Superstructure extends SubsystemBase {
   }
   public SSStates state = SSStates.NONE;
 
-  Timer timer = new Timer();
+  Wrist wrist = new Wrist(() -> RobotContainer.secondary.getRawAxis(0));
 
-  
+  Timer timer = new Timer();
 
   public Superstructure() {
     timer.reset();
-
   }
 
   // ELevator: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
@@ -37,7 +38,7 @@ public class Superstructure extends SubsystemBase {
     switch (state) {
       case NONE:
         // ELevator: NONE
-        // Wrist: NONE
+        wrist.setState(WristStates.NONE);
         // Shooter: NONE
         // Intake: NONE
       break;
@@ -45,7 +46,7 @@ public class Superstructure extends SubsystemBase {
 
       case STOWED:
         // ELevator: STOWED
-        // Wrist: STOWED
+        wrist.setState(WristStates.STOWED);
         // Shooter: STANDBY, NONE if still coasting
         // Intake: STOWED
       break;
@@ -53,7 +54,7 @@ public class Superstructure extends SubsystemBase {
 
       case INTAKE:
         // ELevator: STOWED
-        // Wrist: STOWED
+        wrist.setState(WristStates.STOWED);
         // Shooter: STANDBY
         // Intake: INTAKE
       break;
@@ -61,7 +62,7 @@ public class Superstructure extends SubsystemBase {
 
       case HANDOFF:
         // ELevator: HANDOFF
-        // Wrist: HANDOFF
+        wrist.setState(WristStates.HANDOFF);
         // Shooter: HANDOFF
         // Intake: HANDOFF
       break;
@@ -69,7 +70,7 @@ public class Superstructure extends SubsystemBase {
 
       case WAIT_SPEAKER:
         // ELevator: SPEAKER
-        // Wrist: SPEAKER
+        wrist.setState(WristStates.SPEAKER);
         // Shooter: SPINUP
         // Intake: STOWED
       break;
@@ -77,7 +78,7 @@ public class Superstructure extends SubsystemBase {
 
       case WAIT_SPEAKER_HIGH:
         // ELevator: SPEAKER_HIGH
-        // Wrist: SPEAKER
+        wrist.setState(WristStates.SPEAKER);
         // Shooter: SPINUP
         // Intake: STOWED
       break;
@@ -85,7 +86,7 @@ public class Superstructure extends SubsystemBase {
 
       case WAIT_AMP:
         // ELevator: AMP
-        // Wrist: AMP
+        wrist.setState(WristStates.AMP);
         // Shooter: 
         // Intake: 
       break;
@@ -93,7 +94,7 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_SPEAKER:
         // ELevator: SPEAKER_HIGH
-        // Wrist: SPEAKER
+        wrist.setState(WristStates.SPEAKER);
         // Shooter: SCORE_SPEAKER
         // Intake: 
       break;
@@ -101,7 +102,7 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_SPEAKER_HIGH:
         // ELevator: 
-        // Wrist: 
+        wrist.setState(WristStates.SPEAKER_HIGH); 
         // Shooter: 
         // Intake: 
       break;
@@ -109,20 +110,18 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_AMP:
         // ELevator: 
-        // Wrist: 
+        wrist.setState(WristStates.AMP);
         // Shooter: SCORE_AMP
         // Intake: 
       break;
       
 
       case MANUAL:
-        // get spd from joystick supplier 
-        // (supplier obj passed thru parameter, stored as instance var)
-
-        // Incrament pid setpoint by joystick reading
+        // ELevator:  
+        wrist.setState(WristStates.MANUAL);
+        // Shooter: 
+        // Intake: 
       break;
-      
-
     }
   }
 
