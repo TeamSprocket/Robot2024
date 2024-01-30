@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import org.apache.commons.lang3.Conversion;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -38,13 +39,14 @@ public class ElevatorTrapezoid extends SubsystemBase {
     TRAP,
     MANUAL
   }
-
+  private double goal;
   private ElevatorStates state = ElevatorStates.NONE;
 
   private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
   private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);  
-    PIDController pidControllerLeft = new PIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator);
-    TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(1, 1));
+    // TrapezoidProfile profile = new TrapezoidProfile(new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityRadPerSecond, Constants.Wrist.kMaxAccelerationRadPerSecSquared));
+
+    ProfiledPIDController elevatorPID = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kPElevator,new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity,Constants.Elevator.kMaxAcceleration));
 
   public ElevatorTrapezoid() {
     motorRight.follow(motorLeft);
@@ -52,11 +54,23 @@ public class ElevatorTrapezoid extends SubsystemBase {
   public void setState(ElevatorStates state) {
     this.state = state;
   }
+  public void setGoal(double goal){
+    this.goal = goal;
+
+  } 
 
   @Override
   public void periodic() {
-    State trapState = profile.calculate(5, new TrapezoidProfile.State(0, 0), new TrapezoidProfile.State(1, 0));
-    motorLeft.set(pidControllerLeft.calculate(motorLeft.getSelectedSensorPosition(),trapState.position));
+
+    switch (state) {
+      case MANUAL:
+        elevatorPID.setGoal(goal);
+        motorLeft.set(elevatorPID.calculate(motorLeft.getSelectedSensorPosition()));
+        break;
+    
+      default:
+        break;
+    }
   }
 
   
