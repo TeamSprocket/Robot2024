@@ -23,7 +23,12 @@ import frc.robot.RobotMap;
 import frc.robot.Constants.RobotState;
 import frc.util.ShuffleboardPIDTuner;
 
+import frc.robot.subsystems.Limelight.*;
+
 public class SwerveDrive extends SubsystemBase {
+
+  Limelight limelight;
+
   /**
    * instance variables with speed in all directions
    */
@@ -257,7 +262,8 @@ public class SwerveDrive extends SubsystemBase {
    * @return where the robot is according to odometry
    */
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return new Pose2d(limelight.getTranslation2d().getX(), limelight.getTranslation2d().getY(), new Rotation2d(getHeading()));
+    //return odometry.getPoseMeters();
   }
 
   /**
