@@ -21,7 +21,20 @@ public final class Util {
     else
       return value;
   }
+
+  /**
+   * Return 0 if the value is within -range..range. Otherwise return the value.
+   */
+  public static double deadband(double value, double minValue, double maxValue) {
+    if(value > minValue && value < maxValue)
+      return 0;
+    else
+      return value;
+  }
   
+  /**
+   * Limits the value to the given min and max
+   */
   public static double minmax(double value, double min, double max) {
     if (value > max) {
       return max;
@@ -30,6 +43,13 @@ public final class Util {
     } else {
       return value;
     }
+  }
+
+  /**
+   * Returns if the value is in the given range (between the given min and max)
+   */
+  public static boolean inRange(double value, double min, double max) {
+    return (value > min && value < max);
   }
 
 

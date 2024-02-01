@@ -5,26 +5,39 @@
 package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.instant.SwitchTargetHeadingDirection;
 import frc.robot.commands.instant.ZeroGyro;
 import frc.robot.commands.macro.ZeroWheelsTEST;
 import frc.robot.commands.persistent.DriveTeleop;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Wrist;
 import frc.robot.subsystems.SwerveDrive.Directions;
 
 public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
+  public final static CommandXboxController secondary = new CommandXboxController(1);
 
-  SwerveDrive swerveDrive = new SwerveDrive();
+  Limelight limelight = new Limelight();
+  SwerveDrive swerveDrive = new SwerveDrive(limelight);
+
+  Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
+  Wrist arm = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
+  Intake intake = new Intake();
+
+
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -32,10 +45,12 @@ public class RobotContainer {
   public RobotContainer() {
     configureBindings();
     initAutons();
+    initNamedCommands();
   }
 
-  public void initAutons() {
+  
 
+  public void initAutons() {
     Command figureEightTestAuton = new PathPlannerAuto("FigEightTestAuton");
     Command turn90and1MTestAuton = new PathPlannerAuto("Turn 90 and 1M Test Auton");
 
@@ -44,6 +59,11 @@ public class RobotContainer {
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autonChooser);
   }
+
+  public void initNamedCommands() {
+    // NamedCommands.registerCommand(null, null);
+  }
+
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();

@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-public package frc.robot.subsystems;
-
 import java.util.Optional;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -46,4 +44,4 @@ public class Limelight extends SubsystemBase {
 
         return (new Translation2d(filteredX, filteredY));
     }
-} 
+}
