@@ -180,8 +180,8 @@ public class Constants {
         // Speed/Accel 
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 0.8; //0.2 
-        public static double kMaxAccel = 0.7; 
+        public static double kMaxSpeed = 1.0; //0.8 //1.0
+        public static double kMaxAccel = 1.0; //0.7 //1.0
         
         public static double kMaxTurnSpeed = 0.08; 
         public static double kMaxTurnAccel = 10; // Instant manual turning

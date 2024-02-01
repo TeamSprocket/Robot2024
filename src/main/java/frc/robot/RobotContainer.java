@@ -75,7 +75,7 @@ public class RobotContainer {
 			swerveDrive, 
 			() -> -driver.getLeftX(), 
 			() -> driver.getLeftY(), 
-			() -> driver.getRightX()));
+			() -> -driver.getRightX()));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.button(RobotMap.Controller.Y).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.FORWARD));
     driver.button(RobotMap.Controller.X).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.LEFT));
@@ -85,7 +85,7 @@ public class RobotContainer {
   
   public void resetModulesToAbsolute() {
     swerveDrive.resetModulesToAbsolute();
-  }
+  }   
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
