@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import frc.util.Util;
+
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTable;
@@ -44,27 +47,29 @@ public class Limelight extends SubsystemBase {
         SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
         SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
 
-        totalX += getTranslation2d().getX();
+        Translation2d currentPose = getTranslation2d();
+
+        totalX += currentPose.getX();
         totalX -= llOdometryX.get(0);
         averageX = totalX / 50;
 
-        llOdometryX.add(getTranslation2d().getX());
+        llOdometryX.add(currentPose.getX());
         llOdometryX.remove(0);
 
-        totalY += getTranslation2d().getY();
+        totalY += currentPose.getY();
         totalY -= llOdometryY.get(0);
         averageY = totalY / 50;
 
-        llOdometryY.add(getTranslation2d().getY());
+        llOdometryY.add(currentPose.getY());
         llOdometryY.remove(0);
         
     }
 
     public Translation2d getTranslation2d() {
-        Optional<Alliance> color = DriverStation.getAlliance();
+        Alliance color = DriverStation.getAlliance();
         double[] botPose;
 
-        if (color == Optional.of(Alliance.Blue)) {
+        if (color == new Optional<Alliance.Blue>) {
 
             botPose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
         }
@@ -79,26 +84,32 @@ public class Limelight extends SubsystemBase {
         return (new Translation2d(filteredX, filteredY));
     }
 
-    public void updateOdometry() {
-        double volatilityX = getVolatility(averageX, llOdometryX);
-        double volatilityY = getVolatility(averageY, llOdometryY);
-
-        if (volatilityX <= limeLightDeviation && volatilityY <= limeLightDeviation){
-            swerveDrive.updateOdometryWithVision();
-        } else {
-            swerveDrive.getPose();
-        }
-
-
-    }
     
-    public double getVolatility(double average, ArrayList llOdometry){
+    public double getVolatilityAxis(double average, ArrayList llOdometry){
         double volatility = 0.00;
-        for(int i = 0; i <50; i++){
+        for(int i = 0; i < 50; i++){
             volatility += Math.abs(average - (double)llOdometry.get(i));
         }
         return volatility;
     }
+
+    /**
+     * @return Highest axial volatility reading
+     */
+    public double getOverallVolatility() {
+        double volatilityX = getVolatilityAxis(averageX, llOdometryX);
+        double volatilityY = getVolatilityAxis(averageY, llOdometryY);
+        double overallVolatility = Util.max(volatilityX, volatilityY);
+        return overallVolatility;
+    }
+
+
+    public boolean getIsNotVolatile() {
+        return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+    }
+
+
+
 
 
 }

@@ -138,6 +138,9 @@ public class Constants {
     }
 
 
+    public static final class Limelight {
+        public static final double kAcceptableVolatilityThreshold = 0.5;
+    }
 
 
 

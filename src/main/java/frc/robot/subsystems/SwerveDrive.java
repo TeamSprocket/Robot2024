@@ -272,8 +272,10 @@ public class SwerveDrive extends SubsystemBase {
 
   public void updateOdometryWithVision() {
     Translation2d pos = limelight.getTranslation2d();
-    if (pos.getX() != 0.0 && pos.getY() != 0.0) {
-      resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+    if (limelight.getIsNotVolatile()) {
+      if (pos.getX() != 0.0 && pos.getY() != 0.0) { // LL can see tags
+        resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+      }
     }
   }
 
