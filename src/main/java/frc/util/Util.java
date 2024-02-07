@@ -54,6 +54,23 @@ public final class Util {
 
 
   /**
+   * @return Largest numerical parameter 
+   */
+  public static double max(double... nums) {
+    double max = -1.0 * Double.MAX_VALUE;
+    for (double num : nums) {
+      if (num > max) {
+        max = num;
+      }
+    }
+
+    return max;
+  }
+
+
+
+
+  /**
    * Corrects an input based on a polynomial function.
    */
   public static double polynomialCorrect(double input, double... coefficients) {

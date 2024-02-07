@@ -12,16 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.instant.SwitchTargetHeadingDirection;
-import frc.robot.commands.instant.ZeroGyro;
-import frc.robot.commands.persistent.DriveTeleop;
-import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.Wrist;
-import frc.robot.subsystems.SwerveDrive.Directions;
+import frc.robot.commands.instant.*;
+import frc.robot.commands.persistent.*;
+import frc.robot.commands.superstructure.*;
+// import frc.robot.commands.macro.*;
+import frc.robot.subsystems.*;
 
 public class RobotContainer {
 
@@ -32,9 +27,11 @@ public class RobotContainer {
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
 
   Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
-  Wrist arm = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
   Intake intake = new Intake();
+
+  Superstructure superstructure = new Superstructure(elevator, wrist, shooter, intake);
 
 
 
@@ -51,16 +48,17 @@ public class RobotContainer {
 
   public void initAutons() {
     Command figureEightTestAuton = new PathPlannerAuto("FigEightTestAuton");
-    Command turn90and1MTestAuton = new PathPlannerAuto("Turn 90 and 1M Test Auton");
+    Command autoFourNoteB1 = new PathPlannerAuto("B1 4Note");
 
     autonChooser.addOption("Figure Eight Test", figureEightTestAuton);
-    autonChooser.addOption("Turn 90 and 1M Test", turn90and1MTestAuton);
+    autonChooser.addOption("B1: Four Note", autoFourNoteB1);
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autonChooser);
   }
 
   public void initNamedCommands() {
-    // NamedCommands.registerCommand(null, null);
+    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure, swerveDrive));
+    // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
   }
 
 
@@ -76,11 +74,18 @@ public class RobotContainer {
 			() -> -driver.getLeftX(), 
 			() -> driver.getLeftY(), 
 			() -> -driver.getRightX()));
-    driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
-    driver.button(RobotMap.Controller.Y).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.FORWARD));
-    driver.button(RobotMap.Controller.X).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.LEFT));
-    driver.button(RobotMap.Controller.B).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.RIGHT));
-    driver.button(RobotMap.Controller.A).onTrue(new SwitchTargetHeadingDirection(swerveDrive, Directions.BACK));
+    driver.x().onTrue(new ZeroGyro(swerveDrive));
+    driver.button(RobotMap.Controller.Y).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
+    driver.button(RobotMap.Controller.X).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
+    driver.button(RobotMap.Controller.B).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
+    driver.button(RobotMap.Controller.A).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
+  
+    driver.rightBumper().whileTrue(new IntakeNote(superstructure, swerveDrive));
+    driver.leftBumper().whileTrue(new ScoreSpeaker(superstructure, swerveDrive));
+
+    // --------------------=Secondary=--------------------
+    
+  
   }
   
   public void resetModulesToAbsolute() {
