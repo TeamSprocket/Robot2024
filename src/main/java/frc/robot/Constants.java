@@ -16,7 +16,8 @@ public class Constants {
     public static enum RobotState {
         TELEOP,
         AUTON,
-        DISABLED
+        DISABLED, 
+        TELEOP_DISABLE_SWERVE
     }
 
     // Global
@@ -31,6 +32,12 @@ public class Constants {
 
         // Elapsed time beam break detecting note before stow
         public static final double kWaitBeambreakTimeToleranceSec = 0.1;
+
+        // Elapsed time all elements at wait speaker pos before score speaker
+        public static final double kWaitSpeakerTimeToleranceSec = 0.5;
+
+        // Elapsed time shooting into speaker before stow
+        public static final double kScoreSpeakerTimeToleranceSec = 1.0;
     }
     
     public static final class Elevator {
@@ -138,6 +145,9 @@ public class Constants {
     }
 
 
+    public static final class Limelight {
+        public static final double kAcceptableVolatilityThreshold = 0.5;
+    }
 
 
 
@@ -188,6 +198,8 @@ public class Constants {
 
 
         // Misc
+        public static final double kIntakeNoteSpeed = -0.3;
+        
         public static final HolonomicPathFollowerConfig kPathFollowerConfig = new HolonomicPathFollowerConfig(
             new PIDConstants(kPTranslationPP, kITranslationPP, kDTranslationPP), 
             new PIDConstants(kPRotationPP, kIRotationPP, kDRotationPP),

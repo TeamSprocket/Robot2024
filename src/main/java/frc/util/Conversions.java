@@ -142,6 +142,21 @@ public class Conversions {
         return dist;
     }
 
+    /**
+     * @return Target heading in radians
+     */
+    public static double poseToTargetHeadingRad(Translation2d botPose, Translation3d targetPoint) {
+        double x1 = botPose.getX();
+        double y1 = botPose.getY();
+        double x2 = targetPoint.getX();
+        double y2 = targetPoint.getY();
+
+        double targetHeading = Math.atan((y1 - y2) / (x1 - x2)) + 180;
+        targetHeading = Math.toRadians(targetHeading);
+
+        return targetHeading;
+    }
+
 
 
 

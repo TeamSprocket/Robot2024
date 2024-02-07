@@ -69,7 +69,6 @@ public class Superstructure extends SubsystemBase {
           timer.reset();
           timer.stop();
         }
-
         // Start tolerance timer
         if (intake.hasDetectedNote()) {
           timer.start();
@@ -128,20 +127,43 @@ public class Superstructure extends SubsystemBase {
       
 
       case WAIT_SPEAKER:
+        if (shooterElementsAtGoal()) {
+          timer.start();
+        } else {
+          timer.reset();
+          timer.stop();
+        }
+
         elevator.setState(ElevatorStates.SPEAKER);
         wrist.setState(WristStates.SPEAKER);
         shooter.setState(ShooterStates.SPINUP);
         intake.setState(IntakeStates.STOWED);
 
         // Transitioner
+        if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+          setState(SSStates.SCORE_SPEAKER);
+        }
+        
       break;
       
 
       case WAIT_SPEAKER_HIGH:
+      if (shooterElementsAtGoal()) {
+          timer.start();
+        } else {
+          timer.reset();
+          timer.stop();
+        }
+
         elevator.setState(ElevatorStates.SPEAKER_HIGH);
         wrist.setState(WristStates.SPEAKER_HIGH);
         shooter.setState(ShooterStates.SPINUP);
         intake.setState(IntakeStates.STOWED);
+
+        // Transitioner
+        if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+          setState(SSStates.SCORE_SPEAKER_HIGH);
+        }
       break;
       
 
@@ -154,18 +176,37 @@ public class Superstructure extends SubsystemBase {
       
 
       case SCORE_SPEAKER:
+        if (lastState != SSStates.SCORE_SPEAKER) {
+          timer.reset();
+          timer.start();
+        }
+
         elevator.setState(ElevatorStates.SPEAKER);
         wrist.setState(WristStates.SPEAKER);
         shooter.setState(ShooterStates.SCORE_SPEAKER);
         intake.setState(IntakeStates.STOWED);
+
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
+          setState(SSStates.STOWED);
+        }
       break;
       
 
       case SCORE_SPEAKER_HIGH:
+
+      if (lastState != SSStates.SCORE_SPEAKER) {
+          timer.reset();
+          timer.start();
+        }
+
         elevator.setState(ElevatorStates.SPEAKER_HIGH);
         wrist.setState(WristStates.SPEAKER_HIGH);
         shooter.setState(ShooterStates.SCORE_SPEAKER_HIGH);
         intake.setState(IntakeStates.STOWED);
+
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
+          setState(SSStates.STOWED);
+        }
       break;
       
 
@@ -202,6 +243,12 @@ public class Superstructure extends SubsystemBase {
       this.state = state;
   }
 
+  public SSStates getState() {
+      return state;
+  }
+
+
+
   /**
    * @return SHOOTER INCLUDED, if all elements are within tolerance of their goals
    */
@@ -215,6 +262,14 @@ public class Superstructure extends SubsystemBase {
    */
   public boolean allElementsAtGoalNoShooter() {
     return elevator.atGoal() && wrist.atGoal() && intake.atGoal();
+  }
+
+
+  /**
+   * @return Just shooter and wrist within tolerance of their goals 
+   */
+  public boolean shooterElementsAtGoal() {
+    return elevator.atGoal() && wrist.atGoal() && shooter.atGoalShooter();
   }
 
 
