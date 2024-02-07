@@ -2,14 +2,14 @@ package frc.robot.commands.macro;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.Superstructure.SSStates;;
+import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.SwerveDrive;
 
 import frc.robot.subsystems.SwerveDrive.*;
 
 public class ScoreAmp extends Command {
 
-    public final Superstructure superstructure;
+    Superstructure superstructure;
 
     public ScoreAmp(Superstructure superstructure) {
         this.superstructure = superstructure;
@@ -23,12 +23,12 @@ public class ScoreAmp extends Command {
 
     @Override
     public void execute() {
-        
     }
     
     public boolean isFinished(){
-      return superstructure.getState().equals(SSStates.STOWED);
+      return superstructure.getState() == (SSStates.STOWED);
     }
+
     public void end(){
       superstructure.setState(SSStates.STOWED);
     }
