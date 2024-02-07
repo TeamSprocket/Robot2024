@@ -121,7 +121,7 @@ public class Shooter extends SubsystemBase {
       
     }
 
-    
+    clearStickyFaults();
     // Update lastState
     lastState = state;
   }
@@ -182,7 +182,10 @@ public class Shooter extends SubsystemBase {
     return inRange;
   }
 
-
+  public void clearStickyFaults() {
+    shooterMotor.clearStickyFaults();
+    indexerMotor.clearStickyFaults();
+  }
   
 
 

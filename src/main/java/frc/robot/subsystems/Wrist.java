@@ -113,7 +113,7 @@ public class Wrist extends SubsystemBase {
         break;
     }
 
-
+    clearStickyFaults();
     lastState = state;
   }
 
@@ -153,7 +153,9 @@ public class Wrist extends SubsystemBase {
     return Util.inRange(getWristAngle(), (goal - Constants.Wrist.kAtGoalTolerance), (goal + Constants.Wrist.kAtGoalTolerance));
   }
   
-
+  public void clearStickyFaults() {
+    motor.clearStickyFaults();
+  }
 
 
 }

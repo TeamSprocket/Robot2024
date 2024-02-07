@@ -293,4 +293,8 @@ public class SwerveDrive extends SubsystemBase {
     headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
     headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
   }
+
+  public void clearStickyFaults() {
+    
+  }
 }
