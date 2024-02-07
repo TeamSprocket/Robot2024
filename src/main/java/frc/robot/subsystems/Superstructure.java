@@ -202,6 +202,10 @@ public class Superstructure extends SubsystemBase {
       this.state = state;
   }
 
+  public SSStates getState() {
+    return state;
+  }
+
   /**
    * @return SHOOTER INCLUDED, if all elements are within tolerance of their goals
    */
