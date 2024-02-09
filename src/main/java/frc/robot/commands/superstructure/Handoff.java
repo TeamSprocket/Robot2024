@@ -1,4 +1,4 @@
-package frc.robot.commands.macro;
+package frc.robot.commands.superstructure;
 
 import java.util.function.Supplier;
 
