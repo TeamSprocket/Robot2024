@@ -22,9 +22,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
-import frc.robot.Constants.RobotState;
+import frc.robot.subsystems.SwerveDrive.SwerveDriveStates;;
 
 public class SwerveDrive extends SubsystemBase {
+
+  public static enum SwerveDriveStates {
+    DISABLED,
+    AUTON,
+    TELEOP,
+    TELEOP_DISABLE_SWERVE
+  }
+  public static SwerveDriveStates state = SwerveDriveStates.DISABLED;
+
 
   Limelight limelight;
 
@@ -125,7 +134,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // updateShuffleboardPIDConstants();
 
-    if (Constants.robotState == RobotState.TELEOP) {
+    if (SwerveDrive.getState() == SwerveDriveStates.TELEOP) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
       SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Drivetrain.kMaxSpeed);
@@ -138,6 +147,15 @@ public class SwerveDrive extends SubsystemBase {
     
   }
 
+
+
+
+  public static void setState(SwerveDriveStates state) {
+      SwerveDrive.state = state;
+  }
+  public static SwerveDriveStates getState() {
+      return state;
+  }
 
 
   /**

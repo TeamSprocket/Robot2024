@@ -9,7 +9,8 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.RobotState;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.SwerveDrive.SwerveDriveStates;;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -34,7 +35,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    Constants.robotState = RobotState.DISABLED;
+    SwerveDrive.setState(SwerveDriveStates.DISABLED);
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Coast);
   }
 
@@ -46,7 +47,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    Constants.robotState = RobotState.AUTON;
+    SwerveDrive.setState(SwerveDriveStates.AUTON);
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().initGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
@@ -69,7 +70,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    Constants.robotState = RobotState.TELEOP;
+    SwerveDrive.setState(SwerveDriveStates.TELEOP);
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
 
     if (m_autonomousCommand != null) {

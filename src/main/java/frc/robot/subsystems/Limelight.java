@@ -19,49 +19,52 @@ import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
 
-    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    private MedianFilter filter = new MedianFilter(10);
+    private NetworkTable shooterLLTable = NetworkTableInstance.getDefault().getTable("limelightShooter");
+    private NetworkTable intakeLLTable = NetworkTableInstance.getDefault().getTable("limelightIntake");
+    private MedianFilter filterX = new MedianFilter(10);
+    private MedianFilter filterY = new MedianFilter(10);
+    private MedianFilter filterIntake = new MedianFilter(5);
 
-    private ArrayList<Double> llOdometryX = new ArrayList<Double>(50);
-    private ArrayList<Double> llOdometryY = new ArrayList<Double>(50);
+    private ArrayList<Double> xPoseReadings = new ArrayList<Double>(50);
+    private ArrayList<Double> yPoseReadings = new ArrayList<Double>(50);
 
     private double totalX = 0.00;
     private double totalY = 0.00;
 
     private double averageX = 0.00;
     private double averageY = 0.00;
-
-    private final double limeLightDeviation = 0.75;
-
-    SwerveDrive swerveDrive;
-
-
-    // TODO: test with only one filter because I think we only need one
+    
 
     public Limelight() {}
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Pose X", table.getEntry("tx").getDouble(0.0));
-        SmartDashboard.putNumber("Pose Y", table.getEntry("ty").getDouble(0.0));
-        SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
-        SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
+        SmartDashboard.putNumber("LL Filtered posX", getTranslation2d().getX());
+        SmartDashboard.putNumber("LL Filtered posY", getTranslation2d().getY());
+        SmartDashboard.putBoolean("LL IsNotVolatile", getIsNotVolatile());
+
+        SmartDashboard.putNumber("LL Intake tX", intakeLLTable.getEntry("tx").getDouble(0.0));
+        
+
+
 
         Translation2d currentPose = getTranslation2d();
 
+
+
         totalX += currentPose.getX();
-        totalX -= llOdometryX.get(0);
+        totalX -= xPoseReadings.get(0);
         averageX = totalX / 50;
 
-        llOdometryX.add(currentPose.getX());
-        llOdometryX.remove(0);
+        xPoseReadings.add(currentPose.getX());
+        xPoseReadings.remove(0);
 
         totalY += currentPose.getY();
-        totalY -= llOdometryY.get(0);
+        totalY -= yPoseReadings.get(0);
         averageY = totalY / 50;
 
-        llOdometryY.add(currentPose.getY());
-        llOdometryY.remove(0);
+        yPoseReadings.add(currentPose.getY());
+        yPoseReadings.remove(0);
         
     }
 
@@ -69,14 +72,14 @@ public class Limelight extends SubsystemBase {
         double[] botPose;
 
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            botPose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
+            botPose = shooterLLTable.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
         }
         else {
-            botPose = table.getEntry("botpose_wpired").getDoubleArray(new double[2]);
+            botPose = shooterLLTable.getEntry("botpose_wpired").getDoubleArray(new double[2]);
         }
 
-        double filteredX = filter.calculate(botPose[0]);
-        double filteredY = filter.calculate(botPose[1]);
+        double filteredX = filterX.calculate(botPose[0]);
+        double filteredY = filterY.calculate(botPose[1]);
 
         return (new Translation2d(filteredX, filteredY));
     }
@@ -94,8 +97,8 @@ public class Limelight extends SubsystemBase {
      * @return Highest axial volatility reading
      */
     public double getOverallVolatility() {
-        double volatilityX = getVolatilityAxis(averageX, llOdometryX);
-        double volatilityY = getVolatilityAxis(averageY, llOdometryY);
+        double volatilityX = getVolatilityAxis(averageX, xPoseReadings);
+        double volatilityY = getVolatilityAxis(averageY, yPoseReadings);
         double overallVolatility = Util.max(volatilityX, volatilityY);
         return overallVolatility;
     }
@@ -103,6 +106,13 @@ public class Limelight extends SubsystemBase {
 
     public boolean getIsNotVolatile() {
         return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+    }
+
+    /**
+     * @return tX reading from note detection, 0.0 if undetected 
+     */
+    public double getIntakeTX() {
+        return intakeLLTable.getEntry("tx").getDouble(0.0);
     }
 
 

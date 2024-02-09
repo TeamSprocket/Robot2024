@@ -13,15 +13,6 @@ import edu.wpi.first.math.util.Units;
 import frc.util.Conversions;
 
 public class Constants {
-    public static enum RobotState {
-        TELEOP,
-        AUTON,
-        DISABLED, 
-        TELEOP_DISABLE_SWERVE
-    }
-
-    // Global
-    public static RobotState robotState = RobotState.DISABLED;
 
     public static final class Superstructure {
         // Delay between note detected and retract intake 
@@ -182,9 +173,9 @@ public class Constants {
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0; //0.0
 
-        public static final double kLimelightAlignP = 0.0075;
-        public static final double kLimelightAlignI = 0.0;
-        public static final double kLimelightAlignD = 0.00015;
+        public static final double kPNoteAlignLL = 0.01;
+        public static final double kINoteAlignLL = 0.0;
+        public static final double kDNoteAlignLL = 0.0;
 
 
         // Speed/Accel 
@@ -195,6 +186,8 @@ public class Constants {
         
         public static double kMaxTurnSpeed = 0.08; 
         public static double kMaxTurnAccel = 10; // Instant manual turning
+
+        public static double kNoteAlignMaxYSpeed = 0.3; // Max horizontal movement speed for aligning intake to note 
 
 
         // Misc

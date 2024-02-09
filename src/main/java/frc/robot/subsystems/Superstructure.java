@@ -21,12 +21,12 @@ public class Superstructure extends SubsystemBase {
   public SSStates state = SSStates.NONE;
   public SSStates lastState = SSStates.NONE;
 
-  Timer timer = new Timer();
+  private Timer timer = new Timer();
 
-  Elevator elevator;
-  Wrist wrist;
-  Shooter shooter;
-  Intake intake;
+  private Elevator elevator;
+  private Wrist wrist;
+  private Shooter shooter;
+  private Intake intake;
 
   public Superstructure(Elevator elevator, Wrist wrist, Shooter shooter, Intake intake) {
     this.elevator = elevator;
