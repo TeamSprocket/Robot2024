@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.Superstructure.SSStates;
-import frc.util.Util;
 
 public class Handoff extends Command{
     private final Superstructure superstructure;
@@ -21,12 +20,11 @@ public class Handoff extends Command{
     }
 
     public void initialize() {
-        superstructure.setState(SSStates.HANDOFF);
+        superstructure.setState(SSStates.WAIT_HANDOFF);
     }
 
     @Override
-    public void execute() {
-    }
+    public void execute() {}
 
     public void end() {
         superstructure.setState(SSStates.STOWED);
