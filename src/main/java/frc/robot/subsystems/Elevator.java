@@ -105,6 +105,9 @@ public class Elevator extends SubsystemBase {
         break;
     }
    
+    
+
+    clearStickyFaults();
   }
 
   public void setState(ElevatorStates state) {
@@ -134,6 +137,11 @@ public class Elevator extends SubsystemBase {
   public boolean atGoal() {
     double goal = profiledPIDController.getGoal().position;
     return Util.inRange(getHeight(), (goal - Constants.Elevator.kAtGoalTolerance), (goal + Constants.Elevator.kAtGoalTolerance));
+  }
+
+  public void clearStickyFaults() {
+    motorLeft.clearStickyFaults();
+    motorRight.clearStickyFaults();
   }
 
 
