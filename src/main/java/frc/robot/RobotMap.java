@@ -26,14 +26,14 @@ public final class RobotMap {
    */
   public static final class Drivetrain {
     public static final int FRONT_LEFT_TALON_D = 23;
-    public static final int FRONT_RIGHT_TALON_D = 27;
-    public static final int BACK_LEFT_TALON_D = 21;
-    public static final int BACK_RIGHT_TALON_D = 25;
+    public static final int FRONT_RIGHT_TALON_D = 20;
+    public static final int BACK_LEFT_TALON_D = 24;
+    public static final int BACK_RIGHT_TALON_D = 21;
 
-    public static final int FRONT_LEFT_TALON_T = 24;
-    public static final int FRONT_RIGHT_TALON_T = 28;
-    public static final int BACK_LEFT_TALON_T = 22;
-    public static final int BACK_RIGHT_TALON_T = 26;
+    // public static final int FRONT_LEFT_TALON_T = 23;
+    // public static final int FRONT_RIGHT_TALON_T = 28;
+    // public static final int BACK_LEFT_TALON_T = 24;
+    // public static final int BACK_RIGHT_TALON_T = 26;
 
     // public static final int FRONT_LEFT_ABS_ENCODER_ID = 1;
     // public static final int FRONT_RIGHT_ABS_ENCODER_ID = 3;

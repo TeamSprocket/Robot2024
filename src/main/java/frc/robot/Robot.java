@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -19,10 +20,10 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private WPI_TalonFX frontleft = new WPI_TalonFX(20);
-  private WPI_TalonFX frontright = new WPI_TalonFX(21);
-  private WPI_TalonFX backleft = new WPI_TalonFX(23);
-  private WPI_TalonFX backright = new WPI_TalonFX(22);
+  private WPI_TalonFX frontleft = new WPI_TalonFX(23);
+  private WPI_TalonFX frontright = new WPI_TalonFX(20);
+  private WPI_TalonFX backleft = new WPI_TalonFX(24);
+  private WPI_TalonFX backright = new WPI_TalonFX(21);
 
   private XboxController joystick1 = new XboxController(0);
 
@@ -68,8 +69,14 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
     Constants.robotState = RobotState.TELEOP;
     m_robotContainer.configureBindings();
+    frontleft.setNeutralMode(NeutralMode.Brake);
+    frontright.setNeutralMode(NeutralMode.Brake);
+    backleft.setNeutralMode(NeutralMode.Brake);
+    backright.setNeutralMode(NeutralMode.Brake);
+    //Try follow next
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
@@ -85,8 +92,8 @@ public class Robot extends TimedRobot {
     double right = speed - turn;
 
     frontleft.set(left);
-    frontright.set(left);
-    backleft.set(-right);
+    frontright.set(-right);
+    backleft.set(left);
     backright.set(-right);
   }
 
