@@ -19,8 +19,8 @@ import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
 
-    private NetworkTable shooterLLTable = NetworkTableInstance.getDefault().getTable("limelightShooter");
-    private NetworkTable intakeLLTable = NetworkTableInstance.getDefault().getTable("limelightIntake");
+    private NetworkTable shooterLLTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
+    private NetworkTable intakeLLTable = NetworkTableInstance.getDefault().getTable("limelight-intake");
     private MedianFilter filterX = new MedianFilter(10);
     private MedianFilter filterY = new MedianFilter(10);
     private MedianFilter filterIntake = new MedianFilter(5);
