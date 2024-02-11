@@ -112,7 +112,8 @@ public class Limelight extends SubsystemBase {
      * @return tX reading from note detection, 0.0 if undetected 
      */
     public double getIntakeTX() {
-        return intakeLLTable.getEntry("tx").getDouble(0.0);
+        double intakeNoteReading = intakeLLTable.getEntry("tx").getDouble(0.0);
+        return filterIntake.calculate(intakeNoteReading);
     }
 
 
