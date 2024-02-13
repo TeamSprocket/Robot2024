@@ -147,6 +147,7 @@ public class Constants {
 
     public static final class Limelight {
         public static final double kAcceptableVolatilityThreshold = 0.5;
+        public static final int kSlidingWindowLen = 50; // ~50 iter = 1 sec
     }
 
 

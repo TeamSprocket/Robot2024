@@ -7,6 +7,8 @@
 
 package frc.util;
 
+import java.util.ArrayList;
+
 /**
  * This class contains miscellaneous utility functions that can be used anywhere
  * in the robot project.
@@ -89,4 +91,27 @@ public final class Util {
     double normalizedVal = (val - fromLow) / (fromHigh - fromLow);
     return normalizedVal * (toHigh - toLow) + toLow;
   }
+
+  
+  public static double average(double[] values) {
+    double sum = 0.0;
+    for (double val: values) {
+      sum += val;
+    }
+    return (sum / values.length);
+  }
+  
+  public static double average(ArrayList<Double> values) {
+    double sum = 0.0;
+    for (int i = 0; i < values.size(); i++) {
+      sum += values.get(i);
+    }
+    return (sum / values.size());
+  }
+  
+
+
+
+
+
 }

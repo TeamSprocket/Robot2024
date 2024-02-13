@@ -22,57 +22,45 @@ public class Limelight extends SubsystemBase {
     private NetworkTable tableShooter = NetworkTableInstance.getDefault().getTable("limelight-shooter");
     private NetworkTable tableIntake = NetworkTableInstance.getDefault().getTable("limelight-intake");
 
-    private MedianFilter filterX = new MedianFilter(5);
-    private MedianFilter filterY = new MedianFilter(5);
+    // private MedianFilter filterY = new MedianFilter(3);
+    // private MedianFilter filterX = new MedianFilter(3);
     private MedianFilter filterIntake = new MedianFilter(5);
 
-    
-    
+    private ArrayList<Double> distsX = new ArrayList<Double>(Constants.Limelight.kSlidingWindowLen);
+    private ArrayList<Double> distsY = new ArrayList<Double>(Constants.Limelight.kSlidingWindowLen);
 
-    // private ArrayList<Double> llOdometryX = new ArrayList<Double>(50);
-    // private ArrayList<Double> llOdometryY = new ArrayList<Double>(50);
-
-    // private double totalX = 0.00;
-    // private double totalY = 0.00;
-
-    // private double averageX = 0.00;
-    // private double averageY = 0.00;
-
-    // private final double limeLightDeviation = 0.75;
 
     SwerveDrive swerveDrive;
 
 
-    // TODO: test with only one filter because I think we only need one
-
-    public Limelight() {}
+    public Limelight() {
+        for (int i = 0; i < Constants.Limelight.kSlidingWindowLen; i++) {
+            distsX.add(0.0);
+            distsY.add(0.0);
+        }
+    }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Pose X", tableShooter.getEntry("tx").getDouble(0.0));
-        SmartDashboard.putNumber("Pose Y", tableShooter.getEntry("ty").getDouble(0.0));
-        SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
-        SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
+        SmartDashboard.putNumber("Pose X [LL]", tableShooter.getEntry("tx").getDouble(0.0));
+        SmartDashboard.putNumber("Pose Y [LL]", tableShooter.getEntry("ty").getDouble(0.0));
+        SmartDashboard.putNumber("Filtered X [LL]", getTranslation2d().getX());
+        SmartDashboard.putNumber("Filtered Y [LL]", getTranslation2d().getY());
 
-        SmartDashboard.putNumber("Intake Note TX", getNoteTX());
+        SmartDashboard.putNumber("Intake Note TX [LL]", getNoteTX());
+
+        SmartDashboard.putNumber("Pose Volatility [LL]", getPoseVolatility());
+        SmartDashboard.putBoolean("Pose Is Not Volatile [LL]", getIsNotVolatile());
 
 
         
-        // Translation2d currentPose = getTranslation2d();
+        Translation2d currentPose = getTranslation2d();
 
-        // totalX += currentPose.getX();
-        // totalX -= llOdometryX.get(0);
-        // averageX = totalX / 50;
+        distsX.add(currentPose.getX());
+        distsX.remove(0);
 
-        // llOdometryX.add(currentPose.getX());
-        // llOdometryX.remove(0);
-
-        // totalY += currentPose.getY();
-        // totalY -= llOdometryY.get(0);
-        // averageY = totalY / 50;
-
-        // llOdometryY.add(currentPose.getY());
-        // llOdometryY.remove(0);
+        distsY.add(currentPose.getY());
+        distsY.remove(0);
         
     }
 
@@ -86,14 +74,48 @@ public class Limelight extends SubsystemBase {
             botPose = tableShooter.getEntry("botpose_wpired").getDoubleArray(new double[2]);
         }
 
-        double filteredX = filterX.calculate(botPose[0]);
-        double filteredY = filterY.calculate(botPose[1]);
+        double xPos = botPose[0];
+        double yPos = botPose[1];
 
-        return (new Translation2d(filteredX, filteredY));
+
+        // double filteredX = filterX.calculate(xPos);
+        // double filteredY = filterY.calculate(yPos);
+
+        // return (new Translation2d(filteredX, filteredY));
+        return new Translation2d(xPos, yPos);
     }
 
+
     public double getNoteTX() {
-        return tableIntake.getEntry("tx").getDouble(0.0);
+        double noteTX = tableIntake.getEntry("tx").getDouble(0.0);
+        noteTX = filterIntake.calculate(noteTX);
+        return noteTX;
+    }
+
+
+    public boolean getIsNotVolatile() {
+        return getPoseVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+    }
+
+    /**
+     * @return Returns volatility of pose reading 
+     */
+    public double getPoseVolatility() {
+        double volatilityX = getPoseVolatilityAxis(distsX);
+        double volatilityY = getPoseVolatilityAxis(distsY);
+
+        return Math.max(volatilityX, volatilityY);
+    }
+
+    private double getPoseVolatilityAxis(ArrayList<Double> distances) {
+        double average = Util.average(distances);
+
+        double totalDeviation = 0;
+        for (double dist : distances) {
+            totalDeviation += Math.abs(dist - average);
+        }
+
+        return totalDeviation;
     }
 
     
