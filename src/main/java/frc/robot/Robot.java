@@ -25,6 +25,8 @@ public class Robot extends TimedRobot {
   private WPI_TalonFX backleft = new WPI_TalonFX(24);
   private WPI_TalonFX backright = new WPI_TalonFX(21);
 
+  private WPI_TalonFX intake = new WPI_TalonFX(30);
+
   private XboxController joystick1 = new XboxController(0);
 
   @Override
@@ -88,6 +90,17 @@ public class Robot extends TimedRobot {
     double speed = -joystick1.getRawAxis(5) * 0.6;
     double turn = joystick1.getRawAxis(0) * 0.3;
 
+    if (Math.abs(joystick1.getRawAxis(2)) > 0.1) {
+      // intake.set(joystick1.getRawAxis(2)*0.3);
+      frontleft.set(0.3);
+    }
+    else if (Math.abs(joystick1.getRawAxis(3)) > 0.1) {
+      intake.set(-joystick1.getRawAxis(3)*0.3);
+    }
+    if (joystick1.getRawButton(1)) {
+      intake.set(0.3);
+    }
+
     double left = speed + turn;
     double right = speed - turn;
 
@@ -95,6 +108,7 @@ public class Robot extends TimedRobot {
     frontright.set(-right);
     backleft.set(left);
     backright.set(-right);
+    // frontleft.set(0.2);
   }
 
   @Override
