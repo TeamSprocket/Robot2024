@@ -42,68 +42,68 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Pose X", table.getEntry("tx").getDouble(0.0));
-        SmartDashboard.putNumber("Pose Y", table.getEntry("ty").getDouble(0.0));
-        SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
-        SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
+        // SmartDashboard.putNumber("Pose X", table.getEntry("tx").getDouble(0.0));
+        // SmartDashboard.putNumber("Pose Y", table.getEntry("ty").getDouble(0.0));
+        // SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
+        // SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
 
-        Translation2d currentPose = getTranslation2d();
+        // Translation2d currentPose = getTranslation2d();
 
-        totalX += currentPose.getX();
-        totalX -= llOdometryX.get(0);
-        averageX = totalX / 50;
+        // totalX += currentPose.getX();
+        // totalX -= llOdometryX.get(0);
+        // averageX = totalX / 50;
 
-        llOdometryX.add(currentPose.getX());
-        llOdometryX.remove(0);
+        // llOdometryX.add(currentPose.getX());
+        // llOdometryX.remove(0);
 
-        totalY += currentPose.getY();
-        totalY -= llOdometryY.get(0);
-        averageY = totalY / 50;
+        // totalY += currentPose.getY();
+        // totalY -= llOdometryY.get(0);
+        // averageY = totalY / 50;
 
-        llOdometryY.add(currentPose.getY());
-        llOdometryY.remove(0);
+        // llOdometryY.add(currentPose.getY());
+        // llOdometryY.remove(0);
         
     }
 
-    public Translation2d getTranslation2d() {
-        double[] botPose;
+    // public Translation2d getTranslation2d() {
+    //     double[] botPose;
 
-        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-            botPose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
-        }
-        else {
-            botPose = table.getEntry("botpose_wpired").getDoubleArray(new double[2]);
-        }
+    //     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+    //         botPose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
+    //     }
+    //     else {
+    //         botPose = table.getEntry("botpose_wpired").getDoubleArray(new double[2]);
+    //     }
 
-        double filteredX = filter.calculate(botPose[0]);
-        double filteredY = filter.calculate(botPose[1]);
+    //     double filteredX = filter.calculate(botPose[0]);
+    //     double filteredY = filter.calculate(botPose[1]);
 
-        return (new Translation2d(filteredX, filteredY));
-    }
+    //     return (new Translation2d(filteredX, filteredY));
+    // }
 
     
-    public double getVolatilityAxis(double average, ArrayList llOdometry){
-        double volatility = 0.00;
-        for(int i = 0; i < 50; i++){
-            volatility += Math.abs(average - (double)llOdometry.get(i));
-        }
-        return volatility;
-    }
+    // public double getVolatilityAxis(double average, ArrayList llOdometry){
+    //     double volatility = 0.00;
+    //     for(int i = 0; i < 50; i++){
+    //         volatility += Math.abs(average - (double)llOdometry.get(i));
+    //     }
+    //     return volatility;
+    // }
 
-    /**
-     * @return Highest axial volatility reading
-     */
-    public double getOverallVolatility() {
-        double volatilityX = getVolatilityAxis(averageX, llOdometryX);
-        double volatilityY = getVolatilityAxis(averageY, llOdometryY);
-        double overallVolatility = Util.max(volatilityX, volatilityY);
-        return overallVolatility;
-    }
+    // /**
+    //  * @return Highest axial volatility reading
+    //  */
+    // public double getOverallVolatility() {
+    //     double volatilityX = getVolatilityAxis(averageX, llOdometryX);
+    //     double volatilityY = getVolatilityAxis(averageY, llOdometryY);
+    //     double overallVolatility = Util.max(volatilityX, volatilityY);
+    //     return overallVolatility;
+    // }
 
 
-    public boolean getIsNotVolatile() {
-        return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
-    }
+    // public boolean getIsNotVolatile() {
+    //     return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+    // }
 
 
 
