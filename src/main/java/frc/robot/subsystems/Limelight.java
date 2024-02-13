@@ -19,19 +19,26 @@ import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
 
-    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    private MedianFilter filter = new MedianFilter(10);
+    private NetworkTable tableShooter = NetworkTableInstance.getDefault().getTable("limelight-shooter");
+    private NetworkTable tableIntake = NetworkTableInstance.getDefault().getTable("limelight-intake");
 
-    private ArrayList<Double> llOdometryX = new ArrayList<Double>(50);
-    private ArrayList<Double> llOdometryY = new ArrayList<Double>(50);
+    private MedianFilter filterX = new MedianFilter(5);
+    private MedianFilter filterY = new MedianFilter(5);
+    private MedianFilter filterIntake = new MedianFilter(5);
 
-    private double totalX = 0.00;
-    private double totalY = 0.00;
+    
+    
 
-    private double averageX = 0.00;
-    private double averageY = 0.00;
+    // private ArrayList<Double> llOdometryX = new ArrayList<Double>(50);
+    // private ArrayList<Double> llOdometryY = new ArrayList<Double>(50);
 
-    private final double limeLightDeviation = 0.75;
+    // private double totalX = 0.00;
+    // private double totalY = 0.00;
+
+    // private double averageX = 0.00;
+    // private double averageY = 0.00;
+
+    // private final double limeLightDeviation = 0.75;
 
     SwerveDrive swerveDrive;
 
@@ -42,11 +49,15 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Pose X", table.getEntry("tx").getDouble(0.0));
-        // SmartDashboard.putNumber("Pose Y", table.getEntry("ty").getDouble(0.0));
-        // SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
-        // SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
+        SmartDashboard.putNumber("Pose X", tableShooter.getEntry("tx").getDouble(0.0));
+        SmartDashboard.putNumber("Pose Y", tableShooter.getEntry("ty").getDouble(0.0));
+        SmartDashboard.putNumber("Filtered X", getTranslation2d().getX());
+        SmartDashboard.putNumber("Filtered Y", getTranslation2d().getY());
 
+        SmartDashboard.putNumber("Intake Note TX", getNoteTX());
+
+
+        
         // Translation2d currentPose = getTranslation2d();
 
         // totalX += currentPose.getX();
@@ -65,21 +76,25 @@ public class Limelight extends SubsystemBase {
         
     }
 
-    // public Translation2d getTranslation2d() {
-    //     double[] botPose;
+    public Translation2d getTranslation2d() {
+        double[] botPose;
 
-    //     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-    //         botPose = table.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
-    //     }
-    //     else {
-    //         botPose = table.getEntry("botpose_wpired").getDoubleArray(new double[2]);
-    //     }
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            botPose = tableShooter.getEntry("botpose_wpiblue").getDoubleArray(new double[2]);
+        }
+        else {
+            botPose = tableShooter.getEntry("botpose_wpired").getDoubleArray(new double[2]);
+        }
 
-    //     double filteredX = filter.calculate(botPose[0]);
-    //     double filteredY = filter.calculate(botPose[1]);
+        double filteredX = filterX.calculate(botPose[0]);
+        double filteredY = filterY.calculate(botPose[1]);
 
-    //     return (new Translation2d(filteredX, filteredY));
-    // }
+        return (new Translation2d(filteredX, filteredY));
+    }
+
+    public double getNoteTX() {
+        return tableIntake.getEntry("tx").getDouble(0.0);
+    }
 
     
     // public double getVolatilityAxis(double average, ArrayList llOdometry){
