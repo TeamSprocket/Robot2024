@@ -271,8 +271,17 @@ public class Constants {
     }
 
 
+
+
+
     public static final class ShootingSetpoints {
-        public static final Translation3d targetPoint = new Translation3d(0, 0, 0);
+        // public static final Translation3d targetPointBlue = new Translation3d(-0.1, 5.548, 0);
+        // public static final Translation3d targetPointRed = new Translation3d(-0.1, (8.211-5.548), 0);
+
+
+        // Most likely can be same blue/red
+        public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211-5.548), 0);
+
 
         /**
          * @param dist Distance from bot shooter to targetPoint in meters

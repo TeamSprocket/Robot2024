@@ -42,8 +42,8 @@ public class Limelight extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Pose X [LL]", tableShooter.getEntry("tx").getDouble(0.0));
-        SmartDashboard.putNumber("Pose Y [LL]", tableShooter.getEntry("ty").getDouble(0.0));
+        SmartDashboard.putNumber("Pose X [LL]", tableShooter.getEntry("botpose").getDoubleArray(new double[2])[0]);
+        SmartDashboard.putNumber("Pose Y [LL]", tableShooter.getEntry("botpose").getDoubleArray(new double[2])[1]);
         SmartDashboard.putNumber("Filtered X [LL]", getTranslation2d().getX());
         SmartDashboard.putNumber("Filtered Y [LL]", getTranslation2d().getY());
 
@@ -53,7 +53,7 @@ public class Limelight extends SubsystemBase {
         SmartDashboard.putBoolean("Pose Is Not Volatile [LL]", getIsNotVolatile());
 
 
-        
+        // System.out.println(""+tableShooter.getEntry("botpose").getDoubleArray(new double[2])[0]);
         Translation2d currentPose = getTranslation2d();
 
         distsX.add(currentPose.getX());
