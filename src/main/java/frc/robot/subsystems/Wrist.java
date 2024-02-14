@@ -72,13 +72,13 @@ public class Wrist extends SubsystemBase {
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
-      case HANDOFF:
-        // if (lastState != WristStates.HANDOFF) {
-          // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
-        // }
-        motor.set(profiledPIDController.calculate(getWristAngle()));
-        break;
+      // case HANDOFF:
+      //   // if (lastState != WristStates.HANDOFF) {
+      //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
+      //     profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
+      //   // }
+      //   motor.set(profiledPIDController.calculate(getWristAngle()));
+      //   break;
 
       case SPEAKER:
         // if (lastState != WristStates.SPEAKER) {

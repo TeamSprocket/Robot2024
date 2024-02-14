@@ -27,9 +27,6 @@ public class Constants {
         // Delay between note detected and retract intake 
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
-        // Elapsed time all elements at handoff pos before handoff
-        public static final double kWaitHandoffTimeToleranceSec = 0.3;
-
         // Elapsed time beam break detecting note before stow
         public static final double kWaitBeambreakTimeToleranceSec = 0.1;
 
@@ -42,7 +39,6 @@ public class Constants {
     
     public static final class Elevator {
         public static final double kElevatorHeightStowed = 0.0;
-        public static final double kElevatorHeightHandoff = 0.0;
         public static final double kElevatorHeightSpeaker = 0.0;
         public static final double kElevatorHeightSpeakerHigh = 0.0;
         public static final double kElevatorHeightAmp = 0.0;
@@ -82,7 +78,6 @@ public class Constants {
         public static double kMaxAccelerationDeg = 0.0;
         
         public static double kTargetAngleStowed = 0.0;
-        public static double kTargetAngleHandoff = 0.0;
         public static double kTargetAngleSpeaker = 0.0;
         public static double kTargetAngleSpeakerHigh = 0.0;
         public static double kTargetAngleAmp = 0.0;
@@ -119,13 +114,9 @@ public class Constants {
     public static final class Intake {
         public static final double kPivotAngleStowed = 0.0;
         public static final double kPivotAngleIntake = 0.0;
-        public static final double kPivotAngleWaitHandoff = 0.0;
-        public static final double kPivotAngleHandoff = 0.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.0;
-        public static final double kRollSpeedWaitHandoff = 0.0;
-        public static final double kRollSpeedHandoff = 0.0;
 
         public static final boolean kIsRollInverted = false;
         public static final boolean kIsPivotInverted = false;
