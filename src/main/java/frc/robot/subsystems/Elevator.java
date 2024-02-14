@@ -76,10 +76,10 @@ public class Elevator extends SubsystemBase {
         motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;
 
-      case HANDOFF:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
-        break;
+      // case HANDOFF:
+      //   profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
+      //   motorLeft.set(profiledPIDController.calculate(getHeight()));
+      //   break;
 
       case SPEAKER:
         profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeaker);
@@ -143,14 +143,6 @@ public class Elevator extends SubsystemBase {
     motorLeft.clearStickyFaults();
     motorRight.clearStickyFaults();
   }
-
-
-
-
-
-
-
-  
 }
 
 

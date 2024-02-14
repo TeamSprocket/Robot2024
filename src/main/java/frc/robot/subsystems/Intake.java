@@ -94,22 +94,22 @@ public class Intake extends SubsystemBase {
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
 
-            case WAIT_HANDOFF:
-                // if (lastState != IntakeStates.WAIT_HANDOFF) {
-                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
-                // }
-                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
-                rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
-                break;
+            // case WAIT_HANDOFF:
+            //     // if (lastState != IntakeStates.WAIT_HANDOFF) {
+            //         profiledPIDController.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
+            //     // }
+            //     pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
+            //     rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
+            //     break;
 
 
-            case HANDOFF:
-                // if (lastState != IntakeStates.HANDOFF) {
-                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleHandoff);
-                // }
-                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
-                rollIntake.set(Constants.Intake.kRollSpeedHandoff);
-                break;
+            // case HANDOFF:
+            //     // if (lastState != IntakeStates.HANDOFF) {
+            //         profiledPIDController.setGoal(Constants.Intake.kPivotAngleHandoff);
+            //     // }
+            //     pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
+            //     rollIntake.set(Constants.Intake.kRollSpeedHandoff);
+            //     break;
         }
 
         clearStickyFaults();

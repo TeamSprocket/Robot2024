@@ -13,7 +13,6 @@ public class Superstructure extends SubsystemBase {
     NONE,
     STOWED,
     INTAKE,
-    WAIT_HANDOFF, HANDOFF,
     WAIT_SPEAKER, WAIT_SPEAKER_HIGH, WAIT_AMP,
     SCORE_SPEAKER, SCORE_SPEAKER_HIGH, SCORE_AMP,
     CLIMB
@@ -64,48 +63,16 @@ public class Superstructure extends SubsystemBase {
       
 
       case INTAKE:
-        // Reset tolerance timer
-        if (lastState != SSStates.INTAKE) {
-          timer.reset();
-          timer.stop();
-        }
-        // Start tolerance timer
-        if (intake.hasDetectedNote()) {
-          timer.start();
-        }
+        // // Reset tolerance timer
+        // if (lastState != SSStates.INTAKE) {
+        //   timer.reset();
+        //   timer.stop();
+        // }
+        // // Start tolerance timer
+        // if (intake.hasDetectedNote()) {
+        //   timer.start();
+        // }
 
-        elevator.setState(ElevatorStates.STOWED);
-        wrist.setState(WristStates.STOWED);
-        shooter.setState(ShooterStates.STANDBY);
-        intake.setState(IntakeStates.INTAKE);
-
-        if (timer.get() > Constants.Superstructure.kIntakeTimeToStowToleranceSec) {
-          setState(SSStates.STOWED);
-        } 
-      break;
-      
-
-      case WAIT_HANDOFF:
-      if (allElementsAtGoalNoShooter()) {
-        timer.start(); 
-      } else {
-        timer.reset();
-        timer.stop();
-      }
-
-        elevator.setState(ElevatorStates.HANDOFF);
-        wrist.setState(WristStates.HANDOFF);
-        shooter.setState(ShooterStates.HANDOFF);
-        intake.setState(IntakeStates.WAIT_HANDOFF);
-
-        if (timer.get() > Constants.Superstructure.kWaitHandoffTimeToleranceSec) {
-          setState(SSStates.HANDOFF);
-        }
-
-      break;
-
-
-      case HANDOFF:
         if (shooter.beamBroken()) {
           // Note in shooter 
           timer.start();
@@ -114,16 +81,57 @@ public class Superstructure extends SubsystemBase {
           timer.stop();
         }
 
-        elevator.setState(ElevatorStates.HANDOFF);
-        wrist.setState(WristStates.HANDOFF);
+        elevator.setState(ElevatorStates.STOWED);
+        wrist.setState(WristStates.STOWED);
         shooter.setState(ShooterStates.HANDOFF);
-        intake.setState(IntakeStates.HANDOFF);
+        intake.setState(IntakeStates.INTAKE);
 
-        if (timer.get() >= Constants.Superstructure.kWaitBeambreakTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kWaitBeambreakTimeToleranceSec) {
           setState(SSStates.STOWED);
-        }
-        
+        } 
       break;
+      
+
+      // // case WAIT_HANDOFF:
+      // // if (allElementsAtGoalNoShooter()) {
+      // //   timer.start(); 
+      // // } else {
+      // //   timer.reset();
+      // //   timer.stop();
+      // // }
+
+      // //   elevator.setState(ElevatorStates.HANDOFF);
+      // //   wrist.setState(WristStates.HANDOFF);
+      // //   shooter.setState(ShooterStates.HANDOFF);
+      // //   intake.setState(IntakeStates.WAIT_HANDOFF);
+
+      // //   if (timer.get() > Constants.Superstructure.kWaitHandoffTimeToleranceSec) {
+      // //     setState(SSStates.HANDOFF);
+      // //   }
+
+      // // break;
+
+
+      // case HANDOFF:
+      //   if (shooter.beamBroken()) {
+      //     // Note in shooter 
+      //     timer.start();
+      //     // roll intake and shooter
+      //   } else {
+      //     timer.reset();
+      //     timer.stop();
+      //   }
+
+      //   // elevator.setState(ElevatorStates.HANDOFF);
+      //   // wrist.setState(WristStates.HANDOFF);
+      //   // shooter.setState(ShooterStates.HANDOFF); // will intake note in resting position
+      //   // intake.setState(IntakeStates.HANDOFF); // outtakes note (but stays in normal position)
+
+      //   if (timer.get() >= Constants.Superstructure.kWaitBeambreakTimeToleranceSec) {
+      //     setState(SSStates.STOWED);
+      //   }
+        
+      // break;
       
 
       case WAIT_SPEAKER:
