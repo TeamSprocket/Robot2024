@@ -36,10 +36,10 @@ public class IntakeNote extends Command {
 
   @Override
   public void execute() {
-    double ySpeed = pidController.calculate(limelight.getIntakeTX()); 
-    ySpeed = Util.minmax(ySpeed, -1.0 * Constants.Drivetrain.kNoteAlignMaxYSpeed, Constants.Drivetrain.kNoteAlignMaxYSpeed);
+    // double ySpeed = pidController.calculate(limelight.getIntakeTX()); 
+    // ySpeed = Util.minmax(ySpeed, -1.0 * Constants.Drivetrain.kNoteAlignMaxYSpeed, Constants.Drivetrain.kNoteAlignMaxYSpeed);
 
-    swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, ySpeed, 0));
+    // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, ySpeed, 0));
   }
 
   @Override

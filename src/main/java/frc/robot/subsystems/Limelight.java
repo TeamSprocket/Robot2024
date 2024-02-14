@@ -1,74 +1,82 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import frc.util.Util;
-
-import edu.wpi.first.math.filter.MedianFilter;
+import org.ejml.simple.SimpleMatrix;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.Nat;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.KalmanFilter;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.system.LinearSystem;
+import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Limelight extends SubsystemBase {
 
     private NetworkTable shooterLLTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
     private NetworkTable intakeLLTable = NetworkTableInstance.getDefault().getTable("limelight-intake");
-    private MedianFilter filterX = new MedianFilter(10);
-    private MedianFilter filterY = new MedianFilter(10);
-    private MedianFilter filterIntake = new MedianFilter(5);
 
-    private ArrayList<Double> xPoseReadings = new ArrayList<Double>(50);
-    private ArrayList<Double> yPoseReadings = new ArrayList<Double>(50);
+    private static ArrayList<Double> poseX = new ArrayList<>();
+    private static ArrayList<Double> odomPoseX = new ArrayList<>();
+    private static ArrayList<Double> poseY = new ArrayList<>();
+    private static ArrayList<Double> odomPoseY = new ArrayList<>();
 
-    private double totalX = 0.00;
-    private double totalY = 0.00;
+    private static Timer timer = new Timer();
 
-    private double averageX = 0.00;
-    private double averageY = 0.00;
-    
+    private static double dtSeconds = 0.02;
 
-    public Limelight() {}
+    private final static LinearSystem<N1, N1, N1> m_flywheelPlant =
+        LinearSystemId.identifyVelocitySystem(Constants.Drivetrain.kMaxSpeed, Constants.Drivetrain.kMaxAccel); // creates a linear system for us
+        /*
+            return new LinearSystem<>(
+                VecBuilder.fill(-kSwerveV / kSwerveAccel), // VecBuilder.fill(double n1) -> returns fillVec(Nat.N1(), n1) **Nat.N1() has to = length of n1 -> returns Vector<>(new SimpleMatrix(n1)) ***n1 has to be of type double[][]
+                VecBuilder.fill(1.0 / kSwerveAccel), 
+                VecBuilder.fill(1.0),
+                VecBuilder.fill(0.0));
+         */
+
+    private final static KalmanFilter<N1, N1, N1> m_observerX =
+      new KalmanFilter<>(
+          Nat.N1(), // Nat representing states of the system
+          Nat.N1(), // Nat representing outputs of the system
+          m_flywheelPlant, // linear system used for prediction step
+          VecBuilder.fill(3.0), // How accurate we think our model is - standard deviations of model states
+          VecBuilder.fill(0.01), // How accurate we think our encoder - standard deviations of measurements
+          dtSeconds); // seconds
+
+    private final static KalmanFilter<N1, N1, N1> m_observerY =
+      new KalmanFilter<>(
+          Nat.N1(), // Nat representing states of the system
+          Nat.N1(), // Nat representing outputs of the system
+          m_flywheelPlant, // linear system used for prediction step
+          VecBuilder.fill(3.0), // How accurate we think our model is - standard deviations of model states
+          VecBuilder.fill(0.01), // How accurate we think our encoder - standard deviations of measurements
+          dtSeconds); // seconds
+
+    public Limelight() {
+        m_observerX.reset();
+        m_observerY.reset();
+        timer.restart();
+    }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("LL Filtered posX", getTranslation2d().getX());
-        SmartDashboard.putNumber("LL Filtered posY", getTranslation2d().getY());
-        SmartDashboard.putBoolean("LL IsNotVolatile", getIsNotVolatile());
+
+        SmartDashboard.putNumber("LL Filtered posX", getUnfilteredTranslation2d().getX());
+        SmartDashboard.putNumber("LL Filtered posY", getUnfilteredTranslation2d().getY());
 
         SmartDashboard.putNumber("LL Intake tX", intakeLLTable.getEntry("tx").getDouble(0.0));
-        
-
-
-
-        Translation2d currentPose = getTranslation2d();
-
-
-
-        totalX += currentPose.getX();
-        totalX -= xPoseReadings.get(0);
-        averageX = totalX / 50;
-
-        xPoseReadings.add(currentPose.getX());
-        xPoseReadings.remove(0);
-
-        totalY += currentPose.getY();
-        totalY -= yPoseReadings.get(0);
-        averageY = totalY / 50;
-
-        yPoseReadings.add(currentPose.getY());
-        yPoseReadings.remove(0);
-        
     }
 
-    public Translation2d getTranslation2d() {
+    public Translation2d getUnfilteredTranslation2d() {
         double[] botPose;
 
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
@@ -77,47 +85,56 @@ public class Limelight extends SubsystemBase {
         else {
             botPose = shooterLLTable.getEntry("botpose_wpired").getDoubleArray(new double[2]);
         }
+        
+        poseX.add(botPose[0]);
 
-        double filteredX = filterX.calculate(botPose[0]);
-        double filteredY = filterY.calculate(botPose[1]);
-
-        return (new Translation2d(filteredX, filteredY));
+        return (new Translation2d(botPose[0], botPose[1]));
     }
 
+    public static Matrix<N1, N1> getMatrix(ArrayList<Double> arraylist) {
+        Double[] array = arraylist.toArray(new Double[arraylist.size()]);
+        double[] primitiveArray = toPrimitive(array);
+
+        SimpleMatrix simpleMatrix = new SimpleMatrix(primitiveArray);
+        Matrix<N1, N1> matrix = new Matrix<>(simpleMatrix);
+
+        return matrix;
+    }
     
-    public double getVolatilityAxis(double average, ArrayList llOdometry){
-        double volatility = 0.00;
-        for(int i = 0; i < 50; i++){
-            volatility += Math.abs(average - (double)llOdometry.get(i));
+    public static double[] toPrimitive(Double[] array) {
+        double[] primitiveArray = new double[array.length];
+
+        for (int i = 0; i < array.length; i++) {
+            primitiveArray[i] = array[i].doubleValue();
         }
-        return volatility;
+        return primitiveArray;
     }
 
-    /**
-     * @return Highest axial volatility reading
-     */
-    public double getOverallVolatility() {
-        double volatilityX = getVolatilityAxis(averageX, xPoseReadings);
-        double volatilityY = getVolatilityAxis(averageY, yPoseReadings);
-        double overallVolatility = Util.max(volatilityX, volatilityY);
-        return overallVolatility;
+    public static double getFilteredX(double x) {
+
+        odomPoseX.add(x);
+    
+        updateDTseconds();
+
+        m_observerX.predict(getMatrix(poseX), dtSeconds);
+        m_observerX.correct(getMatrix(odomPoseX), getMatrix(poseX));
+
+        return m_observerX.getXhat(0);
     }
 
+    public static double getFilteredY(double y) {
 
-    public boolean getIsNotVolatile() {
-        return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+        odomPoseY.add(y);
+        
+        updateDTseconds();
+
+        m_observerY.predict(getMatrix(poseY), dtSeconds);
+        m_observerY.correct(getMatrix(odomPoseY), getMatrix(poseY));
+
+        return m_observerY.getXhat(0);
     }
 
-    /**
-     * @return tX reading from note detection, 0.0 if undetected 
-     */
-    public double getIntakeTX() {
-        double intakeNoteReading = intakeLLTable.getEntry("tx").getDouble(0.0);
-        return filterIntake.calculate(intakeNoteReading);
+    public static void updateDTseconds() {
+        dtSeconds = timer.get();
     }
-
-
-
-
-
 }

@@ -132,6 +132,9 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
     SmartDashboard.putString("Odometry Pose", odometry.getPoseMeters().toString());
 
+    SmartDashboard.putNumber("filtered X", getPose2d().getX());
+    SmartDashboard.putNumber("filtered Y", getPose2d().getY());
+
     // updateShuffleboardPIDConstants();
 
     if (SwerveDrive.getState() == SwerveDriveStates.TELEOP) {
@@ -142,9 +145,7 @@ public class SwerveDrive extends SubsystemBase {
     }
 
     // Update Odometer
-    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    updateOdometryWithVision();
-    
+    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());    
   }
 
 
@@ -248,15 +249,6 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setNeutralMode(neutralMode);
   }
 
-  public void updateOdometryWithVision() {
-    Translation2d pos = limelight.getTranslation2d();
-    if (limelight.getIsNotVolatile()) { // LL readings not volatile
-      if (pos.getX() != 0.0 && pos.getY() != 0.0) { // LL can see tags
-        resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
-      }
-    }
-  }
-
   // Stuff for Pathplanner
   public Pose2d getPose() {
     return odometry.getPoseMeters();
@@ -314,5 +306,14 @@ public class SwerveDrive extends SubsystemBase {
 
   public void clearStickyFaults() {
     
+  }
+
+  public Pose2d getPose2d() {
+    Pose2d odomPose = odometry.getPoseMeters();
+
+    double x = Limelight.getFilteredX(odomPose.getX());
+    double y = Limelight.getFilteredX(odomPose.getY());
+
+    return new Pose2d(x, y, odomPose.getRotation());
   }
 }

@@ -5,17 +5,21 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.SwerveDrive.SwerveDriveStates;;
+// import frc.robot.Constants.RobotState;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
   private RobotContainer m_robotContainer;
+
+  // private WPI_TalonFX intake = new WPI_TalonFX(0);
 
   @Override
   public void robotInit() {
@@ -31,11 +35,13 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
+    NetworkTableInstance.getDefault().flush();
+    // for better graphs
   }
 
   @Override
   public void disabledInit() {
-    SwerveDrive.setState(SwerveDriveStates.DISABLED);
+    // Constants.robotState = RobotState.DISABLED;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Coast);
   }
 
@@ -47,7 +53,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    SwerveDrive.setState(SwerveDriveStates.AUTON);
+    // Constants.robotState = RobotState.AUTON;
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().initGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
@@ -63,14 +69,16 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    // intake.set(0.2);
+  }
 
   @Override
   public void autonomousExit() {}
 
   @Override
   public void teleopInit() {
-    SwerveDrive.setState(SwerveDriveStates.TELEOP);
+    // Constants.robotState = RobotState.TELEOP;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
 
     if (m_autonomousCommand != null) {
