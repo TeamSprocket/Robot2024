@@ -60,7 +60,6 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         switch (state) {
             case NONE:
                 pivotIntake.set(0);
@@ -115,7 +114,7 @@ public class Intake extends SubsystemBase {
 
 
     public double getPivotAngle() {
-        double deg = Conversions.falconToDegrees(pivotIntake.getPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
+        double deg = Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
         deg %= 360;
         deg = (deg < 0) ? deg + 360 : deg; 
         return deg;
