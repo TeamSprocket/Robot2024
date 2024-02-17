@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 
 
@@ -102,6 +103,7 @@ public class Intake extends SubsystemBase {
 
         clearStickyFaults();
         lastState = state;
+        SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
     }
     
     public void setState(IntakeStates state) {
@@ -118,6 +120,7 @@ public class Intake extends SubsystemBase {
         deg %= 360;
         deg = (deg < 0) ? deg + 360 : deg; 
         return deg;
+        
     }
 
     // public void runPivotToSetpoint(double setpoint){
