@@ -53,9 +53,9 @@ public class Elevator extends SubsystemBase {
     motorRight.setNeutralMode(NeutralModeValue.Brake);
 
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
-    motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
+    // motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
-    motorRight.setControl(new Follower(motorLeft.getDeviceID(), false)); //Strict follower?
+    motorRight.setControl(new Follower(motorLeft.getDeviceID(), true)); //Strict follower?
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
