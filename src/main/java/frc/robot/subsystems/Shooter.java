@@ -3,11 +3,8 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -34,8 +31,8 @@ public class Shooter extends SubsystemBase {
   private ShooterStates lastState = ShooterStates.NONE;
 
   // Motors
-  WPI_TalonFX shooterMotor = new WPI_TalonFX(RobotMap.Shooter.SHOOTER);
-  WPI_TalonFX indexerMotor = new WPI_TalonFX(RobotMap.Shooter.INDEXER);
+  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER);
+  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
@@ -51,8 +48,8 @@ public class Shooter extends SubsystemBase {
     shooterMotor.setInverted(Constants.Shooter.kIsShooterInverted);
     indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
 
-    shooterMotor.setNeutralMode(NeutralMode.Coast);
-    indexerMotor.setNeutralMode(NeutralMode.Brake);
+    shooterMotor.setNeutralMode(NeutralModeValue.Coast);
+    indexerMotor.setNeutralMode(NeutralModeValue.Brake);
 
     this.botPoseSupplier = botPoseSupplier;
   }
@@ -70,7 +67,7 @@ public class Shooter extends SubsystemBase {
 
       case STANDBY:
         if (lastState == ShooterStates.HANDOFF) {
-          indexerPID.setSetpoint(indexerMotor.getSelectedSensorPosition());
+          indexerPID.setSetpoint(indexerMotor.getRotorPosition().getValueAsDouble());
         }
         holdIndexerPosition();
 
@@ -144,7 +141,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShooterRPS() {
-    double shooterVelocityCounts = shooterMotor.getSelectedSensorVelocity();
+    double shooterVelocityCounts = shooterMotor.getRotorVelocity().getValueAsDouble();
     double rpm = Conversions.falconToRPM(shooterVelocityCounts, Constants.Shooter.kShooterGearRatio);
     double rps = rpm / 60.0;
     return rps;
@@ -172,7 +169,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void holdIndexerPosition() {
-    double indexerMotorOutput = indexerPID.calculate(indexerMotor.getSelectedSensorPosition());
+    double indexerMotorOutput = indexerPID.calculate(indexerMotor.getRotorPosition().getValueAsDouble());
     indexerMotor.set(indexerMotorOutput);
   }
 
