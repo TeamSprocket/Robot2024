@@ -141,7 +141,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShooterRPS() {
-    double shooterVelocityCounts = shooterMotor.getRotorPosition().getValueAsDouble();
+    double shooterVelocityCounts = shooterMotor.getRotorVelocity().getValueAsDouble();
     double rpm = Conversions.falconToRPM(shooterVelocityCounts, Constants.Shooter.kShooterGearRatio);
     double rps = rpm / 60.0;
     return rps;

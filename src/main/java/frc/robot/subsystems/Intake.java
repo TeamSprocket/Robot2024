@@ -6,7 +6,10 @@ package frc.robot.subsystems;
 
 //phoenix imports for pivot intake
 import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 
@@ -14,7 +17,7 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 //spark max imports for roll intake
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -26,12 +29,13 @@ import frc.util.Util;
 public class Intake extends SubsystemBase {
 
     private final CANSparkMax rollIntake = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless);
-    private final WPI_TalonFX pivotIntake = new WPI_TalonFX(RobotMap.Intake.PIVOT_INTAKE);
+    private final TalonFX pivotIntake = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     ProfiledPIDController profiledPIDController;
 
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
+    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
 
     public enum IntakeStates {
         NONE,
@@ -50,13 +54,12 @@ public class Intake extends SubsystemBase {
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
 
         rollIntake.setIdleMode(IdleMode.kBrake);
-        pivotIntake.setNeutralMode(NeutralMode.Brake);
+        pivotIntake.setNeutralMode(NeutralModeValue.Brake);
 
     }
 
     @Override
     public void periodic() {
-
         switch (state) {
             case NONE:
                 pivotIntake.set(0);
@@ -111,7 +114,7 @@ public class Intake extends SubsystemBase {
 
 
     public double getPivotAngle() {
-        double deg = Conversions.falconToDegrees(pivotIntake.getSelectedSensorPosition(), Constants.Intake.kPivotIntakeGearRatio);
+        double deg = Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
         deg %= 360;
         deg = (deg < 0) ? deg + 360 : deg; 
         return deg;

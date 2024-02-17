@@ -8,7 +8,10 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+//import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -22,7 +25,7 @@ import frc.util.Util;
 
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
-  WPI_TalonFX motor = new WPI_TalonFX(RobotMap.Wrist.WRIST);
+  TalonFX motor = new TalonFX(RobotMap.Wrist.WRIST);
 
   WristStates state = WristStates.NONE;
   WristStates lastState;
@@ -49,7 +52,7 @@ public class Wrist extends SubsystemBase {
     this.joystickSupplier = joystickSupplier;
 
     motor.setInverted(Constants.Wrist.kIsWristInverted);
-    motor.setNeutralMode(NeutralMode.Brake);
+    motor.setNeutralMode(NeutralModeValue.Brake);
     
     // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
     // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
@@ -122,7 +125,7 @@ public class Wrist extends SubsystemBase {
    * @return Angle of the wrist in degrees, CW+, CCW-
    */
   public double getWristAngle() {
-    double deg = Conversions.falconToDegrees(motor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
+    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg %= 360;
     if (deg > 180) {
       deg -= (360); 

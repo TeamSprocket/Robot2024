@@ -2,8 +2,11 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.Follower;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -35,8 +38,8 @@ public class Elevator extends SubsystemBase {
   }
   private ElevatorStates state = ElevatorStates.NONE;
 
-  private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
-  private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
+  private TalonFX motorLeft = new TalonFX(RobotMap.Elevator.Left);
+  private TalonFX motorRight = new TalonFX(RobotMap.Elevator.Right);
 
   ProfiledPIDController profiledPIDController;
   
@@ -46,13 +49,13 @@ public class Elevator extends SubsystemBase {
 
 
   public Elevator(Supplier<Double> leftBumperSupplier, Supplier<Double> rightBumperSupplier) {
-    motorLeft.setNeutralMode(NeutralMode.Brake);
-    motorRight.setNeutralMode(NeutralMode.Brake);
+    motorLeft.setNeutralMode(NeutralModeValue.Brake);
+    motorRight.setNeutralMode(NeutralModeValue.Brake);
 
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
     motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
-    motorRight.follow(motorLeft);
+    motorRight.setControl(new Follower(motorLeft.getDeviceID(), false)); //Strict follower?
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
@@ -125,12 +128,12 @@ public class Elevator extends SubsystemBase {
     speed *= Constants.Elevator.kManualMultiplier;
     Util.deadband(speed, -0.1, 0.1);
 
-    profiledPIDController.setGoal(motorLeft.getSelectedSensorPosition() + speed);
+    profiledPIDController.setGoal(motorLeft.getPosition().getValueAsDouble() + speed);
     motorLeft.set(profiledPIDController.calculate(getHeight()));
   }
 
   public double getHeight() {
-    return Conversions.falconToMeters(motorLeft.getSelectedSensorPosition(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+    return Conversions.falconToMeters(motorLeft.getPosition().getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
 
