@@ -125,7 +125,7 @@ public class Wrist extends SubsystemBase {
    * @return Angle of the wrist in degrees, CW+, CCW-
    */
   public double getWristAngle() {
-    double deg = Conversions.falconToDegrees(motor.getPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
+    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg %= 360;
     if (deg > 180) {
       deg -= (360); 
