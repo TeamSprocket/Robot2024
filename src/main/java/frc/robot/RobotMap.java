@@ -28,7 +28,7 @@ public final class RobotMap {
     public static final int FRONT_LEFT_TALON_D = 23;
     public static final int FRONT_RIGHT_TALON_D = 20;
     public static final int BACK_LEFT_TALON_D = 24;
-    public static final int BACK_RIGHT_TALON_D = 21;
+    // public static final int BACK_RIGHT_TALON_D = 21;
 
     // public static final int FRONT_LEFT_TALON_T = 23;
     // public static final int FRONT_RIGHT_TALON_T = 28;

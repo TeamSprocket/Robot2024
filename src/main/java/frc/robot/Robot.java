@@ -20,14 +20,14 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private WPI_TalonFX frontleft = new WPI_TalonFX(23);
-  private WPI_TalonFX frontright = new WPI_TalonFX(20);
-  private WPI_TalonFX backleft = new WPI_TalonFX(24);
-  private WPI_TalonFX backright = new WPI_TalonFX(21);
+  // private WPI_TalonFX frontleft = new WPI_TalonFX(23);
+  // private WPI_TalonFX frontright = new WPI_TalonFX(20);
+  // private WPI_TalonFX backleft = new WPI_TalonFX(24);
+  // // private WPI_TalonFX backright = new WPI_TalonFX(21);
 
-  private WPI_TalonFX intake = new WPI_TalonFX(30);
+  // private WPI_TalonFX intake = new WPI_TalonFX(30);
 
-  private XboxController joystick1 = new XboxController(0);
+  // private XboxController joystick1 = new XboxController(0);
 
   @Override
   public void robotInit() {
@@ -74,10 +74,10 @@ public class Robot extends TimedRobot {
 
     Constants.robotState = RobotState.TELEOP;
     m_robotContainer.configureBindings();
-    frontleft.setNeutralMode(NeutralMode.Brake);
-    frontright.setNeutralMode(NeutralMode.Brake);
-    backleft.setNeutralMode(NeutralMode.Brake);
-    backright.setNeutralMode(NeutralMode.Brake);
+    // frontleft.setNeutralMode(NeutralMode.Brake);
+    // frontright.setNeutralMode(NeutralMode.Brake);
+    // backleft.setNeutralMode(NeutralMode.Brake);
+    // backright.setNeutralMode(NeutralMode.Brake);
     //Try follow next
 
     if (m_autonomousCommand != null) {
@@ -87,27 +87,27 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    double speed = -joystick1.getRawAxis(5) * 0.6;
-    double turn = joystick1.getRawAxis(0) * 0.3;
+    // double speed = -joystick1.getRawAxis(5) * 0.6;
+    // double turn = joystick1.getRawAxis(0) * 0.3;
 
-    if (Math.abs(joystick1.getRawAxis(2)) > 0.1) {
-      // intake.set(joystick1.getRawAxis(2)*0.3);
-      frontleft.set(0.3);
-    }
-    else if (Math.abs(joystick1.getRawAxis(3)) > 0.1) {
-      intake.set(-joystick1.getRawAxis(3)*0.3);
-    }
-    if (joystick1.getRawButton(1)) {
-      intake.set(0.3);
-    }
+    // if (Math.abs(joystick1.getRawAxis(2)) > 0.1) {
+    //   // intake.set(joystick1.getRawAxis(2)*0.3);
+    //   frontleft.set(0.3);
+    // }
+    // else if (Math.abs(joystick1.getRawAxis(3)) > 0.1) {
+    //   intake.set(-joystick1.getRawAxis(3)*0.3);
+    // }
+    // if (joystick1.getRawButton(1)) {
+    //   intake.set(0.3);
+    // }
 
-    double left = speed + turn;
-    double right = speed - turn;
+    // double left = speed + turn;
+    // double right = speed - turn;
 
-    frontleft.set(left);
-    frontright.set(-right);
-    backleft.set(left);
-    backright.set(-right);
+    // frontleft.set(left);
+    // frontright.set(-right);
+    // backleft.set(left);
+    // backright.set(-right);
     // frontleft.set(0.2);
   }
 
