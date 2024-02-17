@@ -53,9 +53,9 @@ public class Elevator extends SubsystemBase {
     motorRight.setNeutralMode(NeutralModeValue.Brake);
 
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
-    motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
+    // motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
-    motorRight.setControl(new Follower(motorLeft.getDeviceID(), false)); //Strict follower?
+    motorRight.setControl(new Follower(motorLeft.getDeviceID(), true)); //Strict follower?
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
@@ -128,12 +128,12 @@ public class Elevator extends SubsystemBase {
     speed *= Constants.Elevator.kManualMultiplier;
     Util.deadband(speed, -0.1, 0.1);
 
-    profiledPIDController.setGoal(motorLeft.getPosition().getValueAsDouble() + speed);
+    profiledPIDController.setGoal(motorLeft.getRotorPosition().getValueAsDouble() + speed);
     motorLeft.set(profiledPIDController.calculate(getHeight()));
   }
 
   public double getHeight() {
-    return Conversions.falconToMeters(motorLeft.getPosition().getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+    return Conversions.falconToMeters(motorLeft.getRotorPosition().getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
 
