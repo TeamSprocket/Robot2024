@@ -22,19 +22,19 @@ public class Limelight extends SubsystemBase {
     private NetworkTable tableShooter = NetworkTableInstance.getDefault().getTable("limelight-shooter");
     private NetworkTable tableIntake = NetworkTableInstance.getDefault().getTable("limelight-intake");
 
-    // private MedianFilter filterY = new MedianFilter(3);
-    // private MedianFilter filterX = new MedianFilter(3);
+    private MedianFilter filterY = new MedianFilter(3);
+    private MedianFilter filterX = new MedianFilter(3);
     private MedianFilter filterIntake = new MedianFilter(5);
 
-    private ArrayList<Double> distsX = new ArrayList<Double>(Constants.Limelight.kSlidingWindowLen);
-    private ArrayList<Double> distsY = new ArrayList<Double>(Constants.Limelight.kSlidingWindowLen);
+    private ArrayList<Double> distsX = new ArrayList<Double>(Constants.Limelight.kVolatilitySlidingWindowLen);
+    private ArrayList<Double> distsY = new ArrayList<Double>(Constants.Limelight.kVolatilitySlidingWindowLen);
 
 
     SwerveDrive swerveDrive;
 
 
     public Limelight() {
-        for (int i = 0; i < Constants.Limelight.kSlidingWindowLen; i++) {
+        for (int i = 0; i < Constants.Limelight.kVolatilitySlidingWindowLen; i++) {
             distsX.add(0.0);
             distsY.add(0.0);
         }
@@ -56,10 +56,10 @@ public class Limelight extends SubsystemBase {
         // System.out.println(""+tableShooter.getEntry("botpose").getDoubleArray(new double[2])[0]);
         Translation2d currentPose = getTranslation2d();
 
-        distsX.add(currentPose.getX());
+        distsX.add(filterX.calculate(currentPose.getX()));
         distsX.remove(0);
 
-        distsY.add(currentPose.getY());
+        distsY.add(filterY.calculate(currentPose.getY()));
         distsY.remove(0);
         
     }
@@ -84,6 +84,33 @@ public class Limelight extends SubsystemBase {
         // return (new Translation2d(filteredX, filteredY));
         return new Translation2d(xPos, yPos);
     }
+
+    /**
+     * @return Average bot pose Translation2d in the entire read window 
+     */
+    public Translation2d getTranslation2dWindowAvg() {
+        return new Translation2d(
+            Util.average(distsX),
+            Util.average(distsY)
+        );
+    }
+
+    /**
+     * @param numTerms number of terms included in the window, will the most recent numTerms terms 
+     * @return Average bot pose Translation2d in the window  
+     */
+    public Translation2d getTranslation2dWindowAvg(int numTerms) {
+        int initialXIndex = distsX.size() - 1 - numTerms;
+        int finalXIndex = distsX.size() - 1;
+        int initialYIndex = distsY.size() - 1 - numTerms;
+        int finalYIndex = distsY.size() - 1;
+        return new Translation2d(
+            Util.average(distsX.subList(initialXIndex, finalXIndex)),
+            Util.average(distsY.subList(initialYIndex, finalYIndex))
+        );
+    }
+
+
 
 
     public double getNoteTX() {
