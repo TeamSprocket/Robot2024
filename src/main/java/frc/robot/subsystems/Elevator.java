@@ -12,6 +12,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
@@ -108,7 +109,7 @@ public class Elevator extends SubsystemBase {
         break;
     }
    
-    
+    SmartDashboard.getNumber("Elevator Height [EL]", getHeight());
 
     clearStickyFaults();
   }
