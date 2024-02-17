@@ -67,7 +67,7 @@ public class Shooter extends SubsystemBase {
 
       case STANDBY:
         if (lastState == ShooterStates.HANDOFF) {
-          indexerPID.setSetpoint(indexerMotor.getPosition().getValueAsDouble());
+          indexerPID.setSetpoint(indexerMotor.getRotorPosition().getValueAsDouble());
         }
         holdIndexerPosition();
 
@@ -141,7 +141,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public double getShooterRPS() {
-    double shooterVelocityCounts = shooterMotor.getPosition().getValueAsDouble();
+    double shooterVelocityCounts = shooterMotor.getRotorPosition().getValueAsDouble();
     double rpm = Conversions.falconToRPM(shooterVelocityCounts, Constants.Shooter.kShooterGearRatio);
     double rps = rpm / 60.0;
     return rps;
@@ -169,7 +169,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void holdIndexerPosition() {
-    double indexerMotorOutput = indexerPID.calculate(indexerMotor.getPosition().getValueAsDouble());
+    double indexerMotorOutput = indexerPID.calculate(indexerMotor.getRotorPosition().getValueAsDouble());
     indexerMotor.set(indexerMotorOutput);
   }
 
