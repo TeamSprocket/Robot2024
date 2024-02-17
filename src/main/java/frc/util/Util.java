@@ -8,6 +8,7 @@
 package frc.util;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class contains miscellaneous utility functions that can be used anywhere
@@ -99,6 +100,14 @@ public final class Util {
       sum += val;
     }
     return (sum / values.length);
+  }
+
+  public static double average(List<Double> values) {
+    double sum = 0.0;
+    for (int i = 0; i < values.size(); i++) {
+      sum += values.get(i);
+    }
+    return (sum / values.size());
   }
   
   public static double average(ArrayList<Double> values) {
