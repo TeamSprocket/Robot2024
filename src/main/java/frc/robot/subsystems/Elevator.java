@@ -128,12 +128,12 @@ public class Elevator extends SubsystemBase {
     speed *= Constants.Elevator.kManualMultiplier;
     Util.deadband(speed, -0.1, 0.1);
 
-    profiledPIDController.setGoal(motorLeft.getPosition().getValueAsDouble() + speed);
+    profiledPIDController.setGoal(motorLeft.getRotorPosition().getValueAsDouble() + speed);
     motorLeft.set(profiledPIDController.calculate(getHeight()));
   }
 
   public double getHeight() {
-    return Conversions.falconToMeters(motorLeft.getPosition().getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+    return Conversions.falconToMeters(motorLeft.getRotorPosition().getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
 
