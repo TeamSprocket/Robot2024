@@ -220,10 +220,10 @@ public class Constants {
         // public static final boolean BACK_LEFT_T_IS_REVERSED = false;
         // public static final boolean FRONT_LEFT_T_IS_REVERSED = false; 
 
-        public static double kCANCoderOffsetFrontLeft = -53.7;
-        public static double kCANCoderOffsetFrontRight = -331.4;
-        public static double kCANCoderOffsetBackLeft = 131.1;
-        public static double kCANCoderOffsetBackRight = 234.1;
+        public static double kCANCoderOffsetFrontLeft = 0.0; // -53.7
+        public static double kCANCoderOffsetFrontRight = 0.0; // -331.4
+        public static double kCANCoderOffsetBackLeft = 0.0; // 131.1
+        public static double kCANCoderOffsetBackRight = 0.0; // 234.1
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =  Math.toRadians(303.2);
         // public static final double BACK_RIGHT_ABS_ENCODER_OFFSET_RAD = Math.toRadians(305.5);

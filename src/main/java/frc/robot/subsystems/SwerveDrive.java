@@ -2,6 +2,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -113,15 +114,21 @@ public class SwerveDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("DEBUG - xSpeed", xSpeed);
-    SmartDashboard.putNumber("DEBUG - ySpeed", ySpeed);
-    SmartDashboard.putNumber("DEBUG - tSpeed", tSpeed);
-    SmartDashboard.putNumber("Target Heading (Deg)", Math.toDegrees(targetHeadingRad));
-    SmartDashboard.putNumber("Heading (Deg)", Math.toDegrees(getHeading()));
-    SmartDashboard.putNumber("Odometry X (m)", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
-    SmartDashboard.putString("Odometry Pose", odometry.getPoseMeters().toString());
+    SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
+    SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
+    SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
+    SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
+    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
+
+    SmartDashboard.putNumber("front left cancoder [SD]", frontLeft.getCANCoderDegrees());
+    SmartDashboard.putNumber("front right cancoder [SD]", frontRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back right cancoder [SD]", backRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back left cancoder [SD]", backLeft.getCANCoderDegrees());
+
 
     // updateShuffleboardPIDConstants();
 
@@ -223,7 +230,7 @@ public class SwerveDrive extends SubsystemBase {
     backRight.zeroDriveMotor();
   }
 
-  public void setNeutralMode(NeutralMode neutralMode) {
+  public void setNeutralMode(NeutralModeValue neutralMode) {
     frontLeft.setNeutralMode(neutralMode);
     frontRight.setNeutralMode(neutralMode);
     backLeft.setNeutralMode(neutralMode);

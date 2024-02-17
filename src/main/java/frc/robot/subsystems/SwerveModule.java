@@ -3,12 +3,13 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
+// import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+// import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -22,16 +23,16 @@ import frc.util.Conversions;
 public class SwerveModule extends SubsystemBase {
   
   
-  private final WPI_TalonFX driveMotor;
-  private final WPI_TalonFX turnMotor;
+  private final TalonFX driveMotor;
+  private final TalonFX turnMotor;
   private final PIDController turnPIDController; 
-  private final CANCoder cancoder;
+  private final CANcoder cancoder;
   private Supplier<Double> cancoderOffsetDeg;
 
   public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, Supplier<Double> cancoderOffsetDeg, boolean driveIsReversed) {
-    this.driveMotor = new WPI_TalonFX(driveMotorID);
-    this.turnMotor = new WPI_TalonFX(turnMotorID);
-    this.cancoder = new CANCoder(cancoderID);
+    this.driveMotor = new TalonFX(driveMotorID);
+    this.turnMotor = new TalonFX(turnMotorID);
+    this.cancoder = new CANcoder(cancoderID);
     this.cancoderOffsetDeg = cancoderOffsetDeg; 
     
     this.driveMotor.setInverted(driveIsReversed); 
@@ -40,24 +41,24 @@ public class SwerveModule extends SubsystemBase {
     turnPIDController.enableContinuousInput(-180, 180);
     turnMotor.setInverted(true);
     
-    cancoder.configFactoryDefault();
-    CANCoderConfiguration cancoderConfig = new CANCoderConfiguration();
-    cancoderConfig.absoluteSensorRange = AbsoluteSensorRange.Unsigned_0_to_360; //Signed_PlusMinus180?
-    cancoder.configAllSettings(cancoderConfig);
+    // cancoder.configFactoryDefault();
+    // CANCoderConfiguration cancoderConfig = new CANCoderConfiguration();
+    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+    cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; //Signed_PlusMinus180?
+    cancoder.getConfigurator().apply(cancoderConfig);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("ResetTicks", Conversions.degreesToFalcon(cancoder.getAbsolutePosition(), Constants.Drivetrain.kTurningMotorGearRatio));
+    SmartDashboard.putNumber("ResetTicks", Conversions.degreesToFalcon(cancoder.getAbsolutePosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
     SmartDashboard.putNumber("TurnPosDeg2", getTurnPosition());
     SmartDashboard.putNumber("ABSDeg", getCANCoderDegrees());
-    SmartDashboard.putNumber("TurnTicks1", turnMotor.getSelectedSensorPosition());
-    SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio));
-    double deg = Conversions.falconToDegrees(turnMotor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
+    SmartDashboard.putNumber("TurnTicks1", turnMotor.getRotorPosition().getValueAsDouble());
+    SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
+    double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg -= (deg >  180) ? 360 : 0;
-    SmartDashboard.putNumber("Degree", deg);
-    
+    SmartDashboard.putNumber("Degree", deg);    
 
     clearStickyFaults();
     // this.cancoderOffsetDeg = (ShuffleboardPIDTuner.get("CancoderOffsetDegCancoderOffsetDegTEMP"));
@@ -67,7 +68,7 @@ public class SwerveModule extends SubsystemBase {
    * @return Wheel pos in degrees (-180, 180)
    */
   public double getTurnPosition() {
-    double deg = Conversions.falconToDegrees(turnMotor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
+    double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
      deg %= 360;
       if (deg > 180) {
         deg -= (360); 
@@ -93,7 +94,7 @@ public class SwerveModule extends SubsystemBase {
    * @return Drive position in meters 
    */
   public double getDrivePosMeters() {
-    double motorTicks = driveMotor.getSelectedSensorPosition();
+    double motorTicks = driveMotor.getRotorPosition().getValueAsDouble();
     double circum = Constants.Drivetrain.kWheelDiameterMeters * Math.PI;
     double ratio = Constants.Drivetrain.kDriveMotorGearRatio;
     double pos = Conversions.falconToMeters(motorTicks, circum, ratio);
@@ -102,13 +103,15 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public SwerveModuleState getModuleState() {
-    double moduleSpdMPS = Conversions.falconToMPS(driveMotor.getSelectedSensorVelocity(), (Constants.Drivetrain.kWheelDiameterMeters * Math.PI), Constants.Drivetrain.kDriveMotorGearRatio);
+    double moduleSpdMPS = Conversions.falconToMPS(driveMotor.getRotorVelocity().getValueAsDouble(), (Constants.Drivetrain.kWheelDiameterMeters * Math.PI), Constants.Drivetrain.kDriveMotorGearRatio);
     return new SwerveModuleState(moduleSpdMPS, new Rotation2d(Math.toRadians(getTurnPosition())));
   }
 
 
   public double getCANCoderDegrees() {
-    double offsetDeg = cancoder.getAbsolutePosition() - cancoderOffsetDeg.get();
+    double cancoderRaw = cancoder.getAbsolutePosition().getValueAsDouble();  // 0 to 1
+    double cancoderDeg = cancoderRaw * 360.0; // 0 to 360
+    double offsetDeg = cancoderDeg - cancoderOffsetDeg.get();
     offsetDeg = (offsetDeg < 0) ? (offsetDeg % 360) + 360 : offsetDeg;
     return offsetDeg;
   }
@@ -116,14 +119,14 @@ public class SwerveModule extends SubsystemBase {
   public void zeroTurnMotorABS() {
     double ticks = Conversions.degreesToFalcon(getCANCoderDegrees(), Constants.Drivetrain.kTurningMotorGearRatio);
     Timer.delay(0.1);
-    turnMotor.setSelectedSensorPosition(ticks);
+    turnMotor.setPosition(ticks);
   }
 
   public void zeroDriveMotor() {
-    driveMotor.setSelectedSensorPosition(0.0);
+    driveMotor.setPosition(0.0);
   }
 
-  public void setNeutralMode(NeutralMode neutralMode) {
+  public void setNeutralMode(NeutralModeValue neutralMode) {
     driveMotor.setNeutralMode(neutralMode);
     turnMotor.setNeutralMode(neutralMode);
   }
@@ -131,10 +134,11 @@ public class SwerveModule extends SubsystemBase {
   public void setState(SwerveModuleState moduleState) {
     SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
     
-    driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
+    // driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
+    driveMotor.set(state.speedMetersPerSecond);
 
-    turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
-    
+    // turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
 
   }
   
