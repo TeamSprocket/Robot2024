@@ -52,7 +52,7 @@ public class Constants {
 
         public static final double kAtGoalTolerance = 0.005;
 
-        public static final double kElevatorGearRatio = 0.0;
+        public static final double kElevatorGearRatio = 18.89;
         public static final double kElevatorGearCircumM = Conversions.inchesToMeters(0.0);
 
         public static final boolean kIsInvertedLeft = false;
@@ -64,7 +64,7 @@ public class Constants {
 
 
     public static final class Wrist {
-        public static boolean kIsWristInverted = true;
+        public static final boolean kIsWristInverted = true;
 
         public static double kPwrist = 0;
         public static double kIwrist = 0;
@@ -72,15 +72,18 @@ public class Constants {
 
         public static final double kManualMultiplier = 0.001;
 
-        public static final double kAtGoalTolerance = 0.3;
+        public static final double kAtGoalTolerance = 0.25;
 
-        public static double kMaxVelocityDeg = 0.0;
-        public static double kMaxAccelerationDeg = 0.0;
+        public static final double kWristGearRatio = 148.15;
+
+        public static final double kMaxVelocityDeg = 0.0;
+        public static final double kMaxAccelerationDeg = 0.0;
         
-        public static double kTargetAngleStowed = 0.0;
-        public static double kTargetAngleSpeaker = 0.0;
-        public static double kTargetAngleSpeakerHigh = 0.0;
-        public static double kTargetAngleAmp = 0.0;
+        public static final double kTargetAngleStowed = 0.0;
+        public static final double kTargetAngleIntake = 0.0;
+        public static final double kTargetAngleSpeaker = 0.0;
+        public static final double kTargetAngleSpeakerHigh = 0.0;
+        public static final double kTargetAngleAmp = 0.0;
     }
 
 
@@ -95,7 +98,7 @@ public class Constants {
         public static final double kShooterSpeedScoreAmp = 0.0;
         
         public static final double kShooterGearRatio = 1.0;
-        public static final double kIndexerGearRatio = 1.0;
+        public static final double kIndexerGearRatio = 2.0;
         
         public static final double kShooterWheelDiameter = 2.0;
 
@@ -118,15 +121,16 @@ public class Constants {
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.0;
 
-        public static final boolean kIsRollInverted = false;
+        public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
 
         public static final double kPivotMaxVelocity = 0.0;
         public static final double kPivotMaxAccel = 0.0;
 
-        public static final double kAtGoalTolerance = 0.5;
+        public static final double kAtGoalTolerance = 0.5; // 0.5
 
-        public static final double kPivotIntakeGearRatio = 0.0;
+        public static final double kPivotIntakeGearRatio = 36.0;
+
         public static final double kHasNoteCurrentThreshold = 0.0;
 
         public static final double kPPivot = 0.0;

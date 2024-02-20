@@ -2,8 +2,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.ctre.phoenix6.hardware.core.CorePigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -42,7 +45,7 @@ public class SwerveDrive extends SubsystemBase {
   } 
 
   
-  private final ADIS16470_IMU gyro = new ADIS16470_IMU();
+  private PigeonIMU gyro = new PigeonIMU(RobotMap.Drivetrain.PIGEON_2);
   
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
@@ -151,7 +154,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getAngle(gyro.getYawAxis()) + 180.0;
+    double angle = gyro.getYaw() + 180.0; 
     
     angle %= 360.0;
     if (angle < 0) {
@@ -195,19 +198,19 @@ public class SwerveDrive extends SubsystemBase {
   }
   
 
-  public void initGyro() {
-    gyro.reset();
-    gyro.calibrate();
-    gyro.reset();
-  }
+  // public void initGyro() {
+  //   gyro.setYaw(0);
+  //   // gyro.enterCalibrationMode();
+  //   // gyro.reset();
+  // }
 
   public void zeroGyro() {
-    gyro.reset();
+    gyro.setYaw(0);
   }
 
-  public void calibrateGyro() {
-    gyro.calibrate();
-  }
+  // public void calibrateGyro() {
+    // gyro.calibrate();
+  // }
 
   public void setTargetHeadingRad(double targetHeadingRad) {
     this.targetHeadingRad = targetHeadingRad;

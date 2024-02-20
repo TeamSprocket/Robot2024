@@ -39,8 +39,8 @@ public class Elevator extends SubsystemBase {
   }
   private ElevatorStates state = ElevatorStates.NONE;
 
-  private TalonFX motorLeft = new TalonFX(RobotMap.Elevator.Left);
-  private TalonFX motorRight = new TalonFX(RobotMap.Elevator.Right);
+  private TalonFX motorLeft = new TalonFX(RobotMap.Elevator.ELEVATOR_LEFT);
+  private TalonFX motorRight = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
 
   ProfiledPIDController profiledPIDController;
   

@@ -47,10 +47,10 @@ public class Superstructure extends SubsystemBase {
   public void periodic() {
     switch (state) {
       case NONE:
-        elevator.setState(ElevatorStates.NONE);
-        wrist.setState(WristStates.NONE);
-        shooter.setState(ShooterStates.NONE);
-        intake.setState(IntakeStates.NONE);
+        // elevator.setState(ElevatorStates.NONE); // TODO re-enable
+        // wrist.setState(WristStates.NONE);
+        // shooter.setState(ShooterStates.NONE);
+        // intake.setState(IntakeStates.NONE);
       break;
       
 

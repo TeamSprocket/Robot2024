@@ -11,6 +11,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 
@@ -29,7 +30,7 @@ import frc.util.Util;
 /** Add your docs here. */
 public class Intake extends SubsystemBase {
 
-    private final CANSparkMax rollIntake = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless);
+    private final TalonFX rollIntake = new TalonFX(RobotMap.Intake.ROLL_INTAKE);
     private final TalonFX pivotIntake = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     ProfiledPIDController profiledPIDController;
@@ -38,12 +39,12 @@ public class Intake extends SubsystemBase {
     private IntakeStates lastState = IntakeStates.NONE;
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
 
+    SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
+
     public enum IntakeStates {
         NONE,
         STOWED,
-        INTAKE,
-        WAIT_HANDOFF,
-        HANDOFF
+        INTAKE
     }
 
 
@@ -54,13 +55,22 @@ public class Intake extends SubsystemBase {
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
 
-        rollIntake.setIdleMode(IdleMode.kBrake);
+        rollIntake.setNeutralMode(NeutralModeValue.Coast);
         pivotIntake.setNeutralMode(NeutralModeValue.Brake);
 
+
+        selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
+        selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
+        selectIntakeState.addOption("INTAKE", IntakeStates.INTAKE);
+        SmartDashboard.putData(selectIntakeState);
     }
 
     @Override
     public void periodic() {
+        // TODO: REMOVE - TEMP
+        setState(selectIntakeState.getSelected());
+
+
         switch (state) {
             case NONE:
                 pivotIntake.set(0);
@@ -68,43 +78,27 @@ public class Intake extends SubsystemBase {
                 break;
 
             case STOWED:
-                // if (lastState != IntakeStates.STOWED) {
-                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleStowed);
-                // }
+                profiledPIDController.setGoal(Constants.Intake.kPivotAngleStowed);
                 pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
+
                 rollIntake.set(Constants.Intake.kRollSpeedStowed);
                 break;
 
             case INTAKE:
-                // if (lastState != IntakeStates.INTAKE) {
-                    profiledPIDController.setGoal(Constants.Intake.kPivotAngleIntake);
-                // }
+                profiledPIDController.setGoal(Constants.Intake.kPivotAngleIntake);
                 pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
+
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
-
-            // case WAIT_HANDOFF:
-            //     // if (lastState != IntakeStates.WAIT_HANDOFF) {
-            //         profiledPIDController.setGoal(Constants.Intake.kPivotAngleWaitHandoff);
-            //     // }
-            //     pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
-            //     rollIntake.set(Constants.Intake.kRollSpeedWaitHandoff);
-            //     break;
-
-
-            // case HANDOFF:
-            //     // if (lastState != IntakeStates.HANDOFF) {
-            //         profiledPIDController.setGoal(Constants.Intake.kPivotAngleHandoff);
-            //     // }
-            //     pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
-            //     rollIntake.set(Constants.Intake.kRollSpeedHandoff);
-            //     break;
+            
         }
 
         clearStickyFaults();
         lastState = state;
+
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
     }
+
     
     public void setState(IntakeStates state) {
         this.state = state;
@@ -113,7 +107,6 @@ public class Intake extends SubsystemBase {
     public IntakeStates getState() {
         return state;
     }
-
 
     public double getPivotAngle() {
         double deg = Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
@@ -132,7 +125,7 @@ public class Intake extends SubsystemBase {
     
 
     public boolean hasDetectedNote() {
-       return rollIntake.getOutputCurrent() > Constants.Intake.kHasNoteCurrentThreshold;
+       return rollIntake.getStatorCurrent().getValueAsDouble() > Constants.Intake.kHasNoteCurrentThreshold;
     }
 
   public boolean atGoal() {

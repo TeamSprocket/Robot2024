@@ -39,7 +39,7 @@ public class Wrist extends SubsystemBase {
   public enum WristStates {
     NONE,
     STOWED,
-    HANDOFF,
+    INTAKE,
     SPEAKER,
     SPEAKER_HIGH,
     AMP,
@@ -74,6 +74,10 @@ public class Wrist extends SubsystemBase {
         // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
+
+      case INTAKE:
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleIntake);
+          motor.set(profiledPIDController.calculate(getWristAngle()));
 
       // case HANDOFF:
       //   // if (lastState != WristStates.HANDOFF) {
@@ -126,7 +130,7 @@ public class Wrist extends SubsystemBase {
    * @return Angle of the wrist in degrees, CW+, CCW-
    */
   public double getWristAngle() {
-    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
+    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.Wrist.kWristGearRatio);
     deg %= 360;
     if (deg > 180) {
       deg -= (360); 
