@@ -25,10 +25,20 @@ public final class RobotMap {
    * 40..49 - Spark Max
    */
   public static final class Drivetrain {
-    public static final int FRONT_LEFT_TALON_D = 23;
-    public static final int FRONT_RIGHT_TALON_D = 20;
-    public static final int BACK_LEFT_TALON_D = 24;
-    public static final int BACK_RIGHT_TALON_D = 21;
+
+    //2022 robot
+    // public static final int FRONT_LEFT_TALON_D = 23;
+    // public static final int FRONT_RIGHT_TALON_D = 20;
+    // public static final int BACK_LEFT_TALON_D = 24;
+    // public static final int BACK_RIGHT_TALON_D = 21;
+
+    //2019 robot
+    public static final int FRONT_LEFT_TALON_D = 2;
+    public static final int MID_LEFT_TALON_D = 3;
+    public static final int BACK_LEFT_TALON_D = 4;
+    public static final int FRONT_RIGHT_TALON_D = 7;
+    public static final int MID_FRONT_TALON_D = 6;
+    public static final int BACK_RIGHT_TALON_D = 5;
 
     // public static final int FRONT_LEFT_TALON_T = 23;
     // public static final int FRONT_RIGHT_TALON_T = 28;

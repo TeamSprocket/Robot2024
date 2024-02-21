@@ -20,10 +20,19 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private WPI_TalonFX frontleft = new WPI_TalonFX(23);
-  private WPI_TalonFX frontright = new WPI_TalonFX(20);
-  private WPI_TalonFX backleft = new WPI_TalonFX(24);
-  private WPI_TalonFX backright = new WPI_TalonFX(21);
+  //2022 robot
+  // private WPI_TalonFX frontleft = new WPI_TalonFX(23);
+  // private WPI_TalonFX frontright = new WPI_TalonFX(20);
+  // private WPI_TalonFX backleft = new WPI_TalonFX(24);
+  // private WPI_TalonFX backright = new WPI_TalonFX(21);
+
+  //2019 robot
+  private WPI_TalonFX frontleft = new WPI_TalonFX(2);
+  private WPI_TalonFX frontright = new WPI_TalonFX(7);
+  private WPI_TalonFX backleft = new WPI_TalonFX(4);
+  private WPI_TalonFX backright = new WPI_TalonFX(5);
+  private WPI_TalonFX midright = new WPI_TalonFX(6);
+  private WPI_TalonFX midleft = new WPI_TalonFX(3);
 
   private WPI_TalonFX intake = new WPI_TalonFX(30);
 
@@ -78,6 +87,8 @@ public class Robot extends TimedRobot {
     frontright.setNeutralMode(NeutralMode.Brake);
     backleft.setNeutralMode(NeutralMode.Brake);
     backright.setNeutralMode(NeutralMode.Brake);
+    midright.setNeutralMode(NeutralMode.Brake);
+    midleft.setNeutralMode(NeutralMode.Brake);
     //Try follow next
 
     if (m_autonomousCommand != null) {
@@ -108,6 +119,8 @@ public class Robot extends TimedRobot {
     frontright.set(-right);
     backleft.set(left);
     backright.set(-right);
+    midleft.set(left);
+    midright.set(-right);
     // frontleft.set(0.2);
   }
 
