@@ -56,7 +56,7 @@ public class Constants {
         public static final double kElevatorGearCircumM = Conversions.inchesToMeters(0.0);
 
         public static final boolean kIsInvertedLeft = false;
-        public static final boolean kIsInvertedRight = false;
+        public static final boolean kIsInvertedRight = true;
 
         public static final double kMaxVelocity = 0.0;
         public static final double kMaxAccel = 0.0;
@@ -143,6 +143,9 @@ public class Constants {
     public static final class Limelight {
         public static final double kAcceptableVolatilityThreshold = 1.5;
         public static final int kVolatilitySlidingWindowLen = 25; // ~50 iter = 1 sec
+
+        public static final int kAverageWindowSize = 15;
+        public static final int kAverageWindowBuffer = 5;
     }
 
 

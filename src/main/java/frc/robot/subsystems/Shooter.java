@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -31,7 +33,8 @@ public class Shooter extends SubsystemBase {
   private ShooterStates lastState = ShooterStates.NONE;
 
   // Motors
-  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER);
+  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP);
+  TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM);
   TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
@@ -46,7 +49,11 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(Supplier<Translation2d> botPoseSupplier) {
     shooterMotor.setInverted(Constants.Shooter.kIsShooterInverted);
+    shooterFollowerMotor.setInverted(Constants.Shooter.kIsShooterInverted);
     indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
+
+    shooterFollowerMotor.setControl(new StrictFollower(shooterMotor.getDeviceID()));
+    
 
     shooterMotor.setNeutralMode(NeutralModeValue.Coast);
     indexerMotor.setNeutralMode(NeutralModeValue.Brake);
