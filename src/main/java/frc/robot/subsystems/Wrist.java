@@ -15,11 +15,13 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
 import frc.util.Util;
 
@@ -35,6 +37,8 @@ public class Wrist extends SubsystemBase {
 
   Supplier<Double> joystickSupplier;
   Supplier<Translation2d> botPoseSupplier;
+
+  SendableChooser<WristStates> selectWristState = new SendableChooser<WristStates>();
 
   public enum WristStates {
     NONE,
@@ -56,10 +60,20 @@ public class Wrist extends SubsystemBase {
     
     // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
     // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
+    selectWristState.setDefaultOption("NONE", WristStates.NONE);
+    selectWristState.addOption("STOWED", WristStates.STOWED);
+    selectWristState.addOption("INTAKE", WristStates.INTAKE);
+    selectWristState.addOption("SPEAKER", WristStates.SPEAKER);
+    selectWristState.addOption("SPEAKER_HIGH", WristStates.SPEAKER_HIGH);
+    selectWristState.addOption("AMP", WristStates.AMP);
+    selectWristState.addOption("CLIMB", WristStates.CLIMB);
+
+    SmartDashboard.putData(selectWristState);
   }
 
   @Override
   public void periodic() {
+    setState(selectWristState.getSelected());
 
     switch(state) { // TODO: figure out target angles
 
