@@ -46,6 +46,9 @@ public class Limelight extends SubsystemBase {
         SmartDashboard.putNumber("Pose Y [LL]", tableShooter.getEntry("botpose").getDoubleArray(new double[2])[1]);
         SmartDashboard.putNumber("Filtered X [LL]", getTranslation2d().getX());
         SmartDashboard.putNumber("Filtered Y [LL]", getTranslation2d().getY());
+        SmartDashboard.putNumber("Averaged X [LL]", getTranslation2dWindowAvg(Constants.Limelight.kAverageWindowSize, Constants.Limelight.kAverageWindowBuffer).getX());
+        SmartDashboard.putNumber("Averaged Y [LL]", getTranslation2dWindowAvg(Constants.Limelight.kAverageWindowSize, Constants.Limelight.kAverageWindowBuffer).getY());
+
 
         SmartDashboard.putNumber("Intake Note TX [LL]", getNoteTX());
 
@@ -110,6 +113,23 @@ public class Limelight extends SubsystemBase {
         );
     }
 
+    /**
+     * @param numTerms number of terms included in the window, will the most recent numTerms terms 
+     * @param numEndBuffer number of buffer terms not to include at the end of sliding window
+     * @return Average bot pose Translation2d in the window  
+     */
+    public Translation2d getTranslation2dWindowAvg(int numTerms, int numEndBuffer) {
+        int initialXIndex = distsX.size() - 1 - numTerms - numEndBuffer;
+        int finalXIndex = distsX.size() - 1 - numEndBuffer;
+        int initialYIndex = distsY.size() - 1 - numTerms - numEndBuffer;
+        int finalYIndex = distsY.size() - 1 - numEndBuffer;
+        return new Translation2d(
+            Util.average(distsX.subList(initialXIndex, finalXIndex)),
+            Util.average(distsY.subList(initialYIndex, finalYIndex))
+        );
+    }
+
+
 
 
 
@@ -119,9 +139,12 @@ public class Limelight extends SubsystemBase {
         return noteTX;
     }
 
-
+    /**
+     * @return Returns whether volatility is below threshold AND apriltags are detected 
+     */
     public boolean getIsNotVolatile() {
-        return getPoseVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+        Translation2d currentPose = getTranslation2d();
+        return getPoseVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold && currentPose.getX() != 0.0 && currentPose.getX() != 0.0;
     }
 
     /**

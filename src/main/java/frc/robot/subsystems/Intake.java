@@ -37,7 +37,6 @@ public class Intake extends SubsystemBase {
 
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
-    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
 
     SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
 
@@ -97,6 +96,7 @@ public class Intake extends SubsystemBase {
         lastState = state;
 
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
+        SmartDashboard.putBoolean("At Goal [IN]", atGoal());
     }
 
     
@@ -135,5 +135,6 @@ public class Intake extends SubsystemBase {
 
   public void clearStickyFaults() {
     pivotIntake.clearStickyFaults();
+    rollIntake.clearStickyFaults();
   }
 }
