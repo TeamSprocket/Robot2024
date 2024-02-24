@@ -9,9 +9,12 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
 import frc.util.Util;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -23,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
 public class Elevator extends SubsystemBase {
+  SendableChooser<ElevatorStates> selectElevatorState = new SendableChooser<ElevatorStates>();
   public static enum ElevatorStates {
     NONE,
     STOWED,
@@ -33,12 +37,15 @@ public class Elevator extends SubsystemBase {
     TRAP,
     CLIMB
   }
+
   private ElevatorStates state = ElevatorStates.NONE;
 
   private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
   private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
 
   ProfiledPIDController profiledPIDController;
+
+  SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
   
   Supplier<Double> leftBumperSupplier;
   Supplier<Double> rightBumperSupplier;
@@ -59,12 +66,23 @@ public class Elevator extends SubsystemBase {
 
     this.leftBumperSupplier = leftBumperSupplier;
     this.rightBumperSupplier = rightBumperSupplier;
-  }
+
+      selectElevatorState.setDefaultOption("NONE", ElevatorStates.NONE);
+      selectElevatorState.addOption("STOWED", ElevatorStates.NONE);
+      selectElevatorState.addOption("HANDOFF", ElevatorStates.HANDOFF);
+      selectElevatorState.addOption("SPEAKER", ElevatorStates.SPEAKER);
+      selectElevatorState.addOption("SPEAKER_HIGH", ElevatorStates.SPEAKER_HIGH);
+      selectElevatorState.addOption("AMP", ElevatorStates.AMP);
+      selectElevatorState.addOption("TRAP", ElevatorStates.TRAP);
+      selectElevatorState.addOption("CLIMB", ElevatorStates.CLIMB);
+       SmartDashboard.putData(selectElevatorState);
+    }
 
 
 
   @Override
   public void periodic() {
+    setState(selectElevatorState.getSelected());
     switch (state) {
         
       case NONE:
@@ -105,7 +123,11 @@ public class Elevator extends SubsystemBase {
         break;
     }
    
+    
+
+    clearStickyFaults();
   }
+
 
   public void setState(ElevatorStates state) {
     this.state = state;
@@ -134,6 +156,11 @@ public class Elevator extends SubsystemBase {
   public boolean atGoal() {
     double goal = profiledPIDController.getGoal().position;
     return Util.inRange(getHeight(), (goal - Constants.Elevator.kAtGoalTolerance), (goal + Constants.Elevator.kAtGoalTolerance));
+  }
+
+  public void clearStickyFaults() {
+    motorLeft.clearStickyFaults();
+    motorRight.clearStickyFaults();
   }
 
 

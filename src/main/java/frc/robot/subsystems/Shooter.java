@@ -13,13 +13,17 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
 import frc.util.Util;
 
 public class Shooter extends SubsystemBase {
+  SendableChooser<ShooterStates> selectShooterState = new SendableChooser<ShooterStates>();
   // NONE - no motor output, STANDBY - resist gamepiece movement in indexer, HANDOFF - intaking from intake, SPINUP - spinup shooter for speaker scoring
   public static enum ShooterStates {
     NONE,
@@ -55,11 +59,21 @@ public class Shooter extends SubsystemBase {
     indexerMotor.setNeutralMode(NeutralMode.Brake);
 
     this.botPoseSupplier = botPoseSupplier;
+
+    selectShooterState.setDefaultOption("NONE", ShooterStates.NONE);
+        selectShooterState.addOption("STANDBY", ShooterStates.STANDBY);
+        selectShooterState.addOption("HANDOFF", ShooterStates.HANDOFF);
+        selectShooterState.addOption("SPINUP", ShooterStates.SPINUP);
+        selectShooterState.addOption("SCORE_SPEAKER", ShooterStates.SCORE_SPEAKER);
+        selectShooterState.addOption("SCORE_SPEAKER_HIGH", ShooterStates.SCORE_SPEAKER_HIGH);
+        selectShooterState.addOption("SCORE_AMP", ShooterStates.SCORE_AMP);
+        SmartDashboard.putData(selectShooterState);
   }
 
 
   @Override
   public void periodic() {
+    setState(selectShooterState.getSelected());
     switch (state) {
 
       case NONE:
@@ -121,7 +135,7 @@ public class Shooter extends SubsystemBase {
       
     }
 
-    
+    clearStickyFaults();
     // Update lastState
     lastState = state;
   }
@@ -182,7 +196,10 @@ public class Shooter extends SubsystemBase {
     return inRange;
   }
 
-
+  public void clearStickyFaults() {
+    shooterMotor.clearStickyFaults();
+    indexerMotor.clearStickyFaults();
+  }
   
 
 

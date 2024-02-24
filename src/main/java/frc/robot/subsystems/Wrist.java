@@ -24,7 +24,7 @@ public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
   WPI_TalonFX motor = new WPI_TalonFX(RobotMap.Wrist.WRIST);
 
-  WristStates state;
+  WristStates state = WristStates.NONE;
   WristStates lastState;
 
   ProfiledPIDController profiledPIDController;
@@ -113,7 +113,7 @@ public class Wrist extends SubsystemBase {
         break;
     }
 
-
+    clearStickyFaults();
     lastState = state;
   }
 
@@ -153,7 +153,9 @@ public class Wrist extends SubsystemBase {
     return Util.inRange(getWristAngle(), (goal - Constants.Wrist.kAtGoalTolerance), (goal + Constants.Wrist.kAtGoalTolerance));
   }
   
-
+  public void clearStickyFaults() {
+    motor.clearStickyFaults();
+  }
 
 
 }
