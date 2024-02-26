@@ -89,6 +89,9 @@ public class SwerveDrive extends SubsystemBase {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
+    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", -0.1, 0.1, 0);
+    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", -0.01, 0.01, 0);
+
     // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kPTranslationPP);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kITranslationPP);
     // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kDTranslationPP);
@@ -132,6 +135,16 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("back right cancoder [SD]", backRight.getCANCoderDegrees());
     SmartDashboard.putNumber("back left cancoder [SD]", backLeft.getCANCoderDegrees());
 
+    SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
+    SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
+    SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
+    SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
+
+    Constants.Drivetrain.kPTurnMotor = ShuffleboardPIDTuner.get("Swerve PID kP [SD]");
+    Constants.Drivetrain.kDTurnMotor = ShuffleboardPIDTuner.get("Swerve PID kD [SD]");
+
+    // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
+
 
     // updateShuffleboardPIDConstants();
 
@@ -144,7 +157,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    updateOdometryWithVision();
+    // updateOdometryWithVision();
     
   }
 
@@ -304,7 +317,7 @@ public class SwerveDrive extends SubsystemBase {
     headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
   }
 
-  public void clearStickyFaults() {
+  // public void clearStickyFaults() {
     
-  }
+  // }
 }

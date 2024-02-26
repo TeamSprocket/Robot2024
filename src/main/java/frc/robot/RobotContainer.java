@@ -26,12 +26,12 @@ public class RobotContainer {
   Limelight limelight = new Limelight();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
 
-  Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
-  Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
-  Intake intake = new Intake();
+  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
+  // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  // Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
+  // Intake intake = new Intake();
 
-  Superstructure superstructure = new Superstructure(elevator, wrist, shooter, intake);
+  // Superstructure superstructure = new Superstructure(elevator, wrist, shooter, intake);
 
 
 
@@ -80,8 +80,8 @@ public class RobotContainer {
     driver.button(RobotMap.Controller.B).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
     driver.button(RobotMap.Controller.A).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
   
-    driver.rightBumper().whileTrue(new IntakeNote(superstructure, swerveDrive));
-    driver.leftBumper().whileTrue(new ScoreSpeaker(superstructure, swerveDrive));
+    // driver.rightBumper().whileTrue(new IntakeNote(superstructure, swerveDrive));
+    // driver.leftBumper().whileTrue(new ScoreSpeaker(superstructure, swerveDrive));
 
     // --------------------=Secondary=--------------------
     
