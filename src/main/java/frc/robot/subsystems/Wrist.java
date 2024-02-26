@@ -44,8 +44,9 @@ public class Wrist extends SubsystemBase {
     NONE,
     STOWED,
     INTAKE,
-    SPEAKER,
-    SPEAKER_HIGH,
+    SPEAKER_SUBWOOFER, SPEAKER_PODIUM, SPEAKER_AMP_ZONE,
+    // SPEAKER,
+    // SPEAKER_HIGH,
     AMP,
     CLIMB
   }
@@ -63,8 +64,11 @@ public class Wrist extends SubsystemBase {
     selectWristState.setDefaultOption("NONE", WristStates.NONE);
     selectWristState.addOption("STOWED", WristStates.STOWED);
     selectWristState.addOption("INTAKE", WristStates.INTAKE);
-    selectWristState.addOption("SPEAKER", WristStates.SPEAKER);
-    selectWristState.addOption("SPEAKER_HIGH", WristStates.SPEAKER_HIGH);
+    // selectWristState.addOption("SPEAKER", WristStates.SPEAKER);
+    // selectWristState.addOption("SPEAKER_HIGH", WristStates.SPEAKER_HIGH);
+    selectWristState.addOption("SOEAKER AMP ZONE", WristStates.SPEAKER_AMP_ZONE);
+    selectWristState.addOption("SPEAKER PODIUM", WristStates.SPEAKER_PODIUM);
+    selectWristState.addOption("SPEAKER SUBWOOFER", WristStates.SPEAKER_SUBWOOFER);
     selectWristState.addOption("AMP", WristStates.AMP);
     selectWristState.addOption("CLIMB", WristStates.CLIMB);
 
@@ -96,31 +100,46 @@ public class Wrist extends SubsystemBase {
       // case HANDOFF:
       //   // if (lastState != WristStates.HANDOFF) {
       //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
-      //     profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
+      //   profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
       //   // }
       //   motor.set(profiledPIDController.calculate(getWristAngle()));
       //   break;
 
-      case SPEAKER:
-        // if (lastState != WristStates.SPEAKER) {
-          // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(getWristTargetDeg());
-        // }
+      // case SPEAKER:
+      //   // if (lastState != WristStates.SPEAKER) {
+      //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
+      //   profiledPIDController.setGoal(getWristTargetDeg());
+      //   // }
+      //   motor.set(profiledPIDController.calculate(getWristAngle()));
+      //   break;
+
+      // case SPEAKER_HIGH:
+      //   // if (lastState != WristStates.SPEAKER_HIGH) {
+      //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
+      //   profiledPIDController.setGoal(getWristTargetDeg());
+      //   // }
+      //   motor.set(profiledPIDController.calculate(getWristAngle()));
+      //   break;
+
+      case SPEAKER_AMP_ZONE:
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerFromAmp);
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
-      case SPEAKER_HIGH:
-        // if (lastState != WristStates.SPEAKER_HIGH) {
-          // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(getWristTargetDeg());
-        // }
+      case SPEAKER_PODIUM:
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerFromPodium);
+        motor.set(profiledPIDController.calculate(getWristAngle()));
+        break;
+
+      case SPEAKER_SUBWOOFER:
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerFromSubwoofer);
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
         
       case AMP:
         // if (lastState != WristStates.AMP) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleAmp);
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleAmp);
         // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;

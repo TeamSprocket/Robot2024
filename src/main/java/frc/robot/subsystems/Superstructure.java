@@ -193,7 +193,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER);
+        wrist.setState(WristStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
@@ -215,7 +215,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER);
+        wrist.setState(WristStates.SPEAKER_PODIUM);
         shooter.setState(ShooterStates.SPINUP_PODIUM);
         intake.setState(IntakeStates.STOWED);
 
@@ -237,7 +237,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER);
+        wrist.setState(WristStates.SPEAKER_AMP_ZONE);
         shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
@@ -309,7 +309,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER);
+        wrist.setState(WristStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
@@ -327,7 +327,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER);
+        wrist.setState(WristStates.SPEAKER_PODIUM);
         shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
         intake.setState(IntakeStates.STOWED);
 
@@ -345,7 +345,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER);
+        wrist.setState(WristStates.SPEAKER_AMP_ZONE);
         shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
