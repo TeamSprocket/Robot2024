@@ -165,9 +165,9 @@ public class Constants {
 
         
         // PID
-        public static final double kPTurnMotor = 0.0125; //0.0125
-        public static final double kITurnMotor = 0.0000;
-        public static final double kDTurnMotor = 0.0003; //0.0003
+        public static double kPTurnMotor = 0.0125; //0.0125
+        public static double kITurnMotor = 0.0000;
+        public static double kDTurnMotor = 0.0003; //0.0003
 
         public static final double kPHeading = 1.5978; //0.6
         public static final double kIHeading = 0.0000;
