@@ -35,6 +35,9 @@ public class Constants {
 
         // Elapsed time shooting into speaker before stow
         public static final double kScoreSpeakerTimeToleranceSec = 1.0;
+
+        // 
+        public static final double kScoreSpeakerHeadingTolerance = 0.25;
     }
     
     public static final class Elevator {
@@ -89,13 +92,21 @@ public class Constants {
 
 
     public static final class Shooter {
-        public static final boolean kIsShooterInverted = false;
+        public static final boolean kIsShooterTopInverted = true;
+        public static final boolean kIsShooterBottomInverted = true;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kIndexerSpeedHandoff = 0.0;
+        
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 5.0;
+        public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
+        public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
+        public static final double kShooterSpeedScoreAmp = 0.5;
+
+        public static final double kIndexerSpeedIntake = 0.0;
         public static final double kIndexerSpeedScoreSpeaker = 0.0;
         public static final double kIndexerSpeedScoreAmp = 0.0;
-        public static final double kShooterSpeedScoreAmp = 0.0;
+
+
         
         public static final double kShooterGearRatio = 1.0;
         public static final double kIndexerGearRatio = 2.0;

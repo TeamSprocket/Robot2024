@@ -157,7 +157,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    updateOdometryWithVision();
+    // updateOdometryWithVision();
     
   }
 
