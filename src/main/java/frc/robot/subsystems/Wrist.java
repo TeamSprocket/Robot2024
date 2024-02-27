@@ -8,23 +8,28 @@ import java.util.function.Supplier;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+//import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
 import frc.util.Util;
 
 public class Wrist extends SubsystemBase {
   /** Creates a new Wrist. */
-  WPI_TalonFX motor = new WPI_TalonFX(RobotMap.Wrist.WRIST);
+  TalonFX motor = new TalonFX(RobotMap.Wrist.WRIST);
 
-  WristStates state;
+  WristStates state = WristStates.NONE;
   WristStates lastState;
 
   ProfiledPIDController profiledPIDController;
@@ -33,12 +38,15 @@ public class Wrist extends SubsystemBase {
   Supplier<Double> joystickSupplier;
   Supplier<Translation2d> botPoseSupplier;
 
+  SendableChooser<WristStates> selectWristState = new SendableChooser<WristStates>();
+
   public enum WristStates {
     NONE,
     STOWED,
-    HANDOFF,
-    SPEAKER,
-    SPEAKER_HIGH,
+    INTAKE,
+    SPEAKER_SUBWOOFER, SPEAKER_PODIUM, SPEAKER_AMP_ZONE,
+    // SPEAKER,
+    // SPEAKER_HIGH,
     AMP,
     CLIMB
   }
@@ -49,14 +57,27 @@ public class Wrist extends SubsystemBase {
     this.joystickSupplier = joystickSupplier;
 
     motor.setInverted(Constants.Wrist.kIsWristInverted);
-    motor.setNeutralMode(NeutralMode.Brake);
+    motor.setNeutralMode(NeutralModeValue.Brake);
     
     // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
     // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
+    selectWristState.setDefaultOption("NONE", WristStates.NONE);
+    selectWristState.addOption("STOWED", WristStates.STOWED);
+    selectWristState.addOption("INTAKE", WristStates.INTAKE);
+    // selectWristState.addOption("SPEAKER", WristStates.SPEAKER);
+    // selectWristState.addOption("SPEAKER_HIGH", WristStates.SPEAKER_HIGH);
+    selectWristState.addOption("SOEAKER AMP ZONE", WristStates.SPEAKER_AMP_ZONE);
+    selectWristState.addOption("SPEAKER PODIUM", WristStates.SPEAKER_PODIUM);
+    selectWristState.addOption("SPEAKER SUBWOOFER", WristStates.SPEAKER_SUBWOOFER);
+    selectWristState.addOption("AMP", WristStates.AMP);
+    selectWristState.addOption("CLIMB", WristStates.CLIMB);
+
+    SmartDashboard.putData(selectWristState);
   }
 
   @Override
   public void periodic() {
+    setState(selectWristState.getSelected());
 
     switch(state) { // TODO: figure out target angles
 
@@ -72,34 +93,53 @@ public class Wrist extends SubsystemBase {
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
-      case HANDOFF:
-        // if (lastState != WristStates.HANDOFF) {
-          // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
-        // }
+      case INTAKE:
+          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleIntake);
+          motor.set(profiledPIDController.calculate(getWristAngle()));
+
+      // case HANDOFF:
+      //   // if (lastState != WristStates.HANDOFF) {
+      //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
+      //   profiledPIDController.setGoal(Constants.Wrist.kTargetAngleHandoff);
+      //   // }
+      //   motor.set(profiledPIDController.calculate(getWristAngle()));
+      //   break;
+
+      // case SPEAKER:
+      //   // if (lastState != WristStates.SPEAKER) {
+      //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
+      //   profiledPIDController.setGoal(getWristTargetDeg());
+      //   // }
+      //   motor.set(profiledPIDController.calculate(getWristAngle()));
+      //   break;
+
+      // case SPEAKER_HIGH:
+      //   // if (lastState != WristStates.SPEAKER_HIGH) {
+      //     // wristController.setSetpoint(Constants.Wrist.targetAngle);
+      //   profiledPIDController.setGoal(getWristTargetDeg());
+      //   // }
+      //   motor.set(profiledPIDController.calculate(getWristAngle()));
+      //   break;
+
+      case SPEAKER_AMP_ZONE:
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerFromAmp);
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
-      case SPEAKER:
-        // if (lastState != WristStates.SPEAKER) {
-          // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(getWristTargetDeg());
-        // }
+      case SPEAKER_PODIUM:
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerFromPodium);
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
 
-      case SPEAKER_HIGH:
-        // if (lastState != WristStates.SPEAKER_HIGH) {
-          // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(getWristTargetDeg());
-        // }
+      case SPEAKER_SUBWOOFER:
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleSpeakerFromSubwoofer);
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
         
       case AMP:
         // if (lastState != WristStates.AMP) {
           // wristController.setSetpoint(Constants.Wrist.targetAngle);
-          profiledPIDController.setGoal(Constants.Wrist.kTargetAngleAmp);
+        profiledPIDController.setGoal(Constants.Wrist.kTargetAngleAmp);
         // }
         motor.set(profiledPIDController.calculate(getWristAngle()));
         break;
@@ -113,8 +153,9 @@ public class Wrist extends SubsystemBase {
         break;
     }
 
-
+    // clearStickyFaults();
     lastState = state;
+    SmartDashboard.putNumber("Wrist Angle [WR]", getWristAngle());
   }
 
   /**
@@ -122,7 +163,7 @@ public class Wrist extends SubsystemBase {
    * @return Angle of the wrist in degrees, CW+, CCW-
    */
   public double getWristAngle() {
-    double deg = Conversions.falconToDegrees(motor.getSelectedSensorPosition(), Constants.Drivetrain.kTurningMotorGearRatio);
+    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.Wrist.kWristGearRatio);
     deg %= 360;
     if (deg > 180) {
       deg -= (360); 
@@ -153,7 +194,9 @@ public class Wrist extends SubsystemBase {
     return Util.inRange(getWristAngle(), (goal - Constants.Wrist.kAtGoalTolerance), (goal + Constants.Wrist.kAtGoalTolerance));
   }
   
-
+  public void clearStickyFaults() {
+    motor.clearStickyFaults();
+  }
 
 
 }

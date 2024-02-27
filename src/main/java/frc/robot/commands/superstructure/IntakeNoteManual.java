@@ -2,37 +2,36 @@
 package frc.robot.commands.superstructure;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Superstructure;
 import frc.robot.subsystems.SwerveDrive;
 import frc.robot.subsystems.Superstructure.SSStates;
-import frc.util.Conversions;
 
-public class ScoreSpeaker extends Command {
+public class IntakeNoteManual  extends Command {
 
   Superstructure superstructure;
   SwerveDrive swerveDrive;
-  Timer timer = new Timer();
 
-  public ScoreSpeaker(Superstructure superstructure, SwerveDrive swerveDrive) {
+  public IntakeNoteManual(Superstructure superstructure, SwerveDrive swerveDrive) {
     this.superstructure = superstructure;
     this.swerveDrive = swerveDrive;
   }
 
   @Override
   public void initialize() {
-    superstructure.setState(SSStates.WAIT_SPEAKER);
+    // Constants.robotState = Constants.RobotState.TELEOP_DISABLE_SWERVE;
+    superstructure.setState(SSStates.INTAKE);
   }
 
   @Override
   public void execute() {
-    swerveDrive.setTargetHeadingRad(Conversions.poseToTargetHeadingRad(swerveDrive.getPose().getTranslation(), Constants.ShootingSetpoints.targetPoint));
+    // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, 0, 0));
   }
 
   @Override
   public void end(boolean interrupted) {
+    // Constants.robotState = Constants.RobotState.TELEOP;
     superstructure.setState(SSStates.STOWED);
   }
 

@@ -25,41 +25,44 @@ public final class RobotMap {
    * 40..49 - Spark Max
    */
   public static final class Drivetrain {
-    public static final int FRONT_LEFT_TALON_D = 23;
-    public static final int FRONT_RIGHT_TALON_D = 27;
-    public static final int BACK_LEFT_TALON_D = 21;
-    public static final int BACK_RIGHT_TALON_D = 25;
+    public static final int PIGEON_2 = 2;
 
-    public static final int FRONT_LEFT_TALON_T = 24;
-    public static final int FRONT_RIGHT_TALON_T = 28;
-    public static final int BACK_LEFT_TALON_T = 22;
-    public static final int BACK_RIGHT_TALON_T = 26;
+    public static final int FRONT_LEFT_TALON_D = 21;
+    public static final int FRONT_RIGHT_TALON_D = 23;
+    public static final int BACK_LEFT_TALON_D = 25;
+    public static final int BACK_RIGHT_TALON_D = 27;
 
-    public static final int FRONT_LEFT_ABS_ENCODER_ID = 1;
-    public static final int FRONT_RIGHT_ABS_ENCODER_ID = 3;
-    public static final int BACK_LEFT_ABS_ENCODER_ID = 0;
-    public static final int BACK_RIGHT_ABS_ENCODER_ID = 2;
+    public static final int FRONT_LEFT_TALON_T = 22;
+    public static final int FRONT_RIGHT_TALON_T = 24;
+    public static final int BACK_LEFT_TALON_T = 26;
+    public static final int BACK_RIGHT_TALON_T = 28;
+
+    public static final int FRONT_LEFT_ABS_ENCODER_ID = 31;
+    public static final int FRONT_RIGHT_ABS_ENCODER_ID = 32;
+    public static final int BACK_LEFT_ABS_ENCODER_ID = 33;
+    public static final int BACK_RIGHT_ABS_ENCODER_ID = 34;
   }
 
   public static final class Elevator{
-    public static final int ELEVATOR_LEFT = 40;
-    public static final int ELEVATOR_RIGHT = 41;
-    public static final int Left = 0;
-    public static final int Right = 0;
+    public static final int ELEVATOR_LEFT = 11;
+    public static final int ELEVATOR_RIGHT = 12;
   }
 
   public static final class Wrist {
-    public static final int WRIST = 0;
+    public static final int WRIST = 13;
   }
 
   public static final class Intake {
-    public static final int ROLL_INTAKE = 0;
-    public static final int PIVOT_INTAKE = 0;
+    public static final int ROLL_INTAKE = 14;
+    public static final int PIVOT_INTAKE = 15;
   }
 
   public static final class Shooter {
-    public static final int SHOOTER = 0;
-    public static final int INDEXER = 0;
+    public static final int SHOOTER_TOP = 16;
+    public static final int SHOOTER_BOTTOM = 17;
+    public static final int INDEXER = 18;
+
+    // DIO
     public static final int BEAM_BREAK = 0;
   }
 

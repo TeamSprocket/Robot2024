@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,10 +23,10 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     Timer.delay(0.5);
-    m_robotContainer.getSwerveDrive().initGyro();
+    m_robotContainer.getSwerveDrive().zeroGyro();
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
+    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
   }
 
   @Override
@@ -35,7 +37,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     Constants.robotState = RobotState.DISABLED;
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Coast);
+    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
   }
 
   @Override
@@ -48,8 +50,8 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Constants.robotState = RobotState.AUTON;
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
-    m_robotContainer.getSwerveDrive().initGyro();
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
+    m_robotContainer.getSwerveDrive().zeroGyro();
+    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
 
     Timer.delay(0.1);
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
@@ -70,7 +72,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Constants.robotState = RobotState.TELEOP;
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralMode.Brake);
+    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

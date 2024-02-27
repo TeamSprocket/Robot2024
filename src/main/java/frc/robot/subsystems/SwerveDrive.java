@@ -2,7 +2,11 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.sensors.PigeonIMU;
+import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.ctre.phoenix6.hardware.core.CorePigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -41,7 +45,7 @@ public class SwerveDrive extends SubsystemBase {
   } 
 
   
-  private final ADIS16470_IMU gyro = new ADIS16470_IMU();
+  private PigeonIMU gyro = new PigeonIMU(RobotMap.Drivetrain.PIGEON_2);
   
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
@@ -85,6 +89,9 @@ public class SwerveDrive extends SubsystemBase {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
+    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", -0.1, 0.1, 0);
+    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", -0.01, 0.01, 0);
+
     // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kPTranslationPP);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kITranslationPP);
     // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kDTranslationPP);
@@ -113,15 +120,31 @@ public class SwerveDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("DEBUG - xSpeed", xSpeed);
-    SmartDashboard.putNumber("DEBUG - ySpeed", ySpeed);
-    SmartDashboard.putNumber("DEBUG - tSpeed", tSpeed);
-    SmartDashboard.putNumber("Target Heading (Deg)", Math.toDegrees(targetHeadingRad));
-    SmartDashboard.putNumber("Heading (Deg)", Math.toDegrees(getHeading()));
-    SmartDashboard.putNumber("Odometry X (m)", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Odometry Y (m)", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Odometry T (Deg)", odometry.getPoseMeters().getRotation().getDegrees());
-    SmartDashboard.putString("Odometry Pose", odometry.getPoseMeters().toString());
+    SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
+    SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
+    SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
+    SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
+    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
+
+    SmartDashboard.putNumber("front left cancoder [SD]", frontLeft.getCANCoderDegrees());
+    SmartDashboard.putNumber("front right cancoder [SD]", frontRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back right cancoder [SD]", backRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back left cancoder [SD]", backLeft.getCANCoderDegrees());
+
+    SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
+    SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
+    SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
+    SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
+
+    Constants.Drivetrain.kPTurnMotor = ShuffleboardPIDTuner.get("Swerve PID kP [SD]");
+    Constants.Drivetrain.kDTurnMotor = ShuffleboardPIDTuner.get("Swerve PID kD [SD]");
+
+    // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
+
 
     // updateShuffleboardPIDConstants();
 
@@ -134,7 +157,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    updateOdometryWithVision();
+    // updateOdometryWithVision();
     
   }
 
@@ -144,7 +167,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getAngle(gyro.getYawAxis()) + 180.0;
+    double angle = gyro.getYaw() + 180.0; 
     
     angle %= 360.0;
     if (angle < 0) {
@@ -188,19 +211,19 @@ public class SwerveDrive extends SubsystemBase {
   }
   
 
-  public void initGyro() {
-    gyro.reset();
-    gyro.calibrate();
-    gyro.reset();
-  }
+  // public void initGyro() {
+  //   gyro.setYaw(0);
+  //   // gyro.enterCalibrationMode();
+  //   // gyro.reset();
+  // }
 
   public void zeroGyro() {
-    gyro.reset();
+    gyro.setYaw(0);
   }
 
-  public void calibrateGyro() {
-    gyro.calibrate();
-  }
+  // public void calibrateGyro() {
+    // gyro.calibrate();
+  // }
 
   public void setTargetHeadingRad(double targetHeadingRad) {
     this.targetHeadingRad = targetHeadingRad;
@@ -223,7 +246,7 @@ public class SwerveDrive extends SubsystemBase {
     backRight.zeroDriveMotor();
   }
 
-  public void setNeutralMode(NeutralMode neutralMode) {
+  public void setNeutralMode(NeutralModeValue neutralMode) {
     frontLeft.setNeutralMode(neutralMode);
     frontRight.setNeutralMode(neutralMode);
     backLeft.setNeutralMode(neutralMode);
@@ -233,7 +256,7 @@ public class SwerveDrive extends SubsystemBase {
   public void updateOdometryWithVision() {
     Translation2d pos = limelight.getTranslation2d();
     if (limelight.getIsNotVolatile()) { // LL readings not volatile
-      if (pos.getX() != 0.0 && pos.getY() != 0.0) { // LL can see tags
+      if (Math.abs(pos.getX()) > 0.1 && Math.abs(pos.getX()) > 0.1) { // LL can see tags
         resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
       }
     }
@@ -293,4 +316,8 @@ public class SwerveDrive extends SubsystemBase {
     headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
     headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
   }
+
+  // public void clearStickyFaults() {
+    
+  // }
 }

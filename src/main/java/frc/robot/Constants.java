@@ -27,9 +27,6 @@ public class Constants {
         // Delay between note detected and retract intake 
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
-        // Elapsed time all elements at handoff pos before handoff
-        public static final double kWaitHandoffTimeToleranceSec = 0.3;
-
         // Elapsed time beam break detecting note before stow
         public static final double kWaitBeambreakTimeToleranceSec = 0.1;
 
@@ -38,11 +35,13 @@ public class Constants {
 
         // Elapsed time shooting into speaker before stow
         public static final double kScoreSpeakerTimeToleranceSec = 1.0;
+
+        // 
+        public static final double kScoreSpeakerHeadingTolerance = 0.25;
     }
     
     public static final class Elevator {
         public static final double kElevatorHeightStowed = 0.0;
-        public static final double kElevatorHeightHandoff = 0.0;
         public static final double kElevatorHeightSpeaker = 0.0;
         public static final double kElevatorHeightSpeakerHigh = 0.0;
         public static final double kElevatorHeightAmp = 0.0;
@@ -56,11 +55,11 @@ public class Constants {
 
         public static final double kAtGoalTolerance = 0.005;
 
-        public static final double kElevatorGearRatio = 0.0;
+        public static final double kElevatorGearRatio = 18.89;
         public static final double kElevatorGearCircumM = Conversions.inchesToMeters(0.0);
 
         public static final boolean kIsInvertedLeft = false;
-        public static final boolean kIsInvertedRight = false;
+        public static final boolean kIsInvertedRight = true;
 
         public static final double kMaxVelocity = 0.0;
         public static final double kMaxAccel = 0.0;
@@ -68,7 +67,7 @@ public class Constants {
 
 
     public static final class Wrist {
-        public static boolean kIsWristInverted = true;
+        public static final boolean kIsWristInverted = true;
 
         public static double kPwrist = 0;
         public static double kIwrist = 0;
@@ -76,31 +75,44 @@ public class Constants {
 
         public static final double kManualMultiplier = 0.001;
 
-        public static final double kAtGoalTolerance = 0.3;
+        public static final double kAtGoalTolerance = 0.25;
 
-        public static double kMaxVelocityDeg = 0.0;
-        public static double kMaxAccelerationDeg = 0.0;
+        public static final double kWristGearRatio = 148.15;
+
+        public static final double kMaxVelocityDeg = 0.0;
+        public static final double kMaxAccelerationDeg = 0.0;
         
-        public static double kTargetAngleStowed = 0.0;
-        public static double kTargetAngleHandoff = 0.0;
-        public static double kTargetAngleSpeaker = 0.0;
-        public static double kTargetAngleSpeakerHigh = 0.0;
-        public static double kTargetAngleAmp = 0.0;
+        public static final double kTargetAngleStowed = 0.0;
+        public static final double kTargetAngleIntake = 0.0;
+        // public static final double kTargetAngleSpeaker = 0.0;
+        // public static final double kTargetAngleSpeakerHigh = 0.0;
+        public static final double kTargetAngleSpeakerFromAmp = 0.0;
+        public static final double kTargetAngleSpeakerFromPodium = 0.0;
+        public static final double kTargetAngleSpeakerFromSubwoofer = 0.0;
+        public static final double kTargetAngleAmp = 0.0;
     }
 
 
 
     public static final class Shooter {
-        public static final boolean kIsShooterInverted = false;
+        public static final boolean kIsShooterTopInverted = true;
+        public static final boolean kIsShooterBottomInverted = true;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kIndexerSpeedHandoff = 0.0;
+        
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 5.0;
+        public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
+        public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
+        public static final double kShooterSpeedScoreAmp = 0.5;
+
+        public static final double kIndexerSpeedIntake = 0.0;
         public static final double kIndexerSpeedScoreSpeaker = 0.0;
         public static final double kIndexerSpeedScoreAmp = 0.0;
-        public static final double kShooterSpeedScoreAmp = 0.0;
+
+
         
         public static final double kShooterGearRatio = 1.0;
-        public static final double kIndexerGearRatio = 1.0;
+        public static final double kIndexerGearRatio = 2.0;
         
         public static final double kShooterWheelDiameter = 2.0;
 
@@ -119,23 +131,20 @@ public class Constants {
     public static final class Intake {
         public static final double kPivotAngleStowed = 0.0;
         public static final double kPivotAngleIntake = 0.0;
-        public static final double kPivotAngleWaitHandoff = 0.0;
-        public static final double kPivotAngleHandoff = 0.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.0;
-        public static final double kRollSpeedWaitHandoff = 0.0;
-        public static final double kRollSpeedHandoff = 0.0;
 
-        public static final boolean kIsRollInverted = false;
+        public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
 
         public static final double kPivotMaxVelocity = 0.0;
         public static final double kPivotMaxAccel = 0.0;
 
-        public static final double kAtGoalTolerance = 0.5;
+        public static final double kAtGoalTolerance = 0.5; // 0.5
 
-        public static final double kPivotIntakeGearRatio = 0.0;
+        public static final double kPivotIntakeGearRatio = 36.0;
+
         public static final double kHasNoteCurrentThreshold = 0.0;
 
         public static final double kPPivot = 0.0;
@@ -146,7 +155,11 @@ public class Constants {
 
 
     public static final class Limelight {
-        public static final double kAcceptableVolatilityThreshold = 0.5;
+        public static final double kAcceptableVolatilityThreshold = 1.5;
+        public static final int kVolatilitySlidingWindowLen = 25; // ~50 iter = 1 sec
+
+        public static final int kAverageWindowSize = 15;
+        public static final int kAverageWindowBuffer = 5;
     }
 
 
@@ -166,9 +179,9 @@ public class Constants {
 
         
         // PID
-        public static final double kPTurnMotor = 0.0125; //0.0125
-        public static final double kITurnMotor = 0.0000;
-        public static final double kDTurnMotor = 0.0003; //0.0003
+        public static double kPTurnMotor = 0.0125; //0.0125
+        public static double kITurnMotor = 0.0000;
+        public static double kDTurnMotor = 0.0003; //0.0003
 
         public static final double kPHeading = 1.5978; //0.6
         public static final double kIHeading = 0.0000;
@@ -228,10 +241,10 @@ public class Constants {
         // public static final boolean BACK_LEFT_T_IS_REVERSED = false;
         // public static final boolean FRONT_LEFT_T_IS_REVERSED = false; 
 
-        public static double kCANCoderOffsetFrontLeft = -53.7;
-        public static double kCANCoderOffsetFrontRight = -331.4;
-        public static double kCANCoderOffsetBackLeft = 131.1;
-        public static double kCANCoderOffsetBackRight = 234.1;
+        public static double kCANCoderOffsetFrontLeft = 0.0; // -53.7
+        public static double kCANCoderOffsetFrontRight = 0.0; // -331.4
+        public static double kCANCoderOffsetBackLeft = 0.0; // 131.1
+        public static double kCANCoderOffsetBackRight = 0.0; // 234.1
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =  Math.toRadians(303.2);
         // public static final double BACK_RIGHT_ABS_ENCODER_OFFSET_RAD = Math.toRadians(305.5);
@@ -270,8 +283,17 @@ public class Constants {
     }
 
 
+
+
+
     public static final class ShootingSetpoints {
-        public static final Translation3d targetPoint = new Translation3d(0, 0, 0);
+        // public static final Translation3d targetPointBlue = new Translation3d(-0.1, 5.548, 0);
+        // public static final Translation3d targetPointRed = new Translation3d(-0.1, (8.211-5.548), 0);
+
+
+        // Most likely can be same blue/red
+        public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211-5.548), 0);
+
 
         /**
          * @param dist Distance from bot shooter to targetPoint in meters

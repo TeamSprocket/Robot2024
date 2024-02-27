@@ -2,13 +2,18 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.StrictFollower;
+
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
@@ -35,8 +40,8 @@ public class Elevator extends SubsystemBase {
   }
   private ElevatorStates state = ElevatorStates.NONE;
 
-  private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
-  private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
+  private TalonFX motorLeft = new TalonFX(RobotMap.Elevator.ELEVATOR_LEFT);
+  private TalonFX motorRight = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
 
   ProfiledPIDController profiledPIDController;
   
@@ -46,13 +51,13 @@ public class Elevator extends SubsystemBase {
 
 
   public Elevator(Supplier<Double> leftBumperSupplier, Supplier<Double> rightBumperSupplier) {
-    motorLeft.setNeutralMode(NeutralMode.Brake);
-    motorRight.setNeutralMode(NeutralMode.Brake);
+    motorLeft.setNeutralMode(NeutralModeValue.Brake);
+    motorRight.setNeutralMode(NeutralModeValue.Brake);
 
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
     motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
-    motorRight.follow(motorLeft);
+    motorRight.setControl(new StrictFollower(motorLeft.getDeviceID())); //Strict follower?
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
@@ -76,10 +81,10 @@ public class Elevator extends SubsystemBase {
         motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;
 
-      case HANDOFF:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
-        break;
+      // case HANDOFF:
+      //   profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
+      //   motorLeft.set(profiledPIDController.calculate(getHeight()));
+      //   break;
 
       case SPEAKER:
         profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeaker);
@@ -105,6 +110,9 @@ public class Elevator extends SubsystemBase {
         break;
     }
    
+    SmartDashboard.getNumber("Elevator Height [EL]", getHeight());
+
+    // clearStickyFaults();
   }
 
   public void setState(ElevatorStates state) {
@@ -122,12 +130,12 @@ public class Elevator extends SubsystemBase {
     speed *= Constants.Elevator.kManualMultiplier;
     Util.deadband(speed, -0.1, 0.1);
 
-    profiledPIDController.setGoal(motorLeft.getSelectedSensorPosition() + speed);
+    profiledPIDController.setGoal(motorLeft.getRotorPosition().getValueAsDouble() + speed);
     motorLeft.set(profiledPIDController.calculate(getHeight()));
   }
 
   public double getHeight() {
-    return Conversions.falconToMeters(motorLeft.getSelectedSensorPosition(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+    return Conversions.falconToMeters(motorLeft.getRotorPosition().getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
 
@@ -136,13 +144,10 @@ public class Elevator extends SubsystemBase {
     return Util.inRange(getHeight(), (goal - Constants.Elevator.kAtGoalTolerance), (goal + Constants.Elevator.kAtGoalTolerance));
   }
 
-
-
-
-
-
-
-  
+  public void clearStickyFaults() {
+    motorLeft.clearStickyFaults();
+    motorRight.clearStickyFaults();
+  }
 }
 
 

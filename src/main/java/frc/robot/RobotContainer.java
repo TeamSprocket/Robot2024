@@ -26,12 +26,12 @@ public class RobotContainer {
   Limelight limelight = new Limelight();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
 
-  Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
-  Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
-  Intake intake = new Intake();
+  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
+  // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  // Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
+  // Intake intake = new Intake();
 
-  Superstructure superstructure = new Superstructure(elevator, wrist, shooter, intake);
+  // Superstructure superstructure = new Superstructure(elevator, wrist, shooter, intake);
 
 
 
@@ -47,11 +47,11 @@ public class RobotContainer {
   
 
   public void initAutons() {
-    Command figureEightTestAuton = new PathPlannerAuto("FigEightTestAuton");
-    Command autoFourNoteB1 = new PathPlannerAuto("B1 4Note");
-
-    autonChooser.addOption("Figure Eight Test", figureEightTestAuton);
-    autonChooser.addOption("B1: Four Note", autoFourNoteB1);
+    autonChooser.addOption("Figure Eight Test",  new PathPlannerAuto("FigEightTestAuton"));
+    autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
+    autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
+    autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
+    
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autonChooser);
   }
@@ -80,8 +80,8 @@ public class RobotContainer {
     driver.button(RobotMap.Controller.B).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
     driver.button(RobotMap.Controller.A).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
   
-    driver.rightBumper().whileTrue(new IntakeNote(superstructure, swerveDrive));
-    driver.leftBumper().whileTrue(new ScoreSpeaker(superstructure, swerveDrive));
+    // driver.rightBumper().whileTrue(new IntakeNote(superstructure, swerveDrive));
+    // driver.leftBumper().whileTrue(new ScoreSpeaker(superstructure, swerveDrive));
 
     // --------------------=Secondary=--------------------
     
