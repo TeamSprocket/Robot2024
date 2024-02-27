@@ -45,28 +45,32 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.FRONT_LEFT_TALON_T,
         RobotMap.Drivetrain.FRONT_LEFT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetFrontLeft,
-        Constants.Drivetrain.FRONT_LEFT_D_IS_REVERSED
+        Constants.Drivetrain.FRONT_LEFT_D_IS_REVERSED,
+        Constants.Drivetrain.FRONT_LEFT_T_IS_REVERSED
   );
   private final SwerveModule frontRight = new SwerveModule(
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_D,
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_T,
         RobotMap.Drivetrain.FRONT_RIGHT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetFrontRight,
-        Constants.Drivetrain.FRONT_RIGHT_D_IS_REVERSED
+        Constants.Drivetrain.FRONT_RIGHT_D_IS_REVERSED,
+        Constants.Drivetrain.FRONT_RIGHT_T_IS_REVERSED
   );
   private final SwerveModule backLeft = new SwerveModule(
         RobotMap.Drivetrain.BACK_LEFT_TALON_D,
         RobotMap.Drivetrain.BACK_LEFT_TALON_T,
         RobotMap.Drivetrain.BACK_LEFT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetBackLeft,
-        Constants.Drivetrain.BACK_LEFT_D_IS_REVERSED
+        Constants.Drivetrain.BACK_LEFT_D_IS_REVERSED,
+        Constants.Drivetrain.BACK_LEFT_T_IS_REVERSED
   );
   private final SwerveModule backRight = new SwerveModule(
         RobotMap.Drivetrain.BACK_RIGHT_TALON_D,
         RobotMap.Drivetrain.BACK_RIGHT_TALON_T,
         RobotMap.Drivetrain.BACK_RIGHT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetBackRight,
-        Constants.Drivetrain.BACK_RIGHT_D_IS_REVERSED
+        Constants.Drivetrain.BACK_RIGHT_D_IS_REVERSED,
+        Constants.Drivetrain.BACK_RIGHT_T_IS_REVERSED
   );
 
 
@@ -104,8 +108,8 @@ public class SwerveDrive extends SubsystemBase {
     this
     );
 
-    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
-    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
 
   }
 
@@ -311,6 +315,11 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
 
     SmartDashboard.putNumber("getPIDOutput", frontRight.getPIDOutput(desiredStates[1]));
+
+    // SmartDashboard.putNumber("front left turn PID Output [SD]", frontLeft.getPIDOutput(state));
+    // SmartDashboard.putNumber("front right turn PID Output [SD]", frontRight.getPIDOutput(desiredStates[1]));
+    // SmartDashboard.putNumber("back right turn PID Output [SD]", backRight.getPIDOutput(state));
+    // SmartDashboard.putNumber("back left turn PID Output [SD]", backLeft.getPIDOutput(state));
   }
 
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {

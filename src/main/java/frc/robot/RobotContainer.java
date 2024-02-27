@@ -30,7 +30,7 @@ public class RobotContainer {
   // secondary.getRightTriggerAxis());
   // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () ->
   // swerveDrive.getPose().getTranslation());
-  // Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
   // Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, wrist, shooter,

@@ -167,9 +167,9 @@ public class Constants {
                 new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotor = 0.045; // 0.0125
+        public static double kPTurnMotor = 0.00232; // 0.0125
         public static double kITurnMotor = 0.00;
-        public static double kDTurnMotor = 0.000009; // 0.0003
+        public static double kDTurnMotor = 0.000026; // 0.0003
 
         public static final double kPHeading = 1.5978; // 0.6
         public static final double kIHeading = 0.0000;
@@ -221,15 +221,15 @@ public class Constants {
         public static final boolean BACK_LEFT_D_IS_REVERSED = true;
         public static final boolean BACK_RIGHT_D_IS_REVERSED = true;
 
-        // public static final boolean BACK_RIGHT_T_IS_REVERSED = false;
-        // public static final boolean FRONT_RIGHT_T_IS_REVERSED = false;
-        // public static final boolean BACK_LEFT_T_IS_REVERSED = false;
-        // public static final boolean FRONT_LEFT_T_IS_REVERSED = false;
+        public static final boolean BACK_RIGHT_T_IS_REVERSED = false;
+        public static final boolean FRONT_RIGHT_T_IS_REVERSED = false;
+        public static final boolean BACK_LEFT_T_IS_REVERSED = false;
+        public static final boolean FRONT_LEFT_T_IS_REVERSED = false;
 
-        public static double kCANCoderOffsetFrontLeft = 28.125; // -53.7
-        public static double kCANCoderOffsetFrontRight = 133.7; // -331.4
-        public static double kCANCoderOffsetBackLeft = 249.4; // 131.1
-        public static double kCANCoderOffsetBackRight = 176.0; // 234.1
+        public static double kCANCoderOffsetFrontLeft = 207.9; // -53.7
+        public static double kCANCoderOffsetFrontRight = 307.0; // -331.4
+        public static double kCANCoderOffsetBackLeft = 80.2; // 131.1
+        public static double kCANCoderOffsetBackRight = 344.3; // 234.1
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =
         // Math.toRadians(303.2);
