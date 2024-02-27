@@ -26,17 +26,17 @@ public class RobotContainer {
   Limelight limelight = new Limelight();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
 
-  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
-  // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
+  // secondary.getRightTriggerAxis());
+  // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () ->
+  // swerveDrive.getPose().getTranslation());
   // Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
   Intake intake = new Intake();
 
-  // Superstructure superstructure = new Superstructure(elevator, wrist, shooter, intake);
-
-
+  // Superstructure superstructure = new Superstructure(elevator, wrist, shooter,
+  // intake);
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
-
 
   public RobotContainer() {
     configureBindings();
@@ -44,53 +44,54 @@ public class RobotContainer {
     initNamedCommands();
   }
 
-  
-
   public void initAutons() {
-    autonChooser.addOption("Figure Eight Test",  new PathPlannerAuto("FigEightTestAuton"));
+    autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
     autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
     autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
     autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
-    
+
     autonChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Auton Chooser", autonChooser);
   }
 
   public void initNamedCommands() {
-    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure, swerveDrive));
-    // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
+    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure,
+    // swerveDrive));
+    // NamedCommands.registerCommand("ScoreSpeaker", new
+    // ScoreSpeaker(superstructure, swerveDrive));
   }
-
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
   }
 
-  
   public void configureBindings() {
     // --------------------=Driver=--------------------
-		swerveDrive.setDefaultCommand(new DriveTeleop(
-			swerveDrive, 
-			() -> -driver.getLeftX(), 
-			() -> driver.getLeftY(), 
-			() -> -driver.getRightX()));
+    swerveDrive.setDefaultCommand(new DriveTeleop(
+        swerveDrive,
+        () -> -driver.getLeftX(),
+        () -> driver.getLeftY(),
+        () -> -driver.getRightX()));
     driver.x().onTrue(new ZeroGyro(swerveDrive));
-    driver.button(RobotMap.Controller.Y).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
-    driver.button(RobotMap.Controller.X).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
-    driver.button(RobotMap.Controller.B).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
-    driver.button(RobotMap.Controller.A).onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
-  
+    driver.button(RobotMap.Controller.Y)
+        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
+    driver.button(RobotMap.Controller.X)
+        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
+    driver.button(RobotMap.Controller.B)
+        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
+    driver.button(RobotMap.Controller.A)
+        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
+
     // driver.rightBumper().whileTrue(new IntakeNote(superstructure, swerveDrive));
     // driver.leftBumper().whileTrue(new ScoreSpeaker(superstructure, swerveDrive));
 
     // --------------------=Secondary=--------------------
-    
-  
+
   }
-  
+
   public void resetModulesToAbsolute() {
     swerveDrive.resetModulesToAbsolute();
-  }   
+  }
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;

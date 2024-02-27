@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.util.Conversions;
+import frc.util.ShuffleboardPIDTuner;
 
 public class SwerveModule extends SubsystemBase {
   
@@ -47,6 +48,9 @@ public class SwerveModule extends SubsystemBase {
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; //Signed_PlusMinus180?
     cancoder.getConfigurator().apply(cancoderConfig);
+
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
   }
 
   @Override
@@ -59,7 +63,15 @@ public class SwerveModule extends SubsystemBase {
     SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
     double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg -= (deg >  180) ? 360 : 0;
-    SmartDashboard.putNumber("Degree", deg);    
+    SmartDashboard.putNumber("Degree", deg);  
+    
+    
+    // turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
+    // turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
+
+    
+    turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
+    turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
 
     // clearStickyFaults();
     // this.cancoderOffsetDeg = (ShuffleboardPIDTuner.get("CancoderOffsetDegCancoderOffsetDegTEMP"));
@@ -73,6 +85,8 @@ public class SwerveModule extends SubsystemBase {
      deg %= 360;
       if (deg > 180) {
         deg -= (360); 
+      } else if (deg < -180) {
+        deg += (360);
       }
     //deg %= 180;
     return deg;
@@ -132,15 +146,32 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.setNeutralMode(neutralMode);
   }
 
+  public void setNeutralModeDrive(NeutralModeValue neutralMode) {
+    driveMotor.setNeutralMode(neutralMode);
+    // turnMotor.setNeutralMode(neutralMode);
+  }
+
+  public void setNeutralModeTurn(NeutralModeValue neutralMode) {
+    // driveMotor.setNeutralMode(neutralMode);
+    turnMotor.setNeutralMode(neutralMode);
+  }
+
+
   public void setState(SwerveModuleState moduleState) {
     SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
-    
+    // SwerveModuleState state = moduleState;
     // driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
     driveMotor.set(state.speedMetersPerSecond);
 
     // turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    // SmartDashboard.putNumber("Turn Motor Output [SM]", turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
 
+  }
+
+  public double getPIDOutput(SwerveModuleState state) {
+    return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
   }
   
   public void clearStickyFaults() {

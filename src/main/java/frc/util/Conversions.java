@@ -29,7 +29,7 @@ public class Conversions {
      * @return RPM of Mechanism
      */
     public static double falconToRPM(double velocityCounts, double gearRatio) {
-        double motorRPM = velocityCounts / gearRatio * 60.0;        
+        double motorRPM = velocityCounts * 60.0;        
         double mechRPM = motorRPM / gearRatio;
         return mechRPM;
     }
