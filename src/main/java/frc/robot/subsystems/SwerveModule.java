@@ -61,7 +61,7 @@ public class SwerveModule extends SubsystemBase {
     deg -= (deg >  180) ? 360 : 0;
     SmartDashboard.putNumber("Degree", deg);    
 
-    clearStickyFaults();
+    // clearStickyFaults();
     // this.cancoderOffsetDeg = (ShuffleboardPIDTuner.get("CancoderOffsetDegCancoderOffsetDegTEMP"));
   }
 

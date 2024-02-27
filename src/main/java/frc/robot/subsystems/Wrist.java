@@ -153,7 +153,7 @@ public class Wrist extends SubsystemBase {
         break;
     }
 
-    clearStickyFaults();
+    // clearStickyFaults();
     lastState = state;
     SmartDashboard.putNumber("Wrist Angle [WR]", getWristAngle());
   }

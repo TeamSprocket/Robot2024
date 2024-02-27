@@ -92,7 +92,7 @@ public class Intake extends SubsystemBase {
             
         }
 
-        clearStickyFaults();
+        // clearStickyFaults();
         lastState = state;
 
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());

@@ -112,7 +112,7 @@ public class Elevator extends SubsystemBase {
    
     SmartDashboard.getNumber("Elevator Height [EL]", getHeight());
 
-    clearStickyFaults();
+    // clearStickyFaults();
   }
 
   public void setState(ElevatorStates state) {

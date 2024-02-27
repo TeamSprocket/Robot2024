@@ -255,7 +255,7 @@ public class Shooter extends SubsystemBase {
       
     }
 
-    clearStickyFaults();
+    // clearStickyFaults();
     // Update lastState
     lastState = state;
   }
