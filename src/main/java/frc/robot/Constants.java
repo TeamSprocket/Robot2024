@@ -98,14 +98,14 @@ public class Constants {
         public static final boolean kIsIndexerInverted = true;
 
         
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 4.0;
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 10.0;
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
         public static final double kShooterSpeedScoreAmp = 1.0;
 
         public static final double kIndexerSpeedIntake = 0.4;
         public static final double kIndexerSpeedScoreSpeaker = 0.7;
-        public static final double kIndexerSpeedScoreAmp = 0.5;
+        public static final double kIndexerSpeedScoreAmp = 0.4;
 
 
         
@@ -116,7 +116,7 @@ public class Constants {
         
         public static final double kShooterIncramentMultiplier = 0.01;
 
-        public static final double kAtGoalTolerance = 0.05;
+        public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
 
         public static  double kPShooter = 0.25;
         public static  double kIShooter = 0.0;
@@ -129,8 +129,8 @@ public class Constants {
 
 
     public static final class Intake {
-        public static final double kPivotAngleStowed = 0.0;
-        public static final double kPivotAngleIntake = 0.0;
+        public static final double kPivotAngleStowed = 60.0;
+        public static final double kPivotAngleIntake = 180.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.0;
@@ -138,8 +138,8 @@ public class Constants {
         public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
 
-        public static final double kPivotMaxVelocity = 0.0;
-        public static final double kPivotMaxAccel = 0.0;
+        public static final double kPivotMaxVelocity = 0.0; // 180
+        public static final double kPivotMaxAccel = 0.0; // 60
 
         public static final double kAtGoalTolerance = 0.5; // 0.5
 
@@ -147,7 +147,7 @@ public class Constants {
 
         public static final double kHasNoteCurrentThreshold = 0.0;
 
-        public static final double kPPivot = 0.0;
+        public static final double kPPivot = 0.0; // 1, 0.1
         public static final double kIPivot = 0.0;
         public static final double kDPivot = 0.0; 
 

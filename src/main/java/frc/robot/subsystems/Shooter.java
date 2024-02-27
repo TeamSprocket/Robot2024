@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.controls.StrictFollower;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
@@ -324,6 +325,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Target MPS [ST]", shooterPID.getSetpoint());
     SmartDashboard.putBoolean("atGoalShooter [ST]", atGoalShooter());
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
+    SmartDashboard.putBoolean("Beam Broken [ST]", beamBroken());
   }
   
 
