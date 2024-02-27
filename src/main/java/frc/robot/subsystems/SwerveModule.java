@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.util.Conversions;
+import frc.util.ShuffleboardPIDTuner;
 
 public class SwerveModule extends SubsystemBase {
   
@@ -47,6 +48,9 @@ public class SwerveModule extends SubsystemBase {
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; //Signed_PlusMinus180?
     cancoder.getConfigurator().apply(cancoderConfig);
+
+    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", -0.1, 0.1, 0);
+    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", -0.01, 0.01, 0);
   }
 
   @Override
@@ -61,6 +65,10 @@ public class SwerveModule extends SubsystemBase {
     deg -= (deg >  180) ? 360 : 0;
     SmartDashboard.putNumber("Degree", deg);    
 
+    
+    turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
+    turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
+
     // clearStickyFaults();
     // this.cancoderOffsetDeg = (ShuffleboardPIDTuner.get("CancoderOffsetDegCancoderOffsetDegTEMP"));
   }
@@ -73,6 +81,8 @@ public class SwerveModule extends SubsystemBase {
      deg %= 360;
       if (deg > 180) {
         deg -= (360); 
+      } else if (deg < -180) {
+        deg += (360);
       }
     //deg %= 180;
     return deg;

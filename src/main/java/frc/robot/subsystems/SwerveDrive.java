@@ -82,9 +82,6 @@ public class SwerveDrive extends SubsystemBase {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
-    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", -0.1, 0.1, 0);
-    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", -0.01, 0.01, 0);
-
     // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kPTranslationPP);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kITranslationPP);
     // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kDTranslationPP);
@@ -135,9 +132,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
     SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
     SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
-
-    Constants.Drivetrain.kPTurnMotor = ShuffleboardPIDTuner.get("Swerve PID kP [SD]");
-    Constants.Drivetrain.kDTurnMotor = ShuffleboardPIDTuner.get("Swerve PID kD [SD]");
 
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
 
@@ -295,6 +289,11 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.setState(desiredStates[1]);
     backLeft.setState(desiredStates[2]);
     backRight.setState(desiredStates[3]);
+
+    SmartDashboard.putNumber("front left turn deg target [SD]", desiredStates[0].angle.getDegrees());
+    SmartDashboard.putNumber("front right turn deg target [SD]", desiredStates[1].angle.getDegrees());
+    SmartDashboard.putNumber("back right turn deg target [SD]", desiredStates[2].angle.getDegrees());
+    SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
   }
 
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {
