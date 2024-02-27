@@ -48,6 +48,9 @@ public class SwerveModule extends SubsystemBase {
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; //Signed_PlusMinus180?
     cancoder.getConfigurator().apply(cancoderConfig);
+
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
   }
 
   @Override
@@ -60,7 +63,11 @@ public class SwerveModule extends SubsystemBase {
     SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
     double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
     deg -= (deg >  180) ? 360 : 0;
-    SmartDashboard.putNumber("Degree", deg);    
+    SmartDashboard.putNumber("Degree", deg);  
+    
+    
+    // turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
+    // turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
 
     
     turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
