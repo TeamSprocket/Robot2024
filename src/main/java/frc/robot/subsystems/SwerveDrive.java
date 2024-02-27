@@ -1,15 +1,9 @@
-
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.sensors.PigeonIMU;
-import com.ctre.phoenix.sensors.PigeonIMU.CalibrationMode;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.ctre.phoenix6.hardware.core.CorePigeon2;
-
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -18,7 +12,6 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,9 +37,9 @@ public class SwerveDrive extends SubsystemBase {
     BACK
   } 
 
-  
-  private PigeonIMU gyro = new PigeonIMU(RobotMap.Drivetrain.PIGEON_2);
-  
+  // private WPI_PigeonIMU gyro = new WPI_PigeonIMU(RobotMap.Drivetrain.PIGEON_2);
+  private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
+
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
         RobotMap.Drivetrain.FRONT_LEFT_TALON_T,
@@ -125,6 +118,9 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
     SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+
+    SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw().getValueAsDouble());
+
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
@@ -167,7 +163,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getYaw() + 180.0; 
+    double angle = gyro.getYaw().getValueAsDouble() + 180.0; 
     
     angle %= 360.0;
     if (angle < 0) {
