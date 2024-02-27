@@ -104,7 +104,8 @@ public class SwerveDrive extends SubsystemBase {
     this
     );
 
-
+    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
+    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
 
   }
 
@@ -243,6 +244,20 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setNeutralMode(neutralMode);
   }
 
+  public void setNeutralModeDrive(NeutralModeValue neutralMode) {
+    frontLeft.setNeutralModeDrive(neutralMode);
+    frontRight.setNeutralModeDrive(neutralMode);
+    backLeft.setNeutralModeDrive(neutralMode);
+    backRight.setNeutralModeDrive(neutralMode);
+  }
+
+  public void setNeutralModeTurn(NeutralModeValue neutralMode) {
+    frontLeft.setNeutralModeTurn(neutralMode);
+    frontRight.setNeutralModeTurn(neutralMode);
+    backLeft.setNeutralModeTurn(neutralMode);
+    backRight.setNeutralModeTurn(neutralMode);
+  }
+
   public void updateOdometryWithVision() {
     Translation2d pos = limelight.getTranslation2d();
     if (limelight.getIsNotVolatile()) { // LL readings not volatile
@@ -294,6 +309,8 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("front right turn deg target [SD]", desiredStates[1].angle.getDegrees());
     SmartDashboard.putNumber("back right turn deg target [SD]", desiredStates[2].angle.getDegrees());
     SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
+
+    SmartDashboard.putNumber("getPIDOutput", frontRight.getPIDOutput(desiredStates[1]));
   }
 
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {

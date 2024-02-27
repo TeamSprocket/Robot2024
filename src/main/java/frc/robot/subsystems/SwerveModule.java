@@ -48,9 +48,6 @@ public class SwerveModule extends SubsystemBase {
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
     cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1; //Signed_PlusMinus180?
     cancoder.getConfigurator().apply(cancoderConfig);
-
-    ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", -0.1, 0.1, 0);
-    ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", -0.01, 0.01, 0);
   }
 
   @Override
@@ -142,15 +139,32 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.setNeutralMode(neutralMode);
   }
 
+  public void setNeutralModeDrive(NeutralModeValue neutralMode) {
+    driveMotor.setNeutralMode(neutralMode);
+    // turnMotor.setNeutralMode(neutralMode);
+  }
+
+  public void setNeutralModeTurn(NeutralModeValue neutralMode) {
+    // driveMotor.setNeutralMode(neutralMode);
+    turnMotor.setNeutralMode(neutralMode);
+  }
+
+
   public void setState(SwerveModuleState moduleState) {
     SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
-    
+    // SwerveModuleState state = moduleState;
     // driveMotor.set(ControlMode.PercentOutput, state.speedMetersPerSecond);
     driveMotor.set(state.speedMetersPerSecond);
 
     // turnMotor.set(ControlMode.PercentOutput, turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    
     turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    // SmartDashboard.putNumber("Turn Motor Output [SM]", turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
 
+  }
+
+  public double getPIDOutput(SwerveModuleState state) {
+    return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
   }
   
   public void clearStickyFaults() {

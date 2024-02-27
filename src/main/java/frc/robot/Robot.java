@@ -25,7 +25,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.getSwerveDrive().zeroGyro();
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
+    m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake);
+    m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast);
   }
 
   @Override
@@ -71,7 +72,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Constants.robotState = RobotState.TELEOP;
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
+    m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake);
+    m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

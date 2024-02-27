@@ -4,8 +4,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
-import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -179,9 +177,9 @@ public class Constants {
 
         
         // PID
-        public static double kPTurnMotor = 0.0125; //0.0125
-        public static double kITurnMotor = 0.0000;
-        public static double kDTurnMotor = 0.0003; //0.0003
+        public static double kPTurnMotor = 0.045; //0.0125
+        public static double kITurnMotor = 0.00;
+        public static double kDTurnMotor = 0.000009; //0.0003
 
         public static final double kPHeading = 1.5978; //0.6
         public static final double kIHeading = 0.0000;
@@ -203,10 +201,10 @@ public class Constants {
         // Speed/Accel 
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 1.0; //0.8 //1.0
+        public static double kMaxSpeed = 0.6; //0.8 //1.0
         public static double kMaxAccel = 1.0; //0.7 //1.0
         
-        public static double kMaxTurnSpeed = 0.08; 
+        public static double kMaxTurnSpeed = 0.02; 
         public static double kMaxTurnAccel = 10; // Instant manual turning
 
 
@@ -241,10 +239,10 @@ public class Constants {
         // public static final boolean BACK_LEFT_T_IS_REVERSED = false;
         // public static final boolean FRONT_LEFT_T_IS_REVERSED = false; 
 
-        public static double kCANCoderOffsetFrontLeft = 0.0; // -53.7
-        public static double kCANCoderOffsetFrontRight = 0.0; // -331.4
-        public static double kCANCoderOffsetBackLeft = 0.0; // 131.1
-        public static double kCANCoderOffsetBackRight = 0.0; // 234.1
+        public static double kCANCoderOffsetFrontLeft = 28.125; // -53.7
+        public static double kCANCoderOffsetFrontRight = 133.7; // -331.4
+        public static double kCANCoderOffsetBackLeft = 249.4; // 131.1
+        public static double kCANCoderOffsetBackRight = 176.0; // 234.1
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =  Math.toRadians(303.2);
         // public static final double BACK_RIGHT_ABS_ENCODER_OFFSET_RAD = Math.toRadians(305.5);
