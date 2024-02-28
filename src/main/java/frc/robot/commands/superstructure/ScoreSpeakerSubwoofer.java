@@ -4,39 +4,56 @@ package frc.robot.commands.superstructure;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.util.Conversions;
 
 public class ScoreSpeakerSubwoofer extends Command {
 
-  Superstructure superstructure;
-  SwerveDrive swerveDrive;
-  Timer timer = new Timer();
+  Shooter shooter;
+  Timer waitTimer = new Timer();
+  Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerSubwoofer(Superstructure superstructure, SwerveDrive swerveDrive) {
-    this.superstructure = superstructure;
-    this.swerveDrive = swerveDrive;
+  public ScoreSpeakerSubwoofer(Shooter shooter) {
+    this.shooter = shooter;
   }
 
   @Override
   public void initialize() {
-    superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER);
+    shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
+
+    waitTimer.reset();
+    waitTimer.stop();
+
+    scoreTimer.reset();
+    scoreTimer.stop();
   }
 
   @Override
   public void execute() {
-    swerveDrive.setTargetHeadingRad(Conversions.poseToTargetHeadingRad(swerveDrive.getPose().getTranslation(), Constants.ShootingSetpoints.targetPoint));
+    if (shooter.atGoalShooter()) { // At speed
+      waitTimer.start();
+    } else {
+      waitTimer.reset();
+      waitTimer.stop();
+    }
+
+    // Start timed scoring sequence
+    if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
+      scoreTimer.start();
+    }
+
   }
 
   @Override
   public void end(boolean interrupted) {
-    superstructure.setState(SSStates.STOWED);
+    shooter.setState(ShooterStates.STANDBY);
   }
 
   @Override
   public boolean isFinished() {
-    return superstructure.getState() == SSStates.STOWED;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec;
   }
 }

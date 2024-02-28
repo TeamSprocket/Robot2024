@@ -29,7 +29,7 @@ public class Constants {
         public static final double kWaitBeambreakTimeToleranceSec = 0.1;
 
         // Elapsed time all elements at wait speaker pos before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.5;
+        public static final double kWaitSpeakerTimeToleranceSec = 0.25;
 
         // Elapsed time shooting into speaker before stow
         public static final double kScoreSpeakerTimeToleranceSec = 1.0;
@@ -122,8 +122,8 @@ public class Constants {
     }
 
     public static final class Intake {
-        public static final double kPivotAngleStowed = 0.0;
-        public static final double kPivotAngleIntake = 0.0;
+        public static final double kPivotAngleStowed = 30.0;
+        public static final double kPivotAngleIntake = 130.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.0;
@@ -131,8 +131,9 @@ public class Constants {
         public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
 
-        public static final double kPivotMaxVelocity = 0.0;
-        public static final double kPivotMaxAccel = 0.0;
+        // public static final double kPivotMaxVelocity = 0.0;
+        // public static final double kPivotMaxAccel = 0.0;
+        public static final double kMaxPivotOutput = 0.1;
 
         public static final double kAtGoalTolerance = 0.5; // 0.5
 
@@ -167,13 +168,13 @@ public class Constants {
                 new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotor = 0.00232; // 0.0125
+        public static double kPTurnMotor = 0.003; // 0.0125
         public static double kITurnMotor = 0.00;
         public static double kDTurnMotor = 0.000026; // 0.0003
 
-        public static final double kPHeading = 1.5978; // 0.6
+        public static final double kPHeading = 1.5; // 0.6
         public static final double kIHeading = 0.0000;
-        public static final double kDHeading = 0.12136;
+        public static final double kDHeading = 0.1;
 
         public static final double kPTranslationPP = 2.8; // 4.0
         public static final double kITranslationPP = 0.0;
@@ -193,7 +194,7 @@ public class Constants {
         public static double kMaxSpeed = 0.6; // 0.8 //1.0
         public static double kMaxAccel = 1.0; // 0.7 //1.0
 
-        public static double kMaxTurnSpeed = 0.02;
+        public static double kMaxTurnSpeed = 0.04;
         public static double kMaxTurnAccel = 10; // Instant manual turning
 
         // Misc
@@ -217,19 +218,25 @@ public class Constants {
         // public static boolean CAN_DIRECTION_SWITCH = false;
 
         public static final boolean FRONT_LEFT_D_IS_REVERSED = false;
-        public static final boolean FRONT_RIGHT_D_IS_REVERSED = false;
-        public static final boolean BACK_LEFT_D_IS_REVERSED = true;
+        public static final boolean FRONT_RIGHT_D_IS_REVERSED = true;
+        public static final boolean BACK_LEFT_D_IS_REVERSED = false;
         public static final boolean BACK_RIGHT_D_IS_REVERSED = true;
 
-        public static final boolean BACK_RIGHT_T_IS_REVERSED = false;
-        public static final boolean FRONT_RIGHT_T_IS_REVERSED = false;
-        public static final boolean BACK_LEFT_T_IS_REVERSED = false;
-        public static final boolean FRONT_LEFT_T_IS_REVERSED = false;
+        public static final boolean BACK_RIGHT_T_IS_REVERSED = true;
+        public static final boolean FRONT_RIGHT_T_IS_REVERSED = true;
+        public static final boolean BACK_LEFT_T_IS_REVERSED = true;
+        public static final boolean FRONT_LEFT_T_IS_REVERSED = true;
 
-        public static double kCANCoderOffsetFrontLeft = 207.9; // -53.7
-        public static double kCANCoderOffsetFrontRight = 307.0; // -331.4
-        public static double kCANCoderOffsetBackLeft = 80.2; // 131.1
-        public static double kCANCoderOffsetBackRight = 344.3; // 234.1
+        // public static double kCANCoderOffsetFrontLeft = 207.9; // -53.7
+        // public static double kCANCoderOffsetFrontRight = 307.0; // -331.4
+        // public static double kCANCoderOffsetBackLeft = 80.2; // 131.1
+        // public static double kCANCoderOffsetBackRight = 344.3; // 234.1
+        public static double kCANCoderOffsetFrontLeft = 24.1; // -53.7
+        public static double kCANCoderOffsetFrontRight = 315.2; // -331.4
+        public static double kCANCoderOffsetBackLeft = 260.5; // 131.1
+        public static double kCANCoderOffsetBackRight = 340.9; // 234.1
+
+
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =
         // Math.toRadians(303.2);

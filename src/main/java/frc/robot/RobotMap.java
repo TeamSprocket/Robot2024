@@ -63,7 +63,7 @@ public final class RobotMap {
     public static final int INDEXER = 18;
 
     // DIO
-    public static final int BEAM_BREAK = 1;
+    public static final int BEAM_BREAK = 0;
   }
 
   public static final class Controller {

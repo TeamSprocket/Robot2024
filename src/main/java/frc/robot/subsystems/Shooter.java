@@ -87,8 +87,8 @@ public class Shooter extends SubsystemBase {
     stateChooser.addOption("SCORE_AMP", ShooterStates.SCORE_AMP);
     SmartDashboard.putData("Shooter State Chooser [ST]", stateChooser);
 
-    ShuffleboardPIDTuner.addSlider("Shooter kP [ST]", 0, 1, 0);
-    ShuffleboardPIDTuner.addSlider("Shooter kD [ST]", 0, 1, 0);
+    // ShuffleboardPIDTuner.addSlider("Shooter kP [ST]", 0, 1, 0);
+    // ShuffleboardPIDTuner.addSlider("Shooter kD [ST]", 0, 1, 0);
   }
 
 
@@ -97,8 +97,8 @@ public class Shooter extends SubsystemBase {
     setState(stateChooser.getSelected());
     postSmartDashboardDebug();
 
-    shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
-    shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
+    // shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
+    // shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
 
 
     switch (state) {

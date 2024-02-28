@@ -83,10 +83,7 @@ public class SwerveModule extends SubsystemBase {
     
     // turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
     // turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
-
-    
-    // turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
-    // turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
+    // WHY no work
 
     // clearStickyFaults();
     // this.cancoderOffsetDeg = (ShuffleboardPIDTuner.get("CancoderOffsetDegCancoderOffsetDegTEMP"));
@@ -176,10 +173,9 @@ public class SwerveModule extends SubsystemBase {
     SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
     // SwerveModuleState state = moduleState;
     
-    driveMotor.set(state.speedMetersPerSecond);
+    // driveMotor.set(state.speedMetersPerSecond);
 
-    turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
-    // this.turnMotor.setControl(new PositionDutyCycle(Conversions.degreesToFalcon(state.angle.getDegrees(), Constants.Drivetrain.kTurningMotorGearRatio)));
+    // turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
     
   }
 
@@ -190,6 +186,17 @@ public class SwerveModule extends SubsystemBase {
   public double getPIDOutput(SwerveModuleState state) {
     return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
   }
+
+  public double getPIDOutput(double turnAngle, double targetAngle) {
+    SwerveModuleState state = new SwerveModuleState(1.0, new Rotation2d(Math.toRadians(targetAngle)));
+    state = SwerveModuleState.optimize(state, new Rotation2d(Math.toRadians(turnAngle)));
+    return turnPIDController.calculate(turnAngle, state.angle.getDegrees());
+  }
+
+  public PIDController getPIDController() {
+    return turnPIDController;
+  }
+
   
   public void clearStickyFaults() {
     driveMotor.clearStickyFaults();

@@ -12,6 +12,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 
 
@@ -33,7 +34,11 @@ public class Intake extends SubsystemBase {
     private final TalonFX rollIntake = new TalonFX(RobotMap.Intake.ROLL_INTAKE);
     private final TalonFX pivotIntake = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-    ProfiledPIDController profiledPIDController;
+    private double pivotSpeed = 0;
+
+
+    // ProfiledPIDController profiledPIDController;
+    PIDController pidController;
 
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
@@ -48,8 +53,9 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
-        profiledPIDController = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
+        // TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
+        // profiledPIDController = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
+        pidController = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
@@ -72,8 +78,8 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         // TODO: REMOVE - TEMP
         setState(selectIntakeState.getSelected());
-        profiledPIDController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
-        profiledPIDController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
+        pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
+        pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
 
 
         switch (state) {
@@ -83,15 +89,19 @@ public class Intake extends SubsystemBase {
                 break;
 
             case STOWED:
-                profiledPIDController.setGoal(Constants.Intake.kPivotAngleStowed);
-                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
+                pidController.setSetpoint(Constants.Intake.kPivotAngleStowed);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kRollSpeedStowed);
                 break;
 
             case INTAKE:
-                profiledPIDController.setGoal(Constants.Intake.kPivotAngleIntake);
-                pivotIntake.set(profiledPIDController.calculate(getPivotAngle()));
+                pidController.setSetpoint(Constants.Intake.kPivotAngleIntake);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
@@ -103,6 +113,7 @@ public class Intake extends SubsystemBase {
 
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
         SmartDashboard.putBoolean("At Goal [IN]", atGoal());
+        SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
     }
 
     
@@ -118,8 +129,8 @@ public class Intake extends SubsystemBase {
         double deg = Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
         deg %= 360;
         deg = (deg < 0) ? deg + 360 : deg; 
+        deg = (deg > 270) ? 0 : deg;
         return deg;
-        
     }
 
     // public void runPivotToSetpoint(double setpoint){
@@ -135,7 +146,7 @@ public class Intake extends SubsystemBase {
     }
 
   public boolean atGoal() {
-    double goal = profiledPIDController.getGoal().position;
+    double goal = pidController.getSetpoint();
     return Util.inRange(getPivotAngle(), (goal - Constants.Intake.kAtGoalTolerance), (goal + Constants.Intake.kAtGoalTolerance));
   }
 

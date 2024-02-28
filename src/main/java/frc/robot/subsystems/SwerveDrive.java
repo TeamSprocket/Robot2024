@@ -86,9 +86,9 @@ public class SwerveDrive extends SubsystemBase {
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
-    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kPTranslationPP);
-    // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kITranslationPP);
-    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kDTranslationPP);
+    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
+    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
     // Config Pathplanner
     AutoBuilder.configureHolonomic(
@@ -108,13 +108,19 @@ public class SwerveDrive extends SubsystemBase {
     this
     );
 
-    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
-    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
+
+    // ShuffleboardPIDTuner.addSlider("Turn Angle FR Slider [SD]", -180.0, 180.0, 0.0);
+    // ShuffleboardPIDTuner.addSlider("Target Angle FR Slider [SD]", -180.0, 180.0, 0.0);
+
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, Constants.Drivetrain.kPTurnMotor);
+    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, Constants.Drivetrain.kDTurnMotor);
 
   }
 
   @Override
   public void periodic() {
+    // updateShuffleboardPIDConstants();
+
     SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
     SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
@@ -138,10 +144,14 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
     SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
 
+    
+    // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
+
+    
+
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
 
 
-    // updateShuffleboardPIDConstants();
 
     if (Constants.robotState == RobotState.TELEOP) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
@@ -329,7 +339,7 @@ public class SwerveDrive extends SubsystemBase {
     this.targetHeadingRad += tSpeed;
     this.targetHeadingRad %= (2.0 * Math.PI);
     this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
+    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad); // Inverted PID output because ¯\_(ツ)_/¯
 
   }
   public void updateShuffleboardPIDConstants() {//
