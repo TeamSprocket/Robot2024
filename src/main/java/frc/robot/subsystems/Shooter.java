@@ -40,7 +40,10 @@ public class Shooter extends SubsystemBase {
     SCORE_SPEAKER_SUBWOOFER,
     SCORE_SPEAKER_PODIUM,
     SCORE_SPEAKER_AMP_ZONE,
-    SCORE_AMP
+    SCORE_AMP,
+
+    // JUST IN CASE
+    SOURCE
   }
   private ShooterStates state = ShooterStates.NONE;
   private ShooterStates lastState = ShooterStates.NONE;
@@ -246,15 +249,16 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(shooterInc);
       break;
 
-
-
-
       case SCORE_AMP:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreAmp);
         shooterMotor.set(Constants.Shooter.kShooterSpeedScoreAmp);
       break;
-      
 
+      // JUST IN CASE
+      case SOURCE:
+        indexerMotor.set(Constants.Shooter.kIndexerSpeedSource);
+        shooterMotor.set(0.0);
+      break;
       
     }
 
