@@ -64,9 +64,9 @@ public class Constants {
     }
 
     public static final class Wrist {
-        public static final boolean kIsWristInverted = true;
+        public static final boolean kIsWristInverted = false;
 
-        public static double kPwrist = 0;
+        public static double kPwrist = 0.0076;
         public static double kIwrist = 0;
         public static double kDwrist = 0;
 
@@ -76,17 +76,20 @@ public class Constants {
 
         public static final double kWristGearRatio = 148.15;
 
-        public static final double kMaxVelocityDeg = 0.0;
-        public static final double kMaxAccelerationDeg = 0.0;
+        public static final double kMaxWristOutput = 0.3;
 
-        public static final double kTargetAngleStowed = 0.0;
+        // public static final double kMaxVelocityDeg = 0.0;
+        // public static final double kMaxAccelerationDeg = 0.0;
+
+        public static final double kTargetAngleStowed = 5.0;
         public static final double kTargetAngleIntake = 0.0;
         // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromAmp = 0.0;
-        public static final double kTargetAngleSpeakerFromPodium = 0.0;
-        public static final double kTargetAngleSpeakerFromSubwoofer = 0.0;
-        public static final double kTargetAngleAmp = 0.0;
+        public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
+        public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
+        public static final double kTargetAngleSpeakerFromSubwoofer = 5.0;
+        public static final double kTargetAngleAmp = kTargetAngleStowed;
+        public static final double kTargetAngleSource = kTargetAngleStowed;
     }
 
     public static final class Shooter {
@@ -103,6 +106,9 @@ public class Constants {
         public static final double kIndexerSpeedScoreSpeaker = 0.9;
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIntakeRollbackSpeed = 0.15;
+
+        // JUST IN CASE
+        public static final double kIndexerSpeedSource = -0.1;
 
         public static final double kShooterGearRatio = 0.6666666666;
         public static final double kIndexerGearRatio = 2.0;

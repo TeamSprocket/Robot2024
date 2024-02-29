@@ -28,7 +28,7 @@ public class RobotContainer {
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());
-  // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () ->
+  // Wrist wrist = new Wrist(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
   // swerveDrive.getPose().getTranslation());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
   Intake intake = new Intake();
@@ -82,8 +82,8 @@ public class RobotContainer {
     driver.button(RobotMap.Controller.A)
         .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    secondary.rightBumper().whileTrue(new IntakeNoteManual(intake, shooter));
-    secondary.leftBumper().whileTrue(new ScoreSpeakerSubwoofer(shooter));
+    // secondary.rightBumper().whileTrue(new IntakeNoteManual(intake, shooter));
+    // secondary.leftBumper().whileTrue(new ScoreSpeakerSubwoofer(shooter));
 
     // --------------------=Secondary=--------------------
 

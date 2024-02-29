@@ -22,7 +22,10 @@ public class Superstructure extends SubsystemBase {
     /*WAIT_SPEAKER, WAIT_SPEAKER_HIGH,*/ WAIT_AMP,
     SCORE_SPEAKER_SUBWOOFER, SCORE_SPEAKER_PODIUM, SCORE_SPEAKER_AMP_ZONE,
     /*SCORE_SPEAKER, SCORE_SPEAKER_HIGH,*/ SCORE_AMP,
-    CLIMB
+    CLIMB,
+
+    // JUST IN CASE
+    SOURCE
   }
   public SSStates state = SSStates.NONE;
   public SSStates lastState = SSStates.NONE;
@@ -372,6 +375,13 @@ public class Superstructure extends SubsystemBase {
         elevator.setState(ElevatorStates.CLIMB);
         wrist.setState(WristStates.CLIMB);
         shooter.setState(ShooterStates.NONE);
+        intake.setState(IntakeStates.STOWED);
+      break;
+
+      case SOURCE:
+        elevator.setState(ElevatorStates.STOWED);
+        wrist.setState(WristStates.SOURCE);
+        shooter.setState(ShooterStates.SOURCE);
         intake.setState(IntakeStates.STOWED);
       break;
     }
