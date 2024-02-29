@@ -31,6 +31,7 @@ public class Shooter extends SubsystemBase {
     NONE,
     STANDBY,
     INTAKE,
+    INTAKE_ROLLBACK,
     // SPINUP, 
     // SCORE_SPEAKER,
     // SCORE_SPEAKER_HIGH,
@@ -94,7 +95,7 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setState(stateChooser.getSelected());
+    // setState(stateChooser.getSelected());
     postSmartDashboardDebug();
 
     // shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
@@ -117,7 +118,9 @@ public class Shooter extends SubsystemBase {
         if (lastState != ShooterStates.STANDBY) {
           indexerMotor.setIdleMode(IdleMode.kBrake);
         }
+        indexerMotor.set(0);
 
+        shooterInc = 0.0;
         shooterMotor.set(0);
         break;
 
@@ -127,6 +130,17 @@ public class Shooter extends SubsystemBase {
         }
         indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake); 
 
+        shooterInc = 0.0;
+        shooterMotor.set(0);
+      break;
+
+      case INTAKE_ROLLBACK:
+        if (lastState != ShooterStates.INTAKE_ROLLBACK) {
+          indexerMotor.setIdleMode(IdleMode.kBrake);
+        }
+        indexerMotor.set(Constants.Shooter.kIntakeRollbackSpeed * -1.0); 
+
+        shooterInc = 0.0;
         shooterMotor.set(0);
       break;
 
@@ -318,6 +332,10 @@ public class Shooter extends SubsystemBase {
     // indexerMotor.clearStickyFaults();
   }
 
+  public boolean hasDetectedNote() {
+    return indexerMotor.getOutputCurrent() > Constants.Shooter.kHasNoteCurrentThreshold;
+ }
+
 
   public void postSmartDashboardDebug() {
     SmartDashboard.putString("State [ST]", state.toString());
@@ -326,6 +344,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putBoolean("atGoalShooter [ST]", atGoalShooter());
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
     SmartDashboard.putBoolean("Beam Broken [ST]", beamBroken());
+    SmartDashboard.putNumber("Indexer Current [ST]", indexerMotor.getOutputCurrent());
+    SmartDashboard.putBoolean("Has Detected Note [ST]", hasDetectedNote());
   }
   
 

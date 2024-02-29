@@ -15,6 +15,7 @@ public class IntakeNoteManual  extends Command {
   Intake intake;
   Shooter shooter;
   Timer timer = new Timer();
+  boolean hasNote = false;
 
   public IntakeNoteManual(Intake intake, Shooter shooter) {
     this.intake = intake;
@@ -25,6 +26,8 @@ public class IntakeNoteManual  extends Command {
   public void initialize() {
     // Constants.robotState = Constants.RobotState.TELEOP_DISABLE_SWERVE;
     // superstructure.setState(SSStates.INTAKE);
+
+    hasNote = false;
 
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE);
@@ -37,12 +40,17 @@ public class IntakeNoteManual  extends Command {
   public void execute() {
     // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, 0, 0));
 
-    if (shooter.beamBroken()) { // Note in shooter 
+    if (shooter.hasDetectedNote()) { // Note in shooter 
+      hasNote = true;
       timer.start();
-    } else {
-      timer.reset();
-      timer.stop();
+    } 
+
+    if (hasNote) {
+      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
     }
+    
+
+
   }
 
   @Override
@@ -57,6 +65,6 @@ public class IntakeNoteManual  extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > Constants.Superstructure.kWaitBeambreakTimeToleranceSec;
+    return timer.get() > Constants.Superstructure.kIndexerIntakeRollbackTimeSec;
   }
 }

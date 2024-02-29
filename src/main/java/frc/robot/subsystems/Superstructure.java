@@ -95,7 +95,7 @@ public class Superstructure extends SubsystemBase {
         shooter.setState(ShooterStates.INTAKE);
         intake.setState(IntakeStates.INTAKE);
 
-        if (timer.get() > Constants.Superstructure.kWaitBeambreakTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kIndexerIntakeRollbackTimeSec) {
           setState(SSStates.STOWED);
         } 
       break;

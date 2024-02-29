@@ -45,7 +45,7 @@ public final class RobotMap {
 
   public static final class Elevator{
     public static final int ELEVATOR_LEFT = 11;
-    public static final int ELEVATOR_RIGHT = 12;
+    public static final int ELEVATOR_RIGHT = 19;
   }
 
   public static final class Wrist {
@@ -60,7 +60,7 @@ public final class RobotMap {
   public static final class Shooter {
     public static final int SHOOTER_TOP = 16;
     public static final int SHOOTER_BOTTOM = 17;
-    public static final int INDEXER = 18;
+    public static final int INDEXER = 12;
 
     // DIO
     public static final int BEAM_BREAK = 0;
