@@ -114,6 +114,9 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
         SmartDashboard.putBoolean("At Goal [IN]", atGoal());
         SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
+        SmartDashboard.putString("State[IN]", state.toString());
+
+        // SmartDashboard.putNumber("", pivotSpeed)
     }
 
     
@@ -140,10 +143,6 @@ public class Intake extends SubsystemBase {
     //     pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
     // }
     
-
-    public boolean hasDetectedNote() {
-       return rollIntake.getStatorCurrent().getValueAsDouble() > Constants.Intake.kHasNoteCurrentThreshold;
-    }
 
   public boolean atGoal() {
     double goal = pidController.getSetpoint();
