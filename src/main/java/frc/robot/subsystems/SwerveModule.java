@@ -15,6 +15,7 @@ import java.util.function.Supplier;
 // import com.ctre.phoenix.sensors.CANCoderConfiguration;
 //
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.util.CTREUtils;
 import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
 
@@ -42,7 +44,7 @@ public class SwerveModule extends SubsystemBase {
 
   private final boolean turnIsReversed;
 
-  public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, Supplier<Double> cancoderOffsetDeg, boolean driveIsReversed, boolean turnIsReversed) {
+  public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, Supplier<Double> cancoderOffsetDeg, boolean driveIsReversed, boolean turnIsReversed, double kPTurnMotor, double kITurnMotor, double kDTurnMotor) {
     this.driveMotor = new TalonFX(driveMotorID);
     this.turnMotor = new TalonFX(turnMotorID);
     this.cancoder = new CANcoder(cancoderID);
@@ -52,7 +54,7 @@ public class SwerveModule extends SubsystemBase {
     
     this.driveMotor.setInverted(driveIsReversed); 
 
-    turnPIDController = new PIDController(Constants.Drivetrain.kPTurnMotor, Constants.Drivetrain.kITurnMotor, Constants.Drivetrain.kDTurnMotor);
+    turnPIDController = new PIDController(kPTurnMotor, kITurnMotor, kDTurnMotor);
     turnPIDController.enableContinuousInput(-180, 180);
     this.turnMotor.setInverted(turnIsReversed);
     
@@ -145,7 +147,7 @@ public class SwerveModule extends SubsystemBase {
 
   public void zeroTurnMotorABS() {
     double ticks = Conversions.degreesToFalcon(getCANCoderDegrees(), Constants.Drivetrain.kTurningMotorGearRatio);
-    Timer.delay(0.1);
+    Timer.delay(0.05);
     turnMotor.setPosition(ticks);
   }
 
@@ -170,18 +172,39 @@ public class SwerveModule extends SubsystemBase {
 
 
   public void setState(SwerveModuleState moduleState) {
-    SwerveModuleState state = SwerveModuleState.optimize(moduleState, new Rotation2d(Math.toRadians(getTurnPosition()))); //check values, might be jank
+    SwerveModuleState state = optimizeState(moduleState); //check values, might be jank
     // SwerveModuleState state = moduleState;
+    SmartDashboard.putNumber("Optimized Angle [SM]", moduleState.angle.getDegrees());
     
-    // driveMotor.set(state.speedMetersPerSecond);
+    SmartDashboard.putNumber("Drive Speed MPS [SM]", moduleState.speedMetersPerSecond);
+    driveMotor.set(state.speedMetersPerSecond);
 
-    // turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    // turnMotor.set(0.0, PositionDutyCycle);
+    // turnMotor.setControl(state.angle.getRotations());
+    // turnMotor.setControl(new PositionDutyCycle(state.angle.getRotations()));
     
+    
+    // if (state.speedMetersPerSecond > Constants.Drivetrain.kDrivingMotorDeadband) {
+      turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    // } else {
+      // turnMotor.set(0.0);
+    // }
   }
 
-  // public SwerveModuleState optimizeSwerveState(SwerveModuleState swerveModuleState) {
+  public SwerveModuleState optimizeState(SwerveModuleState swerveState) {
+    double currentRad = Math.toRadians(getTurnPosition());
+    // if (currentRad > Math.PI) {
+    //   currentRad -= (Math.PI * 2); 
+    // }
 
-  // }
+    currentRad %= (Math.PI * 2);
+    if (currentRad < 0) {
+      currentRad += (Math.PI * 2); 
+    }
+    
+    return SwerveModuleState.optimize(swerveState, new Rotation2d(currentRad));
+  }
+
 
   public double getPIDOutput(SwerveModuleState state) {
     return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
@@ -195,6 +218,16 @@ public class SwerveModule extends SubsystemBase {
 
   public PIDController getPIDController() {
     return turnPIDController;
+  }
+
+  public void updatePIDConstants(double kP, double kI, double kD) {
+    turnPIDController.setP(kP);
+    turnPIDController.setI(kI);
+    turnPIDController.setD(kD);
+  }
+
+  public double getDriveVelocity() {
+    return driveMotor.getRotorVelocity().getValueAsDouble();
   }
 
   

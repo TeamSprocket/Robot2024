@@ -52,10 +52,8 @@ public class Robot extends TimedRobot {
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().zeroGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
-
-    Timer.delay(0.1);
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
-    Timer.delay(0.1);
+    Timer.delay(0.05);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     if (m_autonomousCommand != null) {

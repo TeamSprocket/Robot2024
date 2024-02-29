@@ -46,7 +46,10 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.FRONT_LEFT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetFrontLeft,
         Constants.Drivetrain.FRONT_LEFT_D_IS_REVERSED,
-        Constants.Drivetrain.FRONT_LEFT_T_IS_REVERSED
+        Constants.Drivetrain.FRONT_LEFT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorFL,
+        Constants.Drivetrain.kITurnMotorFL,
+        Constants.Drivetrain.kDTurnMotorFL
   );
   private final SwerveModule frontRight = new SwerveModule(
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_D,
@@ -54,7 +57,10 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.FRONT_RIGHT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetFrontRight,
         Constants.Drivetrain.FRONT_RIGHT_D_IS_REVERSED,
-        Constants.Drivetrain.FRONT_RIGHT_T_IS_REVERSED
+        Constants.Drivetrain.FRONT_RIGHT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorFR,
+        Constants.Drivetrain.kITurnMotorFR,
+        Constants.Drivetrain.kDTurnMotorFR
   );
   private final SwerveModule backLeft = new SwerveModule(
         RobotMap.Drivetrain.BACK_LEFT_TALON_D,
@@ -62,7 +68,10 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.BACK_LEFT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetBackLeft,
         Constants.Drivetrain.BACK_LEFT_D_IS_REVERSED,
-        Constants.Drivetrain.BACK_LEFT_T_IS_REVERSED
+        Constants.Drivetrain.BACK_LEFT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorBL,
+        Constants.Drivetrain.kITurnMotorBL,
+        Constants.Drivetrain.kDTurnMotorBL
   );
   private final SwerveModule backRight = new SwerveModule(
         RobotMap.Drivetrain.BACK_RIGHT_TALON_D,
@@ -70,7 +79,10 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.BACK_RIGHT_ABS_ENCODER_ID,
         () -> Constants.Drivetrain.kCANCoderOffsetBackRight,
         Constants.Drivetrain.BACK_RIGHT_D_IS_REVERSED,
-        Constants.Drivetrain.BACK_RIGHT_T_IS_REVERSED
+        Constants.Drivetrain.BACK_RIGHT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorBR,
+        Constants.Drivetrain.kITurnMotorBR,
+        Constants.Drivetrain.kDTurnMotorBR
   );
 
 
@@ -85,10 +97,6 @@ public class SwerveDrive extends SubsystemBase {
 
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
-
-    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
-    // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
     // Config Pathplanner
     AutoBuilder.configureHolonomic(
@@ -112,14 +120,25 @@ public class SwerveDrive extends SubsystemBase {
     // ShuffleboardPIDTuner.addSlider("Turn Angle FR Slider [SD]", -180.0, 180.0, 0.0);
     // ShuffleboardPIDTuner.addSlider("Target Angle FR Slider [SD]", -180.0, 180.0, 0.0);
 
-    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, Constants.Drivetrain.kPTurnMotor);
-    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, Constants.Drivetrain.kDTurnMotor);
+    // ShuffleboardPIDTuner.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
+    // ShuffleboardPIDTuner.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
+    // ShuffleboardPIDTuner.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBL);
+    // ShuffleboardPIDTuner.addSlider("PID BR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBR);
+    
+    // ShuffleboardPIDTuner.addSlider("PID FL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFL);
+    // ShuffleboardPIDTuner.addSlider("PID FR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFR);
+    // ShuffleboardPIDTuner.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
+    // ShuffleboardPIDTuner.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
+
+    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
+    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
   }
 
   @Override
   public void periodic() {
-    // updateShuffleboardPIDConstants();
+    updateShuffleboardPIDConstants();
 
     SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
@@ -143,6 +162,11 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
     SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
     SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
+
+    SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
+    SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
+    SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
+    SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
 
     
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
@@ -224,6 +248,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public void zeroGyro() {
     gyro.setYaw(0);
+    targetHeadingRad = 0.0;
   }
 
   // public void calibrateGyro() {
@@ -236,11 +261,11 @@ public class SwerveDrive extends SubsystemBase {
 
   public void resetModulesToAbsolute() {
     frontLeft.zeroTurnMotorABS();
-    Timer.delay(0.1);
+    Timer.delay(0.05);
     frontRight.zeroTurnMotorABS();
-    Timer.delay(0.1);
+    Timer.delay(0.05);
     backLeft.zeroTurnMotorABS();
-    Timer.delay(0.1);
+    Timer.delay(0.05);
     backRight.zeroTurnMotorABS();
   }
 
@@ -343,9 +368,17 @@ public class SwerveDrive extends SubsystemBase {
 
   }
   public void updateShuffleboardPIDConstants() {//
-    headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
-    headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
-    headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
+    // headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
+    // headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
+    // headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
+
+    // frontLeft.updatePIDConstants(ShuffleboardPIDTuner.get("kP"), 0, ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
+  
+    // frontLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID FL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FL kD [SD]"));
+    // frontRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID FR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FR kD [SD]"));
+    // backLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID BL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BL kD [SD]"));
+    // backRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID BR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BR kD [SD]"));
+  
   }
 
   // public void clearStickyFaults() {
