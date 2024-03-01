@@ -131,26 +131,26 @@ public class Constants {
     }
 
     public static final class Intake {
-        public static final double kPivotAngleStowed = 30.0;
-        public static final double kPivotAngleIntake = 130.0;
+        public static final double kPivotAngleStowed = 20.0;
+        public static final double kPivotAngleIntake = 172.0;
 
         public static final double kRollSpeedStowed = 0.0;
-        public static final double kRollSpeedIntake = 0.3;
+        public static final double kRollSpeedIntake = 0.6;
 
         public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
 
         // public static final double kPivotMaxVelocity = 0.0;
         // public static final double kPivotMaxAccel = 0.0;
-        public static final double kMaxPivotOutput = 0.1;
+        public static final double kMaxPivotOutput = 0.2;
 
-        public static final double kAtGoalTolerance = 0.5; // 0.5
+        public static final double kAtGoalTolerance = 5; // 0.5
 
         public static final double kPivotIntakeGearRatio = 36.0;
 
-        public static final double kPPivot = 0.0; // 1, 0.1
+        public static final double kPPivot = 0.002914; // 1, 0.1
         public static final double kIPivot = 0.0;
-        public static final double kDPivot = 0.0;
+        public static final double kDPivot = 0.00002445;
 
     }
 
@@ -258,10 +258,10 @@ public class Constants {
         // public static double kCANCoderOffsetBackLeft = 260.5; // 131.1
         // public static double kCANCoderOffsetBackRight = 340.9; // 234.1
         
-        public static double kCANCoderOffsetFrontLeft = 50.3; // 203.85
-        public static double kCANCoderOffsetFrontRight = 126.8; // 316.49
-        public static double kCANCoderOffsetBackLeft = 270.2; // 75.41
-        public static double kCANCoderOffsetBackRight = 161.6; // 339.71
+        public static double kCANCoderOffsetFrontLeft = 50.3; // 50.3
+        public static double kCANCoderOffsetFrontRight = 126.8; // 126.8
+        public static double kCANCoderOffsetBackLeft = 270.2; // 270.2
+        public static double kCANCoderOffsetBackRight = 161.6; // 161.6
 
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =

@@ -82,8 +82,8 @@ public class RobotContainer {
     driver.button(RobotMap.Controller.A)
         .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    // secondary.rightBumper().whileTrue(new IntakeNoteManual(intake, shooter));
-    // secondary.leftBumper().whileTrue(new ScoreSpeakerSubwoofer(shooter));
+    secondary.rightBumper().whileTrue(new IntakeNoteManual(intake, shooter));
+    secondary.leftBumper().whileTrue(new ScoreSpeakerSubwoofer(shooter));
 
     // --------------------=Secondary=--------------------
 

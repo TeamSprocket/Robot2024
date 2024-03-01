@@ -177,7 +177,7 @@ public class SwerveModule extends SubsystemBase {
     SmartDashboard.putNumber("Optimized Angle [SM]", moduleState.angle.getDegrees());
     
     SmartDashboard.putNumber("Drive Speed MPS [SM]", moduleState.speedMetersPerSecond);
-    driveMotor.set(state.speedMetersPerSecond);
+    // driveMotor.set(state.speedMetersPerSecond);
 
     // turnMotor.set(0.0, PositionDutyCycle);
     // turnMotor.setControl(state.angle.getRotations());
@@ -185,7 +185,7 @@ public class SwerveModule extends SubsystemBase {
     
     
     // if (state.speedMetersPerSecond > Constants.Drivetrain.kDrivingMotorDeadband) {
-      turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+      // turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
     // } else {
       // turnMotor.set(0.0);
     // }

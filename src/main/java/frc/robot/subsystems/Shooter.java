@@ -57,7 +57,7 @@ public class Shooter extends SubsystemBase {
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   // PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
 
-  DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
+  // DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
 
   Supplier<Translation2d> botPoseSupplier;
 
@@ -90,6 +90,8 @@ public class Shooter extends SubsystemBase {
     stateChooser.addOption("SCORE_SPEAKER_AMP_ZONE", ShooterStates.SCORE_SPEAKER_AMP_ZONE);
     stateChooser.addOption("SCORE_AMP", ShooterStates.SCORE_AMP);
     SmartDashboard.putData("Shooter State Chooser [ST]", stateChooser);
+    
+    // indexerMotor.set(0.1);
 
     // ShuffleboardPIDTuner.addSlider("Shooter kP [ST]", 0, 1, 0);
     // ShuffleboardPIDTuner.addSlider("Shooter kD [ST]", 0, 1, 0);
@@ -132,6 +134,7 @@ public class Shooter extends SubsystemBase {
           indexerMotor.setIdleMode(IdleMode.kBrake);
         }
         indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake); 
+        System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -316,7 +319,8 @@ public class Shooter extends SubsystemBase {
 
 
   public boolean beamBroken() {
-    return !beamBreak.get();
+    // return !beamBreak.get();
+    return false;
   }
 
   // public void holdIndexerPosition() {

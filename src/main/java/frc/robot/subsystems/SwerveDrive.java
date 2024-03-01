@@ -248,7 +248,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public void zeroGyro() {
     gyro.setYaw(0);
-    targetHeadingRad = 0.0;
+    targetHeadingRad = Math.PI;
   }
 
   // public void calibrateGyro() {

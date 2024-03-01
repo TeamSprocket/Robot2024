@@ -70,16 +70,17 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putData(selectIntakeState);
 
         SmartDashboard.putData("STATES[IN]", selectIntakeState);
-        // ShuffleboardPIDTuner.addSlider("PIVOT KP [IN]", 0.0, 1, 0.0);
-        // ShuffleboardPIDTuner.addSlider("PIVOT KD [IN]", 0.0, 0.05, 0.0);
+
+        ShuffleboardPIDTuner.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
+        ShuffleboardPIDTuner.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
     }
 
     @Override
     public void periodic() {
         // TODO: REMOVE - TEMP
-        setState(selectIntakeState.getSelected());
-        // pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
-        // pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
+        // setState(selectIntakeState.getSelected());
+        pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
+        pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
 
 
         switch (state) {
