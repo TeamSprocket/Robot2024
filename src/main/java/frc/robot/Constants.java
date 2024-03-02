@@ -133,7 +133,7 @@ public class Constants {
     }
 
     public static final class Intake {
-        public static final double kPivotAngleStowed = 20.0;
+        public static final double kPivotAngleStowed = 172.0; // 20
         public static final double kPivotAngleIntake = 172.0;
         public static final double kScoreSpeaker = 80.0;
 
@@ -215,10 +215,10 @@ public class Constants {
         // Speed/Accel
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 0.6; // 0.8 //1.0 // 0.6 - latest
+        public static double kMaxSpeed = 0.80; // 0.8 //1.0 // 0.6 - latest
         public static double kMaxAccel = 1.0; // 0.7 //1.0 // 1.0 - latest
 
-        public static double kMaxTurnSpeed = 0.08; // 0.04
+        public static double kMaxTurnSpeed = 1.1; // 0.08 WITH PID, 1.5 WITHOUT
         public static double kMaxTurnAccel = 10; // Instant manual turning
 
         
