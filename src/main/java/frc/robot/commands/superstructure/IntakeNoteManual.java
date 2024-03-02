@@ -15,6 +15,7 @@ public class IntakeNoteManual  extends Command {
   Intake intake;
   Shooter shooter;
   Timer timer = new Timer();
+  Timer accelTimer = new Timer();
   boolean hasNote = false;
 
   public IntakeNoteManual(Intake intake, Shooter shooter) {
@@ -30,15 +31,22 @@ public class IntakeNoteManual  extends Command {
     hasNote = false;
 
     intake.setState(IntakeStates.INTAKE);
-    shooter.setState(ShooterStates.INTAKE);
+    shooter.setState(ShooterStates.INTAKE_ACCEL);
 
     timer.reset();
     timer.stop();
+
+    accelTimer.reset();
+
+    accelTimer.start();
   }
 
   @Override
   public void execute() {
     // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, 0, 0));
+    if (!hasNote && accelTimer.get() > 0.5) {
+      shooter.setState(ShooterStates.INTAKE);
+    }
 
     if (shooter.hasDetectedNote()) { // Note in shooter 
       hasNote = true;
@@ -46,7 +54,9 @@ public class IntakeNoteManual  extends Command {
     } 
 
     if (hasNote) {
+      // intake.setState(IntakeStates.INTAKE_ROLLBACK);
       shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+      
     }
     
 

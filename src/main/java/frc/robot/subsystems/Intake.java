@@ -40,7 +40,7 @@ public class Intake extends SubsystemBase {
     // ProfiledPIDController profiledPIDController;
     PIDController pidController;
 
-    private IntakeStates state = IntakeStates.NONE;
+    private IntakeStates state = IntakeStates.STOWED;
     private IntakeStates lastState = IntakeStates.NONE;
 
     SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
@@ -48,7 +48,10 @@ public class Intake extends SubsystemBase {
     public enum IntakeStates {
         NONE,
         STOWED,
-        INTAKE
+        INTAKE,
+        INTAKE_ROLLBACK,
+        SCORE_SPEAKER, 
+        EJECT_NOTE
     }
 
 
@@ -95,7 +98,7 @@ public class Intake extends SubsystemBase {
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
-                rollIntake.set(Constants.Intake.kRollSpeedStowed);
+                rollIntake.set(0.0);
                 break;
 
             case INTAKE:
@@ -105,6 +108,25 @@ public class Intake extends SubsystemBase {
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
+                break;
+
+            case INTAKE_ROLLBACK:
+                // Pivot maintains current pos
+
+                rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
+                break;
+                
+            case SCORE_SPEAKER:
+            pidController.setSetpoint(Constants.Intake.kScoreSpeaker);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
+
+                rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                break;
+
+            case EJECT_NOTE:
+                rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 break;
             
         }

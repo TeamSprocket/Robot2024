@@ -2,21 +2,26 @@
 package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.util.Conversions;
 
-public class ScoreSpeakerSubwoofer extends Command {
+public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
 
   Shooter shooter;
+  Intake intake;
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerSubwoofer(Shooter shooter) {
+  public ScoreSpeakerSubwooferShoot(Shooter shooter, Intake intake) {
     this.shooter = shooter;
+    this.intake = intake;
   }
 
   @Override
@@ -41,14 +46,24 @@ public class ScoreSpeakerSubwoofer extends Command {
 
     // Start timed scoring sequence
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
-      scoreTimer.start();
+      intake.setState(IntakeStates.SCORE_SPEAKER);
+      scoreTimer.start();   
     }
+
+    if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
+      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
+     
+    }
+
+    SmartDashboard.putNumber("Score Timer", scoreTimer.get());
+    SmartDashboard.putBoolean("Score Timer Over Threshold", scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec);
+
 
   }
 
   @Override
   public void end(boolean interrupted) {
+    intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
   }
 

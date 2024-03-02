@@ -316,7 +316,7 @@ public class Superstructure extends SubsystemBase {
         shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
           setState(SSStates.STOWED);
         }
       break;
@@ -334,7 +334,7 @@ public class Superstructure extends SubsystemBase {
         shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
         intake.setState(IntakeStates.STOWED);
 
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
           setState(SSStates.STOWED);
         }
       break;
@@ -352,7 +352,7 @@ public class Superstructure extends SubsystemBase {
         shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
           setState(SSStates.STOWED);
         }
       break;

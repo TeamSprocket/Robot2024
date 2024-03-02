@@ -17,6 +17,6 @@ public class ZeroGyro extends InstantCommand {
   @Override
   public void initialize() {
     this.swerveDrive.zeroGyro();
-    this.swerveDrive.setTargetHeadingRad(swerveDrive.getHeading());
+    // this.swerveDrive.setTargetHeadingRad(swerveDrive.getHeading());
   }
 }

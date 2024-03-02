@@ -31,6 +31,7 @@ public class Shooter extends SubsystemBase {
     NONE,
     STANDBY,
     INTAKE,
+    INTAKE_ACCEL, 
     INTAKE_ROLLBACK,
     // SPINUP, 
     // SCORE_SPEAKER,
@@ -65,6 +66,7 @@ public class Shooter extends SubsystemBase {
 
   // double shooterSpeed = 0.0;
   double shooterInc = 0.0;
+  double indexerMult = 1.0;
 
 
   public Shooter(Supplier<Translation2d> botPoseSupplier) {
@@ -134,7 +136,18 @@ public class Shooter extends SubsystemBase {
           indexerMotor.setIdleMode(IdleMode.kBrake);
         }
         indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake); 
-        System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
+        // System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
+
+        shooterInc = 0.0;
+        shooterMotor.set(0);
+      break;
+
+      case INTAKE_ACCEL:
+        if (lastState != ShooterStates.INTAKE) {
+          indexerMotor.setIdleMode(IdleMode.kBrake);
+        }
+        indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake * 0.75); 
+        // System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -144,7 +157,7 @@ public class Shooter extends SubsystemBase {
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
           indexerMotor.setIdleMode(IdleMode.kBrake);
         }
-        indexerMotor.set(Constants.Shooter.kIntakeRollbackSpeed * -1.0); 
+        indexerMotor.set(-0.3); 
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -314,6 +327,9 @@ public class Shooter extends SubsystemBase {
   // }
 
 
+  // public double TEMP_HUENEME_ACCELER(double indexerMult) {
+    
+  // }
 
 
 

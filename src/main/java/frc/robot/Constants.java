@@ -26,13 +26,15 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollbackTimeSec = 0.3;
+        public static final double kIndexerIntakeRollbackTimeSec = 0.1; // 0.05
 
         // Elapsed time all elements at wait speaker pos before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.25;
 
         // Elapsed time shooting into speaker before stow
-        public static final double kScoreSpeakerTimeToleranceSec = 0.5;
+        public static final double kScoreSpeakerShootTimeToleranceSec = 1.0; // intake fallback = 0.5s
+
+        public static final double kScoreSpeakerPivotTimeToleranceSec = 0.5;
 
         //
         public static final double kScoreSpeakerHeadingTolerance = 0.25;
@@ -97,7 +99,7 @@ public class Constants {
         public static final boolean kIsShooterBottomInverted = true;
         public static final boolean kIsIndexerInverted = true;
 
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 10.0;
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 10.0; // 10.0
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
         public static final double kShooterSpeedScoreAmp = 1.0;
@@ -105,7 +107,7 @@ public class Constants {
         public static final double kIndexerSpeedIntake = 0.3;
         public static final double kIndexerSpeedScoreSpeaker = 0.9;
         public static final double kIndexerSpeedScoreAmp = 0.4;
-        public static final double kIntakeRollbackSpeed = 0.15;
+        // public static final double kIntakeRollbackSpeed = 0.15;
 
         // JUST IN CASE
         public static final double kIndexerSpeedSource = -0.1;
@@ -117,7 +119,7 @@ public class Constants {
 
         public static final double kShooterIncramentMultiplier = 0.01;
 
-        public static final double kHasNoteCurrentThreshold = 42.0;
+        public static final double kHasNoteCurrentThreshold = 36.0;
 
         public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
 
@@ -133,9 +135,14 @@ public class Constants {
     public static final class Intake {
         public static final double kPivotAngleStowed = 20.0;
         public static final double kPivotAngleIntake = 172.0;
+        public static final double kScoreSpeaker = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.6;
+        public static final double kRollSpeedIntakeRollback = 0.10;
+        public static final double kRollSpeedScoreSpeaker = 0.2;
+        public static final double kEjectNoteSpeed = -0.6;
+        ;
 
         public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
@@ -192,7 +199,7 @@ public class Constants {
         public static double kDTurnMotorBR = 0.0000; // 0.000026
         
 
-        public static final double kPHeading = 1.5; // 0.6
+        public static final double kPHeading = 1.2; // 0.6
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
@@ -211,7 +218,7 @@ public class Constants {
         public static double kMaxSpeed = 0.6; // 0.8 //1.0 // 0.6 - latest
         public static double kMaxAccel = 1.0; // 0.7 //1.0 // 1.0 - latest
 
-        public static double kMaxTurnSpeed = 0.04;
+        public static double kMaxTurnSpeed = 0.08; // 0.04
         public static double kMaxTurnAccel = 10; // Instant manual turning
 
         

@@ -8,10 +8,12 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.EjectIntake;
 import frc.robot.commands.instant.*;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
@@ -22,6 +24,8 @@ public class RobotContainer {
 
   private final CommandXboxController driver = new CommandXboxController(0);
   public final static CommandXboxController secondary = new CommandXboxController(1);
+
+  PowerDistribution pdh = new PowerDistribution();
 
   Limelight limelight = new Limelight();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
@@ -73,17 +77,19 @@ public class RobotContainer {
         () -> driver.getLeftY(),
         () -> -driver.getRightX()));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
-    driver.button(RobotMap.Controller.Y)
-        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
-    driver.button(RobotMap.Controller.X)
-        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
-    driver.button(RobotMap.Controller.B)
-        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
-    driver.button(RobotMap.Controller.A)
-        .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
+    // driver.button(RobotMap.Controller.Y)
+    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
+    // driver.button(RobotMap.Controller.X)
+    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
+    // driver.button(RobotMap.Controller.B)
+    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
+    // driver.button(RobotMap.Controller.A)
+    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    secondary.rightBumper().whileTrue(new IntakeNoteManual(intake, shooter));
-    secondary.leftBumper().whileTrue(new ScoreSpeakerSubwoofer(shooter));
+    secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
+    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    secondary.b().whileTrue(new EjectIntake(intake));
 
     // --------------------=Secondary=--------------------
 
@@ -95,6 +101,10 @@ public class RobotContainer {
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
+  }
+
+  public void clearPDHStickyFaults() {
+    pdh.clearStickyFaults();
   }
 
 }

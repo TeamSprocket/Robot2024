@@ -26,8 +26,8 @@ public class SwerveDrive extends SubsystemBase {
   Limelight limelight;
 
   double xSpeed, ySpeed, tSpeed;
-  double targetHeadingRad = Math.PI;
-  PIDController headingController;
+  // double targetHeadingRad = Math.PI;
+  // PIDController headingController;
   SwerveDriveKinematics m_kinematics;
 
   public static enum Directions {
@@ -95,8 +95,10 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive(Limelight limelight) {
     this.limelight = limelight;
 
-    this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-    this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+    // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
+    // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+
+    this.gyro.reset();
 
     // Config Pathplanner
     AutoBuilder.configureHolonomic(
@@ -130,23 +132,24 @@ public class SwerveDrive extends SubsystemBase {
     // ShuffleboardPIDTuner.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
     // ShuffleboardPIDTuner.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
 
-    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+    ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
   }
 
   @Override
   public void periodic() {
     updateShuffleboardPIDConstants();
+    gyro.clearStickyFaults();
 
     SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
     SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
-    SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
+    // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
 
-    SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw().getValueAsDouble());
+    SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
 
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
@@ -196,7 +199,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getYaw().getValueAsDouble() + 180.0; 
+    double angle = gyro.getRotation2d().getDegrees() + 180.0; 
     
     angle %= 360.0;
     if (angle < 0) {
@@ -219,25 +222,25 @@ public class SwerveDrive extends SubsystemBase {
   }
 
 
-  public void switchDirection(Directions direction) {
-    switch (direction) {
-      case FORWARD:
-        targetHeadingRad = 0;
-        break;
+  // public void switchDirection(Directions direction) {
+  //   switch (direction) {
+  //     case FORWARD:
+  //       targetHeadingRad = 0;
+  //       break;
 
-      case BACK:
-        targetHeadingRad = Math.PI;
-        break;
+  //     case BACK:
+  //       targetHeadingRad = Math.PI;
+  //       break;
 
-      case LEFT:
-        targetHeadingRad = Math.PI / 2.0;
-        break;
+  //     case LEFT:
+  //       targetHeadingRad = Math.PI / 2.0;
+  //       break;
 
-      case RIGHT:
-        targetHeadingRad = 3.0 * Math.PI / 2.0;
-        break;
-    }
-  }
+  //     case RIGHT:
+  //       targetHeadingRad = 3.0 * Math.PI / 2.0;
+  //       break;
+  //   }
+  // }
   
 
   // public void initGyro() {
@@ -248,16 +251,16 @@ public class SwerveDrive extends SubsystemBase {
 
   public void zeroGyro() {
     gyro.setYaw(0);
-    targetHeadingRad = Math.PI;
+    // targetHeadingRad = Math.PI;
   }
 
   // public void calibrateGyro() {
     // gyro.calibrate();
   // }
 
-  public void setTargetHeadingRad(double targetHeadingRad) {
-    this.targetHeadingRad = targetHeadingRad;
-  }
+  // public void setTargetHeadingRad(double targetHeadingRad) {
+  //   this.targetHeadingRad = targetHeadingRad;
+  // }
 
   public void resetModulesToAbsolute() {
     frontLeft.zeroTurnMotorABS();
@@ -331,7 +334,7 @@ public class SwerveDrive extends SubsystemBase {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
     chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
     SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-    this.targetHeadingRad = getHeading();
+    // this.targetHeadingRad = getHeading();
 
     setModuleStates(moduleStates);
   }
@@ -360,11 +363,13 @@ public class SwerveDrive extends SubsystemBase {
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {
     this.xSpeed = xSpeed;
     this.ySpeed = ySpeed;
+    this.tSpeed = tSpeed;
 
-    this.targetHeadingRad += tSpeed;
-    this.targetHeadingRad %= (2.0 * Math.PI);
-    this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad); // Inverted PID output because ¯\_(ツ)_/¯
+    // Removed PID Heading
+    // this.targetHeadingRad += tSpeed;
+    // this.targetHeadingRad %= (2.0 * Math.PI);
+    // this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
+    // this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
 
   }
   public void updateShuffleboardPIDConstants() {//

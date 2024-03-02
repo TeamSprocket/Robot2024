@@ -3,6 +3,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auton Chooser": "String Chooser",
+      "/SmartDashboard/STATES[IN]": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/SendableChooser[1]": "String Chooser",
       "/SmartDashboard/SendableChooser[3]": "String Chooser",
