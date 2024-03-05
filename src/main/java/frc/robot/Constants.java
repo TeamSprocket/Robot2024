@@ -137,7 +137,7 @@ public class Constants {
 
 
     public static final class Limelight {
-        public static final double kAcceptableVolatilityThreshold = 0.5;
+        public static final double kAcceptableVolatilityThreshold = 0.2;
 
         public static final double kMaxDrivingSpeed = 0.0;
         public static final double kMaxTurningSpeed = 0.0;

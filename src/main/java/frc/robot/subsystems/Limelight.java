@@ -17,7 +17,7 @@ public class Limelight extends SubsystemBase {
 
     private NetworkTable shooterLLTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
     private NetworkTable intakeLLTable = NetworkTableInstance.getDefault().getTable("limelight-intake");
-    
+
     private MedianFilter filterX = new MedianFilter(10);
     private MedianFilter filterY = new MedianFilter(10);
     private MedianFilter filterRot = new MedianFilter(10);
@@ -84,7 +84,7 @@ public class Limelight extends SubsystemBase {
     }
 
     public double getPitch() {
-        return filterRot.calculate(Math.toRadians(shooterLLTable.getEntry("ty").getDouble(0.0) + Constants.Limelight.limelightMountAngleDegrees));
+        return filterRot.calculate(Math.toRadians(shooterLLTable.getEntry("ty").getDouble(0.0)));
     }
 
     public double getDistanceFromTarget() {
