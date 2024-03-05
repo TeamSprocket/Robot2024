@@ -257,6 +257,12 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
+  public void alignWithAprilTag() {
+
+    double rotSpeed = limelight.getYaw() * Constants.Limelight.kMaxTurningSpeed;
+    updateChassisSpeeds(0, 0, rotSpeed);
+  }
+
   // Stuff for Pathplanner
   public Pose2d getPose() {
     return odometry.getPoseMeters();

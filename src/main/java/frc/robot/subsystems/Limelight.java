@@ -1,9 +1,6 @@
 package frc.robot.subsystems;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import frc.util.Util;
 
 import edu.wpi.first.math.filter.MedianFilter;
@@ -14,15 +11,16 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.SwerveDrive;
 import frc.robot.Constants;
 
 public class Limelight extends SubsystemBase {
 
     private NetworkTable shooterLLTable = NetworkTableInstance.getDefault().getTable("limelight-shooter");
     private NetworkTable intakeLLTable = NetworkTableInstance.getDefault().getTable("limelight-intake");
+    
     private MedianFilter filterX = new MedianFilter(10);
     private MedianFilter filterY = new MedianFilter(10);
+    private MedianFilter filterRot = new MedianFilter(10);
     private MedianFilter filterIntake = new MedianFilter(5);
 
     private ArrayList<Double> xPoseReadings = new ArrayList<Double>(50);
@@ -45,12 +43,7 @@ public class Limelight extends SubsystemBase {
 
         SmartDashboard.putNumber("LL Intake tX", intakeLLTable.getEntry("tx").getDouble(0.0));
         
-
-
-
         Translation2d currentPose = getTranslation2d();
-
-
 
         totalX += currentPose.getX();
         totalX -= xPoseReadings.get(0);
@@ -65,9 +58,11 @@ public class Limelight extends SubsystemBase {
 
         yPoseReadings.add(currentPose.getY());
         yPoseReadings.remove(0);
-        
     }
 
+    /**
+     * @return robot's x and y position on field
+     */
     public Translation2d getTranslation2d() {
         double[] botPose;
 
@@ -84,10 +79,28 @@ public class Limelight extends SubsystemBase {
         return (new Translation2d(filteredX, filteredY));
     }
 
-    
-    public double getVolatilityAxis(double average, ArrayList llOdometry){
+    public double getYaw() {
+        return filterRot.calculate(shooterLLTable.getEntry("tx").getDouble(0.0));
+    }
+
+    public double getPitch() {
+        return filterRot.calculate(Math.toRadians(shooterLLTable.getEntry("ty").getDouble(0.0) + Constants.Limelight.limelightMountAngleDegrees));
+    }
+
+    public double getDistanceFromTarget() {
+        double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Limelight.limelightMountAngleDegrees);
+        double distanceFromTarget = (Constants.Limelight.goalHeightInches - Constants.Limelight.limelightHeightInches) / Math.tan(angleToGoalRadians);
+
+        return distanceFromTarget;
+    }
+
+    /**
+     * @return individual volatility for x & y
+     */
+    public double getVolatilityAxis(double average, ArrayList<Double> llOdometry){
         double volatility = 0.00;
-        for(int i = 0; i < 50; i++){
+
+        for (int i = 0; i < 50; i++){
             volatility += Math.abs(average - (double)llOdometry.get(i));
         }
         return volatility;
@@ -103,7 +116,6 @@ public class Limelight extends SubsystemBase {
         return overallVolatility;
     }
 
-
     public boolean getIsNotVolatile() {
         return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
     }
@@ -115,9 +127,4 @@ public class Limelight extends SubsystemBase {
         double intakeNoteReading = intakeLLTable.getEntry("tx").getDouble(0.0);
         return filterIntake.calculate(intakeNoteReading);
     }
-
-
-
-
-
 }
