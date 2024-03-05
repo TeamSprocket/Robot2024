@@ -10,6 +10,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.IdleMode;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -43,6 +44,7 @@ public class Shooter extends SubsystemBase {
     SCORE_SPEAKER_PODIUM,
     SCORE_SPEAKER_AMP_ZONE,
     SCORE_AMP,
+    EJECT_NOTE,
 
     // JUST IN CASE
     SOURCE
@@ -78,6 +80,18 @@ public class Shooter extends SubsystemBase {
     
     shooterMotor.setNeutralMode(NeutralModeValue.Coast);
     indexerMotor.setIdleMode(IdleMode.kBrake);
+    // Voltage, current
+    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
+    // Position
+    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+    // Analog Sensor
+    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    // Alternate Encoder
+    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    // Absolute Encoder Position
+    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    // Absolute Encoder Velocity
+    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
 
     this.botPoseSupplier = botPoseSupplier;
 
@@ -282,6 +296,11 @@ public class Shooter extends SubsystemBase {
       case SCORE_AMP:
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreAmp);
         shooterMotor.set(Constants.Shooter.kShooterSpeedScoreAmp);
+      break;
+
+      case EJECT_NOTE:
+        indexerMotor.set(Constants.Shooter.kIndexerEjectNoteSpeed);
+        shooterMotor.set(Constants.Shooter.kShooterEjectNoteSpeed);
       break;
 
       // JUST IN CASE

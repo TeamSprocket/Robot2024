@@ -1,5 +1,5 @@
 
-package frc.robot.commands.superstructure;
+package frc.robot.commands.macro;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,16 +12,20 @@ import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.util.Conversions;
 
-public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
+public class ScoreSpeakerSubwooferShootTimed extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
 
   Shooter shooter;
   Intake intake;
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
+  Timer overallTimer = new Timer();
 
-  public ScoreSpeakerSubwooferShoot(Shooter shooter, Intake intake) {
+  double duration;
+
+  public ScoreSpeakerSubwooferShootTimed(Shooter shooter, Intake intake, double duration) {
     this.shooter = shooter;
     this.intake = intake;
+    this.duration = duration;
   }
 
   @Override
@@ -34,7 +38,9 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     scoreTimer.reset();
     scoreTimer.stop();
 
-    // System.out.println("RUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\n");
+    overallTimer.reset();
+
+    overallTimer.start();
   }
 
   @Override
@@ -71,6 +77,6 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
 
   @Override
   public boolean isFinished() {
-    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec || overallTimer.get() > duration;
   }
 }

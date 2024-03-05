@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -13,7 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.commands.EjectIntake;
+import frc.robot.auto.DoNothing;
+import frc.robot.auto.OneNoteNoTaxi;
+import frc.robot.commands.EjectNote;
 import frc.robot.commands.instant.*;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
@@ -49,13 +52,20 @@ public class RobotContainer {
   }
 
   public void initAutons() {
-    autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-    autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
-    autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
-    autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
+    autonChooser.setDefaultOption("Do Nothing", new DoNothing());
+    // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
+    
+    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
+    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
+    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
+    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
+    autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));
+    autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
+    
 
-    autonChooser = AutoBuilder.buildAutoChooser();
-    SmartDashboard.putData("Auton Chooser", autonChooser);
+    // autonChooser = AutoBuilder.buildAutoChooser();
+    
+    SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
 
   public void initNamedCommands() {
@@ -63,6 +73,7 @@ public class RobotContainer {
     // swerveDrive));
     // NamedCommands.registerCommand("ScoreSpeaker", new
     // ScoreSpeaker(superstructure, swerveDrive));
+    // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
   }
 
   public Command getAutonomousCommand() {
@@ -89,7 +100,7 @@ public class RobotContainer {
     secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
     secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
     secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    secondary.b().whileTrue(new EjectIntake(intake));
+    secondary.b().whileTrue(new EjectNote(intake, shooter));
 
     // --------------------=Secondary=--------------------
 

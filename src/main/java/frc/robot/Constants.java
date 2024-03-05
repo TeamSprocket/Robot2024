@@ -103,10 +103,12 @@ public class Constants {
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
         public static final double kShooterSpeedScoreAmp = 1.0;
+        public static final double kShooterEjectNoteSpeed = -0.25;
 
         public static final double kIndexerSpeedIntake = 0.3;
         public static final double kIndexerSpeedScoreSpeaker = 0.9;
         public static final double kIndexerSpeedScoreAmp = 0.4;
+        public static final double kIndexerEjectNoteSpeed = -0.5;
         // public static final double kIntakeRollbackSpeed = 0.15;
 
         // JUST IN CASE
@@ -203,11 +205,13 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
-        public static final double kPTranslationPP = 2.8; // 4.0 
+        public static final double kTranslationMultPP = 0.2;
+
+        public static final double kPTranslationPP = 3.0; // 4.0 
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0;
 
-        public static final double kPRotationPP = 3.8; // 3.0
+        public static final double kPRotationPP = 0.0; // 3.8
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0; // 0.0
 

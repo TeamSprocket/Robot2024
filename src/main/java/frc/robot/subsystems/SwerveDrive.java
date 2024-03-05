@@ -119,8 +119,8 @@ public class SwerveDrive extends SubsystemBase {
     );
 
 
-    // ShuffleboardPIDTuner.addSlider("Turn Angle FR Slider [SD]", -180.0, 180.0, 0.0);
-    // ShuffleboardPIDTuner.addSlider("Target Angle FR Slider [SD]", -180.0, 180.0, 0.0);
+    // ShuffleboardPIDTuner.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
+    // ShuffleboardPIDTuner.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
 
     // ShuffleboardPIDTuner.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
     // ShuffleboardPIDTuner.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
@@ -142,6 +142,7 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     updateShuffleboardPIDConstants();
     gyro.clearStickyFaults();
+      
 
     SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
@@ -332,8 +333,13 @@ public class SwerveDrive extends SubsystemBase {
   
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
-    chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond;
+    chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond * 0.25;
     SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+
+    moduleStates[0].speedMetersPerSecond = moduleStates[0].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
+    moduleStates[1].speedMetersPerSecond = moduleStates[1].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
+    moduleStates[2].speedMetersPerSecond = moduleStates[2].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
+    moduleStates[3].speedMetersPerSecond = moduleStates[3].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
     // this.targetHeadingRad = getHeading();
 
     setModuleStates(moduleStates);

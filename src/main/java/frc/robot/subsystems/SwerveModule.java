@@ -70,6 +70,9 @@ public class SwerveModule extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Supply Current Drive [SM]", driveMotor.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Supply Current Turn [SM]", turnMotor.getSupplyCurrent().getValueAsDouble());
     
 
     // This method will be called once per scheduler run
@@ -185,7 +188,7 @@ public class SwerveModule extends SubsystemBase {
     
     
     // if (state.speedMetersPerSecond > Constants.Drivetrain.kDrivingMotorDeadband) {
-      turnMotor.set(turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+      turnMotor.set( turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
     // } else {
       // turnMotor.set(0.0);
     // }

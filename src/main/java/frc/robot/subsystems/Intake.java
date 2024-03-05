@@ -62,6 +62,7 @@ public class Intake extends SubsystemBase {
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
+        rollIntake.optimizeBusUtilization();
 
         rollIntake.setNeutralMode(NeutralModeValue.Coast);
         pivotIntake.setNeutralMode(NeutralModeValue.Brake);

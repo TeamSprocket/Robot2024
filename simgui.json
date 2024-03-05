@@ -2,6 +2,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto Routine Selector": "String Chooser",
       "/SmartDashboard/Auton Chooser": "String Chooser",
       "/SmartDashboard/STATES[IN]": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
@@ -13,6 +14,19 @@
       "/SmartDashboard/SendableChooser[7]": "String Chooser",
       "/SmartDashboard/SendableChooser[8]": "String Chooser",
       "/SmartDashboard/Shooter State Chooser [ST]": "String Chooser"
+    }
+  },
+  "NetworkTables": {
+    "transitory": {
+      "SmartDashboard": {
+        "Auto Routine Selector": {
+          "open": true,
+          "string[]##v_/SmartDashboard/Auto Routine Selector/options": {
+            "open": true
+          }
+        },
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
