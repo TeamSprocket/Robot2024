@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator.ElevatorStates;
-import frc.robot.subsystems.Wrist.WristStates;
+import frc.robot.subsystems.ShooterPivot.WristStates;
 import frc.util.Conversions;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.Intake.IntakeStates;
@@ -33,12 +33,12 @@ public class Superstructure extends SubsystemBase {
   Timer timer = new Timer();
 
   Elevator elevator;
-  Wrist wrist;
+  ShooterPivot wrist;
   Shooter shooter;
   Intake intake;
   Supplier<Pose2d> botPose2dSupplier;
 
-  public Superstructure(Elevator elevator, Wrist wrist, Shooter shooter, Intake intake, Supplier<Pose2d> botPose2dSupplier) {
+  public Superstructure(Elevator elevator, ShooterPivot wrist, Shooter shooter, Intake intake, Supplier<Pose2d> botPose2dSupplier) {
     this.elevator = elevator;
     this.wrist = wrist;
     this.shooter = shooter;

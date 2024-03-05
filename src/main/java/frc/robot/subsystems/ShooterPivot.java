@@ -26,7 +26,7 @@ import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
 
-public class Wrist extends SubsystemBase {
+public class ShooterPivot extends SubsystemBase {
   /** Creates a new Wrist. */
   TalonFX motor = new TalonFX(RobotMap.Wrist.WRIST);
 
@@ -56,7 +56,7 @@ public class Wrist extends SubsystemBase {
     SOURCE
   }
 
-  public Wrist(Supplier<Double> joystickSupplier, Supplier<Translation2d> botPoseSupplier) {
+  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation2d> botPoseSupplier) {
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityDeg, Constants.Wrist.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
