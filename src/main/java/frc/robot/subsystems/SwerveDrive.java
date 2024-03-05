@@ -35,7 +35,7 @@ public class SwerveDrive extends SubsystemBase {
   public static SwerveDriveStates state = SwerveDriveStates.DISABLED;
 
 
-  Limelight limelight;
+  Vision vision;
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
@@ -88,8 +88,8 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  public SwerveDrive(Limelight limelight) {
-    this.limelight = limelight;
+  public SwerveDrive(Vision vision) {
+    this.vision = vision;
 
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
@@ -249,9 +249,9 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void updateOdometryWithVision() {
-    Translation2d pos = limelight.getTranslation2d();
-    if (limelight.getIsNotVolatile()) { // LL readings not volatile
-      if (pos.getX() != 0.0 && pos.getY() != 0.0) { // LL can see tags
+    Translation2d pos = vision.getTranslation2d();
+    if (vision.getIsNotVolatile()) { // LL readings not volatile
+      if (vision.hasTargets(pos)) { // LL can see tags
         resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
       }
     }
@@ -259,7 +259,7 @@ public class SwerveDrive extends SubsystemBase {
 
   public void alignWithAprilTag() {
 
-    double rotSpeed = limelight.getYaw() * Constants.Limelight.kMaxTurningSpeed;
+    double rotSpeed = vision.getYaw() * Constants.Limelight.kMaxTurningSpeed;
     updateChassisSpeeds(0, 0, rotSpeed);
   }
 

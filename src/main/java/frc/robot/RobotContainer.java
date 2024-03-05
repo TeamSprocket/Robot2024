@@ -23,8 +23,8 @@ public class RobotContainer {
   private final CommandXboxController driver = new CommandXboxController(0);
   public final static CommandXboxController secondary = new CommandXboxController(1);
 
-  Limelight limelight = new Limelight();
-  SwerveDrive swerveDrive = new SwerveDrive(limelight);
+  Vision vision = new Vision();
+  SwerveDrive swerveDrive = new SwerveDrive(vision);
 
 
 
