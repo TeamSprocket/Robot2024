@@ -28,7 +28,7 @@ public class Vision extends SubsystemBase {
     
     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center // TODO: change transform based on cam mounting
-    private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, shooterLL, robotToCam); // there are different types of pose strategies, using lowest ambiguity for now to get clearest april tag in limelight view
+    private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, shooterLL, robotToCam); // there are different types of pose strategies, using lowest ambiguity for now to get clearest april tag in limelight view
     // used to get robot position on field by looking at april tags
 
     private List<PhotonTrackedTarget> targets;
@@ -38,8 +38,6 @@ public class Vision extends SubsystemBase {
 
     private SendableChooser<Boolean> cameraMode = new SendableChooser<Boolean>();
 
-    private MedianFilter filterX = new MedianFilter(10);
-    private MedianFilter filterY = new MedianFilter(10);
     private MedianFilter filterRot = new MedianFilter(10);
     private MedianFilter filterIntake = new MedianFilter(5);
     // filters for shooter and intake
@@ -109,7 +107,7 @@ public class Vision extends SubsystemBase {
         Pose2d pose = result.estimatedPose.toPose2d();
         // uses april tags to find robot position on field (we have to convert to pose 2d then translation)
 
-        return new Translation2d(filterX.calculate(pose.getX()), filterY.calculate(pose.getY()));
+        return new Translation2d(pose.getX(), pose.getY());
     }
 
     /**
