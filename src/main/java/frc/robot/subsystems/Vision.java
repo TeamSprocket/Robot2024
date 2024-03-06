@@ -57,7 +57,6 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-
         SmartDashboard.putNumber("distance from target", getDistanceFromTarget());
         SmartDashboard.putBoolean("is volatile", getIsNotVolatile());
         SmartDashboard.putBoolean("driver mode", getDriverMode());
@@ -170,5 +169,4 @@ public class Vision extends SubsystemBase {
         double intakeNoteReading = note.getYaw();
         return filterIntake.calculate(intakeNoteReading);
     }
-
 }

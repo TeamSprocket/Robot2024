@@ -304,10 +304,15 @@ public class SwerveDrive extends SubsystemBase {
   public void updateOdometryWithVision() {
     Translation2d pos = vision.getTranslation2d();
     if (vision.getIsNotVolatile()) { // LL readings not volatile
-      if (Math.abs(pos.getX()) > 0.1 && Math.abs(pos.getX()) > 0.1) { // LL can see tags
+      if (vision.hasTargets(pos)) { // LL can see tags
         resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
       }
     }
+  }
+
+  public void alignWithAprilTag() {
+    double rotSpeed = vision.getYaw() * Constants.Limelight.kMaxTurningSpeed;
+    updateChassisSpeeds(0, 0, rotSpeed);
   }
 
   // Stuff for Pathplanner
