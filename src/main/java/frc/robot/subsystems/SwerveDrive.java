@@ -23,7 +23,7 @@ import frc.robot.Constants.RobotState;
 
 public class SwerveDrive extends SubsystemBase {
 
-  Limelight limelight;
+  Vision vision;
 
   double xSpeed, ySpeed, tSpeed;
   // double targetHeadingRad = Math.PI;
@@ -92,8 +92,8 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  public SwerveDrive(Limelight limelight) {
-    this.limelight = limelight;
+  public SwerveDrive(Vision vision) {
+    this.vision = vision;
 
     // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
@@ -302,8 +302,8 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void updateOdometryWithVision() {
-    Translation2d pos = limelight.getTranslation2d();
-    if (limelight.getIsNotVolatile()) { // LL readings not volatile
+    Translation2d pos = vision.getTranslation2d();
+    if (vision.getIsNotVolatile()) { // LL readings not volatile
       if (Math.abs(pos.getX()) > 0.1 && Math.abs(pos.getX()) > 0.1) { // LL can see tags
         resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
       }
