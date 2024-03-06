@@ -94,7 +94,7 @@ public class Vision extends SubsystemBase {
 
         return new Translation2d(filterX.calculate(pose.getX()), filterY.calculate(pose.getY()));
     }
-
+    
     /**
      * @return distance from the april tag
      */
