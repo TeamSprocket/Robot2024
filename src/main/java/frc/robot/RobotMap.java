@@ -48,7 +48,7 @@ public final class RobotMap {
     public static final int ELEVATOR_RIGHT = 19;
   }
 
-  public static final class Wrist {
+  public static final class ShooterPivot {
     public static final int WRIST = 13;
   }
 
