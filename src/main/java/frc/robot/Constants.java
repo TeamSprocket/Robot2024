@@ -162,11 +162,15 @@ public class Constants {
     }
 
     public static final class Limelight {
-        public static final double kAcceptableVolatilityThreshold = 1.5;
-        public static final int kVolatilitySlidingWindowLen = 25; // ~50 iter = 1 sec
+        public static final double kAcceptableVolatilityThreshold = 0.2;
 
-        public static final int kAverageWindowSize = 15;
-        public static final int kAverageWindowBuffer = 5;
+        public static final double kMaxDrivingSpeed = 0.0;
+        public static final double kMaxTurningSpeed = 0.0;
+
+        // should go into robotmap
+        public static final double limelightMountAngleDegrees = 0.0;
+        public static final double goalHeightInches = 0.0;
+        public static final double limelightHeightInches = 0.0;
     }
 
     public static final class Drivetrain {
