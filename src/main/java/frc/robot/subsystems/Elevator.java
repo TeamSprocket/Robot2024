@@ -58,7 +58,7 @@ public class Elevator extends SubsystemBase {
     motorRight.setControl(new StrictFollower(motorLeft.getDeviceID())); //Strict follower?
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
-    profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
+    profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD, trapezoidProfileConstraints);
 
     this.leftBumperSupplier = leftBumperSupplier;
     this.rightBumperSupplier = rightBumperSupplier;

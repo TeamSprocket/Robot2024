@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Elevator.ElevatorStates;
-import frc.robot.subsystems.ShooterPivot.WristStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 import frc.util.Conversions;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.Intake.IntakeStates;
@@ -33,14 +33,14 @@ public class Superstructure extends SubsystemBase {
   Timer timer = new Timer();
 
   Elevator elevator;
-  ShooterPivot wrist;
+  ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
   Supplier<Pose2d> botPose2dSupplier;
 
-  public Superstructure(Elevator elevator, ShooterPivot wrist, Shooter shooter, Intake intake, Supplier<Pose2d> botPose2dSupplier) {
+  public Superstructure(Elevator elevator, ShooterPivot shooterPivot, Shooter shooter, Intake intake, Supplier<Pose2d> botPose2dSupplier) {
     this.elevator = elevator;
-    this.wrist = wrist;
+    this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
     this.botPose2dSupplier = botPose2dSupplier;
@@ -49,7 +49,7 @@ public class Superstructure extends SubsystemBase {
   }
 
   // ELevator: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
-  // Wrist: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
+  // ShooterPivot: NONE, STOWED, HANDOFF, SPEAKER, SPEAKER_HIGH, AMP, MANUAL
   // Shooter: NONE, STANDBY, HANDOFF, SPINUP, SCORE_SPEAKER, SCORE_AMP
   // Intake: NONE, STOWED, INTAKE, WAIT_HANDOFF, HANDOFF
 
@@ -60,7 +60,7 @@ public class Superstructure extends SubsystemBase {
     switch (state) {
       case NONE:
         // elevator.setState(ElevatorStates.NONE); // TODO re-enable
-        // wrist.setState(WristStates.NONE);
+        // shooterPivot.setState(ShooterPivotStates.NONE);
         // shooter.setState(ShooterStates.NONE);
         // intake.setState(IntakeStates.NONE);
       break;
@@ -68,7 +68,7 @@ public class Superstructure extends SubsystemBase {
 
       case STOWED:
         elevator.setState(ElevatorStates.STOWED);
-        wrist.setState(WristStates.STOWED);
+        shooterPivot.setState(ShooterPivotStates.STOWED);
         shooter.setState(ShooterStates.STANDBY);
         intake.setState(IntakeStates.STOWED);
       break;
@@ -94,7 +94,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.STOWED);
-        wrist.setState(WristStates.STOWED);
+        shooterPivot.setState(ShooterPivotStates.STOWED);
         shooter.setState(ShooterStates.INTAKE);
         intake.setState(IntakeStates.INTAKE);
 
@@ -113,7 +113,7 @@ public class Superstructure extends SubsystemBase {
       // // }
 
       // //   elevator.setState(ElevatorStates.HANDOFF);
-      // //   wrist.setState(WristStates.HANDOFF);
+      // //   shooterPivot.setState(ShooterPivotStates.HANDOFF);
       // //   shooter.setState(ShooterStates.HANDOFF);
       // //   intake.setState(IntakeStates.WAIT_HANDOFF);
 
@@ -135,7 +135,7 @@ public class Superstructure extends SubsystemBase {
       //   }
 
       //   // elevator.setState(ElevatorStates.HANDOFF);
-      //   // wrist.setState(WristStates.HANDOFF);
+      //   // shooterPivot.setState(ShooterPivotStates.HANDOFF);
       //   // shooter.setState(ShooterStates.HANDOFF); // will intake note in resting position
       //   // intake.setState(IntakeStates.HANDOFF); // outtakes note (but stays in normal position)
 
@@ -155,7 +155,7 @@ public class Superstructure extends SubsystemBase {
       //   }
 
       //   elevator.setState(ElevatorStates.SPEAKER);
-      //   wrist.setState(WristStates.SPEAKER);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER);
       //   shooter.setState(ShooterStates.SPINUP);
       //   intake.setState(IntakeStates.STOWED);
 
@@ -176,7 +176,7 @@ public class Superstructure extends SubsystemBase {
       //   }
 
       //   elevator.setState(ElevatorStates.SPEAKER_HIGH);
-      //   wrist.setState(WristStates.SPEAKER_HIGH);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_HIGH);
       //   shooter.setState(ShooterStates.SPINUP);
       //   intake.setState(IntakeStates.STOWED);
 
@@ -196,7 +196,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER_SUBWOOFER);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
@@ -218,7 +218,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER_PODIUM);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
         shooter.setState(ShooterStates.SPINUP_PODIUM);
         intake.setState(IntakeStates.STOWED);
 
@@ -240,7 +240,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER_AMP_ZONE);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
         shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
@@ -264,7 +264,7 @@ public class Superstructure extends SubsystemBase {
 
       case WAIT_AMP:
         elevator.setState(ElevatorStates.AMP);
-        wrist.setState(WristStates.AMP);
+        shooterPivot.setState(ShooterPivotStates.AMP);
         shooter.setState(ShooterStates.STANDBY);
         intake.setState(IntakeStates.STOWED);
       break;
@@ -277,7 +277,7 @@ public class Superstructure extends SubsystemBase {
       //   }
 
       //   elevator.setState(ElevatorStates.SPEAKER);
-      //   wrist.setState(WristStates.SPEAKER);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER);
       //   shooter.setState(ShooterStates.SCORE_SPEAKER);
       //   intake.setState(IntakeStates.STOWED);
 
@@ -295,7 +295,7 @@ public class Superstructure extends SubsystemBase {
       //   }
 
       //   elevator.setState(ElevatorStates.SPEAKER_HIGH);
-      //   wrist.setState(WristStates.SPEAKER_HIGH);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_HIGH);
       //   shooter.setState(ShooterStates.SCORE_SPEAKER_HIGH);
       //   intake.setState(IntakeStates.STOWED);
 
@@ -312,7 +312,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER_SUBWOOFER);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
@@ -330,7 +330,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER_PODIUM);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
         shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
         intake.setState(IntakeStates.STOWED);
 
@@ -348,7 +348,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         elevator.setState(ElevatorStates.SPEAKER);
-        wrist.setState(WristStates.SPEAKER_AMP_ZONE);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
         shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
@@ -365,7 +365,7 @@ public class Superstructure extends SubsystemBase {
 
       case SCORE_AMP:
         elevator.setState(ElevatorStates.AMP);
-        wrist.setState(WristStates.AMP);
+        shooterPivot.setState(ShooterPivotStates.AMP);
         shooter.setState(ShooterStates.SCORE_AMP);
         intake.setState(IntakeStates.STOWED);
       break;
@@ -373,14 +373,14 @@ public class Superstructure extends SubsystemBase {
 
       case CLIMB:
         elevator.setState(ElevatorStates.CLIMB);
-        wrist.setState(WristStates.CLIMB);
+        shooterPivot.setState(ShooterPivotStates.CLIMB);
         shooter.setState(ShooterStates.NONE);
         intake.setState(IntakeStates.STOWED);
       break;
 
       case SOURCE:
         elevator.setState(ElevatorStates.STOWED);
-        wrist.setState(WristStates.SOURCE);
+        shooterPivot.setState(ShooterPivotStates.SOURCE);
         shooter.setState(ShooterStates.SOURCE);
         intake.setState(IntakeStates.STOWED);
       break;
@@ -413,7 +413,7 @@ public class Superstructure extends SubsystemBase {
    * @return SHOOTER INCLUDED, if all elements are within tolerance of their goals
    */
   public boolean allElementsAtGoal() {
-    return elevator.atGoal() && wrist.atGoal() && intake.atGoal() && shooter.atGoalShooter();
+    return elevator.atGoal() && shooterPivot.atGoal() && intake.atGoal() && shooter.atGoalShooter();
   }
 
 
@@ -421,15 +421,15 @@ public class Superstructure extends SubsystemBase {
    * @return SHOOTER NOT INCLUDED, if all elements are within tolerance of their goals
    */
   public boolean allElementsAtGoalNoShooter() {
-    return elevator.atGoal() && wrist.atGoal() && intake.atGoal();
+    return elevator.atGoal() && shooterPivot.atGoal() && intake.atGoal();
   }
 
 
   /**
-   * @return Just shooter and wrist within tolerance of their goals 
+   * @return Just shooter and shooterPivot within tolerance of their goals 
    */
   public boolean shooterElementsAtGoal() {
-    return elevator.atGoal() && wrist.atGoal() && shooter.atGoalShooter();
+    return elevator.atGoal() && shooterPivot.atGoal() && shooter.atGoalShooter();
   }
 
 

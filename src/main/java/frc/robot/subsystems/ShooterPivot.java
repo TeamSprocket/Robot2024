@@ -27,24 +27,24 @@ import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
 
 public class ShooterPivot extends SubsystemBase {
-  /** Creates a new Wrist. */
-  TalonFX motor = new TalonFX(RobotMap.Wrist.WRIST);
+  /** Creates a new ShooterPivot. */
+  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST);
 
-  WristStates state = WristStates.NONE;
-  WristStates lastState;
+  ShooterPivotStates state = ShooterPivotStates.NONE;
+  ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
   double motorspeed = 0.0;
 
   // ProfiledpidController profiledpidController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
-  PIDController pidController = new PIDController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist);
+  PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
 
   Supplier<Double> joystickSupplier;
   Supplier<Translation2d> botPoseSupplier;
 
-  SendableChooser<WristStates> selectWristState = new SendableChooser<WristStates>();
+  SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
 
-  public enum WristStates {
+  public enum ShooterPivotStates {
     NONE,
     STOWED,
     INTAKE,
@@ -57,40 +57,40 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation2d> botPoseSupplier) {
-    // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Wrist.kMaxVelocityDeg, Constants.Wrist.kMaxAccelerationDeg);
-    // profiledpidController = new ProfiledpidController(Constants.Wrist.kPwrist, Constants.Wrist.kIwrist, Constants.Wrist.kDwrist, trapezoidProfileConstraints);
+    // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
+    // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
 
-    motor.setInverted(Constants.Wrist.kIsWristInverted);
+    motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
     
     // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
     // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
-    selectWristState.setDefaultOption("NONE", WristStates.NONE);
-    selectWristState.addOption("STOWED", WristStates.STOWED);
-    selectWristState.addOption("INTAKE", WristStates.INTAKE);
-    // selectWristState.addOption("SPEAKER", WristStates.SPEAKER);
-    // selectWristState.addOption("SPEAKER_HIGH", WristStates.SPEAKER_HIGH);
-    selectWristState.addOption("SPEAKER AMP ZONE", WristStates.SPEAKER_AMP_ZONE);
-    selectWristState.addOption("SPEAKER PODIUM", WristStates.SPEAKER_PODIUM);
-    selectWristState.addOption("SPEAKER SUBWOOFER", WristStates.SPEAKER_SUBWOOFER);
-    selectWristState.addOption("AMP", WristStates.AMP);
-    selectWristState.addOption("CLIMB", WristStates.CLIMB);
+    selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
+    selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
+    selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
+    // selectShooterPivotState.addOption("SPEAKER", ShooterPivotStates.SPEAKER);
+    // selectShooterPivotState.addOption("SPEAKER_HIGH", ShooterPivotStates.SPEAKER_HIGH);
+    selectShooterPivotState.addOption("SPEAKER AMP ZONE", ShooterPivotStates.SPEAKER_AMP_ZONE);
+    selectShooterPivotState.addOption("SPEAKER PODIUM", ShooterPivotStates.SPEAKER_PODIUM);
+    selectShooterPivotState.addOption("SPEAKER SUBWOOFER", ShooterPivotStates.SPEAKER_SUBWOOFER);
+    selectShooterPivotState.addOption("AMP", ShooterPivotStates.AMP);
+    selectShooterPivotState.addOption("CLIMB", ShooterPivotStates.CLIMB);
+    SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
 
-    SmartDashboard.putData(selectWristState);
-    SmartDashboard.putNumber("wrist angle", getWristAngle());
-    SmartDashboard.putNumber("wrist velocity", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("shooterPivot angle", getShooterPivotAngle());
+    SmartDashboard.putNumber("shooterPivot velocity", motor.getVelocity().getValueAsDouble());
 
-    ShuffleboardPIDTuner.addSlider("wrist kP", 0.0, 1, Constants.Wrist.kPwrist);
-    // ShuffleboardPIDTuner.addSlider("wrist kD", 0.0, 0.05, 0.0);
+    // ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 1, Constants.ShooterPivot.kPID.kP);
+    // ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.05, 0.0);
   }
 
   @Override
   public void periodic() {
-    pidController.setP(ShuffleboardPIDTuner.get("wrist kP"));
-    // pidController.setD(ShuffleboardPIDTuner.get("wrist kD"));
+    // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
+    // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
-    setState(selectWristState.getSelected());
+    setState(selectShooterPivotState.getSelected());
 
     switch(state) { // TODO: figure out target angles
 
@@ -99,87 +99,87 @@ public class ShooterPivot extends SubsystemBase {
         break;
 
       case STOWED:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleStowed);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleStowed);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case INTAKE:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleIntake);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleIntake);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case SPEAKER_AMP_ZONE:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleSpeakerFromAmp);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromAmp);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case SPEAKER_PODIUM:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleSpeakerFromPodium);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromPodium);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case SPEAKER_SUBWOOFER:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleSpeakerFromSubwoofer);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
         
       case AMP:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleAmp);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleAmp);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       // JUST IN CASE
 
       case SOURCE:
-        pidController.setSetpoint(Constants.Wrist.kTargetAngleSource);
-        motorspeed = pidController.calculate(getWristAngle());
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSource);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       //
 
       case CLIMB: // TODO: add limit
-        double speed = joystickSupplier.get() * Constants.Wrist.kManualMultiplier;
+        double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
         pidController.setSetpoint(pidController.getSetpoint() + (speed));
 
-        double finalspeed = pidController.calculate(getWristAngle());
+        double finalspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-        finalspeed = Util.minmax(finalspeed, -1 * Constants.Wrist.kMaxWristOutput, Constants.Wrist.kMaxWristOutput);
+        finalspeed = Util.minmax(finalspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(finalspeed);
         break;
     }
 
     // clearStickyFaults();
     lastState = state;
-    SmartDashboard.putNumber("Wrist Angle [WR]", getWristAngle());
+    SmartDashboard.putNumber("ShooterPivot Angle [WR]", getShooterPivotAngle());
   }
 
   /**
    * TODO: Test CW or CCW signage 
-   * @return Angle of the wrist in degrees, CW+, CCW-
+   * @return Angle of the shooterPivot in degrees, CW+, CCW-
    */
-  public double getWristAngle() {
-    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.Wrist.kWristGearRatio);
+  public double getShooterPivotAngle() {
+    double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.ShooterPivot.kShooterPivotGearRatio);
     deg %= 360;
     if (deg > 180) {
       deg -= (360); 
@@ -187,27 +187,27 @@ public class ShooterPivot extends SubsystemBase {
     return deg;
   }
 
-  public void setState(WristStates state) {
+  public void setState(ShooterPivotStates state) {
     this.state = state;
   }
 
-  public WristStates getState() {
+  public ShooterPivotStates getState() {
       return state;
   }
 
-  public double getWristTargetDeg() {
+  public double getShooterPivotTargetDeg() {
     double dist = Conversions.poseToDistance(botPoseSupplier.get(), Constants.ShootingSetpoints.targetPoint);
     double targetDeg = Constants.ShootingSetpoints.getValues(dist)[0];
     return targetDeg;
   }
 
   public void debug() {
-    SmartDashboard.putNumber("Angle in Degrees", getWristAngle());
+    SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
   }
 
   public boolean atGoal() {
     double goal = pidController.getSetpoint();
-    return Util.inRange(getWristAngle(), (goal - Constants.Wrist.kAtGoalTolerance), (goal + Constants.Wrist.kAtGoalTolerance));
+    return Util.inRange(getShooterPivotAngle(), (goal - Constants.ShooterPivot.kAtGoalTolerance), (goal + Constants.ShooterPivot.kAtGoalTolerance));
   }
   
   public void clearStickyFaults() {

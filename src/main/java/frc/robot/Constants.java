@@ -2,6 +2,7 @@ package frc.robot;
 
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
+// import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.util.Conversions;
+import frc.util.PIDConst;
 
 public class Constants {
     public static enum RobotState {
@@ -32,7 +34,7 @@ public class Constants {
         public static final double kWaitSpeakerTimeToleranceSec = 0.25;
 
         // Elapsed time shooting into speaker before stow
-        public static final double kScoreSpeakerShootTimeToleranceSec = 1.0; // intake fallback = 0.5s
+        public static final double kScoreSpeakerShootTimeToleranceSec = 1.0; // intake fallback = 0.5s,\1.0
 
         public static final double kScoreSpeakerPivotTimeToleranceSec = 0.5;
 
@@ -47,9 +49,7 @@ public class Constants {
         public static final double kElevatorHeightAmp = 0.0;
         public static final double kElevatorHeightTrap = 0.0;
 
-        public static final double kPElevator = 0.0;
-        public static final double kIElevator = 0.0;
-        public static final double kDElevator = 0.0;
+        public static final PIDConst kPIDElevator = new PIDConst(0.0, 0.0, 0.0);
 
         public static final double kManualMultiplier = 0.1;
 
@@ -65,31 +65,29 @@ public class Constants {
         public static final double kMaxAccel = 0.0;
     }
 
-    public static final class Wrist {
-        public static final boolean kIsWristInverted = false;
+    public static final class ShooterPivot {
+        public static final boolean kIsShooterPivotInverted = false;
 
-        public static double kPwrist = 0.0076;
-        public static double kIwrist = 0;
-        public static double kDwrist = 0;
+        public static PIDConst kPID = new PIDConst(0.00675, 0, 0, 0.015);
 
         public static final double kManualMultiplier = 0.001;
 
         public static final double kAtGoalTolerance = 0.25;
 
-        public static final double kWristGearRatio = 148.15;
+        public static final double kShooterPivotGearRatio = 148.15;
 
-        public static final double kMaxWristOutput = 0.3;
+        public static final double kMaxShooterPivotOutput = 0.3;
 
         // public static final double kMaxVelocityDeg = 0.0;
         // public static final double kMaxAccelerationDeg = 0.0;
 
         public static final double kTargetAngleStowed = 5.0;
-        public static final double kTargetAngleIntake = 0.0;
+        public static final double kTargetAngleIntake = 5.0;
         // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
-        public static final double kTargetAngleSpeakerFromSubwoofer = 5.0;
+        public static final double kTargetAngleSpeakerFromSubwoofer = 40.0;
         public static final double kTargetAngleAmp = kTargetAngleStowed;
         public static final double kTargetAngleSource = kTargetAngleStowed;
     }
@@ -106,7 +104,7 @@ public class Constants {
         public static final double kShooterEjectNoteSpeed = -0.25;
 
         public static final double kIndexerSpeedIntake = 0.3;
-        public static final double kIndexerSpeedScoreSpeaker = 0.9;
+        public static final double kIndexerSpeedScoreSpeaker = 0.9; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIndexerEjectNoteSpeed = -0.5;
         // public static final double kIntakeRollbackSpeed = 0.15;
@@ -403,7 +401,7 @@ public class Constants {
 
         /**
          * @param dist Distance from bot shooter to targetPoint in meters
-         * @return Array of 2 values: wrist angle in degrees, shooter velocity in MPS
+         * @return Array of 2 values: shooterPivot angle in degrees, shooter velocity in MPS
          */
         public static double[] getValues(double dist) {
             int index = (int) ((dist - 0.9) / 0.005);
