@@ -8,6 +8,7 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -29,10 +30,16 @@ public class Vision extends SubsystemBase {
     private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.LOWEST_AMBIGUITY, shooterLL, robotToCam);
 
     private PhotonTrackedTarget target = new PhotonTrackedTarget();
+    private PhotonTrackedTarget note = new PhotonTrackedTarget();
     private SendableChooser<Boolean> cameraMode = new SendableChooser<Boolean>();
 
     private ArrayList<Double> xPoseReadings = new ArrayList<Double>(50);
     private ArrayList<Double> yPoseReadings = new ArrayList<Double>(50);
+
+    private MedianFilter filterX = new MedianFilter(10);
+    private MedianFilter filterY = new MedianFilter(10);
+    private MedianFilter filterRot = new MedianFilter(10);
+    private MedianFilter filterIntake = new MedianFilter(5);
 
     private double totalX = 0.00;
     private double totalY = 0.00;
@@ -44,8 +51,8 @@ public class Vision extends SubsystemBase {
         cameraMode.addOption("driver mode", true);
         cameraMode.addOption("obj detection mode", false);
 
-        intakeLL.setPipelineIndex(0); //note
-        shooterLL.setPipelineIndex(0); //apriltag
+        intakeLL.setPipelineIndex(0); // note
+        shooterLL.setPipelineIndex(0); // apriltag
     }
 
     @Override
@@ -61,6 +68,7 @@ public class Vision extends SubsystemBase {
 
         Translation2d currentPose = getTranslation2d();
         target = shooterLL.getLatestResult().getBestTarget();
+        note = intakeLL.getLatestResult().getBestTarget();
 
         totalX += currentPose.getX();
         totalX -= xPoseReadings.get(0);
@@ -85,7 +93,7 @@ public class Vision extends SubsystemBase {
         EstimatedRobotPose result = photonPoseEstimator.update().get();
         Pose2d pose = result.estimatedPose.toPose2d();
 
-        return new Translation2d(pose.getX(), pose.getY());
+        return new Translation2d(filterX.calculate(pose.getX()), filterY.calculate(pose.getY()));
     }
 
     /**
@@ -151,11 +159,16 @@ public class Vision extends SubsystemBase {
     }
 
     public double getYaw() {
-        return target.getYaw();
+        return filterRot.calculate(target.getYaw());
     }
 
     public double getPitch() {
-        return target.getPitch();
+        return filterRot.calculate(target.getPitch());
+    }
+
+    public double getIntakeYaw() {
+        double intakeNoteReading = note.getYaw();
+        return filterIntake.calculate(intakeNoteReading);
     }
 
 }
