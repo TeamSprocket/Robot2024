@@ -75,7 +75,6 @@ public class Vision extends SubsystemBase {
         updateTargets();
         // gets a list of targets from shooter limelight but will only choose the middle tags (4 and 7)
 
-
         SmartDashboard.putNumber("tX [V]", currentPose.getX());
         SmartDashboard.putNumber("tY [V]", currentPose.getY());
         
@@ -84,7 +83,10 @@ public class Vision extends SubsystemBase {
         // SmartDashboard.putBoolean("Driver mode", getDriverMode());
         SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
         SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
-        // SmartDashboard.putNumber("April Tag ID [V]", target.getFiducialId()); // should only return 4 or 7 (depends on side of field)
+        SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
+
+        SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
+        // SmartDashboard.putNumber("April Tag ID [V]",\ target.getFiducialId()); // should only return 4 or 7 (depends on side of field)
         // debug
 
         // setDriverMode(cameraMode.getSelected());
@@ -131,7 +133,7 @@ public class Vision extends SubsystemBase {
      */
     public double getDistanceFromTarget() {
         double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Limelight.kLimelightMountAngleDegrees);
-        double distanceFromTarget = (Constants.Limelight.kGoalHeightInches - Constants.Limelight.kLimelightHeightInches) / Math.tan(angleToGoalRadians);
+        double distanceFromTarget = (Constants.Limelight.kGoalHeightMeters - Constants.Limelight.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
         // height from cam to april tag / tan(angle) = distance from cam to april tag
 
         return distanceFromTarget;
@@ -182,7 +184,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getYaw() {
-        if (target != null) {
+        if (target != null && target.getFiducialId() == 4) {
             return filterYaw.calculate(target.getYaw());    
         }
         else {
@@ -212,6 +214,9 @@ public class Vision extends SubsystemBase {
         for (PhotonTrackedTarget i : targets) {
             if (i.getFiducialId() == 7 || i.getFiducialId() == 4) {
                 this.target = i;
+            }
+            else {
+                this.target = null;
             }
         }
     }

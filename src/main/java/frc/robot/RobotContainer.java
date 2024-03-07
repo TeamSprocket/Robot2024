@@ -36,7 +36,7 @@ public class RobotContainer {
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());
-  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> swerveDrive.getPose().getTranslation());
+  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
   // swerveDrive.getPose().getTranslation());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
   Intake intake = new Intake();

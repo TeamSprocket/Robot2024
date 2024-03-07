@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
@@ -40,7 +41,7 @@ public class ShooterPivot extends SubsystemBase {
   PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
 
   Supplier<Double> joystickSupplier;
-  Supplier<Translation2d> botPoseSupplier;
+  Supplier<Double> distToTagSupplier;
 
   SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
 
@@ -49,17 +50,18 @@ public class ShooterPivot extends SubsystemBase {
     STOWED,
     INTAKE,
     SPEAKER_SUBWOOFER, SPEAKER_PODIUM, SPEAKER_AMP_ZONE,
-    // SPEAKER,
+    SPEAKER,
     // SPEAKER_HIGH,
     AMP,
     CLIMB,
     SOURCE
   }
 
-  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation2d> botPoseSupplier) {
+  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Double> distToTagSupplier) {
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
+    this.distToTagSupplier = distToTagSupplier;
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Coast);
@@ -108,6 +110,20 @@ public class ShooterPivot extends SubsystemBase {
 
       case INTAKE:
         pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleIntake);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
+        motor.set(motorspeed);
+        break;
+
+      case SPEAKER:
+        double dist = distToTagSupplier.get();
+        if (dist != 0.0) {
+          double angleTarget = Constants.ShootingSetpoints.getValues(dist)[0];
+          angleTarget = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
+          pidController.setSetpoint(angleTarget);
+        } 
+        
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
@@ -195,11 +211,11 @@ public class ShooterPivot extends SubsystemBase {
       return state;
   }
 
-  public double getShooterPivotTargetDeg() {
-    double dist = Conversions.poseToDistance(botPoseSupplier.get(), Constants.ShootingSetpoints.targetPoint);
-    double targetDeg = Constants.ShootingSetpoints.getValues(dist)[0];
-    return targetDeg;
-  }
+  // public double getShooterPivotTargetDeg() {
+  //   double dist = Conversions.poseToDistance(botPoseSupplier.get(), Constants.ShootingSetpoints.targetPoint);
+  //   double targetDeg = Constants.ShootingSetpoints.getValues(dist)[0];
+  //   return targetDeg;
+  // }
 
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
