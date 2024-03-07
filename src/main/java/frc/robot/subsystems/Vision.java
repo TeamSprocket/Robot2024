@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -21,10 +23,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.util.Util;
 
-public class Vision extends SubsystemBase {
-    
-    private PhotonCamera shooterLL = new PhotonCamera("CAMERA NAME"); // TODO: FIND CAMERA NAME
-    private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
+public class Vision extends SubsystemBase {    
+    private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight"); // TODO: FIND CAMERA NAME
+    // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
     
     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center // TODO: change transform based on cam mounting
@@ -33,17 +34,18 @@ public class Vision extends SubsystemBase {
 
     private List<PhotonTrackedTarget> targets;
     private PhotonTrackedTarget target;
-    private PhotonTrackedTarget note;
+    // private PhotonTrackedTarget note;
     // targets for camera
 
     private SendableChooser<Boolean> cameraMode = new SendableChooser<Boolean>();
 
-    private MedianFilter filterRot = new MedianFilter(10);
-    private MedianFilter filterIntake = new MedianFilter(5);
+    private MedianFilter filterYaw = new MedianFilter(10);
+    private MedianFilter filterPitch = new MedianFilter(10);
+    // private MedianFilter filterIntake = new MedianFilter(5);
     // filters for shooter and intake
 
-    private ArrayList<Double> xPoseReadings = new ArrayList<Double>(50);
-    private ArrayList<Double> yPoseReadings = new ArrayList<Double>(50);
+    private ArrayList<Double> xPoseReadings = new ArrayList<Double>(Constants.Limelight.kVolatilitySlidingWindowLen);
+    private ArrayList<Double> yPoseReadings = new ArrayList<Double>(Constants.Limelight.kVolatilitySlidingWindowLen);
 
     private double totalX = 0.00;
     private double totalY = 0.00;
@@ -56,39 +58,48 @@ public class Vision extends SubsystemBase {
         cameraMode.addOption("driver mode", true);
         cameraMode.addOption("obj detection mode", false);
 
-        intakeLL.setPipelineIndex(0); // TODO: update pipelines to note
+        // intakeLL.setPipelineIndex(0); // TODO: update pipelines to note
         shooterLL.setPipelineIndex(0); // apriltag
+
+        for (int i = 0; i < Constants.Limelight.kVolatilitySlidingWindowLen; i++) {
+            xPoseReadings.add(0.0);
+            yPoseReadings.add(0.0);
+        }
     }
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("distance from target", getDistanceFromTarget());
-        SmartDashboard.putBoolean("is volatile", getIsNotVolatile());
-        SmartDashboard.putBoolean("driver mode", getDriverMode());
-        SmartDashboard.putNumber("yaw", getYaw());
-        SmartDashboard.putNumber("pitch", getPitch());
-        SmartDashboard.putNumber("april tag ID", target.getFiducialId()); // should only return 4 or 7 (depends on side of field)
-        // debug
-
-        setDriverMode(cameraMode.getSelected());
-        // can change back and forth from driver cam and note detection
-
         Translation2d currentPose = getTranslation2d();
 
         targets = shooterLL.getLatestResult().getTargets();
-        getTarget();
+        updateTargets();
         // gets a list of targets from shooter limelight but will only choose the middle tags (4 and 7)
 
-        note = intakeLL.getLatestResult().getBestTarget();
+
+        SmartDashboard.putNumber("tX [V]", currentPose.getX());
+        SmartDashboard.putNumber("tY [V]", currentPose.getY());
+        
+        SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
+        SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
+        // SmartDashboard.putBoolean("Driver mode", getDriverMode());
+        SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
+        SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
+        // SmartDashboard.putNumber("April Tag ID [V]", target.getFiducialId()); // should only return 4 or 7 (depends on side of field)
+        // debug
+
+        // setDriverMode(cameraMode.getSelected());
+        // can change back and forth from driver cam and note detection
+
+        // note = intakeLL.getLatestResult().getBestTarget();
         // gets closest note
 
         totalX += currentPose.getX();
         totalX -= xPoseReadings.get(0);
-        averageX = totalX / 50;
+        averageX = totalX / Constants.Limelight.kVolatilitySlidingWindowLen;
 
         totalY += currentPose.getY();
         totalY -= yPoseReadings.get(0);
-        averageY = totalY / 50;
+        averageY = totalY / Constants.Limelight.kVolatilitySlidingWindowLen;
 
         xPoseReadings.add(currentPose.getX());
         xPoseReadings.remove(0);
@@ -102,46 +113,28 @@ public class Vision extends SubsystemBase {
      * @return x and y position of the robot on the field
      */
     public Translation2d getTranslation2d() {
+        Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
 
-        EstimatedRobotPose result = photonPoseEstimator.update().get();
-        Pose2d pose = result.estimatedPose.toPose2d();
-        // uses april tags to find robot position on field (we have to convert to pose 2d then translation)
+        if (result.isPresent()) {
+            Pose2d pose = result.get().estimatedPose.toPose2d();
+            // uses april tags to find robot position on field (we have to convert to pose 2d then translation)
 
-        return new Translation2d(pose.getX(), pose.getY());
-    }
-
-    /**
-     * sets target april tag to the middle speaker tags for correct alignment
-     */
-    public void getTarget() {
-        for (PhotonTrackedTarget i : targets) {
-            if (i.getFiducialId() == 7 || i.getFiducialId() == 4) {
-                this.target = i;
-            }
+            return new Translation2d(pose.getX(), pose.getY());
+        } else {
+            return new Translation2d(0.0, 0.0);
         }
+        
     }
 
     /**
      * @return distance from the april tag
      */
     public double getDistanceFromTarget() {
-        double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Limelight.limelightMountAngleDegrees);
-        double distanceFromTarget = (Constants.Limelight.goalHeightInches - Constants.Limelight.limelightHeightInches) / Math.tan(angleToGoalRadians);
+        double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Limelight.kLimelightMountAngleDegrees);
+        double distanceFromTarget = (Constants.Limelight.kGoalHeightInches - Constants.Limelight.kLimelightHeightInches) / Math.tan(angleToGoalRadians);
         // height from cam to april tag / tan(angle) = distance from cam to april tag
 
         return distanceFromTarget;
-    }
-
-    /**
-     * @return individual volatility for x & y
-     */
-    public double getVolatilityAxis(double average, ArrayList<Double> llOdometry){
-        double volatility = 0.00;
-
-        for (int i = 0; i < 50; i++){
-            volatility += Math.abs(average - (double)llOdometry.get(i));
-        }
-        return volatility;
     }
 
     /**
@@ -154,19 +147,19 @@ public class Vision extends SubsystemBase {
         return overallVolatility;
     }
 
-    /**
-     * @param driver true for drivermode, false for note detection
-     * @return boolean to change camera pipeline
-     */
-    public String setDriverMode(boolean driver) { // for intake LL
-        if (driver) {
-            intakeLL.setDriverMode(true);
-            return "driver mode";
-        } else {
-            intakeLL.setPipelineIndex(0); // TODO: change to note pipeline
-            return "note detection";
-        }
-    }
+    // /**
+    //  * @param driver true for drivermode, false for note detection
+    //  * @return boolean to change camera pipeline
+    //  */
+    // public String setDriverMode(boolean driver) { // for intake LL
+    //     if (driver) {
+    //         intakeLL.setDriverMode(true);
+    //         return "driver mode";
+    //     } else {
+    //         intakeLL.setPipelineIndex(0); // TODO: change to note pipeline
+    //         return "note detection";
+    //     }
+    // }
 
     /**
      * @param translation of the robot on the field
@@ -189,15 +182,52 @@ public class Vision extends SubsystemBase {
     }
 
     public double getYaw() {
-        return filterRot.calculate(target.getYaw());
+        if (target != null) {
+            return filterYaw.calculate(target.getYaw());    
+        }
+        else {
+            return 0.0;
+        }
     }
 
     public double getPitch() {
-        return filterRot.calculate(target.getPitch());
+        if (target != null) {
+            return filterPitch.calculate(target.getPitch());  
+        }
+        else {
+            return 0.0;
+        }
     }
 
-    public double getIntakeYaw() {
-        double intakeNoteReading = note.getYaw();
-        return filterIntake.calculate(intakeNoteReading);
+    // public double getIntakeYaw() {
+    //     double intakeNoteReading = note.getYaw();
+    //     return filterIntake.calculate(intakeNoteReading);
+    // }
+
+
+    /**
+     * sets target april tag to the middle speaker tags for correct alignment
+     */
+    private void updateTargets() {
+        for (PhotonTrackedTarget i : targets) {
+            if (i.getFiducialId() == 7 || i.getFiducialId() == 4) {
+                this.target = i;
+            }
+        }
     }
+
+
+    /**
+     * @return axial volatility
+     */
+    private double getVolatilityAxis(double average, ArrayList<Double> llOdometry){
+        double volatility = 0.00;
+
+        for (int i = 0; i < Constants.Limelight.kVolatilitySlidingWindowLen; i++){
+            volatility += Math.abs(average - (double)llOdometry.get(i));
+        }
+        return volatility;
+    }
+
+    
 }

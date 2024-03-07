@@ -167,10 +167,12 @@ public class Constants {
         public static final double kMaxDrivingSpeed = 0.0;
         public static final double kMaxTurningSpeed = 0.0;
 
+        public static final int kVolatilitySlidingWindowLen = 20;
+
         // should go into robotmap
-        public static final double limelightMountAngleDegrees = 0.0;
-        public static final double goalHeightInches = 0.0;
-        public static final double limelightHeightInches = 0.0;
+        public static final double kLimelightMountAngleDegrees = 0.0;
+        public static final double kGoalHeightInches = 0.0;
+        public static final double kLimelightHeightInches = 0.0;
     }
 
     public static final class Drivetrain {

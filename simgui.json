@@ -13,7 +13,8 @@
       "/SmartDashboard/SendableChooser[6]": "String Chooser",
       "/SmartDashboard/SendableChooser[7]": "String Chooser",
       "/SmartDashboard/SendableChooser[8]": "String Chooser",
-      "/SmartDashboard/Shooter State Chooser [ST]": "String Chooser"
+      "/SmartDashboard/Shooter State Chooser [ST]": "String Chooser",
+      "/SmartDashboard/State Selector [SP]": "String Chooser"
     }
   },
   "NetworkTables": {

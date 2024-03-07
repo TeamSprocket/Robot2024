@@ -62,7 +62,7 @@ public class ShooterPivot extends SubsystemBase {
     this.joystickSupplier = joystickSupplier;
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    motor.setNeutralMode(NeutralModeValue.Coast);
     
     // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
     // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
