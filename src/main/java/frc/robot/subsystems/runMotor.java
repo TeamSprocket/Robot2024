@@ -2,6 +2,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 // import com.ctre.phoenix.motorcontrol.ControlMode;
 // import com.revrobotics.CANSparkMax;
@@ -13,10 +15,12 @@ public class RunMotor extends SubsystemBase {
  
   // private CANSparkMax shooterLeft = new CANSparkMax(11 , MotorType.kBrushless); //top
   // private CANSparkMax shooterRight = new CANSparkMax(12, MotorType.kBrushless); //bottom
-  // private WPI_TalonFX indexer = new WPI_TalonFX(10);
-  TalonFX indexer = new TalonFX(10);
+  // private TalonFX indexer = new TalonFX(10);
+  // private TalonFX indexer2 = new TalonFX(23); //change to 23 when done
 
-  // private WPI_TalonFX indexer2 = new WPI_TalonFX(23); //change to 23 when done
+  private TalonFX intake = new TalonFX(0);
+  private TalonFX pivot1 = new TalonFX(1);
+  private TalonFX pivot2 = new TalonFX(2);
 
   /*
    * DEBUG:
@@ -36,11 +40,15 @@ public class RunMotor extends SubsystemBase {
     // SmartDashboard.putNumber("Indexer Motor RPS", (indexer.getMotorOutputVoltage()));
   }
 
-  public void run(double output, double indexerPower){
+  public void run(double intakeS, double pivot){
     // shooterLeft.set(output);
     // shooterRight.set(output);
-    indexer.set(-indexerPower);
+    // indexer.set(-indexerPower);
     // indexer2.set(-indexerPower);
+
+    intake.set(intakeS);
+    pivot1.set(pivot);
+    pivot2.set(-pivot);
   }
 
 }
