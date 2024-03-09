@@ -64,14 +64,14 @@ public class ShooterPivot extends SubsystemBase {
     this.distToTagSupplier = distToTagSupplier;
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
-    motor.setNeutralMode(NeutralModeValue.Coast);
+    motor.setNeutralMode(NeutralModeValue.Brake);
     
     // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
     // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
-    // selectShooterPivotState.addOption("SPEAKER", ShooterPivotStates.SPEAKER);
+    selectShooterPivotState.addOption("SPEAKER", ShooterPivotStates.SPEAKER);
     // selectShooterPivotState.addOption("SPEAKER_HIGH", ShooterPivotStates.SPEAKER_HIGH);
     selectShooterPivotState.addOption("SPEAKER AMP ZONE", ShooterPivotStates.SPEAKER_AMP_ZONE);
     selectShooterPivotState.addOption("SPEAKER PODIUM", ShooterPivotStates.SPEAKER_PODIUM);
@@ -118,10 +118,16 @@ public class ShooterPivot extends SubsystemBase {
 
       case SPEAKER:
         double dist = distToTagSupplier.get();
+        // System.out.println(dist);
         if (dist != 0.0) {
           double angleTarget = Constants.ShootingSetpoints.getValues(dist)[0];
-          angleTarget = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
-          pidController.setSetpoint(angleTarget);
+          double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
+
+          pidController.setSetpoint(angleTargetAdjusted);
+
+          SmartDashboard.putNumber("Pivot Distance [SP]", dist);
+          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
+          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
         } 
         
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
