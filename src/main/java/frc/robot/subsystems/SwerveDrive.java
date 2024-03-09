@@ -20,6 +20,7 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
+import frc.robot.RobotContainer;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -27,7 +28,7 @@ public class SwerveDrive extends SubsystemBase {
 
   double xSpeed, ySpeed, tSpeed;
   // double targetHeadingRad = Math.PI;
-  // PIDController headingController;
+  PIDController headingController;
   SwerveDriveKinematics m_kinematics;
 
   public static enum Directions {
@@ -95,8 +96,8 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive(Vision vision) {
     this.vision = vision;
 
-    // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-    // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+    this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
+    this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
 
     this.gyro.reset();
 
@@ -172,7 +173,8 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
     SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
 
-    
+    SmartDashboard.putNumber("turning speed [SD]", lockHeading());
+
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
 
     
@@ -308,6 +310,15 @@ public class SwerveDrive extends SubsystemBase {
         resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
       }
     }
+  }
+
+  public double lockHeading() {
+    double yaw = vision.getYaw();
+    double tSpeed = vision.getTspeed(yaw);
+
+    return tSpeed;
+
+    // updateChassisSpeeds(0.0, 0.0, tSpeed); // TODO: test on cart
   }
 
   public void alignWithAprilTag() {
