@@ -171,10 +171,6 @@ public class Constants {
 
         public static final int kVolatilitySlidingWindowLen = 20;
 
-        public static final double kPlimelight = 0.003;
-        public static final double kDlimelight = 0.0;
-        public static final double kIlimelight = 0.0;
-
         // should go into robotmap
         public static final double kLimelightMountAngleDegrees = 5.0;
         public static final double kGoalHeightMeters = 1.45;

@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
@@ -10,7 +11,6 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -26,8 +26,6 @@ import frc.util.Util;
 public class Vision extends SubsystemBase {    
     private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight"); // TODO: FIND CAMERA NAME
     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
-
-    private PIDController pidController = new PIDController(Constants.Limelight.kPlimelight, Constants.Limelight.kIlimelight, Constants.Limelight.kDlimelight);
     
     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center // TODO: change transform based on cam mounting
@@ -126,14 +124,8 @@ public class Vision extends SubsystemBase {
             return new Translation2d(pose.getX(), pose.getY());
         } else {
             return new Translation2d(0.0, 0.0);
-        }   
-    }
-
-    public double getTspeed(double yaw) {
-        pidController.setSetpoint(0);
-        double tSpeed = pidController.calculate(yaw);
-
-        return tSpeed;
+        }
+        
     }
 
     /**
@@ -196,7 +188,7 @@ public class Vision extends SubsystemBase {
     }
 
     public double getYaw() {
-        if (target != null) {
+        if (target != null && target.getFiducialId() == 4) {
             return filterYaw.calculate(target.getYaw());    
         }
         else {
@@ -246,4 +238,5 @@ public class Vision extends SubsystemBase {
         return volatility;
     }
 
+    
 }
