@@ -55,7 +55,7 @@ public class Shooter extends SubsystemBase {
   // Motors
   TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP);
   TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM);
-  CANSparkMax indexerMotor = new CANSparkMax(RobotMap.Shooter.INDEXER, MotorType.kBrushless);
+  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   // PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
@@ -79,19 +79,19 @@ public class Shooter extends SubsystemBase {
     shooterFollowerMotor.setControl(new StrictFollower(shooterMotor.getDeviceID()));
     
     shooterMotor.setNeutralMode(NeutralModeValue.Coast);
-    indexerMotor.setIdleMode(IdleMode.kBrake);
+    indexerMotor.setNeutralMode(NeutralModeValue.Brake);
     // Voltage, current
-    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
-    // Position
-    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
-    // Analog Sensor
-    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
-    // Alternate Encoder
-    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
-    // Absolute Encoder Position
-    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
-    // Absolute Encoder Velocity
-    indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
+    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
+    // // Position
+    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
+    // // Analog Sensor
+    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
+    // // Alternate Encoder
+    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
+    // // Absolute Encoder Position
+    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
+    // // Absolute Encoder Velocity
+    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
 
     this.botPoseSupplier = botPoseSupplier;
 
@@ -137,7 +137,7 @@ public class Shooter extends SubsystemBase {
         // }
         // holdIndexerPosition();
         if (lastState != ShooterStates.STANDBY) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
 
@@ -147,7 +147,7 @@ public class Shooter extends SubsystemBase {
 
       case INTAKE:
         if (lastState != ShooterStates.INTAKE) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake); 
         // System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
@@ -158,7 +158,7 @@ public class Shooter extends SubsystemBase {
 
       case INTAKE_ACCEL:
         if (lastState != ShooterStates.INTAKE) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake * 0.75); 
         // System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
@@ -169,7 +169,7 @@ public class Shooter extends SubsystemBase {
 
       case INTAKE_ROLLBACK:
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(-0.3); 
 
@@ -183,7 +183,7 @@ public class Shooter extends SubsystemBase {
       // case SPINUP:
       //   // holdIndexerPosition();
       //   if (lastState != ShooterStates.SPINUP) {
-      //     indexerMotor.setIdleMode(IdleMode.kBrake);
+      //     indexerMotor.setNeutralMode(NeutralModeValue.Brake);
       //   }
         
       //   // Spin up shooter
@@ -194,7 +194,7 @@ public class Shooter extends SubsystemBase {
 
       case SPINUP_SUBWOOFER: 
         if (lastState != ShooterStates.SPINUP_SUBWOOFER) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
 
@@ -207,7 +207,7 @@ public class Shooter extends SubsystemBase {
 
       case SPINUP_PODIUM: 
         if (lastState != ShooterStates.SPINUP_PODIUM) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
 
@@ -220,7 +220,7 @@ public class Shooter extends SubsystemBase {
 
       case SPINUP_AMP_ZONE: 
         if (lastState != ShooterStates.SPINUP_AMP_ZONE) {
-          indexerMotor.setIdleMode(IdleMode.kBrake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
 
@@ -255,7 +255,7 @@ public class Shooter extends SubsystemBase {
 
       case SCORE_SPEAKER_SUBWOOFER:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
-          indexerMotor.setIdleMode(IdleMode.kCoast);
+          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
 
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
@@ -269,7 +269,7 @@ public class Shooter extends SubsystemBase {
 
       case SCORE_SPEAKER_PODIUM:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
-          indexerMotor.setIdleMode(IdleMode.kCoast);
+          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
 
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
@@ -283,7 +283,7 @@ public class Shooter extends SubsystemBase {
 
       case SCORE_SPEAKER_AMP_ZONE:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
-          indexerMotor.setIdleMode(IdleMode.kCoast);
+          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
 
         indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
@@ -376,7 +376,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean hasDetectedNote() {
-    return indexerMotor.getOutputCurrent() > Constants.Shooter.kHasNoteCurrentThreshold;
+    return indexerMotor.getStatorCurrent().getValueAsDouble() > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
  }
 
 
@@ -387,7 +387,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putBoolean("atGoalShooter [ST]", atGoalShooter());
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
     SmartDashboard.putBoolean("Beam Broken [ST]", beamBroken());
-    SmartDashboard.putNumber("Indexer Current [ST]", indexerMotor.getOutputCurrent());
+    SmartDashboard.putNumber("Indexer Current [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putBoolean("Has Detected Note [ST]", hasDetectedNote());
   }
   
