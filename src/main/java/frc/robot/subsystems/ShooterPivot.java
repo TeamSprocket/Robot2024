@@ -92,6 +92,7 @@ public class ShooterPivot extends SubsystemBase {
     // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
+    SmartDashboard.putString("PivotState", state.toString());
     setState(selectShooterPivotState.getSelected());
 
     switch(state) { // TODO: figure out target angles
@@ -125,10 +126,10 @@ public class ShooterPivot extends SubsystemBase {
 
           pidController.setSetpoint(angleTargetAdjusted);
 
-          SmartDashboard.putNumber("Pivot Distance [SP]", dist);
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
         } 
+        SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 

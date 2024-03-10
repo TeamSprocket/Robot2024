@@ -143,6 +143,12 @@ public class Vision extends SubsystemBase {
         if (target != null) {
             double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Limelight.kLimelightMountAngleDegrees);
             double distanceFromTarget = (Constants.Limelight.kGoalHeightMeters - Constants.Limelight.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
+
+            distanceFromTarget -= 0.0;
+            if (distanceFromTarget < 0) {
+                distanceFromTarget = 0.0;
+            }
+
         // height from cam to april tag / tan(angle) = distance from cam to april tag
 
             return distanceFromTarget;

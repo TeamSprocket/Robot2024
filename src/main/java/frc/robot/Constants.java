@@ -89,7 +89,7 @@ public class Constants {
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
-        public static final double kTargetAngleSpeakerFromSubwoofer = 40.0;
+        public static final double kTargetAngleSpeakerFromSubwoofer = 10.0;
         public static final double kTargetAngleAmp = kTargetAngleStowed;
         public static final double kTargetAngleSource = kTargetAngleStowed;
     }
@@ -121,7 +121,7 @@ public class Constants {
 
         public static final double kShooterIncramentMultiplier = 0.01;
 
-        public static final double kHasNoteCurrentThreshold = 36.0;
+        public static final double kHasNoteCurrentThreshold = 60.0;
 
         public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
 

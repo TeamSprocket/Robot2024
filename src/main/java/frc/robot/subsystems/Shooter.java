@@ -116,6 +116,8 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // indexerMotor.set(0.3);
+
     // setState(stateChooser.getSelected());
     postSmartDashboardDebug();
 
@@ -376,7 +378,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public boolean hasDetectedNote() {
-    return indexerMotor.getStatorCurrent().getValueAsDouble() > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
+    return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
  }
 
 
