@@ -106,7 +106,7 @@ public class Shooter extends SubsystemBase {
     stateChooser.addOption("SCORE_SPEAKER_AMP_ZONE", ShooterStates.SCORE_SPEAKER_AMP_ZONE);
     stateChooser.addOption("SCORE_AMP", ShooterStates.SCORE_AMP);
     SmartDashboard.putData("Shooter State Chooser [ST]", stateChooser);
-    
+
     // indexerMotor.set(0.1);
 
     // ShuffleboardPIDTuner.addSlider("Shooter kP [ST]", 0, 1, 0);
@@ -173,7 +173,7 @@ public class Shooter extends SubsystemBase {
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
-        indexerMotor.set(-0.3); 
+        indexerMotor.set(-0.3); // make this smaller? we changed from neos to krakens
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -316,6 +316,9 @@ public class Shooter extends SubsystemBase {
     // clearStickyFaults();
     // Update lastState
     lastState = state;
+
+    SmartDashboard.putNumber("shooter speed", shooterMotor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("shooter target speed", shooterPID.getSetpoint()); // we probably don't need this :3
   }
 
 
