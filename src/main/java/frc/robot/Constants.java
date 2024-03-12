@@ -163,6 +163,74 @@ public class Constants {
 
     }
 
+    public static final class Shintake {
+        public static final boolean kIsShooterTopInverted = true;
+        public static final boolean kIsShooterBottomInverted = true;
+        public static final boolean kIsIndexerInverted = true;
+
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 10.0; // 10.0
+        public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
+        public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
+        public static final double kShooterSpeedScoreAmp = 1.0;
+        public static final double kShooterEjectNoteSpeed = -0.25;
+
+        public static final double kIndexerSpeedIntake = 0.3;
+        public static final double kIndexerSpeedScoreSpeaker = 0.9; // 0.9
+        public static final double kIndexerSpeedScoreAmp = 0.4;
+        public static final double kIndexerEjectNoteSpeed = -0.5;
+        // public static final double kIntakeRollbackSpeed = 0.15;
+
+        // JUST IN CASE
+        public static final double kIndexerSpeedSource = -0.1;
+
+        public static final double kShooterGearRatio = 0.6666666666;
+        public static final double kIndexerGearRatio = 2.0;
+
+        public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.0);
+
+        public static final double kShooterIncramentMultiplier = 0.01;
+
+        public static final double kHasNoteCurrentThreshold = 60.0;
+
+        public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
+
+        public static final PIDConst kPIDShooter = new PIDConst()
+        public static double kPShooter = 0.25;
+        public static double kIShooter = 0.0;
+        public static double kDShooter = 0.0075;
+
+        public static final double kPIndexer = 0.0;
+        public static final double kIIndexer = 0.0;
+        public static final double kDIndexer = 0.0;
+
+        public static final double kPivotAngleStowed = 20.0; // 20
+        public static final double kPivotAngleIntake = 172.0;
+        public static final double kScoreSpeaker = 80.0;
+
+        public static final double kRollSpeedStowed = 0.0;
+        public static final double kRollSpeedIntake = 0.6;
+        public static final double kRollSpeedIntakeRollback = 0.05;
+        public static final double kRollSpeedScoreSpeaker = 0.2;
+        public static final double kEjectNoteSpeed = -0.6;
+        ;
+
+        public static final boolean kIsRollInverted = true;
+        public static final boolean kIsPivotInverted = false;
+
+        // public static final double kPivotMaxVelocity = 0.0;
+        // public static final double kPivotMaxAccel = 0.0;
+        public static final double kMaxPivotOutput = 0.2;
+
+        public static final double kAtGoalTolerance = 5; // 0.5
+
+        public static final double kPivotIntakeGearRatio = 36.0;
+
+        public static final double kPPivot = 0.002914; // 1, 0.1
+        public static final double kIPivot = 0.0;
+        public static final double kDPivot = 0.00002445;
+
+    }
+
     public static final class Limelight {
         public static final double kAcceptableVolatilityThreshold = 0.2;
 
