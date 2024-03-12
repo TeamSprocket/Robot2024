@@ -79,33 +79,17 @@ public class Elevator extends SubsystemBase {
         motorLeft.set(profiledPIDController.calculate(getHeight()));
         break;
 
-      // case HANDOFF:
-      //   profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
-      //   motorLeft.set(profiledPIDController.calculate(getHeight()));
-      //   break;
-
-      case SPEAKER:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeaker);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
-        break;  
-        
-      case SPEAKER_HIGH:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeakerHigh);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
-        break;
-        
       case AMP:
         profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightAmp);
         motorLeft.set(profiledPIDController.calculate(getHeight()));
         break; 
 
-      case TRAP:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightTrap);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
-        
-      case CLIMB:
-        manual();
-        break;
+      // case HANDOFF:
+      //   profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
+      //   motorLeft.set(profiledPIDController.calculate(getHeight()));
+      //   break;
+
+     
     }
    
     SmartDashboard.getNumber("Elevator Height [EL]", getHeight());
