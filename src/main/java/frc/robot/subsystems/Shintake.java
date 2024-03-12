@@ -28,13 +28,14 @@ public class Shintake extends SubsystemBase{
     public enum IntakeStates {
         NONE,
         STOWED,
-        INTAKENOTE,
+        INTAKENOTE, // TODO: separate the words w/ underscores, snake case (INTAKE_NOTE)
         EJECTNOTE,
         SCOREAMP
     }
     IntakeStates state;
 
-    private final TalonFX intakeMotor = new TalonFX(RobotMap.Intake.ROLL_INTAKE);
+    private final TalonFX intakeMotor = new TalonFX(RobotMap.Intake.ROLL_INTAKE); // TODO: Remember that theres 2 motors for intake, a front and an inner one, make second motor and make sure youre using the right one
+                                                                            // TODO: (I'd call the outer roller "ShintakeMotor", and inner one "IndexerMotor")
     private final TalonFX pivotMotor = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     private double pivotSpeed = 0;
@@ -45,7 +46,7 @@ public class Shintake extends SubsystemBase{
     SendableChooser<IntakeStates> stateChooser = new SendableChooser<IntakeStates>();
 
     //constructor
-    public Shintake() {
+    public Shintake() { // TODO: In Constants.java, in Shintake, remove every variable not being used, and add as needed later, theres waaaaay too many rn and most of them are redundant
         pidControllerIntake = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
         intakeMotor.setInverted(false);
         pivotMotor.setInverted(true);
@@ -65,12 +66,12 @@ public class Shintake extends SubsystemBase{
     @Override
     public void periodic() {
         switch(state) {
-            case NONE :
+            case NONE : // TODO: remove space before colons ;-;
                 intakeMotor.set(0);
                 pivotMotor.set(0);
                 break;
             
-            case STOWED :
+            case STOWED : 
                 pidControllerIntake.setSetpoint(Constants.Shintake.kPivotAngleStowed);
                 pivotSpeed = pidControllerIntake.calculate(getDegrees());
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Shintake.kMaxPivotOutput, Constants.Shintake.kMaxPivotOutput);
@@ -79,7 +80,7 @@ public class Shintake extends SubsystemBase{
                 pivotMotor.setPosition(pivotSpeed);
                 break;
 
-            case INTAKENOTE :
+            case INTAKENOTE : 
                 pidControllerIntake.setSetpoint(Constants.Shintake.kPivotAngleIntake);
                 pivotSpeed = pidControllerIntake.calculate(getDegrees());
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Shintake.kMaxPivotOutput, Constants.Shintake.kMaxPivotOutput);
@@ -120,5 +121,7 @@ public class Shintake extends SubsystemBase{
         deg = deg % 360;
         return deg;
     }
+
+    // TODO: Overall looks really great, actually crazy progress for 1 day gjgj :)
 }
 
