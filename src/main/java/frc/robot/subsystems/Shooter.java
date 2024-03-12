@@ -4,26 +4,15 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.controls.StrictFollower;
-import com.ctre.phoenix6.controls.VelocityDutyCycle;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkBase.IdleMode;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkLowLevel.PeriodicFrame;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
-import frc.util.Conversions;
-import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
 
 public class Shooter extends SubsystemBase {
@@ -173,7 +162,7 @@ public class Shooter extends SubsystemBase {
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
-        indexerMotor.set(-0.3); // make this smaller? we changed from neos to krakens
+        indexerMotor.set(-0.3); 
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -316,9 +305,6 @@ public class Shooter extends SubsystemBase {
     // clearStickyFaults();
     // Update lastState
     lastState = state;
-
-    SmartDashboard.putNumber("shooter speed", shooterMotor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("shooter target speed", shooterPID.getSetpoint()); // we probably don't need this :3
   }
 
 
@@ -354,9 +340,6 @@ public class Shooter extends SubsystemBase {
   // public double TEMP_HUENEME_ACCELER(double indexerMult) {
     
   // }
-
-
-
 
   public boolean beamBroken() {
     // return !beamBreak.get();

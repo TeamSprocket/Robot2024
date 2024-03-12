@@ -6,6 +6,9 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 import java.util.function.Supplier;
+
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 //import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -65,9 +68,9 @@ public class ShooterPivot extends SubsystemBase {
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
+    motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
+    motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(30)); // test values later
     
-    // motor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 50, 50, 1.0));
-    // motor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 50, 50, 1.0));
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
@@ -128,7 +131,7 @@ public class ShooterPivot extends SubsystemBase {
 
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
-        } 
+        }
         SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
@@ -194,7 +197,7 @@ public class ShooterPivot extends SubsystemBase {
 
     // clearStickyFaults();
     lastState = state;
-    SmartDashboard.putNumber("ShooterPivot Angle [WR]", getShooterPivotAngle());
+    SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
   }
 
   /**

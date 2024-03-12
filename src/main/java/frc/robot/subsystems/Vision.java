@@ -150,8 +150,7 @@ public class Vision extends SubsystemBase {
             }
 
         // height from cam to april tag / tan(angle) = distance from cam to april tag
-
-            return distanceFromTarget;
+            return distanceFromTarget - Constants.Limelight.kdistanceOffset;
         } else {
             return 0.0;
         }
