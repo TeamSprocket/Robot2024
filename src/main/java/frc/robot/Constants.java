@@ -107,23 +107,26 @@ public class Constants {
         public static final double kShooterSpeedScoreAmp = 1.0;
         public static final double kShooterEjectNoteSpeed = -0.25;
 
-        public static final double kIndexerSpeedIntake = 0.2;
-        public static final double kIndexerSpeedScoreSpeaker = 1.1; // 0.9
+        public static final double kIndexerSpeedIntake = 3; // 0.2
+        public static final double kIndexerSpeedScoreSpeaker = 0.7; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIndexerEjectNoteSpeed = -0.5;
-        // public static final double kIntakeRollbackSpeed = 0.15;
-
+        // public static final double kIntakeRollbackSpeed = 0.15;\
+        
         // JUST IN CASE
         public static final double kIndexerSpeedSource = -0.1;
 
-        public static final double kShooterGearRatio = 0.6666666666;
-        public static final double kIndexerGearRatio = 2.0;
-
-        public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.0);
-
+        public static final double kShooterkIndexerIncramentMultiplier = 0.01;
         public static final double kShooterIncramentMultiplier = 0.01;
 
+        public static final double kShooterGearRatio = 0.6666666666;
+        public static final double kIndexerGearRatio = 0.7272727272;
+
+        public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.375);
+        public static final double kIndexerWheelDiameter = Conversions.inchesToMeters(2.0);
+
         public static final double kHasNoteCurrentThreshold = 1000.0; // 60.0
+        public static final double kMaxIndexerOutput = 0.9;
 
         public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
 

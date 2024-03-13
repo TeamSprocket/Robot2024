@@ -85,13 +85,13 @@ public class Superstructure extends SubsystemBase {
         //   timer.start();
         // }
 
-        if (shooter.beamBroken()) {
-          // Note in shooter 
-          timer.start();
-        } else {
-          timer.reset();
-          timer.stop();
-        }
+        // if (shooter.beamBroken()) {
+        //   // Note in shooter 
+        //   timer.start();
+        // } else {
+        //   timer.reset();
+        //   timer.stop();
+        // }
 
         elevator.setState(ElevatorStates.STOWED);
         shooterPivot.setState(ShooterPivotStates.STOWED);

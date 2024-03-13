@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
 
 public class Shooter extends SubsystemBase {
@@ -23,8 +24,8 @@ public class Shooter extends SubsystemBase {
     INTAKE,
     INTAKE_ACCEL, 
     INTAKE_ROLLBACK,
-    // SPINUP, 
-    // SCORE_SPEAKER,
+    SPINUP, 
+    SCORE_SPEAKER,
     // SCORE_SPEAKER_HIGH,
     SPINUP_SUBWOOFER,
     SPINUP_PODIUM,
@@ -47,20 +48,23 @@ public class Shooter extends SubsystemBase {
   TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
-  // PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
+  PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
 
   // DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
 
   Supplier<Translation2d> botPoseSupplier;
+  Supplier<Double> distToTagSupplier;
 
   SendableChooser<ShooterStates> stateChooser = new SendableChooser<ShooterStates>();
 
-  // double shooterSpeed = 0.0;
   double shooterInc = 0.0;
   double indexerMult = 1.0;
+  double indexerInc = 0.0;
 
+  double dist = 0.0;
 
-  public Shooter(Supplier<Translation2d> botPoseSupplier) {
+  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> distToTagSupplier) {
+    
     shooterMotor.setInverted(Constants.Shooter.kIsShooterTopInverted);
     shooterFollowerMotor.setInverted(Constants.Shooter.kIsShooterBottomInverted);
     indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
@@ -69,20 +73,9 @@ public class Shooter extends SubsystemBase {
     
     shooterMotor.setNeutralMode(NeutralModeValue.Coast);
     indexerMotor.setNeutralMode(NeutralModeValue.Brake);
-    // Voltage, current
-    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus1, 1000);
-    // // Position
-    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus2, 1000);
-    // // Analog Sensor
-    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus3, 1000);
-    // // Alternate Encoder
-    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus4, 1000);
-    // // Absolute Encoder Position
-    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus5, 1000);
-    // // Absolute Encoder Velocity
-    // indexerMotor.setPeriodicFramePeriod(PeriodicFrame.kStatus6, 1000);
 
     this.botPoseSupplier = botPoseSupplier;
+    this.distToTagSupplier = distToTagSupplier;
 
     stateChooser.setDefaultOption("NONE", ShooterStates.NONE);
     stateChooser.addOption("STANDBY", ShooterStates.STANDBY);
@@ -94,25 +87,29 @@ public class Shooter extends SubsystemBase {
     stateChooser.addOption("SCORE_SPEAKER_PODIUM", ShooterStates.SCORE_SPEAKER_PODIUM);
     stateChooser.addOption("SCORE_SPEAKER_AMP_ZONE", ShooterStates.SCORE_SPEAKER_AMP_ZONE);
     stateChooser.addOption("SCORE_AMP", ShooterStates.SCORE_AMP);
+
     SmartDashboard.putData("Shooter State Chooser [ST]", stateChooser);
 
-    // indexerMotor.set(0.1);
-
-    // ShuffleboardPIDTuner.addSlider("Shooter kP [ST]", 0, 1, 0);
-    // ShuffleboardPIDTuner.addSlider("Shooter kD [ST]", 0, 1, 0);
+    ShuffleboardPIDTuner.addSlider("Shooter kP [ST]", 0, 1, Constants.Shooter.kPShooter);
+    ShuffleboardPIDTuner.addSlider("Shooter kD [ST]", 0, 1, Constants.Shooter.kDShooter);
+    
+    ShuffleboardPIDTuner.addSlider("Indexer kP [ST]", 0, 1, Constants.Shooter.kPIndexer);
+    ShuffleboardPIDTuner.addSlider("Indexer kD [ST]", 0, 1, Constants.Shooter.kDIndexer);
   }
-
 
   @Override
   public void periodic() {
-    // indexerMotor.set(0.3);
+
+    dist = distToTagSupplier.get();
 
     // setState(stateChooser.getSelected());
     postSmartDashboardDebug();
 
-    // shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
-    // shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
+    shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
+    shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
 
+    indexerPID.setP(ShuffleboardPIDTuner.get("Indexer kP [ST]"));
+    indexerPID.setD(ShuffleboardPIDTuner.get("Indexer kD [ST]"));
 
     switch (state) {
 
@@ -120,7 +117,6 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(0);
         indexerMotor.set(0);
       break;
-
 
       case STANDBY:
         // if (lastState == ShooterStates.HANDOFF) {
@@ -131,6 +127,7 @@ public class Shooter extends SubsystemBase {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
+        indexerInc = 0.0;
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -138,10 +135,11 @@ public class Shooter extends SubsystemBase {
 
       case INTAKE:
         if (lastState != ShooterStates.INTAKE) {
-          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
-        indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake); 
-        // System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
+
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedIntake) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -149,10 +147,10 @@ public class Shooter extends SubsystemBase {
 
       case INTAKE_ACCEL:
         if (lastState != ShooterStates.INTAKE) {
-          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
-        indexerMotor.set(Constants.Shooter.kIndexerSpeedIntake * 0.75); 
-        // System.out.println("" + Constants.Shooter.kIndexerSpeedIntake);
+        indexerMotor.set(0); //Constants.Shooter.kIndexerSpeedIntake * 0.75 // TODO: put back acceleration after tuning PID
+        indexerInc = 0.0;
 
         shooterInc = 0.0;
         shooterMotor.set(0);
@@ -163,78 +161,87 @@ public class Shooter extends SubsystemBase {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(-0.3); 
+        indexerInc = 0.0;
 
         shooterInc = 0.0;
         shooterMotor.set(0);
       break;
 
-        
+      case SPINUP:
+        if (lastState != ShooterStates.SPINUP) {
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+        }
+        indexerMotor.set(0);
+        indexerInc = 0.0;
 
-      
-      // case SPINUP:
-      //   // holdIndexerPosition();
-      //   if (lastState != ShooterStates.SPINUP) {
-      //     indexerMotor.setNeutralMode(NeutralModeValue.Brake);
-      //   }
-        
-      //   // Spin up shooter
-      //   shooterPID.setSetpoint(getShooterTargetMPS());
-      //   shooterMotor.set(shooterPID.calculate(getShooterMPS()));
-      // break;
-
+        if (dist != 0.0) {
+          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterMotor.set(shooterInc);
+        } 
+        // TODO: add an else statement if we do not see an april tag
+      break;
 
       case SPINUP_SUBWOOFER: 
         if (lastState != ShooterStates.SPINUP_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
+        indexerInc = 0.0;
 
         // Spin up shooter
-        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
-        shooterMotor.set(shooterInc);
+
+        if (dist != 0.0) {
+          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterMotor.set(shooterInc);
+        } 
       break;
-
-
 
       case SPINUP_PODIUM: 
         if (lastState != ShooterStates.SPINUP_PODIUM) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
+        indexerInc = 0.0;
 
         // Spin up shooter
-        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerPodium) * Constants.Shooter.kShooterIncramentMultiplier;
-        shooterMotor.set(shooterInc);
+        
+        if (dist != 0.0) {
+          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterMotor.set(shooterInc);
+        } 
       break;
-
-
 
       case SPINUP_AMP_ZONE: 
         if (lastState != ShooterStates.SPINUP_AMP_ZONE) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
         indexerMotor.set(0);
+        indexerInc = 0.0;
 
         // Spin up shooter
-        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerAmpZone) * Constants.Shooter.kShooterIncramentMultiplier;
-        shooterMotor.set(shooterInc);
+        
+        if (dist != 0.0) {
+          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterMotor.set(shooterInc);
+        } 
       break;
 
+      case SCORE_SPEAKER:
+        if (lastState != ShooterStates.SCORE_SPEAKER) {
+          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
+        }
 
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
 
+        // Spin up shooter
+        
+        if (dist != 0.0) {
+          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterMotor.set(shooterInc);
+        } 
+      break;
 
-
-
-
-      // case SCORE_SPEAKER:
-      //   indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
-
-      //   // Spin up shooter
-      //   shooterPID.setSetpoint(getShooterTargetMPS());
-      //   shooterMotor.set(shooterPID.calculate(getShooterMPS()));
-      // break;
-
-      
       // case SCORE_SPEAKER_HIGH:
       //   indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
 
@@ -243,41 +250,39 @@ public class Shooter extends SubsystemBase {
       //   shooterMotor.set(shooterPID.calculate(getShooterMPS()));
       // break;
 
-
       case SCORE_SPEAKER_SUBWOOFER:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
 
-        indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedScoreSpeaker) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
 
         // Spin up shooter
         shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
         shooterMotor.set(shooterInc);
       break;
 
-
-
       case SCORE_SPEAKER_PODIUM:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
 
-        indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedScoreSpeaker) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
 
         // Spin up shooter
         shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerPodium) * Constants.Shooter.kShooterIncramentMultiplier;
         shooterMotor.set(shooterInc);
       break;
 
-
-
       case SCORE_SPEAKER_AMP_ZONE:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
 
-        indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedScoreSpeaker) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
 
         // Spin up shooter
         shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerAmpZone) * Constants.Shooter.kShooterIncramentMultiplier;
@@ -299,7 +304,6 @@ public class Shooter extends SubsystemBase {
         indexerMotor.set(Constants.Shooter.kIndexerSpeedSource);
         shooterMotor.set(0.0);
       break;
-      
     }
 
     // clearStickyFaults();
@@ -307,18 +311,10 @@ public class Shooter extends SubsystemBase {
     lastState = state;
   }
 
-
-
-
-
   // Methods
   public void setState(ShooterStates state) {
       this.state = state;
   }
-
-
-
-
 
   public ShooterStates getState() {
       return state;
@@ -326,7 +322,13 @@ public class Shooter extends SubsystemBase {
 
   public double getShooterMPS() {
     double rps = shooterMotor.getRotorVelocity().getValueAsDouble();
-    double mps = rps * (Constants.Shooter.kShooterWheelDiameter * Math.PI);
+    double mps = rps * (Constants.Shooter.kShooterWheelDiameter * Math.PI) / Constants.Shooter.kShooterGearRatio;
+    return mps;
+  }
+
+  public double getIndexerMPS() {
+    double rps = indexerMotor.getRotorVelocity().getValueAsDouble();
+    double mps = rps * (Constants.Shooter.kIndexerWheelDiameter * Math.PI) / Constants.Shooter.kIndexerGearRatio;
     return mps;
   }
 
@@ -336,15 +338,10 @@ public class Shooter extends SubsystemBase {
   //   return targetMPS;
   // }
 
-
-  // public double TEMP_HUENEME_ACCELER(double indexerMult) {
-    
+  // public boolean beamBroken() {
+  //   // return !beamBreak.get();
+  //   return false;
   // }
-
-  public boolean beamBroken() {
-    // return !beamBreak.get();
-    return false;
-  }
 
   // public void holdIndexerPosition() {
   //   double indexerMotorOutput = indexerPID.calculate(indexerMotor.getRotorPosition().getValueAsDouble());
@@ -360,25 +357,29 @@ public class Shooter extends SubsystemBase {
   public void clearStickyFaults() {
     shooterMotor.clearStickyFaults();
     shooterFollowerMotor.clearStickyFaults();
-    // indexerMotor.clearStickyFaults();
+    indexerMotor.clearStickyFaults();
   }
 
   public boolean hasDetectedNote() {
     return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
  }
 
-
   public void postSmartDashboardDebug() {
     SmartDashboard.putString("State [ST]", state.toString());
+
     SmartDashboard.putNumber("Shooter MPS [ST]", getShooterMPS());
+    SmartDashboard.putNumber("Indexer MPS [ST]", getIndexerMPS());
+
     SmartDashboard.putNumber("Shooter Target MPS [ST]", shooterPID.getSetpoint());
+    
     SmartDashboard.putBoolean("atGoalShooter [ST]", atGoalShooter());
+
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
-    SmartDashboard.putBoolean("Beam Broken [ST]", beamBroken());
+    SmartDashboard.putNumber("Indexer Increment[ST]", indexerInc);
+
     SmartDashboard.putNumber("Indexer Current [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
+
     SmartDashboard.putBoolean("Has Detected Note [ST]", hasDetectedNote());
   }
   
-
-
 }
