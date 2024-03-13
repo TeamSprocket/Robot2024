@@ -64,8 +64,6 @@ public class Elevator extends SubsystemBase {
     this.rightBumperSupplier = rightBumperSupplier;
   }
 
-
-
   @Override
   public void periodic() {
     switch (state) {
