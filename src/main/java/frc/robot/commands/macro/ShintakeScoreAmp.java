@@ -10,6 +10,7 @@ import frc.robot.Constants;
 public class ShintakeScoreAmp extends InstantCommand{
     Shintake shintake;
     Timer timer = new Timer();
+    boolean atSpeed = false;
 
     public ShintakeScoreAmp(Shintake shintake) {
         this.shintake = shintake;
@@ -20,15 +21,18 @@ public class ShintakeScoreAmp extends InstantCommand{
     public void initialize() {
         shintake.setState(ShintakeStates.WAIT_AMP);
         timer.reset();
-        timer.start();
+        timer.stop();
+        // timer.start();
     }
 
     @Override
     public void execute() {
         if (Math.abs(Constants.Shintake.kRollSpeedScoreAmp - shintake.getShintakeMotor().getRotorPosition().getValueAsDouble()) < Math.abs(Constants.Shintake.kMotorShintakeTolerance)) {
-            shintake.setState(ShintakeStates.WAIT_AMP);
+            // shintake.setState(ShintakeStates.WAIT_AMP);
+            atSpeed = true;
+            timer.start();
         }
-        else {
+        if (atSpeed) {
             shintake.setState(ShintakeStates.SCORE_AMP);
         }
     }
@@ -40,6 +44,6 @@ public class ShintakeScoreAmp extends InstantCommand{
 
     @Override
     public boolean isFinished() {
-        return !shintake.hasNote();
+        return timer.get() > Constants.Shintake.kDurationScoreAmpSec;
     }
 }

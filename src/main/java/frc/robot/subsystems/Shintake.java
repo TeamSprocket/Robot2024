@@ -63,7 +63,7 @@ public class Shintake extends SubsystemBase {
         pivotMotor.setInverted(true);
         indexerMotor.setInverted(true);
 
-        shintakeMotor.setNeutralMode(NeutralModeValue.Brake);
+        shintakeMotor.setNeutralMode(NeutralModeValue.Coast);
         pivotMotor.setNeutralMode(NeutralModeValue.Brake);
         indexerMotor.setNeutralMode(NeutralModeValue.Brake);
 

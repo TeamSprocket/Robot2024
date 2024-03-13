@@ -164,11 +164,14 @@ public class Constants {
     }
 
     public static final class Shintake {
+        // Timestuff
+        public static final double kDurationScoreAmpSec = 1.0;
+
         public static final boolean kIsShooterTopInverted = true;
         public static final boolean kIsShooterBottomInverted = true;
         public static final boolean kIsIndexerInverted = true;
 
-        public static final double kMotorShintakeTolerance = -0.575;
+        public static final double kMotorShintakeTolerance = 0.025;
 
         public static final double kIndexerSpeedIntake = 0.3;
         public static final double kIndexerSpeedScoreAmp = -0.6;
