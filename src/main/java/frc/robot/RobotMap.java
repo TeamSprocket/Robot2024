@@ -48,6 +48,34 @@ public final class RobotMap {
     public static final int ELEVATOR_RIGHT = 19;
   }
 
+  public static final class bigRichardDriveTrain {
+    public static final int FRONT_LEFT_TALON_D = 21;
+    public static final int FRONT_RIGHT_TALON_D = 23;
+    public static final int BACK_LEFT_TALON_D = 25;
+    public static final int BACK_RIGHT_TALON_D = 27;
+
+    public static final int FRONT_LEFT_TALON_T = 22;
+    public static final int FRONT_RIGHT_TALON_T = 24;
+    public static final int BACK_LEFT_TALON_T = 26;
+    public static final int BACK_RIGHT_TALON_T = 28;
+
+    public static final int FRONT_LEFT_ABS_ENCODER_ID = 0;
+    public static final int FRONT_RIGHT_ABS_ENCODER_ID = 1;
+    public static final int BACK_LEFT_ABS_ENCODER_ID = 2;
+    public static final int BACK_RIGHT_ABS_ENCODER_ID = 3;
+
+    // public static final int kTurnP = 0;
+    // public static final int kTurnI = 0;
+    // public static final int kTurnD = 0;
+    
+
+    // public static final int FRONT_LEFT_TALON_E = 9;
+    // public static final int FRONT_RIGHT_TALON_E = 10;
+    // public static final int BACK_LEFT_TALON_E = 11;
+    // public static final int BACK_RIGHT_TALON_E = 12;
+
+  }
+
   public static final class ShooterPivot {
     public static final int WRIST = 13;
   }
