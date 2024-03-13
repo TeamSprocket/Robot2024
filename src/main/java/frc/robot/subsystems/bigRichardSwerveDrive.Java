@@ -177,6 +177,17 @@ public class bigRichardSwerveDrive extends SubsystemBase {
         double diff = Math.abs(timer.get() - last);
         last = timer.get();
 
+        SmartDashboard.putNumber("FrontLeftAngleTarget", desiredStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("FrontRightAngleTarget", desiredStates[1].angle.getDegrees());
+        SmartDashboard.putNumber("BackLeftAngleTarget", desiredStates[2].angle.getDegrees());
+        SmartDashboard.putNumber("BackRightAngleTarget", desiredStates[3].angle.getDegrees());
+        SmartDashboard.putNumber("FrontLeftAngleTalonEncoder", Math.toDegrees(frontLeft.getTurnPosition()));
+        SmartDashboard.putNumber("FrontRightAngleTalonEncoder", Math.toDegrees(frontRight.getTurnPosition()));
+        SmartDashboard.putNumber("BackLeftAngleTalonEncoder", Math.toDegrees(backLeft.getTurnPosition()));
+        SmartDashboard.putNumber("BackRightAngleTalonEncoder", Math.toDegrees(backRight.getTurnPosition()));
+
+        SmartDashboard.putNumber("Gyro", getHeading());
+
         this.targetHeading += tSpeed * Constants.Drivetrain.kMaxTurnSpeed;
         this.targetHeading = (targetHeading % 360.0);
         if (targetHeading < 0){
