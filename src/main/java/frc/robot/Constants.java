@@ -168,10 +168,12 @@ public class Constants {
         public static final boolean kIsShooterBottomInverted = true;
         public static final boolean kIsIndexerInverted = true;
 
+        public static final double kMotorShintakeTolerance = -0.575;
 
         public static final double kIndexerSpeedIntake = 0.3;
         public static final double kIndexerSpeedScoreAmp = -0.6;
         public static final double kIndexerEjectNoteSpeed = -0.5;
+        public static final double kIndexerHasNoteIndexThreshold = 10000;
 
         // JUST IN CASE
 
@@ -203,7 +205,6 @@ public class Constants {
         public static final double kIPivot = 0.0;
         public static final double kDPivot = 0.00002445;
         public static final PIDConst kPIDPivot = new PIDConst(kPPivot, kIPivot, kDPivot);
-
     }
 
     public static final class Limelight {

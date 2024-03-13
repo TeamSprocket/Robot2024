@@ -24,7 +24,7 @@ import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
 
-public class Shintake extends SubsystemBase{
+public class Shintake extends SubsystemBase {
     public enum ShintakeStates {
         NONE,
         STOWED,
@@ -36,20 +36,29 @@ public class Shintake extends SubsystemBase{
 
     ShintakeStates state;
 
-    private final TalonFX shintakeMotor = new TalonFX(RobotMap.Intake.ROLL_INTAKE); // TODO: Remember that theres 2 motors for intake, a front and an inner one, make second motor and make sure youre using the right one
-    private final TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);     // TODO: (I'd call the outer roller "ShshintakeMotor", and inner one "IndexerMotor")
+    private final TalonFX shintakeMotor = new TalonFX(RobotMap.Intake.ROLL_INTAKE); // TODO: Remember that theres 2
+                                                                                    // motors for intake, a front and an
+                                                                                    // inner one, make second motor and
+                                                                                    // make sure youre using the right
+                                                                                    // one
+    private final TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER); // TODO: (I'd call the outer roller
+                                                                                // "ShshintakeMotor", and inner one
+                                                                                // "IndexerMotor")
     private final TalonFX pivotMotor = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-    //private double pivotSpeed = 0;
+    // private double pivotSpeed = 0;
 
     private PIDController pidControllerIntake;
     private PIDController pidControllerShooter;
 
     SendableChooser<ShintakeStates> stateChooser = new SendableChooser<ShintakeStates>();
 
-    //constructor
-    public Shintake() { // TODO: In Constants.java, in Shintake, remove every variable not being used, and add as needed later, theres waaaaay too many rn and most of them are redundant
-        pidControllerIntake = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
+    // constructor
+    public Shintake() { // TODO: In Constants.java, in Shintake, remove every variable not being used,
+                        // and add as needed later, theres waaaaay too many rn and most of them are
+                        // redundant
+        pidControllerIntake = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot,
+                Constants.Intake.kDPivot);
         shintakeMotor.setInverted(true);
         pivotMotor.setInverted(true);
         indexerMotor.setInverted(true);
@@ -69,29 +78,29 @@ public class Shintake extends SubsystemBase{
 
     @Override
     public void periodic() {
-        switch(state) {
+        switch (state) {
             case NONE: // TODO: remove space before colons ;-;
                 shintakeMotor.set(0);
                 pivotMotor.set(0);
                 break;
-            
-            case STOWED: 
+
+            case STOWED:
                 shintakeMotor.set(Constants.Shintake.kRollSpeedStowed);
                 pivotMotor.set(getPivotSpeed(Constants.Shintake.kPivotAngleStowed));
                 break;
 
-            case INTAKE_NOTE: 
+            case INTAKE_NOTE:
                 shintakeMotor.set(Constants.Shintake.kRollSpeedIntake);
                 indexerMotor.set(Constants.Shintake.kIndexerSpeedIntake);
                 pivotMotor.set(getPivotSpeed(Constants.Shintake.kPivotAngleIntake));
                 break;
-            
+
             case EJECT_NOTE:
                 shintakeMotor.set(-1 * Constants.Shintake.kRollSpeedIntake);
                 indexerMotor.set(Constants.Shintake.kIndexerEjectNoteSpeed);
                 pivotMotor.set(getPivotSpeed(Constants.Shintake.kPivotAngleIntake));
                 break;
-            
+
             case SCORE_AMP:
                 shintakeMotor.set(Constants.Shintake.kRollSpeedScoreAmp);
                 indexerMotor.set(Constants.Shintake.kIndexerSpeedScoreAmp);
@@ -109,12 +118,14 @@ public class Shintake extends SubsystemBase{
     public ShintakeStates getState() {
         return state;
     }
+
     public void setState(ShintakeStates state) {
         this.state = state;
     }
 
     public double getDegrees() {
-        double deg = Conversions.falconToDegrees(pivotMotor.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
+        double deg = Conversions.falconToDegrees(pivotMotor.getRotorPosition().getValueAsDouble(),
+                Constants.Intake.kPivotIntakeGearRatio);
         deg = deg % 360;
         return deg;
     }
@@ -123,10 +134,18 @@ public class Shintake extends SubsystemBase{
         double pivotSpeed = 0;
         pidControllerIntake.setSetpoint(setPoint);
         pivotSpeed = pidControllerIntake.calculate(getDegrees());
-        pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Shintake.kMaxPivotOutput, Constants.Shintake.kMaxPivotOutput);
+        pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Shintake.kMaxPivotOutput,
+                Constants.Shintake.kMaxPivotOutput);
         return pivotSpeed;
+    }
+
+    public boolean hasNote() {
+        return (indexerMotor.getStatorCurrent().getValueAsDouble() > Constants.Shintake.kIndexerHasNoteIndexThreshold);
+    }
+
+    public TalonFX getShintakeMotor() {
+        return shintakeMotor;
     }
 
     // TODO: Overall looks really great, actually crazy progress for 1 day gjgj :)
 }
-
