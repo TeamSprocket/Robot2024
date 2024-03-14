@@ -168,7 +168,13 @@ public class Constants {
 
     }
 
-    public static final class Limelight {
+    public static final class Vision {
+
+        // measurements
+        public static final double kSpeakerAprilTagHeightMeters = 1.451;
+        public static final double kLimelightPitchAngleDegrees = 5.0;
+        public static final double kLimelightHeightMeters = 0.534;
+
         public static final double kAcceptableVolatilityThreshold = 0.2;
 
         public static final double kMaxDrivingSpeed = 0.0;
@@ -179,11 +185,6 @@ public class Constants {
         public static final double kPlimelight = 0.003;
         public static final double kDlimelight = 0.0;
         public static final double kIlimelight = 0.0;
-
-        // should go into robotmap
-        public static final double kLimelightMountAngleDegrees = 5.0;
-        public static final double kGoalHeightMeters = 1.45;
-        public static final double kLimelightHeightMeters = 0.53;
 
         public static final double kdistanceOffset = 0.5992;
     }

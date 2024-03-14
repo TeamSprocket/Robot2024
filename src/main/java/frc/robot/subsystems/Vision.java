@@ -7,6 +7,7 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,7 +29,7 @@ public class Vision extends SubsystemBase {
     private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight"); // TODO: FIND CAMERA NAME
     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
 
-    private PIDController pidController = new PIDController(Constants.Limelight.kPlimelight, Constants.Limelight.kIlimelight, Constants.Limelight.kDlimelight);
+    private PIDController pidController = new PIDController(Constants.Vision.kPlimelight, Constants.Vision.kIlimelight, Constants.Vision.kDlimelight);
     
     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,0,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center // TODO: change transform based on cam mounting
@@ -46,8 +48,8 @@ public class Vision extends SubsystemBase {
     // private MedianFilter filterIntake = new MedianFilter(5);
     // filters for shooter and intake
 
-    private ArrayList<Double> xPoseReadings = new ArrayList<Double>(Constants.Limelight.kVolatilitySlidingWindowLen);
-    private ArrayList<Double> yPoseReadings = new ArrayList<Double>(Constants.Limelight.kVolatilitySlidingWindowLen);
+    private ArrayList<Double> xPoseReadings = new ArrayList<Double>(Constants.Vision.kVolatilitySlidingWindowLen);
+    private ArrayList<Double> yPoseReadings = new ArrayList<Double>(Constants.Vision.kVolatilitySlidingWindowLen);
 
     private double totalX = 0.00;
     private double totalY = 0.00;
@@ -63,7 +65,7 @@ public class Vision extends SubsystemBase {
         // intakeLL.setPipelineIndex(0); // TODO: update pipelines to note
         shooterLL.setPipelineIndex(0); // apriltag
 
-        for (int i = 0; i < Constants.Limelight.kVolatilitySlidingWindowLen; i++) {
+        for (int i = 0; i < Constants.Vision.kVolatilitySlidingWindowLen; i++) {
             xPoseReadings.add(0.0);
             yPoseReadings.add(0.0);
         }
@@ -75,21 +77,10 @@ public class Vision extends SubsystemBase {
 
         targets = shooterLL.getLatestResult().getTargets();
         updateTargets();
-        // gets a list of targets from shooter limelight but will only choose the middle tags (4 and 7)
 
         SmartDashboard.putNumber("tX [V]", currentPose.getX());
         SmartDashboard.putNumber("tY [V]", currentPose.getY());
-        
-        SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
-        SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
-        // SmartDashboard.putBoolean("Driver mode", getDriverMode());
-        SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
-        SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
-        SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
-
-        SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
-        // SmartDashboard.putNumber("April Tag ID [V]",\ target.getFiducialId()); // should only return 4 or 7 (depends on side of field)
-        // debug
+        debug();
 
         // setDriverMode(cameraMode.getSelected());
         // can change back and forth from driver cam and note detection
@@ -99,11 +90,11 @@ public class Vision extends SubsystemBase {
 
         totalX += currentPose.getX();
         totalX -= xPoseReadings.get(0);
-        averageX = totalX / Constants.Limelight.kVolatilitySlidingWindowLen;
+        averageX = totalX / Constants.Vision.kVolatilitySlidingWindowLen;
 
         totalY += currentPose.getY();
         totalY -= yPoseReadings.get(0);
-        averageY = totalY / Constants.Limelight.kVolatilitySlidingWindowLen;
+        averageY = totalY / Constants.Vision.kVolatilitySlidingWindowLen;
 
         xPoseReadings.add(currentPose.getX());
         xPoseReadings.remove(0);
@@ -137,12 +128,13 @@ public class Vision extends SubsystemBase {
     }
 
     /**
-     * @return distance from the april tag
+     * @return distance from the april tag when the robot is in front of the april tag
      */
-    public double getDistanceFromTarget() {
+    public double getStraightDistanceFromTarget() {
+        
         if (target != null) {
-            double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Limelight.kLimelightMountAngleDegrees);
-            double distanceFromTarget = (Constants.Limelight.kGoalHeightMeters - Constants.Limelight.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
+            double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Vision.kLimelightPitchAngleDegrees);
+            double distanceFromTarget = (Constants.Vision.kLimelightPitchAngleDegrees - Constants.Vision.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
 
             distanceFromTarget -= 0.0;
             if (distanceFromTarget < 0) {
@@ -150,10 +142,17 @@ public class Vision extends SubsystemBase {
             }
 
         // height from cam to april tag / tan(angle) = distance from cam to april tag
-            return distanceFromTarget - Constants.Limelight.kdistanceOffset;
+            return distanceFromTarget - Constants.Vision.kdistanceOffset;
         } else {
             return 0.0;
         }
+    }
+
+    /**
+     * @return distance from the april tag when the robot is at an angle
+     */
+    public double getDistanceFromTarget() {
+        return PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.kLimelightHeightMeters, Constants.Vision.kSpeakerAprilTagHeightMeters, Constants.Vision.kLimelightPitchAngleDegrees, Units.degreesToRadians(target.getPitch()));
     }
 
     /**
@@ -193,7 +192,7 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean getIsNotVolatile() {
-        return getOverallVolatility() < Constants.Limelight.kAcceptableVolatilityThreshold;
+        return getOverallVolatility() < Constants.Vision.kAcceptableVolatilityThreshold;
     }
 
     public boolean getDriverMode() {
@@ -218,11 +217,19 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    public double getSkew() {
+        if (target != null) {
+            return filterPitch.calculate(target.getSkew());
+        }
+        else {
+            return 0.0;
+        }
+    }
+
     // public double getIntakeYaw() {
     //     double intakeNoteReading = note.getYaw();
     //     return filterIntake.calculate(intakeNoteReading);
     // }
-
 
     /**
      * sets target april tag to the middle speaker tags for correct alignment
@@ -238,17 +245,28 @@ public class Vision extends SubsystemBase {
         }
     }
 
-
     /**
      * @return axial volatility
      */
     private double getVolatilityAxis(double average, ArrayList<Double> llOdometry){
         double volatility = 0.00;
 
-        for (int i = 0; i < Constants.Limelight.kVolatilitySlidingWindowLen; i++){
+        for (int i = 0; i < Constants.Vision.kVolatilitySlidingWindowLen; i++){
             volatility += Math.abs(average - (double)llOdometry.get(i));
         }
         return volatility;
     }
 
+    private void debug() {
+        
+        SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
+        SmartDashboard.putNumber("Distance from Target TEST [V]", getStraightDistanceFromTarget());
+        SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
+        // SmartDashboard.putBoolean("Driver mode", getDriverMode());
+        SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
+        SmartDashboard.putNumber("Tag Skew [V]", getSkew());
+        SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
+        SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
+        SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
+    }
 }

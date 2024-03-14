@@ -31,7 +31,7 @@ import frc.util.Util;
 
 public class ShooterPivot extends SubsystemBase {
   /** Creates a new ShooterPivot. */
-  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST);
+  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST, "rio");
 
   ShooterPivotStates state = ShooterPivotStates.NONE;
   ShooterPivotStates lastState = ShooterPivotStates.NONE;

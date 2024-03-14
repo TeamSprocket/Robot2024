@@ -43,9 +43,9 @@ public class Shooter extends SubsystemBase {
   private ShooterStates lastState = ShooterStates.NONE;
 
   // Motors
-  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP);
-  TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM);
-  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);
+  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP, "rio");
+  TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM, "rio");
+  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER, "rio");
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
