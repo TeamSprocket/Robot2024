@@ -1,45 +1,37 @@
 package frc.robot.subsystems;
 
-import javax.sound.sampled.TargetDataLine;
-
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import com.revrobotics.AbsoluteEncoder;
-
+import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
-import edu.wpi.first.wpilibj.RuntimeType;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
-
+import frc.robot.RobotMap;
+import frc.util.ShuffleboardPIDTuner;
+import frc.robot.Constants.RobotState;
+import frc.robot.RobotContainer;
 
 public class bigRichardSwerveDrive extends SubsystemBase {
     Timer timer;
     boolean correct;
     double targetHeading;
-    PIDController pidController = new PIDController(kPHeading, kIHeading, kDHeading);
+    PIDController pidController = new PIDController(Constants.bigRichardDriveTrain.kPHeading, Constants.bigRichardDriveTrain.kIHeading, Constants.bigRichardDriveTrain.kDHeading);
     double xSpeed;
     double ySpeed; 
     double zSpeed;
+    double num = 0.0;
 
     private final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
@@ -60,19 +52,19 @@ public class bigRichardSwerveDrive extends SubsystemBase {
         this.timer = new Timer();
         timer.reset();
 
-        headingController.enableContinuousInput(0,360);
+        pidController.enableContinuousInput(0,360);
 
     }
 
     public void zeroTalons() {
-        frontLeft.zeroTalon();
-        frontRight.zeroTalon();
-        backLeft.zeroTalon();
-        backRight.zeroTalon();
-        frontLeft.zeroDrive();
-        frontRight.zeroDrive();
-        backLeft.zeroDrive();
-        backRight.zeroDrive();
+        frontLeft.zeroTurnMotorABS();
+        frontRight.zeroTurnMotorABS();
+        backLeft.zeroTurnMotorABS();
+        backRight.zeroTurnMotorABS();
+        frontLeft.zeroDriveMotor();
+        frontRight.zeroDriveMotor();
+        backLeft.zeroDriveMotor();
+        backRight.zeroDriveMotor();
     }
 
     public void clearStickyFaults() {
@@ -96,20 +88,22 @@ public class bigRichardSwerveDrive extends SubsystemBase {
         backRight.setCurrentLimitDrive(currentLimit);
     }
 
+
+
     public SwerveModulePosition[] getSwerveModulePositions() {
         SwerveModulePosition[] swerveModulePositions = {new SwerveModulePosition(frontLeft.getDrivePosition(), new Rotation2d(frontLeft.getTurnPosition())),new SwerveModulePosition(frontRight.getDrivePosition(), new Rotation2d(frontRight.getTurnPosition())),new SwerveModulePosition(backLeft.getDrivePosition(), new Rotation2d(backLeft.getTurnPosition())),new SwerveModulePosition(backRight.getDrivePosition(), new Rotation2d(backRight.getTurnPosition()))
         };
         return swerveModulePositions;
     }
 
-    public void setTurnDefaultMode(NeutralMode mode) {
-        frontLeft.setTurnDefaultMode(mode);
-        frontRight.setTurnDefaultMode(mode);
-        backLeft.setTurnDefaultMode(mode);
-        backRight.setTurnDefaultMode(mode);
+    public void setTurnDefaultMode(NeutralModeValue mode) {
+        frontLeft.setNeutralModeTurn(mode);
+        frontRight.setNeutralModeTurn(mode);
+        backLeft.setNeutralModeTurn(mode);
+        backRight.setNeutralModeTurn(mode);
     }
 
-    public void setDriveDefaultMode(NeutralMode mode) {
+    public void setDriveDefaultMode(NeutralModeValue mode) {
         frontLeft.setDriveDefaultMode(mode);
         frontRight.setDriveDefaultMode(mode);
         backLeft.setDriveDefaultMode(mode);
@@ -158,7 +152,7 @@ public class bigRichardSwerveDrive extends SubsystemBase {
         return Math.toRadians(getHeading());
     }
 
-    public void updateHeading(Direction direction) {
+    public void updateHeading(Directions direction) {
         switch (direction) {
             case FRONT: 
                 targetHeading = 180;
@@ -176,10 +170,10 @@ public class bigRichardSwerveDrive extends SubsystemBase {
     }
 
     public void setModuleSpeeds(double xSpeed, double ySpeed, double tSpeed) {
-        double diff = Math.abs(timer.get() - last);
-        last = timer.get();
+        double diff = Math.abs(timer.get() - num);
+        num = timer.get();
 
-        SmartDashboard.putNumber("FrontLeftAngleTarget", desiredStates[0].angle.getDegrees());
+        SmartDashboard.putNumber("FrontLeftAngleTarget", moduleStates[0].angle.getDegrees());
         SmartDashboard.putNumber("FrontRightAngleTarget", desiredStates[1].angle.getDegrees());
         SmartDashboard.putNumber("BackLeftAngleTarget", desiredStates[2].angle.getDegrees());
         SmartDashboard.putNumber("BackRightAngleTarget", desiredStates[3].angle.getDegrees());
@@ -199,12 +193,12 @@ public class bigRichardSwerveDrive extends SubsystemBase {
             this.targetHeading = targetHeading;
         }
 
-        headingController.setSetpoint(targetHeading);
-        double tSpeedPID = headingController.calculate(getHeading());
+        pidController.setSetpoint(targetHeading);
+        double tSpeedPID = pidController.calculate(getHeading());
 
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
-        this.tSpeed = tSpeedPID;
+        this.xSpeed = tSpeedPID;
     }
 
     public enum Directions{
@@ -265,7 +259,7 @@ public class bigRichardSwerveDrive extends SubsystemBase {
             }
 
             ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                    xSpeed, ySpeed, tSpeed, new Rotation2d(headingRad));
+                    xSpeed, ySpeed, xSpeed, new Rotation2d(headingRad));
 
             SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 

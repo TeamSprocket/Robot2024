@@ -1,79 +1,82 @@
 package frc.robot.subsystems;
 
-import javax.sound.sampled.TargetDataLine;
+import java.util.function.Supplier;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-import com.ctre.phoenix.sensors.CANCoder;
-import com.fasterxml.jackson.databind.util.ISO8601Utils;
-import com.revrobotics.AbsoluteEncoder;
+// import com.ctre.phoenix.sensors.AbsoluteSensorRange;
+// import com.ctre.phoenix.sensors.CANCoderConfiguration;
+//
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.NeutralOut;
+import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.RuntimeType;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Robot;
+// import frc.util.CTREUtils;
+import frc.util.Conversions;
+import frc.util.ShuffleboardPIDTuner;
 
 
 public class bigRichardSwerveModule extends SubsystemBase {
-    private WPI_TalonFX driveMotor;
-    private WPI_TalonFX turnMotor;
+    private TalonFX driveMotor;
+    private TalonFX turnMotor;
     private PIDController turnPIDController;
-    private CANCoder absEncoder;
+    private CANcoder absEncoder;
     private double absEncoderOffset;
     private boolean isReversed;
 
-    public SwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorIsReversed, boolean turnMotorIsReversed, int absEncoderID, double absEncoderOffsetRad, boolean isTurnedReverse
-  ) {
-    this.absEncoderOffsetRad = absEncoderOffsetRad;
-    absEncoder = new CANCoder(absEncoderID); 
+    public bigRichardSwerveModule(int driveMotorID, int turnMotorID, boolean driveMotorIsReversed, boolean turnMotorIsReversed, int absEncoderID, double absEncoderOffsetRad, boolean isTurnedReverse) {
+      this.absEncoderOffset = absEncoderOffsetRad;
+      absEncoder = new CANcoder(absEncoderID); 
 
-    driveMotor = new WPI_TalonFX(driveMotorID);
-    turnMotor = new WPI_TalonFX(turnMotorID);
+      driveMotor = new TalonFX(driveMotorID);
+      turnMotor = new TalonFX(turnMotorID);
 
-    turnMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
+      // turnMotor.configSelectedFeedbackSensor(FeedbackDevice.IntegratedSensor);
 
-    driveMotor.setInverted(driveMotorIsReversed);
-    turnMotor.setInverted(turnMotorIsReversed); 
+      driveMotor.setInverted(driveMotorIsReversed);
+      turnMotor.setInverted(turnMotorIsReversed); 
 
-    this.isTurnedReverse = isTurnedReverse;
+      this.isReversed = isTurnedReverse;
 
-    turnMotor.setNeutralMode(NeutralMode.Coast);
-    driveMotor.setNeutralMode(NeutralMode.Brake);
+      turnMotor.setNeutralMode(NeutralModeValue.Coast);
+      driveMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    turnPIDController = new PIDController(Constants.Drivetrain.kPTurnMotor, Constants.Drivetrain.kITurnMotor, Constants.Drivetrain.kDTurnMotor);
+      turnPIDController = new PIDController(Constants.bigRichardDriveTrain.kPTurnMotor, Constants.bigRichardDriveTrain.kITurnMotor, Constants.bigRichardDriveTrain.kDTurnMotor);
 
-    turnPIDController.enableContinuousInput(0, (2.0 * Math.PI));
+      turnPIDController.enableContinuousInput(0, (2.0 * Math.PI));
 
-    absEncoder.configMagnetOffset(Math.toDegrees(absEncoderOffsetRad));
-    absEncoder.configMagnetOffset(-Math.toDegrees(absEncoderOffsetRad));
-    absEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
+      CANcoderConfiguration config = new CANcoderConfiguration();
+      config.MagnetSensor.MagnetOffset = Math.toDegrees(absEncoderOffsetRad);
+      absEncoder.getConfigurator().apply(config);
+
+      config.MagnetSensor.MagnetOffset = -Math.toDegrees(absEncoderOffsetRad);
+
+      absEncoder.configAbsoluteSensorRange(AbsoluteSensorRange.Unsigned_0_to_360);
 
     
 
-    resetEncoderPos();
+      resetEncoderPos();
 
   }
 
-    public void setTurnDefaultMode(NeutralMode mode) {
+
+
+    public void setTurnDefaultMode(NeutralModeValue mode) {
       turnMotor.setNeutralMode(mode);
     }
-    public void setDriveDefaultMode(NeutralMode mode) {
+    public void setDriveDefaultMode(NeutralModeValue mode) {
       driveMotor.setNeutralMode(mode);
     }
 
@@ -86,7 +89,7 @@ public class bigRichardSwerveModule extends SubsystemBase {
   
 
   public void setCurrentLimitTurn(double currentLimit) {
-    turnMotor.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, currentLimit, currentLimit, 1.0));
+    turnMotor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(1.0));
     turnMotor.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, currentLimit, currentLimit, 1.0));
   }
 
@@ -98,12 +101,12 @@ public class bigRichardSwerveModule extends SubsystemBase {
 
     public double getDrivePosition() {
       double circum = 2 * (Math.PI) * (Constants.Drivetrain.kWheelDiameterMeters / 2);
-      double currentRots = driveMotor.getSelectedSensorPosition() / (2048.0 * Constants.Drivetrain.kDriveMotorGearRatio);
+      double currentRots = driveMotor.getRotorPosition().getValue() / (2048.0 * Constants.Drivetrain.kDriveMotorGearRatio);
       return currentRots * circum;
     }
 
     public double getTurnPosition() {
-      double posRad =  turnMotor.getSelectedSensorPosition() / Constants.Drivetrain.kTurningMotorGearRatio % 2048 / 2048 * Math.PI * 2;
+      double posRad =  turnMotor.getRotorPosition().getValue() / Constants.Drivetrain.kTurningMotorGearRatio % 2048 / 2048 * Math.PI * 2;
       if (posRad < 0) {
         posRad += Math.PI * 2;
       }
@@ -113,40 +116,39 @@ public class bigRichardSwerveModule extends SubsystemBase {
 
     
     public double getAbsEncoderRad() {
-      double angle = absEncoder.getAbsolutePosition();
+      double angle = absEncoder.getAbsolutePosition().getValueAsDouble();
       angle = Math.toRadians(angle);
       angle = Math.toRadians(angle);
-      angle -= absEncoderOffsetRad;
+      angle -= absEncoderOffset;
       double rad = Math.abs(angle % (Math.PI * 2.0));
       if (rad > Math.PI) {
         rad = -1.0 * (2.0 * Math.PI - rad);
       }
 
-      angle -= absEncoderOffsetRad;
-      return rad;
+      angle -= absEncoderOffset;
       return angle;
 
     }
 
     public void resetEncoderPos() {
       double tunedAbsEncoderRad = -getAbsEncoderRad();
-      turnMotor.setSelectedSensorPosition(tunedAbsEncoderRad / (2.0 * Math.PI) * 2048.0 * Constants.Drivetrain.kTurningMotorGearRatio);
-      turnMotor.setSelectedSensorPosition((getAbsEncoderRad() / (2 * Math.PI)) * 2048 * Constants.Drivetrain.kTurningMotorGearRatio);
-      double absAngle = absEncoder.getAbsolutePosition() % 360.0;
+      turnMotor.getValueAsDouble(tunedAbsEncoderRad / (2.0 * Math.PI) * 2048.0 * Constants.Drivetrain.kTurningMotorGearRatio);
+      turnMotor.setPosition((getAbsEncoderRad() / (2 * Math.PI)) * 2048 * Constants.Drivetrain.kTurningMotorGearRatio);
+      double absAngle = absEncoder.getAbsolutePosition().getValueAsDouble() % 360.0;
       double absPercent = absAngle / 360.0;
       double absPercentWithRatio = absPercent * Constants.Drivetrain.kTurningMotorGearRatio;
       double encoderPos = absPercentWithRatio * 2048.0;
-      turnMotor.setSelectedSensorPosition(encoderPos);
+      turnMotor.setPosition(encoderPos);
 
     }
 
     public void zeroTalon() { 
-      driveMotor.setSelectedSensorPosition(0);
-      turnMotor.setSelectedSensorPosition(0);
+      driveMotor.getRotorPosition();
+      turnMotor.setPosition(0);
     }
 
     public void zeroDrive() {
-      driveMotor.setSelectedSensorPosition(0);
+      driveMotor.setPosition(0);
     }
 
     public SwerveModuleState optimizeState(SwerveModuleState swerveState) {
@@ -165,8 +167,8 @@ public class bigRichardSwerveModule extends SubsystemBase {
 
 
     public void setDesiredState(SwerveModuleState swerveState, boolean isPrecise) {
-      SmartDashboard.putNumber("Turn Stator Current", turnMotor.getStatorCurrent());
-      SmartDashboard.putNumber("Turn Supply Current", turnMotor.getSupplyCurrent());
+      SmartDashboard.putNumber("Turn Stator Current", turnMotor.getStatorCurrent().getValueAsDouble());
+      SmartDashboard.putNumber("Turn Supply Current", turnMotor.getSupplyCurrent().getValueAsDouble());
       absEncoder.clearStickyFaults();
       driveMotor.clearStickyFaults();
       turnMotor.clearStickyFaults();
