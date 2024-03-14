@@ -14,12 +14,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.auto.DoNothing;
-import frc.robot.auto.OneNoteNoTaxi;
-import frc.robot.commands.EjectNote;
 import frc.robot.commands.instant.*;
+import frc.robot.commands.macro.EjectNote.*;
 import frc.robot.commands.persistent.*;
-import frc.robot.commands.superstructure.*;
 // import frc.robot.commands.macro.*;
 import frc.robot.subsystems.*;
 
@@ -34,40 +31,30 @@ public class RobotContainer {
   Vision vision = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(vision);
 
-  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
-  // secondary.getRightTriggerAxis());
-  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
-  // swerveDrive.getPose().getTranslation());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation());
-  Intake intake = new Intake();
-
-  // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter,
-  // intake);
-
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
     configureBindings();
-    initAutons();
+    //initAutons();
     initNamedCommands();
   }
 
-  public void initAutons() {
-    autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
+  // public void initAutons() {
+  //   autonChooser.setDefaultOption("Do Nothing", new DoNothing());
+  //   // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
     
-    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
-    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
-    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
-    autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));
-    autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
+  //   // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
+  //   // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
+  //   // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
+  //   // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
+  //   autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));
+  //   autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
     
 
-    // autonChooser = AutoBuilder.buildAutoChooser();
+  //   // autonChooser = AutoBuilder.buildAutoChooser();
     
-    SmartDashboard.putData("Auto Routine Selector", autonChooser);
-  }
+  //   SmartDashboard.putData("Auto Routine Selector", autonChooser);
+  // }
 
   public void initNamedCommands() {
     // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure,
@@ -98,10 +85,10 @@ public class RobotContainer {
     // driver.button(RobotMap.Controller.A)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
-    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    secondary.b().whileTrue(new EjectNote(intake, shooter));
+    // secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
+    // secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    // secondary.b().whileTrue(new EjectNote(intake, shooter));
 
     // --------------------=Secondary=--------------------
 

@@ -72,9 +72,6 @@ public class Shintake extends SubsystemBase {
 
         ShuffleboardPIDTuner.addSlider("PID kP pivot", 0, 1, 0);
         ShuffleboardPIDTuner.addSlider("PID kD pivot", 0, 1, 0);
-
-        pidControllerIntake.setP(ShuffleboardPIDTuner.get("PID kP pivot"));
-        pidControllerIntake.setD(ShuffleboardPIDTuner.get("PID kD pivot"));
     }
 
     @Override
@@ -114,6 +111,9 @@ public class Shintake extends SubsystemBase {
                 pivotMotor.set(getPivotSpeed(Constants.Shintake.kScoreAmp));
                 break;
         }
+
+        pidControllerIntake.setP(ShuffleboardPIDTuner.get("PID kP pivot"));
+        pidControllerIntake.setD(ShuffleboardPIDTuner.get("PID kD pivot"));
     }
 
     public ShintakeStates getState() {
