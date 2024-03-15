@@ -322,7 +322,7 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   public void alignWithAprilTag() {
-    double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed;
+    double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
     updateChassisSpeeds(0, 0, rotSpeed);
   }
 

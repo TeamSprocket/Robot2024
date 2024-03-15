@@ -14,7 +14,9 @@ import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -130,13 +132,14 @@ public class Vision extends SubsystemBase {
     /**
      * @return distance from the april tag when the robot is in front of the april tag
      */
-    public double getStraightDistanceFromTarget() {
+    public double getDistanceFromTarget() {
         
         if (target != null) {
             double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Vision.kLimelightPitchAngleDegrees);
-            double distanceFromTarget = (Constants.Vision.kLimelightPitchAngleDegrees - Constants.Vision.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
+            double distanceFromTarget = (Constants.Vision.kSpeakerAprilTagHeightMeters  - Constants.Vision.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
 
-            distanceFromTarget -= 0.0;
+            distanceFromTarget -= 0.0; // ??? wut
+            
             if (distanceFromTarget < 0) {
                 distanceFromTarget = 0.0;
             }
@@ -148,12 +151,14 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    /**
-     * @return distance from the april tag when the robot is at an angle
-     */
-    public double getDistanceFromTarget() {
-        return PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.kLimelightHeightMeters, Constants.Vision.kSpeakerAprilTagHeightMeters, Constants.Vision.kLimelightPitchAngleDegrees, Units.degreesToRadians(target.getPitch()));
-    }
+    // public double getDistanceFromTarget() { // this is literally the same thing as what i did above
+    //     if (target != null) {
+    //         return PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.kLimelightHeightMeters, Constants.Vision.kSpeakerAprilTagHeightMeters, Units.degreesToRadians(Constants.Vision.kLimelightPitchAngleDegrees), Units.degreesToRadians(target.getPitch())); // Units.degreesToRadians
+    //     }
+    //     else {
+    //         return 0.0;
+    //     }
+    // }
 
     /**
      * @return Highest axial volatility reading
@@ -260,7 +265,7 @@ public class Vision extends SubsystemBase {
     private void debug() {
         
         SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
-        SmartDashboard.putNumber("Distance from Target TEST [V]", getStraightDistanceFromTarget());
+        // SmartDashboard.putNumber("Distance from Target Straight [V]", getStraightDistanceFromTarget());
         SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
         // SmartDashboard.putBoolean("Driver mode", getDriverMode());
         SmartDashboard.putNumber("Tag Yaw [V]", getYaw());

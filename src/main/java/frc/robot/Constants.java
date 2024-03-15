@@ -178,7 +178,7 @@ public class Constants {
         public static final double kAcceptableVolatilityThreshold = 0.2;
 
         public static final double kMaxDrivingSpeed = 0.0;
-        public static final double kMaxTurningSpeed = 0.0;
+        public static final double kMaxTurningSpeed = 0.1;
 
         public static final int kVolatilitySlidingWindowLen = 20;
 
@@ -186,7 +186,7 @@ public class Constants {
         public static final double kDlimelight = 0.0;
         public static final double kIlimelight = 0.0;
 
-        public static final double kdistanceOffset = 0.5992;
+        public static final double kdistanceOffset = 0.7642; // 0.5992
     }
 
     public static final class Drivetrain {
