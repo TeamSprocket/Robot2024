@@ -299,6 +299,8 @@ public class Constants {
 
         public static final boolean kIsFieldOriented = true;
 
+        public static final double kVoltsPerDegreePerSecond = 0.0128;
+
         public static boolean isPrecise = false;
         public static final double kPreciseMultiplier = 0.25;
 

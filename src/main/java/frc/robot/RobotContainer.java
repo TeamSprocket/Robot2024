@@ -28,8 +28,7 @@ public class RobotContainer {
   PowerDistribution pdh = new PowerDistribution();
 
   // Limelight limelight = new Limelight();
-  Vision vision = new Vision();
-  SwerveDrive swerveDrive = new SwerveDrive(vision);
+  SwerveDrive swerveDrive = new SwerveDrive();
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
