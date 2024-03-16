@@ -74,7 +74,7 @@ public class RobotContainer {
         swerveDrive,
         () -> -driver.getLeftX(),
         () -> driver.getLeftY(),
-        () -> -driver.getRightX()));
+        () -> -(driver.getRightX() * -1)));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     // driver.button(RobotMap.Controller.Y)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));

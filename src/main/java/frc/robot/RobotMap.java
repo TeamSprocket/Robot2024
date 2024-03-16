@@ -25,7 +25,7 @@ public final class RobotMap {
    * 40..49 - Spark Max
    */
   public static final class Drivetrain {
-    public static final int PIGEON_2 = 2;
+    public static final int PIGEON_2 = 4;
 
     public static final int FRONT_LEFT_TALON_D = 23;
     public static final int FRONT_RIGHT_TALON_D = 27;
