@@ -231,6 +231,53 @@ public class Constants {
 
     }
 
+    public static final class Shintake {
+        // Timestuff
+        public static final double kDurationScoreAmpSec = 1.0;
+
+        public static final boolean kIsShooterTopInverted = true;
+        public static final boolean kIsShooterBottomInverted = true;
+        public static final boolean kIsIndexerInverted = true;
+
+        public static final double kMotorShintakeTolerance = 0.025;
+
+        public static final double kIndexerSpeedIntake = 0.3;
+        public static final double kIndexerSpeedScoreAmp = -0.6;
+        public static final double kIndexerEjectNoteSpeed = -0.5;
+        public static final double kIndexerHasNoteIndexThreshold = 10000;
+
+        // JUST IN CASE
+
+        public static final double kShooterGearRatio = 0.6666666666;
+        public static final double kIndexerGearRatio = 2.0;
+
+        public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.0);
+
+        public static final double kShooterIncramentMultiplier = 0.01;
+
+        public static final double kHasNoteCurrentThreshold = 60.0;
+
+        //public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
+
+        public static final double kPivotAngleStowed = 20.0; // 20
+        public static final double kPivotAngleIntake = 172.0;
+        public static final double kScoreAmp = 80;
+
+        public static final double kRollSpeedStowed = 0.0;
+        public static final double kRollSpeedIntake = 0.6;
+        public static final double kRollSpeedScoreAmp = -0.7;
+        public static final double kEjectNoteSpeed = -0.6;
+
+        public static final double kMaxPivotOutput = 0.2;
+
+        public static final double kPivotIntakeGearRatio = 36.0;
+
+        public static final double kPPivot = 0.002914; // 1, 0.1
+        public static final double kIPivot = 0.0;
+        public static final double kDPivot = 0.00002445;
+        public static final PIDConst kPIDPivot = new PIDConst(kPPivot, kIPivot, kDPivot);
+    }
+    
     public static final class Limelight {
         public static final double kAcceptableVolatilityThreshold = 0.2;
 
