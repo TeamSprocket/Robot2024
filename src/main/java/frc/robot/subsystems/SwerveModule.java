@@ -238,5 +238,6 @@ public class SwerveModule extends SubsystemBase {
     driveMotor.clearStickyFaults();
     turnMotor.clearStickyFaults();
   }
+
   
 }
