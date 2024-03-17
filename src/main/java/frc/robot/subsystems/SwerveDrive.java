@@ -133,47 +133,46 @@ public class SwerveDrive extends SubsystemBase {
     // ShuffleboardPIDTuner.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
     // ShuffleboardPIDTuner.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
 
-    ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
+    gyro.clearStickyFaults();
   }
 
   @Override
   public void periodic() {
     updateShuffleboardPIDConstants();
-    gyro.clearStickyFaults();
-      
 
-    SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
-    SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
-    SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
+    // SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
+    // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
+    // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
     // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
-    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    // SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
 
-    SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
 
-    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
-    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
+    // SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
+    // SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
+    // SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
+    // SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
 
-    SmartDashboard.putNumber("front left cancoder [SD]", frontLeft.getCANCoderDegrees());
-    SmartDashboard.putNumber("front right cancoder [SD]", frontRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back right cancoder [SD]", backRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back left cancoder [SD]", backLeft.getCANCoderDegrees());
+    // SmartDashboard.putNumber("front left cancoder [SD]", frontLeft.getCANCoderDegrees());
+    // SmartDashboard.putNumber("front right cancoder [SD]", frontRight.getCANCoderDegrees());
+    // SmartDashboard.putNumber("back right cancoder [SD]", backRight.getCANCoderDegrees());
+    // SmartDashboard.putNumber("back left cancoder [SD]", backLeft.getCANCoderDegrees());
 
-    SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
-    SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
-    SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
-    SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
+    // SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
+    // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
+    // SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
+    // SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
 
-    SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
-    SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
-    SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
-    SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
+    // SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
+    // SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
+    // SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
+    // SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
 
-    SmartDashboard.putNumber("turning speed [SD]", lockHeading());
+    // SmartDashboard.putNumber("turning speed [SD]", lockHeading());
 
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
 
@@ -202,15 +201,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getRotation2d().getDegrees() + 180.0; 
-    
-    angle %= 360.0;
-    if (angle < 0) {
-        angle += 360;
-    }
-
-    angle = Math.toRadians(angle);
-
+    double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
     return angle;
   }
 
@@ -247,18 +238,18 @@ public class SwerveDrive extends SubsystemBase {
   
 
   // public void initGyro() {
-  //   gyro.setYaw(0);
-  //   // gyro.enterCalibrationMode();
-  //   // gyro.reset();
+  //   gyro.reset();
+  //   gyro.reset();
   // }
 
   public void zeroGyro() {
     gyro.setYaw(0);
+    //gyro.reset();
     // targetHeadingRad = Math.PI;
   }
 
   // public void calibrateGyro() {
-    // gyro.calibrate();
+  //   gyro.calibrate();
   // }
 
   // public void setTargetHeadingRad(double targetHeadingRad) {
@@ -321,10 +312,10 @@ public class SwerveDrive extends SubsystemBase {
     // updateChassisSpeeds(0.0, 0.0, tSpeed); // TODO: test on cart
   }
 
-  public void alignWithAprilTag() {
-    double rotSpeed = vision.getYaw() * Constants.Limelight.kMaxTurningSpeed;
-    updateChassisSpeeds(0, 0, rotSpeed);
-  }
+  // public void alignWithAprilTag() {
+  //   double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
+  //   updateChassisSpeeds(0, 0, rotSpeed);
+  // }
 
   // Stuff for Pathplanner
   public Pose2d getPose() {
