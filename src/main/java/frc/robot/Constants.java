@@ -202,21 +202,21 @@ public class Constants {
                 new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotorFL = 0.05; // 0.0125
+        public static double kPTurnMotorFL = 0.0025; // 0.0125
         public static double kITurnMotorFL = 0.00;
-        public static double kDTurnMotorFL = 0.0001; // 0.000026
+        public static double kDTurnMotorFL = 0.000; // 0.000026
 
-        public static double kPTurnMotorFR = 0.05; // 0.0125
+        public static double kPTurnMotorFR = 0.0025; // 0.0125
         public static double kITurnMotorFR = 0.00;
-        public static double kDTurnMotorFR = 0.0001; // 0.000026
+        public static double kDTurnMotorFR = 0.000; // 0.000026
 
-        public static double kPTurnMotorBL = 0.05; // 0.0125
+        public static double kPTurnMotorBL = 0.0025; // 0.0125
         public static double kITurnMotorBL = 0.00;
-        public static double kDTurnMotorBL = 0.0001; // 0.000026
+        public static double kDTurnMotorBL = 0.000; // 0.000026
 
-        public static double kPTurnMotorBR = 0.05; // 0.0125
+        public static double kPTurnMotorBR = 0.0025; // 0.0125
         public static double kITurnMotorBR = 0.00;
-        public static double kDTurnMotorBR = 0.0001; // 0.000026
+        public static double kDTurnMotorBR = 0.000; // 0.000026
         
 
         public static final double kPHeading = 0.0053; // 0.6
@@ -237,9 +237,10 @@ public class Constants {
         // Speed/Accel
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 1.1; // 0.8 //1.0 // 0.6 - latest
-        public static double kMaxAccel = 1.6; // 0.7 //1.0 // 1.0 - latest
+        public static double kMaxSpeed = 1.1; //1.1 // 0.8 //1.0 // 0.6 - latest
+        public static double kMaxAccel = 1.6; //1.6 // 0.7 //1.0 // 1.0 - latest
 
+        
 
         public static double kMaxTurnSpeed = 1.35; // 0.08 WITH PID, 1.35 WITHOUT
         public static double kMaxTurnAccel = 10; // Instant manual turning
