@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.instant.*;
 import frc.robot.commands.persistent.*;
-// import frc.robot.commands.macro.*;
+import frc.robot.commands.macro.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
@@ -29,6 +29,7 @@ public class RobotContainer {
   // Limelight limelight = new Limelight();
   Vision vision = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(vision);
+  Shintake shintake = new Shintake();
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());
@@ -81,7 +82,7 @@ public class RobotContainer {
         () -> -driver.getLeftX(),
         () -> driver.getLeftY(),
         () -> -driver.getRightX() * -1));
-    driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
+    driver.a().onTrue(new ZeroGyro(swerveDrive));
     // driver.button(RobotMap.Controller.Y)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
     // driver.button(RobotMap.Controller.X)
@@ -95,6 +96,10 @@ public class RobotContainer {
     // secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
     // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     // secondary.b().whileTrue(new EjectNote(intake, shooter));
+    driver.leftBumper().whileTrue(new EjectNote(shintake));
+    driver.rightBumper().whileTrue(new ShintakeIntakeNote(shintake));
+    secondary.rightBumper().whileTrue(new ShintakeScoreAmp(shintake));
+
 
     // --------------------=Secondary=--------------------
 

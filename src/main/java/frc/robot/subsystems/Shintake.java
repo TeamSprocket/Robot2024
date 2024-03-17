@@ -7,6 +7,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,7 +38,7 @@ public class Shintake extends SubsystemBase {
 
     ShintakeStates state;
 
-    private final TalonFX shintakeMotor = new TalonFX(RobotMap.Intake.ROLL_INTAKE); 
+    private final CANSparkMax shintakeMotor = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless); 
     private final TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER); 
     private final TalonFX pivotMotor = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
@@ -58,7 +59,7 @@ public class Shintake extends SubsystemBase {
         pivotMotor.setInverted(true);
         indexerMotor.setInverted(true);
 
-        shintakeMotor.setNeutralMode(NeutralModeValue.Coast);
+        shintakeMotor.setIdleMode(IdleMode.kCoast);
         pivotMotor.setNeutralMode(NeutralModeValue.Brake);
         indexerMotor.setNeutralMode(NeutralModeValue.Brake);
 
@@ -144,7 +145,7 @@ public class Shintake extends SubsystemBase {
         return (indexerMotor.getStatorCurrent().getValueAsDouble() > Constants.Shintake.kIndexerHasNoteIndexThreshold);
     }
 
-    public TalonFX getShintakeMotor() {
+    public CANSparkMax getShintakeMotor() {
         return shintakeMotor;
     }
 
