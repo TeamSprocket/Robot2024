@@ -312,10 +312,10 @@ public class SwerveDrive extends SubsystemBase {
     // updateChassisSpeeds(0.0, 0.0, tSpeed); // TODO: test on cart
   }
 
-  public void alignWithAprilTag() {
-    double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
-    updateChassisSpeeds(0, 0, rotSpeed);
-  }
+  // public void alignWithAprilTag() {
+  //   double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
+  //   updateChassisSpeeds(0, 0, rotSpeed);
+  // }
 
   // Stuff for Pathplanner
   public Pose2d getPose() {
