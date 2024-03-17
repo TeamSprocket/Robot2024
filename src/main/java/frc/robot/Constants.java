@@ -243,19 +243,19 @@ public class Constants {
         // PID
         public static double kPTurnMotorFL = 0.0025; // 0.0125
         public static double kITurnMotorFL = 0.00;
-        public static double kDTurnMotorFL = 0.00001; // 0.000026
+        public static double kDTurnMotorFL = 0.000; // 0.000026
 
         public static double kPTurnMotorFR = 0.0025; // 0.0125
         public static double kITurnMotorFR = 0.00;
-        public static double kDTurnMotorFR = 0.0000; // 0.000026
+        public static double kDTurnMotorFR = 0.000; // 0.000026
 
         public static double kPTurnMotorBL = 0.0025; // 0.0125
         public static double kITurnMotorBL = 0.00;
-        public static double kDTurnMotorBL = 0.00001; // 0.000026
+        public static double kDTurnMotorBL = 0.000; // 0.000026
 
         public static double kPTurnMotorBR = 0.0025; // 0.0125
         public static double kITurnMotorBR = 0.00;
-        public static double kDTurnMotorBR = 0.00001; // 0.000026
+        public static double kDTurnMotorBR = 0.000; // 0.000026
         
 
         public static final double kPHeading = 1.2; // 0.6
