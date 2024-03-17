@@ -27,7 +27,7 @@ public class ShintakeScoreAmp extends InstantCommand{
 
     @Override
     public void execute() {
-        if (Math.abs(Constants.Shintake.kRollSpeedScoreAmp - shintake.getShintakeMotor().getRotorPosition().getValueAsDouble()) < Math.abs(Constants.Shintake.kMotorShintakeTolerance)) {
+        if (Math.abs(Constants.Shintake.kRollSpeedScoreAmp - shintake.getShintakeMotor().getEncoder().getPosition()) < Math.abs(Constants.Shintake.kMotorShintakeTolerance)) {
             // shintake.setState(ShintakeStates.WAIT_AMP);
             atSpeed = true;
             timer.start();

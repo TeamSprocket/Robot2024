@@ -97,7 +97,7 @@ public class Shintake extends SubsystemBase {
             case EJECT_NOTE:
                 shintakeMotor.set(-1 * Constants.Shintake.kRollSpeedIntake);
                 indexerMotor.set(Constants.Shintake.kIndexerEjectNoteSpeed);
-                pivotMotor.set(getPivotSpeed(Constants.Shintake.kPivotAngleIntake));
+                pivotMotor.set(0);
                 break;
 
             case SCORE_AMP:

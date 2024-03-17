@@ -88,7 +88,7 @@ public class RobotContainer {
     // driver.button(RobotMap.Controller.X)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
     // driver.button(RobotMap.Controller.B)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
+    //     .onTrue(new SwitchTargetHeadingsDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
     // driver.button(RobotMap.Controller.A)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
