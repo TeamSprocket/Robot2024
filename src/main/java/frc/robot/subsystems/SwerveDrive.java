@@ -152,10 +152,10 @@ public class SwerveDrive extends SubsystemBase {
 
     // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
 
-    // SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
-    // SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
-    // SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
-    // SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
+    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
 
     // SmartDashboard.putNumber("front left cancoder [SD]", frontLeft.getCANCoderDegrees());
     // SmartDashboard.putNumber("front right cancoder [SD]", frontRight.getCANCoderDegrees());

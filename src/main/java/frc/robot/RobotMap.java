@@ -43,27 +43,11 @@ public final class RobotMap {
     public static final int BACK_RIGHT_ABS_ENCODER_ID = 2;
   }
 
-  public static final class Elevator{
-    public static final int ELEVATOR_LEFT = 11;
-    public static final int ELEVATOR_RIGHT = 19;
-  }
+  public static final class Shintake {
+    public static final int INDEXER = 14;
+    public static final int PIVOT = 15;
+    public static final int SHINTAKE = 16;
 
-  public static final class ShooterPivot {
-    public static final int WRIST = 13;
-  }
-
-  public static final class Intake {
-    public static final int ROLL_INTAKE = 14;
-    public static final int PIVOT_INTAKE = 15;
-  }
-
-  public static final class Shooter {
-    public static final int SHOOTER_TOP = 16;
-    public static final int SHOOTER_BOTTOM = 17;
-    public static final int INDEXER = 12;
-
-    // DIO
-    public static final int BEAM_BREAK = 0;
   }
 
   public static final class Controller {

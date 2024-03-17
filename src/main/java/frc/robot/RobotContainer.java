@@ -50,6 +50,7 @@ public class RobotContainer {
   }
 
   public void initAutons() {
+    autonChooser.setDefaultOption("Do Nothing", null);
     // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
     
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
@@ -57,6 +58,7 @@ public class RobotContainer {
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
     autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));    
+    // TODO: add none option
 
     // autonChooser = AutoBuilder.buildAutoChooser();
     
@@ -96,9 +98,10 @@ public class RobotContainer {
     // secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
     // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     // secondary.b().whileTrue(new EjectNote(intake, shooter));
-    driver.leftBumper().whileTrue(new EjectNote(shintake));
-    driver.rightBumper().whileTrue(new ShintakeIntakeNote(shintake));
-    secondary.rightBumper().whileTrue(new ShintakeScoreAmp(shintake));
+    // ACTUAL STUFF:
+    // driver.leftBumper().whileTrue(new EjectNote(shintake));
+    // driver.rightBumper().whileTrue(new ShintakeIntakeNote(shintake));
+    // secondary.rightBumper().whileTrue(new ShintakeScoreAmp(shintake));
 
 
     // --------------------=Secondary=--------------------

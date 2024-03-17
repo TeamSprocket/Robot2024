@@ -232,7 +232,7 @@ public class Constants {
         // Measurements
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
         public static final double kModuleOffsetMeters = 0.572;
-        public static final double kDriveMotorGearRatio = 6.75;
+        public static final double kDriveMotorGearRatio = 6.75;                                                                                                                                          
         public static final double kTurningMotorGearRatio = 21.35;
         public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
                 new Translation2d(-kModuleOffsetMeters / 2, -kModuleOffsetMeters / 2),
@@ -327,10 +327,10 @@ public class Constants {
         // public static double kCANCoderOffsetBackLeft = 260.5; // 131.1
         // public static double kCANCoderOffsetBackRight = 340.9; // 234.1
         
-        public static double kCANCoderOffsetFrontLeft = 50.3; // 50.3
-        public static double kCANCoderOffsetFrontRight = 126.8; // 126.8
-        public static double kCANCoderOffsetBackLeft = 270.2; // 270.2
-        public static double kCANCoderOffsetBackRight = 161.6; // 161.6
+        public static double kCANCoderOffsetFrontLeft = 304.0; // 50.3
+        public static double kCANCoderOffsetFrontRight = 20.2; // 126.8
+        public static double kCANCoderOffsetBackLeft = 245.3; // 270.2
+        public static double kCANCoderOffsetBackRight = 354.9; // 161.6
 
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =

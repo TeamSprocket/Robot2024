@@ -36,11 +36,11 @@ public class Shintake extends SubsystemBase {
         WAIT_AMP
     }
 
-    ShintakeStates state;
+    ShintakeStates state; // TODO:get rid of none
 
-    private final CANSparkMax shintakeMotor = new CANSparkMax(RobotMap.Intake.ROLL_INTAKE, MotorType.kBrushless); 
-    private final TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER); 
-    private final TalonFX pivotMotor = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
+    private final CANSparkMax shintakeMotor = new CANSparkMax(RobotMap.Shintake.SHINTAKE, MotorType.kBrushless); 
+    private final TalonFX indexerMotor = new TalonFX(RobotMap.Shintake.INDEXER); 
+    private final TalonFX pivotMotor = new TalonFX(RobotMap.Shintake.PIVOT);
 
     // private double pivotSpeed = 0;
 
@@ -70,6 +70,7 @@ public class Shintake extends SubsystemBase {
         stateChooser.addOption("SCORE_AMP", ShintakeStates.SCORE_AMP);
 
         SmartDashboard.putData("Intake State", stateChooser);
+        SmartDashboard.putNumber("Pivot Angle Position", getDegrees());
 
         ShuffleboardPIDTuner.addSlider("PID kP pivot", 0, 1, 0);
         ShuffleboardPIDTuner.addSlider("PID kD pivot", 0, 1, 0);
@@ -77,6 +78,7 @@ public class Shintake extends SubsystemBase {
 
     @Override
     public void periodic() {
+        setState(stateChooser.getSelected());
         switch (state) {
             case NONE: // TODO: remove space before colons ;-;
                 shintakeMotor.set(0);
