@@ -182,7 +182,7 @@ public class Constants {
 
         public static final int kVolatilitySlidingWindowLen = 20;
 
-        public static final double kPlimelight = 0.6;
+        public static final double kPlimelight = 0.003;
         public static final double kDlimelight = 0.0;
         public static final double kIlimelight = 0.0;
 
@@ -202,26 +202,26 @@ public class Constants {
                 new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotorFL = 0.05; // 0.0125
+        public static double kPTurnMotorFL = 0.003; // 0.0125
         public static double kITurnMotorFL = 0.00;
-        public static double kDTurnMotorFL = 0.0001; // 0.000026
+        public static double kDTurnMotorFL = 0.0000; // 0.000026
 
-        public static double kPTurnMotorFR = 0.05; // 0.0125
+        public static double kPTurnMotorFR = 0.003; // 0.0125
         public static double kITurnMotorFR = 0.00;
-        public static double kDTurnMotorFR = 0.0001; // 0.000026
+        public static double kDTurnMotorFR = 0.0000; // 0.000026
 
-        public static double kPTurnMotorBL = 0.05; // 0.0125
+        public static double kPTurnMotorBL = 0.003; // 0.0125
         public static double kITurnMotorBL = 0.00;
-        public static double kDTurnMotorBL = 0.0001; // 0.000026
+        public static double kDTurnMotorBL = 0.0000; // 0.000026
 
-        public static double kPTurnMotorBR = 0.05; // 0.0125
+        public static double kPTurnMotorBR = 0.003; // 0.0125
         public static double kITurnMotorBR = 0.00;
-        public static double kDTurnMotorBR = 0.0001; // 0.000026
+        public static double kDTurnMotorBR = 0.0000; // 0.000026
         
 
-        public static final double kPHeading = 0.0053; // 0.6
+        public static final double kPHeading = 1.2; // 0.6
         public static final double kIHeading = 0.0000;
-        public static final double kDHeading = 0.000352;
+        public static final double kDHeading = 0.0;
 
         public static final double kTranslationMultPP = 0.2;
 
