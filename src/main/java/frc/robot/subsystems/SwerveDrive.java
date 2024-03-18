@@ -143,6 +143,7 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     updateShuffleboardPIDConstants();
     gyro.clearStickyFaults();
+      
 
     SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
@@ -201,7 +202,15 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
+    double angle = gyro.getRotation2d().getDegrees() + 180.0; 
+    
+    angle %= 360.0;
+    if (angle < 0) {
+        angle += 360;
+    }
+
+    angle = Math.toRadians(angle);
+
     return angle;
   }
 
@@ -238,18 +247,18 @@ public class SwerveDrive extends SubsystemBase {
   
 
   // public void initGyro() {
-  //   gyro.reset();
-  //   gyro.reset();
+  //   gyro.setYaw(0);
+  //   // gyro.enterCalibrationMode();
+  //   // gyro.reset();
   // }
 
   public void zeroGyro() {
     gyro.setYaw(0);
-    //gyro.reset();
     // targetHeadingRad = Math.PI;
   }
 
   // public void calibrateGyro() {
-  //   gyro.calibrate();
+    // gyro.calibrate();
   // }
 
   // public void setTargetHeadingRad(double targetHeadingRad) {

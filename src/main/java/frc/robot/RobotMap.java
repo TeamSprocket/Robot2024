@@ -27,20 +27,20 @@ public final class RobotMap {
   public static final class Drivetrain {
     public static final int PIGEON_2 = 2;
 
-    public static final int FRONT_LEFT_TALON_D = 23;
-    public static final int FRONT_RIGHT_TALON_D = 27;
-    public static final int BACK_LEFT_TALON_D = 21;
-    public static final int BACK_RIGHT_TALON_D = 25;
+    public static final int FRONT_LEFT_TALON_D = 21;
+    public static final int FRONT_RIGHT_TALON_D = 23;
+    public static final int BACK_LEFT_TALON_D = 25;
+    public static final int BACK_RIGHT_TALON_D = 27;
 
-    public static final int FRONT_LEFT_TALON_T = 24;
-    public static final int FRONT_RIGHT_TALON_T = 28;
-    public static final int BACK_LEFT_TALON_T = 22;
-    public static final int BACK_RIGHT_TALON_T = 26;
+    public static final int FRONT_LEFT_TALON_T = 22;
+    public static final int FRONT_RIGHT_TALON_T = 24;
+    public static final int BACK_LEFT_TALON_T = 26;
+    public static final int BACK_RIGHT_TALON_T = 28;
 
-    public static final int FRONT_LEFT_ABS_ENCODER_ID = 1;
-    public static final int FRONT_RIGHT_ABS_ENCODER_ID = 3;
-    public static final int BACK_LEFT_ABS_ENCODER_ID = 0;
-    public static final int BACK_RIGHT_ABS_ENCODER_ID = 2;
+    public static final int FRONT_LEFT_ABS_ENCODER_ID = 31;
+    public static final int FRONT_RIGHT_ABS_ENCODER_ID = 32;
+    public static final int BACK_LEFT_ABS_ENCODER_ID = 33;
+    public static final int BACK_RIGHT_ABS_ENCODER_ID = 34;
   }
 
   public static final class Elevator{

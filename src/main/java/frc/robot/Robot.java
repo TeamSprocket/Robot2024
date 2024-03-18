@@ -41,9 +41,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-    //add shuffleboard information into disabledPeriodic
-  }
+  public void disabledPeriodic() {}
 
   @Override
   public void disabledExit() {}
