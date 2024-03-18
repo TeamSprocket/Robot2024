@@ -116,6 +116,10 @@ public class RobotContainer {
     return swerveDrive;
   }
 
+  public Shintake getShintake() {
+    return shintake;
+  }
+
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
   }

@@ -127,6 +127,10 @@ public class Shintake extends SubsystemBase {
         this.state = state;
     }
 
+    public void setNeutralMode(NeutralModeValue neutralModeValue) {
+        pivotMotor.setNeutralMode(neutralModeValue);
+    }
+
     public double getDegrees() {
         double deg = Conversions.falconToDegrees(pivotMotor.getRotorPosition().getValueAsDouble(),
                 Constants.Intake.kPivotIntakeGearRatio);
