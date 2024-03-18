@@ -81,9 +81,9 @@ public class SwerveModule extends SubsystemBase {
     SmartDashboard.putNumber("ABSDeg", getCANCoderDegrees());
     SmartDashboard.putNumber("TurnTicks1", turnMotor.getRotorPosition().getValueAsDouble());
     SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
-    double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
-    deg -= (deg >  180) ? 360 : 0;
-    SmartDashboard.putNumber("Degree", deg);  
+    // double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
+    // deg -= (deg >  180) ? 360 : 0;
+    // SmartDashboard.putNumber("Degree", deg);  
     
     
     // turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));

@@ -176,9 +176,6 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("turning speed [SD]", lockHeading());
 
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
-
-    
-
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
 
 
@@ -202,15 +199,7 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() { // ? why 0
-    double angle = gyro.getRotation2d().getDegrees() + 180.0; 
-    
-    angle %= 360.0;
-    if (angle < 0) {
-        angle += 360;
-    }
-
-    angle = Math.toRadians(angle);
-
+    double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
     return angle;
   }
 
