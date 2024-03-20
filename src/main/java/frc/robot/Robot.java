@@ -38,11 +38,14 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     Constants.robotState = RobotState.DISABLED;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
+    m_robotContainer.getShintake().setNeutralMode(NeutralModeValue.Coast);
     
   }
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // SmartDashboard.putNumber("Pivot Angle", m_robotContainer.getShintake().getDegrees());
+  }
 
   @Override
   public void disabledExit() {}

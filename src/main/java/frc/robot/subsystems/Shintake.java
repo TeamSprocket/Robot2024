@@ -62,18 +62,22 @@ public class Shintake extends SubsystemBase {
         shintakeMotor.setIdleMode(IdleMode.kCoast);
         pivotMotor.setNeutralMode(NeutralModeValue.Brake);
         indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+        
+        zeroPivot();
 
         stateChooser.setDefaultOption("NONE", ShintakeStates.NONE);
         stateChooser.addOption("STOWED", ShintakeStates.STOWED);
         stateChooser.addOption("INTAKE_NOTE", ShintakeStates.INTAKE_NOTE);
         stateChooser.addOption("EJECT_NOTE", ShintakeStates.EJECT_NOTE);
         stateChooser.addOption("SCORE_AMP", ShintakeStates.SCORE_AMP);
+        stateChooser.addOption("WAITAMP", ShintakeStates.WAIT_AMP);
+
 
         SmartDashboard.putData("Intake State", stateChooser);
-        SmartDashboard.putNumber("Pivot Angle Position", getDegrees());
-
+        
         ShuffleboardPIDTuner.addSlider("PID kP pivot", 0, 1, 0);
         ShuffleboardPIDTuner.addSlider("PID kD pivot", 0, 1, 0);
+        
     }
 
     @Override
@@ -117,6 +121,8 @@ public class Shintake extends SubsystemBase {
 
         pidControllerIntake.setP(ShuffleboardPIDTuner.get("PID kP pivot"));
         pidControllerIntake.setD(ShuffleboardPIDTuner.get("PID kD pivot"));
+
+        SmartDashboard.putNumber("Pivot Angle Position", getDegrees());
     }
 
     public ShintakeStates getState() {
@@ -134,6 +140,7 @@ public class Shintake extends SubsystemBase {
     public double getDegrees() {
         double deg = Conversions.falconToDegrees(pivotMotor.getRotorPosition().getValueAsDouble(),
                 Constants.Intake.kPivotIntakeGearRatio);
+        deg = deg - Constants.Shintake.kPivotAngleOffset;
         deg = deg % 360;
         return deg;
     }
@@ -153,6 +160,10 @@ public class Shintake extends SubsystemBase {
 
     public CANSparkMax getShintakeMotor() {
         return shintakeMotor;
+    }
+
+    public void zeroPivot() {
+        pivotMotor.setPosition(0);
     }
 
     // TODO: Overall looks really great, actually crazy progress for 1 day gjgj :)

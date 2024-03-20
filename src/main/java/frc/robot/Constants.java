@@ -191,18 +191,19 @@ public class Constants {
 
         //public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
 
-        public static final double kPivotAngleStowed = 20.0; // 20
-        public static final double kPivotAngleIntake = 172.0;
-        public static final double kScoreAmp = 80;
-
+        public static final double kPivotAngleStowed = 10; // 20
+        public static final double kPivotAngleIntake = 60;
+        public static final double kScoreAmp = 60;
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.6;
         public static final double kRollSpeedScoreAmp = -0.7;
         public static final double kEjectNoteSpeed = -0.6;
 
-        public static final double kMaxPivotOutput = 0.2;
+        public static final double kMaxPivotOutput = 0.1;
 
         public static final double kPivotIntakeGearRatio = 36.0;
+
+        public static final double kPivotAngleOffset = 0;
 
         public static final double kPPivot = 0.002914; // 1, 0.1
         public static final double kIPivot = 0.0;
