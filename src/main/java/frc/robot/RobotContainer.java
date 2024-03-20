@@ -31,15 +31,15 @@ public class RobotContainer {
   PowerDistribution pdh = new PowerDistribution();
 
   // Limelight limelight = new Limelight();
-  Vision vision = new Vision();
-  SwerveDrive swerveDrive = new SwerveDrive(vision);
+  // Vision vision = new Vision();
+  SwerveDrive swerveDrive = new SwerveDrive();
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());
-  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
+  // ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
   // swerveDrive.getPose().getTranslation());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget());
-  Intake intake = new Intake();
+  // Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget());
+  // Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter,
   // intake);
@@ -56,7 +56,7 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
     
-    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
+    autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
@@ -98,10 +98,10 @@ public class RobotContainer {
     // driver.button(RobotMap.Controller.A)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
-    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    secondary.b().whileTrue(new EjectNote(intake, shooter));
+    // secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
+    // secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    // secondary.b().whileTrue(new EjectNote(intake, shooter));
 
     // --------------------=Secondary=--------------------
 
@@ -114,6 +114,10 @@ public class RobotContainer {
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
   }
+
+  // public ShooterPivot getShooterPivot() {
+  //   return shooterPivot;
+  // }
 
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();

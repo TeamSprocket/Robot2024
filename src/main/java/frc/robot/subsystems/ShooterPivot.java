@@ -220,6 +220,10 @@ public class ShooterPivot extends SubsystemBase {
       return state;
   }
 
+  public void setNeutralMode(NeutralModeValue neutralModeValue) {
+    motor.setNeutralMode(neutralModeValue);
+  }
+
   // public double getShooterPivotTargetDeg() {
   //   double dist = Conversions.poseToDistance(botPoseSupplier.get(), Constants.ShootingSetpoints.targetPoint);
   //   double targetDeg = Constants.ShootingSetpoints.getValues(dist)[0];

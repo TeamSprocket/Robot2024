@@ -225,11 +225,11 @@ public class Constants {
 
         public static final double kTranslationMultPP = 0.2;
 
-        public static final double kPTranslationPP = 3.0; // 4.0 
+        public static final double kPTranslationPP = 4.0; // 4.0 
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0;
 
-        public static final double kPRotationPP = 0.0; // 3.8
+        public static final double kPRotationPP = 3.0; // 3.8
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0; // 0.0
 
