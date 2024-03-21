@@ -31,8 +31,8 @@ public class RobotContainer {
   PowerDistribution pdh = new PowerDistribution();
 
   // Limelight limelight = new Limelight();
-  Vision vision = new Vision();
-  SwerveDrive swerveDrive = new SwerveDrive(vision);
+  // Vision vision = new Vision();
+  SwerveDrive swerveDrive = new SwerveDrive();
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());

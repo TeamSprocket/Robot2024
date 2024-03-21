@@ -30,6 +30,7 @@ import frc.util.Util;
 public class Vision extends SubsystemBase {    
     private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight"); // TODO: FIND CAMERA NAME
     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
+    // private PhotonCamera shooterLL = new PhotonCamera(); 
 
     private PIDController pidController = new PIDController(Constants.Vision.kPlimelight, Constants.Vision.kIlimelight, Constants.Vision.kDlimelight);
     

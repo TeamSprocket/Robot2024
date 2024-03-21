@@ -119,6 +119,15 @@ public final class Util {
   }
   
 
+  public static double signedSquare(double value) {
+    if (value == 0) {
+      return 0.0;
+    }
+
+    double valSign = value / Math.abs(value);
+    return valSign * Math.pow(value, 2.0);
+  }
+
 
 
 

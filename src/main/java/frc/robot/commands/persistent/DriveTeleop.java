@@ -44,6 +44,12 @@ public class DriveTeleop extends Command {
     ySpeed *= -1;
     double tSpeed = Util.deadband(tSupplier.get(), 0.1);
     tSpeed *= -1;
+
+      xSpeed = Util.signedSquare(xSpeed);
+      ySpeed = Util.signedSquare(ySpeed);
+      tSpeed = Util.signedSquare(tSpeed);
+
+    SmartDashboard.putNumber("Squared xSpeed [DTC]", xSpeed);
     
     xSpeed = xSlewLimit.calculate(xSpeed) * Constants.Drivetrain.kMaxSpeed;
     ySpeed = ySlewLimit.calculate(ySpeed) * Constants.Drivetrain.kMaxSpeed;

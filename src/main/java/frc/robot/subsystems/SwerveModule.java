@@ -45,9 +45,9 @@ public class SwerveModule extends SubsystemBase {
   private final boolean turnIsReversed;
 
   public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, Supplier<Double> cancoderOffsetDeg, boolean driveIsReversed, boolean turnIsReversed, double kPTurnMotor, double kITurnMotor, double kDTurnMotor) {
-    this.driveMotor = new TalonFX(driveMotorID, "canivore");
-    this.turnMotor = new TalonFX(turnMotorID, "canivore");
-    this.cancoder = new CANcoder(cancoderID, "canivore");
+    this.driveMotor = new TalonFX(driveMotorID, "rio");
+    this.turnMotor = new TalonFX(turnMotorID, "rio");
+    this.cancoder = new CANcoder(cancoderID, "rio");
     this.cancoderOffsetDeg = cancoderOffsetDeg; 
 
     this.turnIsReversed = turnIsReversed;

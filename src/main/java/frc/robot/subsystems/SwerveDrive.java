@@ -24,7 +24,7 @@ import frc.robot.RobotContainer;
 
 public class SwerveDrive extends SubsystemBase {
 
-  Vision vision;
+  // Vision vision;
 
   double xSpeed, ySpeed, tSpeed;
   // double targetHeadingRad = Math.PI;
@@ -93,8 +93,8 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  public SwerveDrive(Vision vision) {
-    this.vision = vision;
+  public SwerveDrive() {
+    // this.vision = vision;
 
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
@@ -173,7 +173,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
     SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
 
-    SmartDashboard.putNumber("turning speed [SD]", lockHeading());
+    // SmartDashboard.putNumber("turning speed [SD]", lockHeading());
 
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
@@ -292,28 +292,28 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setNeutralModeTurn(neutralMode);
   }
 
-  public void updateOdometryWithVision() {
-    Translation2d pos = vision.getTranslation2d();
-    if (vision.getIsNotVolatile()) { // LL readings not volatile
-      if (vision.hasTargets(pos)) { // LL can see tags
-        resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
-      }
-    }
-  }
+  // public void updateOdometryWithVision() {
+  //   Translation2d pos = vision.getTranslation2d();
+  //   if (vision.getIsNotVolatile()) { // LL readings not volatile
+  //     if (vision.hasTargets(pos)) { // LL can see tags
+  //       resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+  //     }
+  //   }
+  // }
 
-  public double lockHeading() {
-    double yaw = vision.getYaw();
-    double tSpeed = vision.getTspeed(yaw);
+  // public double lockHeading() {
+  //   double yaw = vision.getYaw();
+  //   double tSpeed = vision.getTspeed(yaw);
 
-    return tSpeed;
+  //   return tSpeed;
 
-    // updateChassisSpeeds(0.0, 0.0, tSpeed); // TODO: test on cart
-  }
+  //   // updateChassisSpeeds(0.0, 0.0, tSpeed); // TODO: test on cart
+  // }
 
-  public void alignWithAprilTag() {
-    double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
-    updateChassisSpeeds(0, 0, rotSpeed);
-  }
+  // public void alignWithAprilTag() {
+  //   double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
+  //   updateChassisSpeeds(0, 0, rotSpeed);
+  // }
 
   // Stuff for Pathplanner
   public Pose2d getPose() {
