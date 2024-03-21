@@ -93,7 +93,7 @@ public class Shintake extends SubsystemBase {
                 shintakeMotor.set(Constants.Shintake.kRollSpeedStowed);
                 pivotMotor.set(getPivotSpeed(Constants.Shintake.kPivotAngleStowed));
                 break;
-
+    
             case INTAKE_NOTE:
                 shintakeMotor.set(Constants.Shintake.kRollSpeedIntake);
                 indexerMotor.set(Constants.Shintake.kIndexerSpeedIntake);
