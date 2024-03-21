@@ -29,7 +29,7 @@ public class RobotContainer {
   // Limelight limelight = new Limelight();
   Vision vision = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(vision);
-  Shintake shintake = new Shintake();
+  //Shintake shintake = new Shintake();
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());
@@ -116,9 +116,9 @@ public class RobotContainer {
     return swerveDrive;
   }
 
-  public Shintake getShintake() {
-    return shintake;
-  }
+  // public Shintake getShintake() {
+  //   return shintake;
+  // }
 
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
