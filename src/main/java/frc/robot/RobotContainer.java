@@ -48,8 +48,8 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
-    initAutons();
     initNamedCommands();
+    initAutons();
   }
 
   public void initAutons() {
@@ -62,6 +62,10 @@ public class RobotContainer {
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
     autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));
     autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
+    autonChooser.addOption("PrintHello", new PathPlannerAuto("TestingNamedCommands"));
+    autonChooser.addOption("PPTranslationTuning", new PathPlannerAuto("PPTranslationTuning"));
+    autonChooser.addOption("Just Moving", new PathPlannerAuto("JustTranslation"));
+
     
 
     // autonChooser = AutoBuilder.buildAutoChooser();
@@ -70,11 +74,11 @@ public class RobotContainer {
   }
 
   public void initNamedCommands() {
-    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure,
-    // swerveDrive));
-    // NamedCommands.registerCommand("ScoreSpeaker", new
-    // ScoreSpeaker(superstructure, swerveDrive));
+    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure, swerveDrive));
+    // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
     // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
+    NamedCommands.registerCommand("PrintHello", new PrintHello());
+
   }
 
   public Command getAutonomousCommand() {
@@ -87,7 +91,7 @@ public class RobotContainer {
         swerveDrive,
         () -> -driver.getLeftX(),
         () -> driver.getLeftY(),
-        () -> -driver.getRightX()));
+        () -> -driver.getRightX() * -1));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     // driver.button(RobotMap.Controller.Y)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));

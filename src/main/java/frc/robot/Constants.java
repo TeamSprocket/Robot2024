@@ -225,7 +225,7 @@ public class Constants {
 
         public static final double kTranslationMultPP = 0.2;
 
-        public static final double kPTranslationPP = 4.0; // 4.0 
+        public static final double kPTranslationPP = 5.5; // 4.0 
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0;
 
