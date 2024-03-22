@@ -11,10 +11,13 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import frc.util.Conversions;
 import frc.util.PIDConst;
+import edu.wpi.first.wpilibj.RobotBase;
+import java.util.Map;
+
 
 public class Constants {
 
-    //private static final RobotType robot = RobotType.ROBOT_SIMBOT;
+    // private static final RobotType robot = RobotType.ROBOT_SIMBOT;
     public static enum RobotState {
         TELEOP,
         AUTON,
@@ -22,8 +25,13 @@ public class Constants {
         TELEOP_DISABLE_SWERVE
     }
 
+    public static enum RobotType {
+        ROBOT_SIMBOT
+    }
+
     // Global
     public static RobotState robotState = RobotState.DISABLED;
+    public static RobotType ROBOT = RobotType.ROBOT_SIMBOT;
 
     public static final class Superstructure {
         // Delay between note detected and retract intake

@@ -15,6 +15,13 @@
       "/SmartDashboard/SendableChooser[8]": "String Chooser",
       "/SmartDashboard/Shooter State Chooser [ST]": "String Chooser",
       "/SmartDashboard/State Selector [SP]": "String Chooser"
+    },
+    "windows": {
+      "/SmartDashboard/Auto Routine Selector": {
+        "window": {
+          "visible": true
+        }
+      }
     }
   },
   "NetworkTables": {
