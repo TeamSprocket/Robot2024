@@ -13,6 +13,8 @@ import frc.util.Conversions;
 import frc.util.PIDConst;
 
 public class Constants {
+
+    //private static final RobotType robot = RobotType.ROBOT_SIMBOT;
     public static enum RobotState {
         TELEOP,
         AUTON,
