@@ -302,22 +302,13 @@ public class SwerveDrive extends SubsystemBase {
   // }
 
   public void lockHeading() {
-    double yaw = vision.getYaw();
-    double tSpeed = vision.getTspeed(yaw);
-
-    // return tSpeed;
-    updateChassisSpeeds(0.0, 0.0, tSpeed); // TODO: test on cart
+    updateChassisSpeeds(0.0, 0.0, getTspeed());
   }
 
   public double getTspeed() {
     double yaw = vision.getYaw();
     return vision.getTspeed(yaw);
   }
-
-  // public void alignWithAprilTag() {
-  //   double rotSpeed = vision.getYaw() * Constants.Vision.kMaxTurningSpeed * -1;
-  //   updateChassisSpeeds(0, 0, rotSpeed);
-  // }
 
   // Stuff for Pathplanner
   public Pose2d getPose() {
