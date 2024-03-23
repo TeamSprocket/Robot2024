@@ -182,7 +182,7 @@ public class Constants {
 
         public static final int kVolatilitySlidingWindowLen = 20;
 
-        public static final double kPlimelight = 0.003;
+        public static final double kPlimelight = 0.005;
         public static final double kDlimelight = 0.0;
         public static final double kIlimelight = 0.0;
 
@@ -292,7 +292,6 @@ public class Constants {
         public static double kCANCoderOffsetFrontRight = 302.0; // 126.8
         public static double kCANCoderOffsetBackLeft = 113.4; // 270.2
         public static double kCANCoderOffsetBackRight = 338.7; // 161.6
-
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =
         // Math.toRadians(303.2);

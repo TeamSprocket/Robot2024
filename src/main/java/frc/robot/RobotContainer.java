@@ -31,8 +31,8 @@ public class RobotContainer {
   PowerDistribution pdh = new PowerDistribution();
 
   // Limelight limelight = new Limelight();
-  // Vision vision = new Vision();
-  SwerveDrive swerveDrive = new SwerveDrive();
+  Vision vision = new Vision();
+  SwerveDrive swerveDrive = new SwerveDrive(vision);
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
   // secondary.getRightTriggerAxis());
@@ -93,6 +93,8 @@ public class RobotContainer {
         () -> driver.getLeftY(),
         () -> -driver.getRightX() * -1));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
+    
+    driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
     // driver.button(RobotMap.Controller.Y)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
     // driver.button(RobotMap.Controller.X)
