@@ -202,21 +202,21 @@ public class Constants {
                 new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotorFL = 0.003; // 0.0125
+        public static double kPTurnMotorFL = 0.00255; // 0.0125
         public static double kITurnMotorFL = 0.00;
-        public static double kDTurnMotorFL = 0.0000; // 0.000026
+        public static double kDTurnMotorFL = 0.000025; // 0.000026
 
-        public static double kPTurnMotorFR = 0.003; // 0.0125
+        public static double kPTurnMotorFR = 0.0027; // 0.0125
         public static double kITurnMotorFR = 0.00;
         public static double kDTurnMotorFR = 0.0000; // 0.000026
 
-        public static double kPTurnMotorBL = 0.003; // 0.0125
+        public static double kPTurnMotorBL = 0.00255; // 0.0125
         public static double kITurnMotorBL = 0.00;
-        public static double kDTurnMotorBL = 0.0000; // 0.000026
+        public static double kDTurnMotorBL = 0.000025; // 0.000026
 
-        public static double kPTurnMotorBR = 0.003; // 0.0125
+        public static double kPTurnMotorBR = 0.00255; // 0.0125
         public static double kITurnMotorBR = 0.00;
-        public static double kDTurnMotorBR = 0.0000; // 0.000026
+        public static double kDTurnMotorBR = 0.000025; // 0.000026
         
 
         public static final double kPHeading = 1.2; // 0.6
@@ -288,10 +288,10 @@ public class Constants {
         // public static double kCANCoderOffsetBackLeft = 260.5; // 131.1
         // public static double kCANCoderOffsetBackRight = 340.9; // 234.1
         
-        public static double kCANCoderOffsetFrontLeft = 236.1; // 50.3
-        public static double kCANCoderOffsetFrontRight = 302.0; // 126.8
-        public static double kCANCoderOffsetBackLeft = 113.4; // 270.2
-        public static double kCANCoderOffsetBackRight = 338.7; // 161.6
+        public static double kCANCoderOffsetFrontLeft = 235.2; // 236.1;
+        public static double kCANCoderOffsetFrontRight = 298.8; // 302.0
+        public static double kCANCoderOffsetBackLeft = 124.4; // 113.4
+        public static double kCANCoderOffsetBackRight = 339.8; // 338.7
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =
         // Math.toRadians(303.2);
