@@ -38,7 +38,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     Constants.robotState = RobotState.DISABLED;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
-    m_robotContainer.getShintake().setNeutralMode(NeutralModeValue.Coast);
+    //m_robotContainer.getShintake().setNeutralMode(NeutralModeValue.Coast);
     
   }
 
