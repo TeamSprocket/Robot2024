@@ -95,7 +95,7 @@ public class ShooterPivot extends SubsystemBase {
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
     SmartDashboard.putString("PivotState", state.toString());
-    setState(selectShooterPivotState.getSelected());
+    // setState(selectShooterPivotState.getSelected());
 
     switch(state) { // TODO: figure out target angles
 

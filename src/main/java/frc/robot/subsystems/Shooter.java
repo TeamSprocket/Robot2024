@@ -105,11 +105,11 @@ public class Shooter extends SubsystemBase {
     // setState(stateChooser.getSelected());
     postSmartDashboardDebug();
 
-    shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
-    shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
+    // shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
+    // shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
 
-    indexerPID.setP(ShuffleboardPIDTuner.get("Indexer kP [ST]"));
-    indexerPID.setD(ShuffleboardPIDTuner.get("Indexer kD [ST]"));
+    // indexerPID.setP(ShuffleboardPIDTuner.get("Indexer kP [ST]"));
+    // indexerPID.setD(ShuffleboardPIDTuner.get("Indexer kD [ST]"));
 
     switch (state) {
 
@@ -377,7 +377,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
     SmartDashboard.putNumber("Indexer Increment[ST]", indexerInc);
 
-    SmartDashboard.putNumber("Indexer Current [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Current Stator [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Indexer Current Stator [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
 
     SmartDashboard.putBoolean("Has Detected Note [ST]", hasDetectedNote());
   }

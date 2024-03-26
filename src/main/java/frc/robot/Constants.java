@@ -28,7 +28,7 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollbackTimeSec = 0.05; // 0.05
+        public static final double kIndexerIntakeRollbackTimeSec = 0.2; // 0.05
 
         // Elapsed time all elements at wait speaker pos before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.25;
@@ -120,7 +120,7 @@ public class Constants {
         public static final double kShooterIncramentMultiplier = 0.01;
 
         public static final double kShooterGearRatio = 0.6666666666;
-        public static final double kIndexerGearRatio = 0.7272727272;
+        public static final double kIndexerGearRatio = 0.5;
 
         public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.375);
         public static final double kIndexerWheelDiameter = Conversions.inchesToMeters(2.0);
@@ -145,8 +145,8 @@ public class Constants {
         public static final double kScoreSpeaker = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
-        public static final double kRollSpeedIntake = 0.6;
-        public static final double kRollSpeedIntakeRollback = 0.05;
+        public static final double kRollSpeedIntake = 0.2;
+        public static final double kRollSpeedIntakeRollback = 0.02;
         public static final double kRollSpeedScoreSpeaker = 0.2;
         public static final double kEjectNoteSpeed = -0.6;
         ;

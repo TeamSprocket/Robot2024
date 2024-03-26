@@ -34,12 +34,10 @@ public class RobotContainer {
   Vision vision = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(vision);
 
-  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () ->
-  // secondary.getRightTriggerAxis());
+  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
   // ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
-  // swerveDrive.getPose().getTranslation());
-  // Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget());
-  // Intake intake = new Intake();
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget());
+  Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter,
   // intake);
@@ -94,7 +92,7 @@ public class RobotContainer {
         () -> -driver.getRightX() * -1));
     driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     
-    driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
+    // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
     // driver.button(RobotMap.Controller.Y)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
     // driver.button(RobotMap.Controller.X)
@@ -104,7 +102,7 @@ public class RobotContainer {
     // driver.button(RobotMap.Controller.A)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    // secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
+    secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
     // secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
     // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     // secondary.b().whileTrue(new EjectNote(intake, shooter));
