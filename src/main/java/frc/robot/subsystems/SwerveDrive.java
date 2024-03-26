@@ -12,6 +12,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -39,7 +40,8 @@ public class SwerveDrive extends SubsystemBase {
   } 
 
   // private WPI_PigeonIMU gyro = new WPI_PigeonIMU(RobotMap.Drivetrain.PIGEON_2);
-  private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
+  // private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
+  private final ADIS16470_IMU gyro = new ADIS16470_IMU();
 
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
@@ -137,7 +139,7 @@ public class SwerveDrive extends SubsystemBase {
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
     // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
-    gyro.clearStickyFaults();
+    gyro.calibrate();
   }
 
   @Override
@@ -150,7 +152,7 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     // SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
 
-    // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("Gyro Yaw", getHeading());
 
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
@@ -200,8 +202,11 @@ public class SwerveDrive extends SubsystemBase {
   /**
    * @return Heading in radians [0, 2PI) 
    */
-  public double getHeading() { // ? why 0
-    double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
+  public double getHeading() {
+    double angle = gyro.getAngle() % 360.0;
+    if (angle < 0) {
+        angle += 360;
+    }
     return angle;
   }
 
@@ -243,8 +248,10 @@ public class SwerveDrive extends SubsystemBase {
   // }
 
   public void zeroGyro() {
-    gyro.setYaw(0);
-    //gyro.reset();
+    // gyro.setGyroAngleX(0);
+    // gyro.setGyroAngleY(0);
+    // gyro.setGyroAngleZ(0);
+    gyro.reset();
     // targetHeadingRad = Math.PI;
   }
 
