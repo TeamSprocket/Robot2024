@@ -191,10 +191,14 @@ public class Shooter extends SubsystemBase {
 
         // Spin up shooter
 
-        if (dist != 0.0) {
-          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
-          shooterMotor.set(shooterInc);
-        } 
+        // if (dist != 0.0) {
+        //   shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+        //   shooterMotor.set(shooterInc);
+        // } 
+
+        // for OC
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterMotor.set(shooterInc);
       break;
 
       case SPINUP_PODIUM: 
@@ -206,10 +210,14 @@ public class Shooter extends SubsystemBase {
 
         // Spin up shooter
         
-        if (dist != 0.0) {
-          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
-          shooterMotor.set(shooterInc);
-        } 
+        // if (dist != 0.0) {
+        //   shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+        //   shooterMotor.set(shooterInc);
+        // } 
+
+        // for OC
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerPodium) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterMotor.set(shooterInc);
       break;
 
       case SPINUP_AMP_ZONE: 
@@ -221,10 +229,14 @@ public class Shooter extends SubsystemBase {
 
         // Spin up shooter
         
-        if (dist != 0.0) {
-          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
-          shooterMotor.set(shooterInc);
-        } 
+        // if (dist != 0.0) {
+        //   shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
+        //   shooterMotor.set(shooterInc);
+        // } 
+
+        // for OC
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerAmpZone) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterMotor.set(shooterInc);
       break;
 
       case SCORE_SPEAKER:

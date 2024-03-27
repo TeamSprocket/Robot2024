@@ -75,6 +75,6 @@ public class IntakeNoteManual  extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > Constants.Superstructure.kIndexerIntakeRollforwardTimeSec;
+    return timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec;
   }
 }

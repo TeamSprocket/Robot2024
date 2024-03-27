@@ -103,9 +103,9 @@ public class RobotContainer {
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
     secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
-    // secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    // secondary.b().whileTrue(new EjectNote(intake, shooter));
+    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    secondary.b().whileTrue(new EjectNote(intake, shooter));
 
     // --------------------=Secondary=--------------------
 

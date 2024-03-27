@@ -28,7 +28,7 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollforwardTimeSec = 0.1; // 0.3
+        public static final double kIndexerIntakeRollBackTimeSec = 0.1; // 0.3
 
         // Elapsed time all elements at wait speaker pos before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.25;
@@ -111,7 +111,7 @@ public class Constants {
         public static final double kIndexerSpeedScoreSpeaker = 0.7; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIndexerEjectNoteSpeed = -0.5;
-        public static final double kIntakeRollbackSpeed = -0.08;
+        public static final double kIntakeRollbackSpeed = -0.1;
         
         // JUST IN CASE
         public static final double kIndexerSpeedSource = -0.1;
