@@ -98,7 +98,7 @@ public class Superstructure extends SubsystemBase {
         shooter.setState(ShooterStates.INTAKE);
         intake.setState(IntakeStates.INTAKE);
 
-        if (timer.get() > Constants.Superstructure.kIndexerIntakeRollbackTimeSec) {
+        if (timer.get() > Constants.Superstructure.kIndexerIntakeRollforwardTimeSec) {
           setState(SSStates.STOWED);
         } 
       break;

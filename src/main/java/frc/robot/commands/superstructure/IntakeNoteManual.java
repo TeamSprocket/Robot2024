@@ -30,7 +30,7 @@ public class IntakeNoteManual  extends Command {
 
     hasNote = false;
 
-    intake.setState(IntakeStates.INTAKE);
+    intake.setState(IntakeStates.INTAKE); // put back
     shooter.setState(ShooterStates.INTAKE_ACCEL);
 
     timer.reset();
@@ -68,13 +68,13 @@ public class IntakeNoteManual  extends Command {
     // Constants.robotState = Constants.RobotState.TELEOP;
     // superstructure.setState(SSStates.STOWED);
 
-    intake.setState(IntakeStates.STOWED);
+    intake.setState(IntakeStates.STOWED); // put back
     shooter.setState(ShooterStates.STANDBY);
     
   }
 
   @Override
   public boolean isFinished() {
-    return timer.get() > Constants.Superstructure.kIndexerIntakeRollbackTimeSec;
+    return timer.get() > Constants.Superstructure.kIndexerIntakeRollforwardTimeSec;
   }
 }

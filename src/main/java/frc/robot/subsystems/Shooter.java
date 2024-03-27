@@ -43,9 +43,9 @@ public class Shooter extends SubsystemBase {
   private ShooterStates lastState = ShooterStates.NONE;
 
   // Motors
-  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP, "rio");
-  TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM, "rio");
-  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER, "rio");
+  TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP, "canivore");
+  TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM, "canivore");
+  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER, "canivore");
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
@@ -72,6 +72,7 @@ public class Shooter extends SubsystemBase {
     shooterFollowerMotor.setControl(new StrictFollower(shooterMotor.getDeviceID()));
     
     shooterMotor.setNeutralMode(NeutralModeValue.Coast);
+    shooterFollowerMotor.setNeutralMode(NeutralModeValue.Coast);
     indexerMotor.setNeutralMode(NeutralModeValue.Brake);
 
     this.botPoseSupplier = botPoseSupplier;
@@ -160,7 +161,7 @@ public class Shooter extends SubsystemBase {
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
-        indexerMotor.set(-0.3); 
+        indexerMotor.set(Constants.Shooter.kIntakeRollbackSpeed); 
         indexerInc = 0.0;
 
         shooterInc = 0.0;
@@ -377,8 +378,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
     SmartDashboard.putNumber("Indexer Increment[ST]", indexerInc);
 
-    SmartDashboard.putNumber("Shooter Current Stator [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Indexer Current Stator [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Shooter Current Stator [ST]", shooterMotor.getStatorCurrent().getValueAsDouble());
 
     SmartDashboard.putBoolean("Has Detected Note [ST]", hasDetectedNote());
   }

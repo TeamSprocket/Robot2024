@@ -28,7 +28,7 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollbackTimeSec = 0.2; // 0.05
+        public static final double kIndexerIntakeRollforwardTimeSec = 0.1; // 0.3
 
         // Elapsed time all elements at wait speaker pos before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.25;
@@ -68,7 +68,7 @@ public class Constants {
     public static final class ShooterPivot {
         public static final boolean kIsShooterPivotInverted = false;
 
-        public static PIDConst kPID = new PIDConst(0.00675, 0, 0, 0.015);
+        public static PIDConst kPID = new PIDConst(0.00675, 0, 0, 0.015); // ff 0.015
 
         public static final double kManualMultiplier = 0.001;
 
@@ -99,7 +99,7 @@ public class Constants {
     public static final class Shooter {
         public static final boolean kIsShooterTopInverted = true;
         public static final boolean kIsShooterBottomInverted = true;
-        public static final boolean kIsIndexerInverted = true;
+        public static final boolean kIsIndexerInverted = false;
 
         public static final double kShooterSpeedScoreSpeakerSubwoofer = 10.0; // 10.0
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
@@ -107,11 +107,11 @@ public class Constants {
         public static final double kShooterSpeedScoreAmp = 1.0;
         public static final double kShooterEjectNoteSpeed = -0.25;
 
-        public static final double kIndexerSpeedIntake = 3; // 0.2
+        public static final double kIndexerSpeedIntake = 5; // 0.2
         public static final double kIndexerSpeedScoreSpeaker = 0.7; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIndexerEjectNoteSpeed = -0.5;
-        // public static final double kIntakeRollbackSpeed = 0.15;\
+        public static final double kIntakeRollbackSpeed = -0.08;
         
         // JUST IN CASE
         public static final double kIndexerSpeedSource = -0.1;
@@ -125,7 +125,7 @@ public class Constants {
         public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.375);
         public static final double kIndexerWheelDiameter = Conversions.inchesToMeters(2.0);
 
-        public static final double kHasNoteCurrentThreshold = 1000.0; // 60.0
+        public static final double kHasNoteCurrentThreshold = 90.0; // 65.0
         public static final double kMaxIndexerOutput = 0.9;
 
         public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
@@ -134,29 +134,29 @@ public class Constants {
         public static double kIShooter = 0.0;
         public static double kDShooter = 0.0075;
 
-        public static final double kPIndexer = 0.0;
+        public static final double kPIndexer = 0.175;
         public static final double kIIndexer = 0.0;
         public static final double kDIndexer = 0.0;
     }
 
     public static final class Intake {
         public static final double kPivotAngleStowed = 20.0; // 20
-        public static final double kPivotAngleIntake = 172.0;
+        public static final double kPivotAngleIntake = 120.0;
         public static final double kScoreSpeaker = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
-        public static final double kRollSpeedIntake = 0.2;
-        public static final double kRollSpeedIntakeRollback = 0.02;
+        public static final double kRollSpeedIntake = 0.4;
+        public static final double kRollSpeedIntakeRollback = 0.05;
         public static final double kRollSpeedScoreSpeaker = 0.2;
         public static final double kEjectNoteSpeed = -0.6;
-        ;
+        
 
         public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = false;
 
         // public static final double kPivotMaxVelocity = 0.0;
         // public static final double kPivotMaxAccel = 0.0;
-        public static final double kMaxPivotOutput = 0.2;
+        public static final double kMaxPivotOutput = 0.15;
 
         public static final double kAtGoalTolerance = 5; // 0.5
 

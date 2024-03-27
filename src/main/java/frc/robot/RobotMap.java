@@ -58,9 +58,9 @@ public final class RobotMap {
   }
 
   public static final class Shooter {
-    public static final int SHOOTER_TOP = 16;
-    public static final int SHOOTER_BOTTOM = 17;
-    public static final int INDEXER = 12;
+    public static final int SHOOTER_TOP = 17;
+    public static final int SHOOTER_BOTTOM = 12;
+    public static final int INDEXER = 16;
 
     // DIO
     public static final int BEAM_BREAK = 0;
