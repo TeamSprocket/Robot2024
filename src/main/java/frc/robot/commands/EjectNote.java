@@ -7,6 +7,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
@@ -15,11 +16,11 @@ public class EjectNote extends Command {
   /** Creates a new EjectIntake. */
   Intake intake;
   Shooter shooter;
-  ShooterPivot pivot;
-  public EjectNote(Intake intake, Shooter shooter, ShooterPivot pivot) {
+  ShooterPivot shooterPivot;
+  public EjectNote(Intake intake, Shooter shooter, ShooterPivot shooterPivot) {
     this.intake = intake;
     this.shooter = shooter;
-    this.pivot = pivot;
+    this.shooterPivot = shooterPivot;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -28,17 +29,21 @@ public class EjectNote extends Command {
   public void initialize() {
     intake.setState(IntakeStates.EJECT_NOTE);
     shooter.setState(ShooterStates.EJECT_NOTE);
+    shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
+    shooterPivot.setState(ShooterPivotStates.STOWED);
   }
 
   // Returns true when the command should end.

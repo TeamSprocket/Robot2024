@@ -51,6 +51,7 @@ public class ShooterPivot extends SubsystemBase {
     NONE,
     STOWED,
     INTAKE,
+    EJECT_NOTE,
     SPEAKER_SUBWOOFER, SPEAKER_PODIUM, SPEAKER_AMP_ZONE,
     SPEAKER,
     // SPEAKER_HIGH,
@@ -110,6 +111,15 @@ public class ShooterPivot extends SubsystemBase {
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
+
+      case EJECT_NOTE:
+        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleEject);
+        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+
+        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
+        motor.set(motorspeed);
+        break;
+
 
       case INTAKE:
         pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleIntake);

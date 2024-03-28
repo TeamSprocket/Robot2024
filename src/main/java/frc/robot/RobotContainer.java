@@ -35,7 +35,7 @@ public class RobotContainer {
   SwerveDrive swerveDrive = new SwerveDrive(vision);
 
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
-  // ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
+  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget());
   Intake intake = new Intake();
 
@@ -105,7 +105,7 @@ public class RobotContainer {
     secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter));
     secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
     secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    secondary.b().whileTrue(new EjectNote(intake, shooter));
+    secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
 
     // --------------------=Secondary=--------------------
 
