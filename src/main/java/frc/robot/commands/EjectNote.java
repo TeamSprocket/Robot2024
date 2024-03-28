@@ -9,14 +9,17 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
 public class EjectNote extends Command {
   /** Creates a new EjectIntake. */
   Intake intake;
   Shooter shooter;
-  public EjectNote(Intake intake, Shooter shooter) {
+  ShooterPivot pivot;
+  public EjectNote(Intake intake, Shooter shooter, ShooterPivot pivot) {
     this.intake = intake;
     this.shooter = shooter;
+    this.pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
