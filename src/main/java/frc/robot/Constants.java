@@ -28,15 +28,15 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollBackTimeSec = 0.1; // 0.3
+        public static final double kIndexerIntakeRollBackTimeSec = 0.15; // 0.3
 
         // Elapsed time all elements at wait speaker pos before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.25;
+        public static final double kWaitSpeakerTimeToleranceSec = 0.1;
 
         // Elapsed time shooting into speaker before stow
         public static final double kScoreSpeakerShootTimeToleranceSec = 1.5; // intake fallback = 0.5s,\1.0
 
-        public static final double kScoreSpeakerPivotTimeToleranceSec = 0.5;
+        public static final double kScoreSpeakerPivotTimeToleranceSec = 0.3;
 
         //
         public static final double kScoreSpeakerHeadingTolerance = 0.25;
@@ -98,18 +98,19 @@ public class Constants {
     }
 
     public static final class Shooter {
-        public static final boolean kIsShooterTopInverted = true;
-        public static final boolean kIsShooterBottomInverted = true;
+        public static final boolean kIsShooterTopInverted = false;
+        public static final boolean kIsShooterBottomInverted = false;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 10.0; // 10.0
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 15.0; // 10.0
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
         public static final double kShooterSpeedScoreAmp = 1.0;
         public static final double kShooterEjectNoteSpeed = -0.25;
+        public static final double kShooterIntakeNoteSpeed = -0.2;
 
         public static final double kIndexerSpeedIntake = 5; // 0.2
-        public static final double kIndexerSpeedScoreSpeaker = 0.7; // 0.9
+        public static final double kIndexerSpeedScoreSpeaker = 2.0; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIndexerEjectNoteSpeed = -0.5;
         public static final double kIntakeRollbackSpeed = -0.1;
@@ -126,7 +127,7 @@ public class Constants {
         public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.375);
         public static final double kIndexerWheelDiameter = Conversions.inchesToMeters(2.0);
 
-        public static final double kHasNoteCurrentThreshold = 90.0; // 65.0
+        public static final double kHasNoteCurrentThreshold = 90.0; // 65.0, 90.0
         public static final double kMaxIndexerOutput = 0.9;
 
         public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
@@ -135,7 +136,7 @@ public class Constants {
         public static double kIShooter = 0.0;
         public static double kDShooter = 0.0075;
 
-        public static final double kPIndexer = 0.175;
+        public static final double kPIndexer = 0.4;
         public static final double kIIndexer = 0.0;
         public static final double kDIndexer = 0.0;
     }

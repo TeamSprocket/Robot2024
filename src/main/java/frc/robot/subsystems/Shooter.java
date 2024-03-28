@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,6 +47,7 @@ public class Shooter extends SubsystemBase {
   TalonFX shooterMotor = new TalonFX(RobotMap.Shooter.SHOOTER_TOP, "canivore");
   TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM, "canivore");
   TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER, "canivore");
+  DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
@@ -143,7 +145,7 @@ public class Shooter extends SubsystemBase {
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
         shooterInc = 0.0;
-        shooterMotor.set(0);
+        shooterMotor.set(shooterInc);
       break;
 
       case INTAKE_ACCEL:
@@ -373,9 +375,17 @@ public class Shooter extends SubsystemBase {
     indexerMotor.clearStickyFaults();
   }
 
-  public boolean hasDetectedNote() {
-    return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
- }
+  // public boolean hasDetectedNoteIndexer() {
+  //   return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
+  // }
+
+  // public boolean hasDetectedNoteShooter() {
+  //   return Math.abs(shooterMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold;
+  // }
+
+  public boolean beamBroken() {
+    return !beamBreak.get();
+  }
 
   public void postSmartDashboardDebug() {
     SmartDashboard.putString("State [ST]", state.toString());
@@ -384,6 +394,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Indexer MPS [ST]", getIndexerMPS());
 
     SmartDashboard.putNumber("Shooter Target MPS [ST]", shooterPID.getSetpoint());
+    SmartDashboard.putNumber("Indexer Target MPS [ST]", indexerPID.getSetpoint());
     
     SmartDashboard.putBoolean("atGoalShooter [ST]", atGoalShooter());
 
@@ -393,7 +404,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Indexer Current Stator [ST]", indexerMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Shooter Current Stator [ST]", shooterMotor.getStatorCurrent().getValueAsDouble());
 
-    SmartDashboard.putBoolean("Has Detected Note [ST]", hasDetectedNote());
+    SmartDashboard.putBoolean("Has Detected Note [ST]", beamBroken());
   }
   
 }

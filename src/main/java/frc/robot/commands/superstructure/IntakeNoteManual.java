@@ -48,7 +48,7 @@ public class IntakeNoteManual  extends Command {
       shooter.setState(ShooterStates.INTAKE);
     }
 
-    if (shooter.hasDetectedNote()) { // Note in shooter 
+    if (shooter.beamBroken()) { // Note in shooter 
       hasNote = true;
       timer.start();
     } 
@@ -59,7 +59,6 @@ public class IntakeNoteManual  extends Command {
       
     }
     
-
 
   }
 
