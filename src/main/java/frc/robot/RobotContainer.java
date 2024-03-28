@@ -106,6 +106,8 @@ public class RobotContainer {
     secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
     secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     secondary.b().whileTrue(new EjectNote(intake, shooter));
+    // secondary.a().whileTrue(new ScoreSpeakerPodium(intake, shooter));
+
 
     // --------------------=Secondary=--------------------
 
