@@ -31,7 +31,7 @@ import frc.util.Util;
 
 public class ShooterPivot extends SubsystemBase {
   /** Creates a new ShooterPivot. */
-  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST, "rio");
+  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST, "canivore");
 
   ShooterPivotStates state = ShooterPivotStates.NONE;
   ShooterPivotStates lastState = ShooterPivotStates.NONE;
@@ -67,7 +67,7 @@ public class ShooterPivot extends SubsystemBase {
     this.distToTagSupplier = distToTagSupplier;
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
-    motor.setNeutralMode(NeutralModeValue.Brake);
+    motor.setNeutralMode(NeutralModeValue.Coast);
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(30)); // test values later
     
@@ -83,9 +83,6 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("CLIMB", ShooterPivotStates.CLIMB);
     SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
 
-    SmartDashboard.putNumber("shooterPivot angle", getShooterPivotAngle());
-    SmartDashboard.putNumber("shooterPivot velocity", motor.getVelocity().getValueAsDouble());
-
     // ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 1, Constants.ShooterPivot.kPID.kP);
     // ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.05, 0.0);
   }
@@ -96,6 +93,10 @@ public class ShooterPivot extends SubsystemBase {
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
     SmartDashboard.putString("PivotState", state.toString());
+    SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
+    SmartDashboard.putNumber("shooterPivot velocity [SP]", motor.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Pivot Target Angle [SP]", pidController.getSetpoint());
+    SmartDashboard.putNumber("Motor Speed [sp]", motorspeed);
     // setState(selectShooterPivotState.getSelected());
 
     switch(state) { // TODO: figure out target angles
@@ -178,6 +179,7 @@ public class ShooterPivot extends SubsystemBase {
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
+        
         motor.set(motorspeed);
         break;
 
@@ -252,6 +254,4 @@ public class ShooterPivot extends SubsystemBase {
   public void clearStickyFaults() {
     motor.clearStickyFaults();
   }
-
-
 }

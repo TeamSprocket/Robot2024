@@ -78,7 +78,7 @@ public class Constants {
 
         public static final double kHorizontalAngle = 52.0;
 
-        public static final double kMaxShooterPivotOutput = 0.3;
+        public static final double kMaxShooterPivotOutput = 1;
 
         public static final double kMaxDistance = 6.0;
 
@@ -87,7 +87,7 @@ public class Constants {
 
         public static final double kTargetAngleStowed = 5.0;
         public static final double kTargetAngleIntake = 5.0;
-        public static final double kTargetAngleEject = 20.0;
+        public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;

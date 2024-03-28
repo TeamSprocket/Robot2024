@@ -6,21 +6,25 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
 
 public class IntakeNoteManual  extends Command {
 
   Intake intake;
   Shooter shooter;
+  ShooterPivot shooterPivot;
   Timer timer = new Timer();
   Timer accelTimer = new Timer();
   boolean hasNote = false;
 
-  public IntakeNoteManual(Intake intake, Shooter shooter) {
+  public IntakeNoteManual(Intake intake, Shooter shooter, ShooterPivot shooterPivot) {
     this.intake = intake;
     this.shooter = shooter;
+    this.shooterPivot = shooterPivot;
   }
 
   @Override
@@ -32,6 +36,8 @@ public class IntakeNoteManual  extends Command {
 
     intake.setState(IntakeStates.INTAKE); // put back
     shooter.setState(ShooterStates.INTAKE_ACCEL);
+    shooterPivot.setState(ShooterPivotStates.INTAKE);
+    
 
     timer.reset();
     timer.stop();

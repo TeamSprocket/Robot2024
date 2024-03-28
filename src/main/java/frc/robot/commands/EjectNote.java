@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
@@ -11,31 +12,39 @@ import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
 public class EjectNote extends Command {
   /** Creates a new EjectIntake. */
   Intake intake;
   Shooter shooter;
-  ShooterPivot shooterPivot;
-  public EjectNote(Intake intake, Shooter shooter, ShooterPivot shooterPivot) {
+  ShooterPivot pivot;
+  Timer waitTimer = new Timer();
+
+  public EjectNote(Intake intake, Shooter shooter, ShooterPivot pivot) {
     this.intake = intake;
     this.shooter = shooter;
-    this.shooterPivot = shooterPivot;
+    this.pivot = pivot;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setState(IntakeStates.EJECT_NOTE);
-    shooter.setState(ShooterStates.EJECT_NOTE);
-    shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
+     waitTimer.reset();
+      waitTimer.start();
+
+  
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    pivot.setState(ShooterPivotStates.EJECT_NOTE);
+    if (waitTimer.get() > 0.5){
+    intake.setState(IntakeStates.EJECT_NOTE);
+    shooter.setState(ShooterStates.EJECT_NOTE);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -43,7 +52,7 @@ public class EjectNote extends Command {
   public void end(boolean interrupted) {
     intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
-    shooterPivot.setState(ShooterPivotStates.STOWED);
+    pivot.setState(ShooterPivotStates.STOWED);
   }
 
   // Returns true when the command should end.
