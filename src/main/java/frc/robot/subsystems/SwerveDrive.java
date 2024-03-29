@@ -6,7 +6,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -20,7 +19,6 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
-import frc.robot.RobotContainer;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -38,14 +36,13 @@ public class SwerveDrive extends SubsystemBase {
     BACK
   } 
 
-  // private WPI_PigeonIMU gyro = new WPI_PigeonIMU(RobotMap.Drivetrain.PIGEON_2);
   private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
 
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
         RobotMap.Drivetrain.FRONT_LEFT_TALON_T,
         RobotMap.Drivetrain.FRONT_LEFT_ABS_ENCODER_ID,
-        () -> Constants.Drivetrain.kCANCoderOffsetFrontLeft,
+        Constants.Drivetrain.kCANCoderOffsetFrontLeft,
         Constants.Drivetrain.FRONT_LEFT_D_IS_REVERSED,
         Constants.Drivetrain.FRONT_LEFT_T_IS_REVERSED,
         Constants.Drivetrain.kPTurnMotorFL,
@@ -56,7 +53,7 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_D,
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_T,
         RobotMap.Drivetrain.FRONT_RIGHT_ABS_ENCODER_ID,
-        () -> Constants.Drivetrain.kCANCoderOffsetFrontRight,
+        Constants.Drivetrain.kCANCoderOffsetFrontRight,
         Constants.Drivetrain.FRONT_RIGHT_D_IS_REVERSED,
         Constants.Drivetrain.FRONT_RIGHT_T_IS_REVERSED,
         Constants.Drivetrain.kPTurnMotorFR,
@@ -67,7 +64,7 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.BACK_LEFT_TALON_D,
         RobotMap.Drivetrain.BACK_LEFT_TALON_T,
         RobotMap.Drivetrain.BACK_LEFT_ABS_ENCODER_ID,
-        () -> Constants.Drivetrain.kCANCoderOffsetBackLeft,
+        Constants.Drivetrain.kCANCoderOffsetBackLeft,
         Constants.Drivetrain.BACK_LEFT_D_IS_REVERSED,
         Constants.Drivetrain.BACK_LEFT_T_IS_REVERSED,
         Constants.Drivetrain.kPTurnMotorBL,
@@ -78,14 +75,13 @@ public class SwerveDrive extends SubsystemBase {
         RobotMap.Drivetrain.BACK_RIGHT_TALON_D,
         RobotMap.Drivetrain.BACK_RIGHT_TALON_T,
         RobotMap.Drivetrain.BACK_RIGHT_ABS_ENCODER_ID,
-        () -> Constants.Drivetrain.kCANCoderOffsetBackRight,
+        Constants.Drivetrain.kCANCoderOffsetBackRight,
         Constants.Drivetrain.BACK_RIGHT_D_IS_REVERSED,
         Constants.Drivetrain.BACK_RIGHT_T_IS_REVERSED,
         Constants.Drivetrain.kPTurnMotorBR,
         Constants.Drivetrain.kITurnMotorBR,
         Constants.Drivetrain.kDTurnMotorBR
   );
-
 
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
     Constants.Drivetrain.kDriveKinematics,
@@ -119,7 +115,6 @@ public class SwerveDrive extends SubsystemBase {
     this
     );
 
-
     // ShuffleboardPIDTuner.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
     // ShuffleboardPIDTuner.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
 
@@ -136,49 +131,17 @@ public class SwerveDrive extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
     ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
-
   }
 
   @Override
   public void periodic() {
     updateShuffleboardPIDConstants();
     gyro.clearStickyFaults();
-      
 
-    SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
-    SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
-    SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
-    // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
-    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
-
-    SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
-
-    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
-    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
-
-    SmartDashboard.putNumber("front left cancoder [SD]", frontLeft.getCANCoderDegrees());
-    SmartDashboard.putNumber("front right cancoder [SD]", frontRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back right cancoder [SD]", backRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back left cancoder [SD]", backLeft.getCANCoderDegrees());
-
-    SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
-    SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
-    SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
-    SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
-
-    SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
-    SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
-    SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
-    SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
-
-    SmartDashboard.putNumber("turning speed [SD]", getTspeed());
+    debug();
 
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
-
-
 
     if (Constants.robotState == RobotState.TELEOP) {
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
@@ -192,8 +155,6 @@ public class SwerveDrive extends SubsystemBase {
     // updateOdometryWithVision();
     
   }
-
-
 
   /**
    * @return Heading in radians [0, 2PI) 
@@ -212,7 +173,6 @@ public class SwerveDrive extends SubsystemBase {
     };
     return modulePositions;
   }
-
 
   // public void switchDirection(Directions direction) {
   //   switch (direction) {
@@ -234,7 +194,6 @@ public class SwerveDrive extends SubsystemBase {
   //   }
   // }
   
-
   // public void initGyro() {
   //   gyro.setYaw(0);
   //   // gyro.enterCalibrationMode();
@@ -318,7 +277,6 @@ public class SwerveDrive extends SubsystemBase {
   public void resetPose(Pose2d pose) {
     // zeroDriveMotors();
     odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), pose);
-    // odometry.
   }
 
   public ChassisSpeeds getChassisSpeeds() {
@@ -345,10 +303,8 @@ public class SwerveDrive extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
-
-
   public void setModuleStates(SwerveModuleState[] desiredStates) {
-    frontLeft.setState(desiredStates[0]);//currently setting 
+    frontLeft.setState(desiredStates[0]); //currently setting 
     frontRight.setState(desiredStates[1]);
     backLeft.setState(desiredStates[2]);
     backRight.setState(desiredStates[3]);
@@ -390,7 +346,35 @@ public class SwerveDrive extends SubsystemBase {
   
   }
 
-  // public void clearStickyFaults() {
-    
-  // }
+  private void debug() {
+    // SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
+    // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
+    // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
+
+    // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
+    // SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
+
+    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
+    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
+    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
+    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
+
+    SmartDashboard.putNumber("front left cancoder/abs degrees [SD]", frontLeft.getCANCoderDegrees());
+    SmartDashboard.putNumber("front right cancoder/abs degrees [SD]", frontRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back right cancoder/abs degrees [SD]", backRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back left cancoder/abs degrees [SD]", backLeft.getCANCoderDegrees());
+
+    SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
+    SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
+    SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
+    SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
+
+    // SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
+    // SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
+    // SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
+    // SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
+
+    SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getTspeed());
+  }
 }

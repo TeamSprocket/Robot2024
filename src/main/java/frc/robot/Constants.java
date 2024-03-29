@@ -290,10 +290,11 @@ public class Constants {
         // public static double kCANCoderOffsetBackLeft = 260.5; // 131.1
         // public static double kCANCoderOffsetBackRight = 340.9; // 234.1
         
-        public static double kCANCoderOffsetFrontLeft = 235.2; // 236.1;
-        public static double kCANCoderOffsetFrontRight = 298.8; // 302.0
-        public static double kCANCoderOffsetBackLeft = 124.4; // 113.4
-        public static double kCANCoderOffsetBackRight = 339.8; // 338.7
+        // in rotations
+        public static double kCANCoderOffsetFrontLeft = 0.061279; // 236.1;
+        public static double kCANCoderOffsetFrontRight = 0.408691; // 302.0
+        public static double kCANCoderOffsetBackLeft = 0.052490; // 113.4
+        public static double kCANCoderOffsetBackRight = 0.491211; // 338.7
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =
         // Math.toRadians(303.2);

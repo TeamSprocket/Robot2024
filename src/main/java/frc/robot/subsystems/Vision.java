@@ -7,20 +7,16 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-import org.photonvision.PhotonUtils;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,9 +24,8 @@ import frc.robot.Constants;
 import frc.util.Util;
 
 public class Vision extends SubsystemBase {    
-    private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight"); // TODO: FIND CAMERA NAME
+    private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight");
     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
-    // private PhotonCamera shooterLL = new PhotonCamera(); 
 
     private PIDController pidController = new PIDController(Constants.Vision.kPlimelight, Constants.Vision.kIlimelight, Constants.Vision.kDlimelight);
     
@@ -152,15 +147,6 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    // public double getDistanceFromTarget() { // this is literally the same thing as what i did above
-    //     if (target != null) {
-    //         return PhotonUtils.calculateDistanceToTargetMeters(Constants.Vision.kLimelightHeightMeters, Constants.Vision.kSpeakerAprilTagHeightMeters, Units.degreesToRadians(Constants.Vision.kLimelightPitchAngleDegrees), Units.degreesToRadians(target.getPitch())); // Units.degreesToRadians
-    //     }
-    //     else {
-    //         return 0.0;
-    //     }
-    // }
-
     /**
      * @return Highest axial volatility reading
      */
@@ -264,7 +250,6 @@ public class Vision extends SubsystemBase {
     }
 
     private void debug() {
-        
         SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
         // SmartDashboard.putNumber("Distance from Target Straight [V]", getStraightDistanceFromTarget());
         SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
