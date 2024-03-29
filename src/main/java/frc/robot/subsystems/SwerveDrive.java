@@ -26,7 +26,8 @@ public class SwerveDrive extends SubsystemBase {
 
   double xSpeed, ySpeed, tSpeed;
   // double targetHeadingRad = Math.PI;
-  PIDController headingController;
+  // PIDController headingController;
+  PIDController speakerLockPIDController;
   SwerveDriveKinematics m_kinematics;
 
   public static enum Directions {
@@ -92,8 +93,13 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive(Vision vision) {
     this.vision = vision;
 
-    this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-    this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+    // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
+    // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+    
+    this.speakerLockPIDController = new PIDController(Constants.Drivetrain.kPIDSpeakerHeadingLock.kP, Constants.Drivetrain.kPIDSpeakerHeadingLock.kI, Constants.Drivetrain.kPIDSpeakerHeadingLock.kD);
+    this.speakerLockPIDController.enableContinuousInput(0, (2.0 * Math.PI));
+    this.speakerLockPIDController.setSetpoint(0.0);
+
 
     this.gyro.reset();
 
@@ -143,12 +149,18 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
 
-    if (Constants.robotState == RobotState.TELEOP) {
+    
+    if (Constants.robotState == RobotState.TELEOP || Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) {
+      if (Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) { // Override turning if turn locked to speaker 
+        this.tSpeed = getLockHeadingToSpeakerTSpeed();
+      }
+
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
       SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Drivetrain.kMaxSpeed);
       setModuleStates(moduleStates);
-    }
+    } 
+
 
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
@@ -260,13 +272,14 @@ public class SwerveDrive extends SubsystemBase {
   //   }
   // }
 
-  public void lockHeading() {
-    updateChassisSpeeds(0.0, 0.0, getTspeed());
-  }
-
-  public double getTspeed() {
-    double yaw = vision.getYaw();
-    return vision.getTspeed(yaw);
+  /**
+   * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
+   */
+  public double getLockHeadingToSpeakerTSpeed() {
+    double yawOffset = vision.getYaw();
+    speakerLockPIDController.setSetpoint(0.0); // just in case :P
+    double yawSpeed = speakerLockPIDController.calculate(yawOffset);
+    return yawSpeed;
   }
 
   // Stuff for Pathplanner
@@ -375,6 +388,6 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
     // SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
 
-    SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getTspeed());
+    SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
   }
 }

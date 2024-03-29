@@ -17,7 +17,8 @@ public class Constants {
         TELEOP,
         AUTON,
         DISABLED,
-        TELEOP_DISABLE_SWERVE
+        TELEOP_DISABLE_SWERVE,
+        TELEOP_LOCK_TURN_TO_SPEAKER
     }
 
     // Global
@@ -184,10 +185,6 @@ public class Constants {
 
         public static final int kVolatilitySlidingWindowLen = 20;
 
-        public static final double kPlimelight = 0.005;
-        public static final double kDlimelight = 0.0;
-        public static final double kIlimelight = 0.0;
-
         public static final double kdistanceOffset = 0.7642; // 0.5992
     }
 
@@ -219,13 +216,12 @@ public class Constants {
         public static double kPTurnMotorBR = 0.00255; // 0.0125
         public static double kITurnMotorBR = 0.00;
         public static double kDTurnMotorBR = 0.000025; // 0.000026
-        
 
         public static final double kPHeading = 1.2; // 0.6
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
-        public static final double kTranslationMultPP = 0.2;
+        public static final PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.005, 0, 0);
 
         public static final double kPTranslationPP = 5.5; // 4.0 
         public static final double kITranslationPP = 0.0;
@@ -234,6 +230,9 @@ public class Constants {
         public static final double kPRotationPP = 3.0; // 3.8
         public static final double kIRotationPP = 0.0;
         public static final double kDRotationPP = 0.0; // 0.0
+
+
+        public static final double kTranslationMultPP = 0.2;
 
 
         // Speed/Accel

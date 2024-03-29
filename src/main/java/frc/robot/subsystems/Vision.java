@@ -26,8 +26,6 @@ import frc.util.Util;
 public class Vision extends SubsystemBase {    
     private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight");
     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
-
-    private PIDController pidController = new PIDController(Constants.Vision.kPlimelight, Constants.Vision.kIlimelight, Constants.Vision.kDlimelight);
     
     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,5,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center // TODO: change transform based on cam mounting
@@ -116,13 +114,6 @@ public class Vision extends SubsystemBase {
         } else {
             return new Translation2d(0.0, 0.0);
         }   
-    }
-
-    public double getTspeed(double yaw) {
-        pidController.setSetpoint(0);
-        double tSpeed = pidController.calculate(yaw);
-
-        return tSpeed;
     }
 
     /**
