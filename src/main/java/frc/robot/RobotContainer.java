@@ -94,7 +94,8 @@ public class RobotContainer {
         () -> -driver.getRightX() * -1));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroGyro)); // hehe it's faster :3
-    driver.leftBumper().onTrue(new InstantCommand(swerveDrive::resetModulesToAbsolute)); // use for debugging
+    // driver.leftBumper().onTrue(new InstantCommand(swerveDrive::resetModulesToAbsolute)); // use for debugging
+    driver.a().onTrue(new InstantCommand(vision::setVisionDriverMode));
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
     // driver.button(RobotMap.Controller.Y)

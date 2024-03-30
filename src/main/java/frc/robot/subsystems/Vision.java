@@ -10,14 +10,12 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -37,8 +35,6 @@ public class Vision extends SubsystemBase {
     // private PhotonTrackedTarget note;
     // targets for camera
 
-    private SendableChooser<Boolean> cameraMode = new SendableChooser<Boolean>();
-
     private MedianFilter filterYaw = new MedianFilter(10);
     private MedianFilter filterPitch = new MedianFilter(10);
     // private MedianFilter filterIntake = new MedianFilter(5);
@@ -55,12 +51,9 @@ public class Vision extends SubsystemBase {
     // volatility
 
     public Vision() {
-        cameraMode.addOption("driver mode", true);
-        cameraMode.addOption("obj detection mode", false);
-
         // intakeLL.setPipelineIndex(0); // TODO: update pipelines to note
         // shooterLL.setPipelineIndex(0); // apriltag
-        shooterLL.setDriverMode(true);
+        shooterLL.setDriverMode(true); // will need to change this once we use pose for auton
 
         for (int i = 0; i < Constants.Vision.kVolatilitySlidingWindowLen; i++) {
             xPoseReadings.add(0.0);
@@ -75,12 +68,9 @@ public class Vision extends SubsystemBase {
         targets = shooterLL.getLatestResult().getTargets();
         updateTargets();
 
-        SmartDashboard.putNumber("tX [V]", currentPose.getX());
-        SmartDashboard.putNumber("tY [V]", currentPose.getY());
+        SmartDashboard.putNumber("Pose tX [V]", currentPose.getX());
+        SmartDashboard.putNumber("Pose tY [V]", currentPose.getY());
         debug();
-
-        // setDriverMode(cameraMode.getSelected());
-        // can change back and forth from driver cam and note detection
 
         // note = intakeLL.getLatestResult().getBestTarget();
         // gets closest note
@@ -132,7 +122,7 @@ public class Vision extends SubsystemBase {
                 distanceFromTarget = 0.0;
             }
 
-        // height from cam to april tag / tan(angle) = distance from cam to april tag
+            // height from cam to april tag / tan(angle) = distance from cam to april tag
             return distanceFromTarget - Constants.Vision.kdistanceOffset;
         } else {
             return 0.0;
@@ -142,26 +132,20 @@ public class Vision extends SubsystemBase {
     /**
      * @return Highest axial volatility reading
      */
-    public double getOverallVolatility() {
+    private double getOverallVolatility() {
         double volatilityX = getVolatilityAxis(averageX, xPoseReadings);
         double volatilityY = getVolatilityAxis(averageY, yPoseReadings);
         double overallVolatility = Util.max(volatilityX, volatilityY);
         return overallVolatility;
     }
 
-    // /**
-    //  * @param driver true for drivermode, false for note detection
-    //  * @return boolean to change camera pipeline
-    //  */
-    // public String setDriverMode(boolean driver) { // for intake LL
-    //     if (driver) {
-    //         intakeLL.setDriverMode(true);
-    //         return "driver mode";
-    //     } else {
-    //         intakeLL.setPipelineIndex(0); // TODO: change to note pipeline
-    //         return "note detection";
-    //     }
-    // }
+    public void setVisionDriverMode() {
+        if (shooterLL.getDriverMode()) {
+            shooterLL.setDriverMode(true);
+        } else {
+            shooterLL.setDriverMode(false); // TODO: change to intake LL + make sure pipeline returns to normal
+        }
+    }
 
     /**
      * @param translation of the robot on the field
@@ -177,10 +161,6 @@ public class Vision extends SubsystemBase {
 
     public boolean getIsNotVolatile() {
         return getOverallVolatility() < Constants.Vision.kAcceptableVolatilityThreshold;
-    }
-
-    public boolean getDriverMode() {
-        return shooterLL.getDriverMode();
     }
 
     public double getYaw() {
@@ -215,6 +195,14 @@ public class Vision extends SubsystemBase {
     //     return filterIntake.calculate(intakeNoteReading);
     // }
 
+    public PhotonCamera getShooterLL() {
+        return shooterLL;
+    }
+
+    // public PhotonCamera getIntakeLL() {
+    //     return intakeLL;
+    // }
+
     /**
      * sets target april tag to the middle speaker tags for correct alignment
      */
@@ -241,6 +229,10 @@ public class Vision extends SubsystemBase {
         return volatility;
     }
 
+    private boolean getDriverMode() {
+        return shooterLL.getDriverMode();
+    }
+
     private void debug() {
         SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
         // SmartDashboard.putNumber("Distance from Target Straight [V]", getStraightDistanceFromTarget());
@@ -251,11 +243,5 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
         SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
         SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
-
-        SmartDashboard.putNumber("Raw Localization X [V]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Raw Localization Y [V]", getTranslation2d().getY());
-
-        SmartDashboard.putNumber("Localization X [V]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Localization Y [V]", getTranslation2d().getY());
     }
 }
