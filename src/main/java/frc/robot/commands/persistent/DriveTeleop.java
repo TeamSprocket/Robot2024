@@ -45,9 +45,9 @@ public class DriveTeleop extends Command {
     double tSpeed = Util.deadband(tSupplier.get(), 0.1);
     tSpeed *= -1;
 
-      // xSpeed = Util.signedSquare(xSpeed);
-      // ySpeed = Util.signedSquare(ySpeed);
-      // tSpeed = Util.signedSquare(tSpeed);
+      xSpeed = Util.signedSquare(xSpeed);
+      ySpeed = Util.signedSquare(ySpeed);
+      tSpeed = Util.signedSquare(tSpeed);
 
     SmartDashboard.putNumber("Squared xSpeed [DTC]", xSpeed);
     

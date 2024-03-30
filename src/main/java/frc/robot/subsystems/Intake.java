@@ -140,10 +140,10 @@ public class Intake extends SubsystemBase {
         // clearStickyFaults();
         lastState = state;
 
-        SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
-        SmartDashboard.putBoolean("At Goal [IN]", atGoal());
-        SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
-        SmartDashboard.putString("State[IN]", state.toString());
+        // SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
+        // SmartDashboard.putBoolean("At Goal [IN]", atGoal());
+        // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
+        // SmartDashboard.putString("State[IN]", state.toString());
 
         // SmartDashboard.putNumber("", pivotSpeed)
     }

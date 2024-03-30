@@ -92,11 +92,11 @@ public class ShooterPivot extends SubsystemBase {
     // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
-    SmartDashboard.putString("PivotState", state.toString());
-    SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
-    SmartDashboard.putNumber("shooterPivot velocity [SP]", motor.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Pivot Target Angle [SP]", pidController.getSetpoint());
-    SmartDashboard.putNumber("Motor Speed [sp]", motorspeed);
+    // SmartDashboard.putString("PivotState", state.toString());
+    // SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
+    // SmartDashboard.putNumber("shooterPivot velocity [SP]", motor.getVelocity().getValueAsDouble());
+    // SmartDashboard.putNumber("Pivot Target Angle [SP]", pidController.getSetpoint());
+    // SmartDashboard.putNumber("Motor Speed [sp]", motorspeed);
     // setState(selectShooterPivotState.getSelected());
 
     switch(state) { // TODO: figure out target angles
@@ -139,8 +139,8 @@ public class ShooterPivot extends SubsystemBase {
 
           pidController.setSetpoint(angleTargetAdjusted);
 
-          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
-          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
+          // SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
+          // SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
         }
         SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
@@ -208,7 +208,7 @@ public class ShooterPivot extends SubsystemBase {
 
     // clearStickyFaults();
     lastState = state;
-    SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
+    // SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
   }
 
   /**

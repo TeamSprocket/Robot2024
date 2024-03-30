@@ -212,21 +212,21 @@ public class Constants {
         //         new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotorFL = 0.00255; // 0.0125
+        public static double kPTurnMotorFL = 0.00255; // 0.00255
         public static double kITurnMotorFL = 0.00;
-        public static double kDTurnMotorFL = 0.000025; // 0.000026
+        public static double kDTurnMotorFL = 0.000025; // 0.000025
 
-        public static double kPTurnMotorFR = 0.0027; // 0.0125
+        public static double kPTurnMotorFR = 0.0027; // 0.0027
         public static double kITurnMotorFR = 0.00;
-        public static double kDTurnMotorFR = 0.0000; // 0.000026
+        public static double kDTurnMotorFR = 0.0000; // 0.0
 
-        public static double kPTurnMotorBL = 0.00255; // 0.0125
+        public static double kPTurnMotorBL = 0.00255; // 0.00255
         public static double kITurnMotorBL = 0.00;
-        public static double kDTurnMotorBL = 0.000025; // 0.000026
+        public static double kDTurnMotorBL = 0.000025; // 0.000025
 
-        public static double kPTurnMotorBR = 0.00255; // 0.0125
+        public static double kPTurnMotorBR = 0.00255; // 0.00255
         public static double kITurnMotorBR = 0.00;
-        public static double kDTurnMotorBR = 0.000025; // 0.000026
+        public static double kDTurnMotorBR = 0.000025; // 0.000025
 
         public static final double kPHeading = 1.2; // 0.6
         public static final double kIHeading = 0.0000;
@@ -249,11 +249,11 @@ public class Constants {
         // Speed/Accel
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 1.1; // 0.8 //1.0 // 0.6 - latest
-        public static double kMaxAccel = 2.5; // 1.0 // 1.9 
+        public static double kMaxSpeed = 0.9; // 0.8 //1.0 // 0.6 - latest
+        public static double kMaxAccel = 2.3; // 1.0 // 1.9 
 
 
-        public static double kMaxTurnSpeed = 1.35; // 0.08 WITH PID, 1.35 WITHOUT
+        public static double kMaxTurnSpeed = 1.1; // 0.08 WITH PID, 1.35 WITHOUT
         public static double kMaxTurnAccel = 10; // Instant manual turning
 
         

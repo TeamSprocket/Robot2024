@@ -145,7 +145,7 @@ public class SwerveDrive extends SubsystemBase {
     updateShuffleboardPIDConstants();
     gyro.clearStickyFaults();
 
-    debug();
+    // debug();
 
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
@@ -324,12 +324,12 @@ public class SwerveDrive extends SubsystemBase {
     backLeft.setState(desiredStates[2]);
     backRight.setState(desiredStates[3]);
 
-    SmartDashboard.putNumber("front left turn deg target [SD]", desiredStates[0].angle.getDegrees());
-    SmartDashboard.putNumber("front right turn deg target [SD]", desiredStates[1].angle.getDegrees());
-    SmartDashboard.putNumber("back right turn deg target [SD]", desiredStates[2].angle.getDegrees());
-    SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
+    // SmartDashboard.putNumber("front left turn deg target [SD]", desiredStates[0].angle.getDegrees());
+    // SmartDashboard.putNumber("front right turn deg target [SD]", desiredStates[1].angle.getDegrees());
+    // SmartDashboard.putNumber("back right turn deg target [SD]", desiredStates[2].angle.getDegrees());
+    // SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
 
-    SmartDashboard.putNumber("getPIDOutput", frontRight.getPIDOutput(desiredStates[1]));
+    // SmartDashboard.putNumber("getPIDOutput", frontRight.getPIDOutput(desiredStates[1]));
 
     // SmartDashboard.putNumber("front left turn PID Output [SD]", frontLeft.getPIDOutput(state));
     // SmartDashboard.putNumber("front right turn PID Output [SD]", frontRight.getPIDOutput(desiredStates[1]));
@@ -358,7 +358,6 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID FR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FR kD [SD]"));
     backLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID BL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BL kD [SD]"));
     backRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID BR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BR kD [SD]"));
-  
   }
 
   private void debug() {

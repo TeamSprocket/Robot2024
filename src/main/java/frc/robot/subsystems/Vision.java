@@ -234,14 +234,14 @@ public class Vision extends SubsystemBase {
     }
 
     private void debug() {
-        SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
-        // SmartDashboard.putNumber("Distance from Target Straight [V]", getStraightDistanceFromTarget());
-        SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
-        // SmartDashboard.putBoolean("Driver mode", getDriverMode());
-        SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
-        SmartDashboard.putNumber("Tag Skew [V]", getSkew());
-        SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
-        SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
-        SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
+        // SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
+        // // SmartDashboard.putNumber("Distance from Target Straight [V]", getStraightDistanceFromTarget());
+        // SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
+        // // SmartDashboard.putBoolean("Driver mode", getDriverMode());
+        // SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
+        // SmartDashboard.putNumber("Tag Skew [V]", getSkew());
+        // SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
+        // SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
+        // SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
     }
 }
