@@ -59,7 +59,8 @@ public class Vision extends SubsystemBase {
         cameraMode.addOption("obj detection mode", false);
 
         // intakeLL.setPipelineIndex(0); // TODO: update pipelines to note
-        shooterLL.setPipelineIndex(0); // apriltag
+        // shooterLL.setPipelineIndex(0); // apriltag
+        shooterLL.setDriverMode(true);
 
         for (int i = 0; i < Constants.Vision.kVolatilitySlidingWindowLen; i++) {
             xPoseReadings.add(0.0);
@@ -250,5 +251,11 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
         SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
         SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
+
+        SmartDashboard.putNumber("Raw Localization X [V]", getTranslation2d().getX());
+        SmartDashboard.putNumber("Raw Localization Y [V]", getTranslation2d().getY());
+
+        SmartDashboard.putNumber("Localization X [V]", getTranslation2d().getX());
+        SmartDashboard.putNumber("Localization Y [V]", getTranslation2d().getY());
     }
 }

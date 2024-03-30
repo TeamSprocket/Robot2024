@@ -67,7 +67,7 @@ public class ShooterPivot extends SubsystemBase {
     this.distToTagSupplier = distToTagSupplier;
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
-    motor.setNeutralMode(NeutralModeValue.Coast);
+    motor.setNeutralMode(NeutralModeValue.Brake);
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(30)); // test values later
     

@@ -54,16 +54,16 @@ public class IntakeNoteManual  extends Command {
       shooter.setState(ShooterStates.INTAKE);
     }
 
-    if (shooter.beamBroken()) { // Note in shooter 
-      hasNote = true;
-      timer.start();
-    } 
+    // if (shooter.beamBroken()) { // Note in shooter 
+    //   hasNote = true;
+    //   timer.start();
+    // } 
 
-    if (hasNote) {
-      // intake.setState(IntakeStates.INTAKE_ROLLBACK);
-      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+    // if (hasNote) {
+    //   // intake.setState(IntakeStates.INTAKE_ROLLBACK);
+    //   shooter.setState(ShooterStates.INTAKE_ROLLBACK);
       
-    }
+    // }
     
 
   }
@@ -80,6 +80,7 @@ public class IntakeNoteManual  extends Command {
 
   @Override
   public boolean isFinished() {
-    return timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec;
+    // return timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec;
+    return shooter.beamBroken();
   }
 }

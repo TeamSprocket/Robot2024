@@ -17,6 +17,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.auto.DoNothing;
 import frc.robot.auto.OneNoteNoTaxi;
 import frc.robot.commands.EjectNote;
+import frc.robot.commands.auto.IntakeNoteManualTimed;
+import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
+import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
 import frc.robot.commands.instant.*;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
@@ -34,7 +37,7 @@ public class RobotContainer {
   SwerveDrive swerveDrive = new SwerveDrive(vision);
   // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
   ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis());
   Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
@@ -60,6 +63,8 @@ public class RobotContainer {
     autonChooser.addOption("PrintHello", new PathPlannerAuto("TestingNamedCommands"));
     autonChooser.addOption("PPTranslationTuning", new PathPlannerAuto("PPTranslationTuning"));
     autonChooser.addOption("Just Moving", new PathPlannerAuto("JustTranslation"));
+    autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
+    autonChooser.addOption("B2 3Note", new PathPlannerAuto("B2 3Note")); 
 
     // autonChooser = AutoBuilder.buildAutoChooser();
     
@@ -67,10 +72,12 @@ public class RobotContainer {
   }
 
   public void initNamedCommands() {
-    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(superstructure, swerveDrive));
+    NamedCommands.registerCommand("IntakeNote", new IntakeNoteManual(intake, shooter, shooterPivot));
+    NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, 3.0));
+    NamedCommands.registerCommand("ShootSubwoofer", new ScoreSpeakerSubwooferShoot(shooter, intake));
     // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
     // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
-    NamedCommands.registerCommand("PrintHello", new PrintHello());
+    // NamedCommands.registerCommand("PrintHello", new PrintHello());
 
   }
 
@@ -121,5 +128,8 @@ public class RobotContainer {
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
   }
+
+
+  
 
 }

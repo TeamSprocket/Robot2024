@@ -81,6 +81,7 @@ public class IntakeNoteManualTimed  extends Command {
 
     intake.setState(IntakeStates.STOWED); // put back
     shooter.setState(ShooterStates.STANDBY);
+    System.out.println("COMMAND ENDED\n ");
     
   }
 

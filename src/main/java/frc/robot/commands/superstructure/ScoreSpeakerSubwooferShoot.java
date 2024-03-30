@@ -50,12 +50,13 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
       // intake.setState(IntakeStates.SCORE_SPEAKER); // We don't need this yet
       scoreTimer.start();   
+      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
     }
 
-    if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
-      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
-     
-    }
+    // if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
+      // shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
+    // } 
+    
 
     SmartDashboard.putNumber("Score Timer", scoreTimer.get());
     SmartDashboard.putBoolean("Score Timer Over Threshold", scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec);

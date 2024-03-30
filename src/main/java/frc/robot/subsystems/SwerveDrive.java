@@ -6,6 +6,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -164,7 +165,7 @@ public class SwerveDrive extends SubsystemBase {
 
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    // updateOdometryWithVision();
+    updateOdometryWithVision();
     
   }
 
@@ -173,6 +174,7 @@ public class SwerveDrive extends SubsystemBase {
    */
   public double getHeading() { // ? why 0
     double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
+    angle *= -1.0;
     return angle;
   }
 
@@ -263,14 +265,14 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setNeutralModeTurn(neutralMode);
   }
 
-  // public void updateOdometryWithVision() {
-  //   Translation2d pos = vision.getTranslation2d();
-  //   if (vision.getIsNotVolatile()) { // LL readings not volatile
-  //     if (vision.hasTargets(pos)) { // LL can see tags
-  //       resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
-  //     }
-  //   }
-  // }
+  public void updateOdometryWithVision() {
+    Translation2d pos = vision.getTranslation2d();
+    if (vision.getIsNotVolatile()) { // LL readings not volatile
+      if (vision.hasTargets(pos)) { // LL can see tags
+        resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+      }
+    }
+  }
 
   /**
    * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
@@ -365,7 +367,7 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
 
     // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
-    // SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
     // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
 
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
@@ -373,10 +375,10 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
     SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
 
-    SmartDashboard.putNumber("front left cancoder/abs degrees [SD]", frontLeft.getCANCoderDegrees());
-    SmartDashboard.putNumber("front right cancoder/abs degrees [SD]", frontRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back right cancoder/abs degrees [SD]", backRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back left cancoder/abs degrees [SD]", backLeft.getCANCoderDegrees());
+    SmartDashboard.putNumber("front left cancoder degrees [SD]", frontLeft.getCANCoderDegrees());
+    SmartDashboard.putNumber("front right cancoder degrees [SD]", frontRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back right cancoder degrees [SD]", backRight.getCANCoderDegrees());
+    SmartDashboard.putNumber("back left cancoder degrees [SD]", backLeft.getCANCoderDegrees());
 
     SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
     SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());

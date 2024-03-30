@@ -38,7 +38,8 @@ public class Shooter extends SubsystemBase {
     EJECT_NOTE,
 
     // JUST IN CASE
-    SOURCE
+    SOURCE,
+    MANUAL
   }
   private ShooterStates state = ShooterStates.NONE;
   private ShooterStates lastState = ShooterStates.NONE;
@@ -56,6 +57,8 @@ public class Shooter extends SubsystemBase {
 
   Supplier<Translation2d> botPoseSupplier;
   Supplier<Double> distToTagSupplier;
+  Supplier<Double> manualOutputAddSupplier;
+  Supplier<Double> manualOutputMinusSupplier;
 
   SendableChooser<ShooterStates> stateChooser = new SendableChooser<ShooterStates>();
 
@@ -65,7 +68,7 @@ public class Shooter extends SubsystemBase {
 
   double dist = 0.0;
 
-  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> distToTagSupplier) {
+  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> distToTagSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier) {
     
     shooterMotor.setInverted(Constants.Shooter.kIsShooterTopInverted);
     shooterFollowerMotor.setInverted(Constants.Shooter.kIsShooterBottomInverted);
@@ -100,6 +103,7 @@ public class Shooter extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("Indexer kD [ST]", 0, 1, Constants.Shooter.kDIndexer);
   }
 
+  
   @Override
   public void periodic() {
 
@@ -108,11 +112,19 @@ public class Shooter extends SubsystemBase {
     // setState(stateChooser.getSelected());
     postSmartDashboardDebug();
 
-    // shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
-    // shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
+    shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
+    shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
 
     // indexerPID.setP(ShuffleboardPIDTuner.get("Indexer kP [ST]"));
     // indexerPID.setD(ShuffleboardPIDTuner.get("Indexer kD [ST]"));
+
+
+
+    // if (Constants.Shooter.kManualSpeedMultiplier * (manualOutputAddSupplier.get() - manualOutputMinusSupplier.get()) >= Constants.Shooter.kManualIntakeSupplierTolerance) {
+    //   setState(ShooterStates.MANUAL);
+    // }
+
+
 
     switch (state) {
 
@@ -156,18 +168,18 @@ public class Shooter extends SubsystemBase {
         indexerInc = 0.0;
 
         shooterInc = 0.0;
-        shooterMotor.set(0);
+        shooterMotor.set(Constants.Shooter.kShooterIntakeNoteSpeed);
       break;
 
       case INTAKE_ROLLBACK:
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
-        indexerMotor.set(Constants.Shooter.kIntakeRollbackSpeed); 
+        indexerMotor.set(Constants.Shooter.kIndexerRollbackSpeed); 
         indexerInc = 0.0;
 
         shooterInc = 0.0;
-        shooterMotor.set(0);
+        shooterMotor.set(Constants.Shooter.kShooterIntakeNoteSpeed);
       break;
 
       case SPINUP:
@@ -319,6 +331,14 @@ public class Shooter extends SubsystemBase {
         indexerMotor.set(Constants.Shooter.kIndexerSpeedSource);
         shooterMotor.set(0.0);
       break;
+
+      case MANUAL:
+        double indexerSpeedManual = manualOutputAddSupplier.get() - manualOutputMinusSupplier.get();
+        indexerSpeedManual *= Constants.Shooter.kManualSpeedMultiplier;
+        indexerMotor.set(indexerSpeedManual);
+      break;
+
+      
     }
 
     // clearStickyFaults();
@@ -397,6 +417,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Indexer Target MPS [ST]", indexerPID.getSetpoint());
     
     SmartDashboard.putBoolean("atGoalShooter [ST]", atGoalShooter());
+    
+    SmartDashboard.putBoolean("Beam Broken [ST]", beamBroken());
 
     SmartDashboard.putNumber("Shooter PID Output [ST]", shooterInc);
     SmartDashboard.putNumber("Indexer Increment[ST]", indexerInc);
