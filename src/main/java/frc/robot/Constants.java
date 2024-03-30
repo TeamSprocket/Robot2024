@@ -29,13 +29,13 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollBackTimeSec = 0.0; // 0.2
+        public static final double kIndexerIntakeRollBackTimeSec = 0.05; // 0.2
 
         // Elapsed time all elements at wait speaker pos before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.1;
+        public static final double kWaitSpeakerTimeToleranceSec = 0.05;
 
         // Elapsed time shooting into speaker before stow
-        public static final double kScoreSpeakerShootTimeToleranceSec = 1.5; // intake fallback = 0.5s,\1.0
+        public static final double kScoreSpeakerShootTimeToleranceSec = 1.0; // intake fallback = 0.5s,\1.0
 
         public static final double kScoreSpeakerPivotTimeToleranceSec = 0.3;
 
@@ -79,7 +79,7 @@ public class Constants {
 
         public static final double kHorizontalAngle = 52.0;
 
-        public static final double kMaxShooterPivotOutput = 1;
+        public static final double kMaxShooterPivotOutput = 1.0;
 
         public static final double kMaxDistance = 6.0;
 
@@ -108,10 +108,10 @@ public class Constants {
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
         public static final double kShooterSpeedScoreAmp = 1.0;
         public static final double kShooterEjectNoteSpeed = -0.25;
-        public static final double kShooterIntakeNoteSpeed = 0.3;
+        public static final double kShooterIntakeNoteSpeed = 0.0;
 
-        public static final double kIndexerSpeedIntake = 3; // 0.2
-        public static final double kIndexerSpeedScoreSpeaker = 4.0; // 0.9
+        public static final double kIndexerSpeedIntake = 4.5; // 0.2 
+        public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
         public static final double kIndexerEjectNoteSpeed = -0.5;
         public static final double kIndexerRollbackSpeed = -0.1;
@@ -149,12 +149,13 @@ public class Constants {
     public static final class Intake {
         public static final double kPivotAngleStowed = 20.0; // 20
         public static final double kPivotAngleIntake = 120.0;
-        public static final double kScoreSpeaker = 80.0;
+        public static final double kPivotAngleEject = 55.0;
+        public static final double kPivotAngleScoreSpeaker = kPivotAngleStowed;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.4;
         public static final double kRollSpeedIntakeRollback = 0.05;
-        public static final double kRollSpeedScoreSpeaker = 0.2;
+        public static final double kRollSpeedScoreSpeaker = 0.3;
         public static final double kEjectNoteSpeed = -0.6;
         
 

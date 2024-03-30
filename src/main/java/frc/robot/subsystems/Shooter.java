@@ -158,6 +158,8 @@ public class Shooter extends SubsystemBase {
 
         shooterInc = 0.0;
         shooterMotor.set(shooterInc);
+
+        SmartDashboard.putNumber("Indexer PercentOutput [ST]", Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
       break;
 
       case INTAKE_ACCEL:

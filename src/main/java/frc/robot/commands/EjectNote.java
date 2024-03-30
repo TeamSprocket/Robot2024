@@ -40,10 +40,12 @@ public class EjectNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.setState(ShooterPivotStates.EJECT_NOTE);
-    if (pivot.atGoal() || waitTimer.get() > 1.0){
     intake.setState(IntakeStates.EJECT_NOTE);
-    shooter.setState(ShooterStates.EJECT_NOTE);
+    if (waitTimer.get() > 0.5) {
+      pivot.setState(ShooterPivotStates.EJECT_NOTE);
+    }
+    if (waitTimer.get() > 1.5){
+      shooter.setState(ShooterStates.EJECT_NOTE);
     }
   }
 

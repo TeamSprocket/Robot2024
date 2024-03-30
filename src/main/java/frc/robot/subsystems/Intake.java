@@ -118,7 +118,7 @@ public class Intake extends SubsystemBase {
                 break;
                 
             case SCORE_SPEAKER:
-            pidController.setSetpoint(Constants.Intake.kScoreSpeaker);
+                pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeaker);
                 pivotSpeed = pidController.calculate(getPivotAngle());
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
@@ -127,6 +127,11 @@ public class Intake extends SubsystemBase {
                 break;
 
             case EJECT_NOTE:
+                pidController.setSetpoint(Constants.Intake.kPivotAngleEject);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
+
                 rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 break;
             

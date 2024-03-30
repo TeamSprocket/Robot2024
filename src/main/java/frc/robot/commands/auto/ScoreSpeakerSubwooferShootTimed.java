@@ -60,7 +60,7 @@ public class ScoreSpeakerSubwooferShootTimed extends Command { // EXACT SAME AS 
 
     if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
       shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
-     
+      intake.setState(IntakeStates.SCORE_SPEAKER);
     }
 
     SmartDashboard.putNumber("Score Timer", scoreTimer.get());
