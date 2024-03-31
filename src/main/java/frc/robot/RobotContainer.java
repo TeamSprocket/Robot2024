@@ -18,6 +18,7 @@ import frc.robot.auto.DoNothing;
 import frc.robot.auto.OneNoteNoTaxi;
 import frc.robot.commands.EjectNote;
 import frc.robot.commands.auto.IntakeNoteManualTimed;
+import frc.robot.commands.auto.OneNoteAuton;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
 import frc.robot.commands.instant.*;
@@ -54,17 +55,18 @@ public class RobotContainer {
     autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
     
-    autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
+    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
     // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
     autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));
-    autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
-    autonChooser.addOption("PrintHello", new PathPlannerAuto("TestingNamedCommands"));
-    autonChooser.addOption("PPTranslationTuning", new PathPlannerAuto("PPTranslationTuning"));
-    autonChooser.addOption("Just Moving", new PathPlannerAuto("JustTranslation"));
-    autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
-    autonChooser.addOption("B2 3Note", new PathPlannerAuto("B2 3Note")); 
+    autonChooser.addOption("ANY 1Note", new PathPlannerAuto("ANY 1Note"));
+    // autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
+    // autonChooser.addOption("PrintHello", new PathPlannerAuto("TestingNamedCommands"));
+    // autonChooser.addOption("PPTranslationTuning", new PathPlannerAuto("PPTranslationTuning"));
+    // autonChooser.addOption("Just Moving", new PathPlannerAuto("JustTranslation"));
+    // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
+    // autonChooser.addOption("B2 3Note", new PathPlannerAuto("B2 3Note")); 
 
     // autonChooser = AutoBuilder.buildAutoChooser();
     
@@ -83,6 +85,7 @@ public class RobotContainer {
 
   public Command getAutonomousCommand() {
     return autonChooser.getSelected();
+    // return new OneNoteAuton(shooter, intake);
   }
 
   public void configureBindings() {

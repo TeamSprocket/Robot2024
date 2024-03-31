@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Constants.robotState = RobotState.AUTON;
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
-    m_robotContainer.getSwerveDrive().zeroGyro();
+    // m_robotContainer.getSwerveDrive().zeroGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     Timer.delay(0.05);

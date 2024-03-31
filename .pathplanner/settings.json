@@ -4,6 +4,7 @@
   "holonomicMode": true,
   "pathFolders": [
     "Left Path",
+    "OCR",
     "RightPath"
   ],
   "autoFolders": [

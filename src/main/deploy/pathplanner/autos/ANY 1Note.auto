@@ -1,20 +1,20 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.2,
-      "y": 5.5
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "Taxi 3m"
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
           }
         }
       ]
