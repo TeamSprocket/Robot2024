@@ -306,6 +306,9 @@ public class Constants {
         public static final double kTurnCurrentLimit = 100;
         public static final double kDriveCurrentLimit = 100;
 
+        public static final double kTurnError = 10.0;
+        public static final double kFF = 1.0;
+
         // public static boolean CAN_DIRECTION_SWITCH = false;
 
         public static final boolean FRONT_LEFT_D_IS_REVERSED = true;

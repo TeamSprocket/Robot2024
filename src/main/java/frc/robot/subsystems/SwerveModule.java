@@ -219,6 +219,21 @@ public class SwerveModule extends SubsystemBase {
     return turnPIDController.calculate(turnAngle, state.angle.getDegrees());
   }
 
+  // public double getPIDOutputLimited(double turnAngle, double targetAngle) {
+  //   double error = targetAngle - turnAngle;
+  //   if (error < Constants.Drivetrain.kTurnError) {
+  //     return turnPIDController.calculate(turnAngle, targetAngle);
+  //   }
+  //   else {
+  //     return Constants.Drivetrain.kFF;
+  //   }
+  // // }
+
+  // public double getPIDOutputLimited (double turnAngle, double targetAngle) {
+  //   double speed = turnPIDController.calculate(turnAngle, targetAngle);
+  //   return Math.max(speed, Constants.Drivetrain.)
+  // }
+
   public PIDController getPIDController() {
     return turnPIDController;
   }
