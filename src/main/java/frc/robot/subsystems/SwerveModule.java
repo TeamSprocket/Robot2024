@@ -32,6 +32,7 @@ import frc.robot.Constants;
 // import frc.util.CTREUtils;
 import frc.util.Conversions;
 import frc.util.ShuffleboardPIDTuner;
+import frc.util.Util;
 
 public class SwerveModule extends SubsystemBase {
   
@@ -229,10 +230,11 @@ public class SwerveModule extends SubsystemBase {
   //   }
   // // }
 
-  // public double getPIDOutputLimited (double turnAngle, double targetAngle) {
-  //   double speed = turnPIDController.calculate(turnAngle, targetAngle);
-  //   return Math.max(speed, Constants.Drivetrain.)
-  // }
+  public double getPIDOutputLimited (double turnAngle, double targetAngle) {
+    double speed = turnPIDController.calculate(turnAngle, targetAngle);
+    speed = Util.minmax(speed, -1 * Constants.Drivetrain.kTurnMaxVelocity, Constants.Drivetrain.kTurnMaxVelocity);
+    return speed;
+  }
 
   public PIDController getPIDController() {
     return turnPIDController;
