@@ -189,7 +189,7 @@ public class SwerveModule extends SubsystemBase {
     
     
     // if (state.speedMetersPerSecond > Constants.Drivetrain.kDrivingMotorDeadband) {
-      turnMotor.set( turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+      turnMotor.set(getPIDOutputLimited(getTurnPosition(), state.angle.getDegrees()));
     // } else {
       // turnMotor.set(0.0);
     // }
@@ -230,7 +230,7 @@ public class SwerveModule extends SubsystemBase {
   //   }
   // // }
 
-  public double getPIDOutputLimited (double turnAngle, double targetAngle) {
+  public double getPIDOutputLimited(double turnAngle, double targetAngle) {
     double speed = turnPIDController.calculate(turnAngle, targetAngle);
     speed = Util.minmax(speed, -1 * Constants.Drivetrain.kTurnMaxVelocity, Constants.Drivetrain.kTurnMaxVelocity);
     return speed;
