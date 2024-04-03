@@ -23,7 +23,7 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     Timer.delay(0.5);
-    m_robotContainer.getSwerveDrive().zeroGyro();
+    m_robotContainer.getSwerveDrive().zeroHeading();
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake);

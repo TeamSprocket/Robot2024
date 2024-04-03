@@ -157,7 +157,9 @@ public class SwerveModule extends SubsystemBase {
     // turnMotor.setControl(new PositionDutyCycle(state.angle.getRotations()));
     
     // if (state.speedMetersPerSecond > Constants.Drivetrain.kDrivingMotorDeadband) {
-    turnMotor.set( turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    // turnMotor.set(getTurnPIDOutput(getTurnPosition(), state.angle.getDegrees()));
+    double turnSpeed = turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
+    turnMotor.set(turnSpeed);
     // } else {
       // turnMotor.set(0.0);
     // }
@@ -182,10 +184,21 @@ public class SwerveModule extends SubsystemBase {
     return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
   }
 
-  public double getPIDOutput(double turnAngle, double targetAngle) {
-    SwerveModuleState state = new SwerveModuleState(1.0, new Rotation2d(Math.toRadians(targetAngle)));
-    state = SwerveModuleState.optimize(state, new Rotation2d(Math.toRadians(turnAngle)));
-    return turnPIDController.calculate(turnAngle, state.angle.getDegrees());
+  // public double getPIDOutput(double turnAngle, double targetAngle) {
+  //   SwerveModuleState state = new SwerveModuleState(1.0, new Rotation2d(Math.toRadians(targetAngle)));
+  //   state = SwerveModuleState.optimize(state, new Rotation2d(Math.toRadians(turnAngle)));
+  //   return turnPIDController.calculate(turnAngle, state.angle.getDegrees());
+  // }
+
+  public double getTurnPIDOutput(double turnAngle, double targetAngle) {
+    double kFF = Constants.Drivetrain.kTurnFF;
+    double error = Math.abs(targetAngle - turnAngle);
+    if (error < Constants.Drivetrain.kTurnPIDTolerance) {
+      return turnPIDController.calculate(turnAngle, targetAngle);
+    }
+    else {
+      return kFF;
+    }
   }
 
   public PIDController getPIDController() {

@@ -228,7 +228,7 @@ public class Constants {
         public static double kITurnMotorBR = 0.00;
         public static double kDTurnMotorBR = 0.000025; // 0.000025
 
-        public static final double kPHeading = 1.2; // 0.6
+        public static final double kPHeading = 1.6; // 1.2 // 0.6
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
@@ -245,6 +245,9 @@ public class Constants {
 
         public static final double kTranslationMultPP = 0.2;
 
+        public static final double kTurnFF = 0.12;
+        public static final double kTurnPIDTolerance = 30;
+
 
         // Speed/Accel
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
@@ -253,7 +256,7 @@ public class Constants {
         public static double kMaxAccel = 2.3; // 1.0 // 1.9 
 
 
-        public static double kMaxTurnSpeed = 1.1; // 0.08 WITH PID, 1.35 WITHOUT
+        public static double kMaxTurnSpeed = 0.1; //1.1 // 0.08 WITH PID, 1.35 WITHOUT
         public static double kMaxTurnAccel = 10; // Instant manual turning
 
         

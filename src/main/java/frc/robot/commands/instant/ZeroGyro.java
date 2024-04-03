@@ -16,7 +16,7 @@ public class ZeroGyro extends InstantCommand {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    this.swerveDrive.zeroGyro();
+    this.swerveDrive.zeroHeading();
     // this.swerveDrive.setTargetHeadingRad(swerveDrive.getHeading());
   }
 }

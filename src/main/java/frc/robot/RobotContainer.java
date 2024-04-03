@@ -18,7 +18,7 @@ import frc.robot.auto.DoNothing;
 import frc.robot.auto.OneNoteNoTaxi;
 import frc.robot.commands.EjectNote;
 import frc.robot.commands.auto.IntakeNoteManualTimed;
-import frc.robot.commands.auto.OneNoteAuton;
+// import frc.robot.commands.auto.OneNoteAuton;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
 import frc.robot.commands.instant.*;
@@ -96,7 +96,7 @@ public class RobotContainer {
         () -> driver.getLeftY(),
         () -> -driver.getRightX() * -1));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
-    driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroGyro)); // hehe it's faster :3
+    driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
     // driver.leftBumper().onTrue(new InstantCommand(swerveDrive::resetModulesToAbsolute)); // use for debugging
     driver.a().onTrue(new InstantCommand(vision::setVisionDriverMode));
     
