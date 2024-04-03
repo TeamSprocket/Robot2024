@@ -254,19 +254,19 @@ public class Constants {
         //         new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2));
 
         // PID
-        public static double kPTurnMotorFL = 0.0025; // 0.0125
+        public static double kPTurnMotorFL = 0.0025; // 0.0025
         public static double kITurnMotorFL = 0.00;
         public static double kDTurnMotorFL = 0.000; // 0.000026
 
-        public static double kPTurnMotorFR = 0.0025; // 0.0125
+        public static double kPTurnMotorFR = 0.0025; // 0.0025
         public static double kITurnMotorFR = 0.00;
         public static double kDTurnMotorFR = 0.000; // 0.000026
 
-        public static double kPTurnMotorBL = 0.0025; // 0.0125
+        public static double kPTurnMotorBL = 0.0025; // 0.0025
         public static double kITurnMotorBL = 0.00;
         public static double kDTurnMotorBL = 0.000; // 0.000026
 
-        public static double kPTurnMotorBR = 0.0025; // 0.0125
+        public static double kPTurnMotorBR = 0.0025; // 0.0025
         public static double kITurnMotorBR = 0.00;
         public static double kDTurnMotorBR = 0.000; // 0.000026
         
@@ -324,7 +324,7 @@ public class Constants {
         public static final double kTurnError = 10.0;
         public static final double kFF = 1.0;
 
-        public static final double kTurnMaxVelocity = 1.0;
+        public static final double kTurnPIDMaxOutput = 0.25;
 
         // public static boolean CAN_DIRECTION_SWITCH = false;
 

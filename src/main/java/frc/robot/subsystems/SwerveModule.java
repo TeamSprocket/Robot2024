@@ -23,8 +23,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
-import frc.util.Conversions;
-import frc.util.ShuffleboardPIDTuner;
+import frc.util.*;
 
 public class SwerveModule extends SubsystemBase {
   
@@ -172,7 +171,10 @@ public class SwerveModule extends SubsystemBase {
     // turnMotor.setControl(new PositionDutyCycle(state.angle.getRotations()));
     
     // if (state.speedMetersPerSecond > Constants.Drivetrain.kDrivingMotorDeadband) {
-    turnMotor.set( turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees()));
+    
+    double turnSpeed = getTurnPIDOutput(getTurnPosition(), state.angle.getDegrees());
+    turnSpeed = Util.minmax(turnSpeed, -1.0 * Constants.Drivetrain.kTurnPIDMaxOutput, Constants.Drivetrain.kTurnPIDMaxOutput);
+    turnMotor.set(turnSpeed);
     // } else {
       // turnMotor.set(0.0);
     // }
@@ -197,11 +199,13 @@ public class SwerveModule extends SubsystemBase {
     return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
   }
 
-  public double getPIDOutput(double turnAngle, double targetAngle) {
+  public double getTurnPIDOutput(double turnAngle, double targetAngle) {
     SwerveModuleState state = new SwerveModuleState(1.0, new Rotation2d(Math.toRadians(targetAngle)));
     state = SwerveModuleState.optimize(state, new Rotation2d(Math.toRadians(turnAngle)));
     return turnPIDController.calculate(turnAngle, state.angle.getDegrees());
   }
+
+  
 
   public PIDController getPIDController() {
     return turnPIDController;
