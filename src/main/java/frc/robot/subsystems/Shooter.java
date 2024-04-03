@@ -24,6 +24,7 @@ public class Shooter extends SubsystemBase {
     STANDBY,
     INTAKE,
     INTAKE_ACCEL, 
+    INTAKE_ROLLFORWARD,
     INTAKE_ROLLBACK,
     SPINUP, 
     SCORE_SPEAKER,
@@ -39,6 +40,7 @@ public class Shooter extends SubsystemBase {
 
     // JUST IN CASE
     SOURCE,
+    HOLD_NOTE,
     MANUAL
   }
   private ShooterStates state = ShooterStates.NONE;
@@ -106,6 +108,7 @@ public class Shooter extends SubsystemBase {
   
   @Override
   public void periodic() {
+    postSmartDashboardDebug();
 
     dist = distToTagSupplier.get();
 
@@ -150,7 +153,7 @@ public class Shooter extends SubsystemBase {
 
       case INTAKE:
         if (lastState != ShooterStates.INTAKE) {
-          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
 
         indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedIntake) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
@@ -163,25 +166,44 @@ public class Shooter extends SubsystemBase {
       break;
 
       case INTAKE_ACCEL:
-        if (lastState != ShooterStates.INTAKE) {
-          indexerMotor.setNeutralMode(NeutralModeValue.Coast);
+        if (lastState != ShooterStates.INTAKE_ACCEL) {
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
         }
-        indexerMotor.set(0); //Constants.Shooter.kIndexerSpeedIntake * 0.75 // TODO: put back acceleration after tuning PID
-        indexerInc = 0.0;
+
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedIntake * 0.75) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
         shooterInc = 0.0;
-        shooterMotor.set(Constants.Shooter.kShooterIntakeNoteSpeed);
+        shooterMotor.set(shooterInc);
+
+      break;
+
+      case INTAKE_ROLLFORWARD:
+        if (lastState != ShooterStates.INTAKE_ROLLFORWARD) {
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+          indexerInc = 0.0;
+          shooterInc = 0.0;
+        }
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedRollforward) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
+
+
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedRollforward) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterMotor.set(shooterInc);
       break;
 
       case INTAKE_ROLLBACK:
         if (lastState != ShooterStates.INTAKE_ROLLBACK) {
           indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+          indexerInc = 0.0;
+          shooterInc = 0.0;
         }
-        indexerMotor.set(Constants.Shooter.kIndexerRollbackSpeed); 
-        indexerInc = 0.0;
+        indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedRollback) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
-        shooterInc = 0.0;
-        shooterMotor.set(Constants.Shooter.kShooterIntakeNoteSpeed);
+
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedRollback) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterMotor.set(shooterInc);
       break;
 
       case SPINUP:
@@ -334,6 +356,14 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(0.0);
       break;
 
+      case HOLD_NOTE:
+        indexerMotor.set(0);
+        shooterMotor.set(0);
+
+        indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+        shooterMotor.setNeutralMode(NeutralModeValue.Brake);
+      break;
+
       case MANUAL:
         double indexerSpeedManual = manualOutputAddSupplier.get() - manualOutputMinusSupplier.get();
         indexerSpeedManual *= Constants.Shooter.kManualSpeedMultiplier;
@@ -397,13 +427,17 @@ public class Shooter extends SubsystemBase {
     indexerMotor.clearStickyFaults();
   }
 
-  // public boolean hasDetectedNoteIndexer() {
-  //   return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold; // might have to change threshold
-  // }
+  public boolean hasDetectedNoteIndexer() {
+    return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThresholdIndexer; // might have to change threshold
+  }
 
-  // public boolean hasDetectedNoteShooter() {
-  //   return Math.abs(shooterMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThreshold;
-  // }
+  public boolean hasDetectedNoteShooter() {
+    return Math.abs(shooterMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThresholdShooter;
+  }
+
+  public boolean hasNoteRollbackIndexer() {
+    return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kIntakeRollbackCurrentThreshold;
+  }
 
   public boolean beamBroken() {
     return !beamBreak.get();

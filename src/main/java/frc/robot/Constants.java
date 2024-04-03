@@ -29,7 +29,11 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollBackTimeSec = 0.05; // 0.2
+        public static final double kIndexerIntakeRollBackTimeSec = 0.15; // 0.2
+
+        public static final double kIndexerIntakeRollForwardTimeSec = 0.2;
+
+        public static final double kRollForwardtoRollBackWaitTime = 0.3;
 
         // Elapsed time all elements at wait speaker pos before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.05;
@@ -86,8 +90,8 @@ public class Constants {
         // public static final double kMaxVelocityDeg = 0.0;
         // public static final double kMaxAccelerationDeg = 0.0;
 
-        public static final double kTargetAngleStowed = 5.0;
-        public static final double kTargetAngleIntake = 5.0;
+        public static final double kTargetAngleStowed = 12.0;
+        public static final double kTargetAngleIntake = 12.0;
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
@@ -109,12 +113,15 @@ public class Constants {
         public static final double kShooterSpeedScoreAmp = 1.0;
         public static final double kShooterEjectNoteSpeed = -0.25;
         public static final double kShooterIntakeNoteSpeed = 0.0;
+        public static final double kShooterSpeedRollforward = 1.0;
+        public static final double kShooterSpeedRollback = -1.0;
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4;
-        public static final double kIndexerEjectNoteSpeed = -0.5;
-        public static final double kIndexerRollbackSpeed = -0.1;
+        public static final double kIndexerEjectNoteSpeed = -0.25;
+        public static final double kIndexerSpeedRollforward = 3.0;
+        public static final double kIndexerSpeedRollback = -1.0;
 
 
         public static final double kManualIntakeSupplierTolerance = 0.05;
@@ -132,7 +139,10 @@ public class Constants {
         public static final double kShooterWheelDiameter = Conversions.inchesToMeters(2.375);
         public static final double kIndexerWheelDiameter = Conversions.inchesToMeters(2.0);
 
-        public static final double kHasNoteCurrentThreshold = 90.0; // 65.0, 90.0
+        public static final double kHasNoteCurrentThresholdIndexer = 75.0; // 65.0, 90.0
+        public static final double kHasNoteCurrentThresholdShooter = 15.0;
+        public static final double kIntakeRollbackCurrentThreshold = 48.0;
+
         public static final double kMaxIndexerOutput = 0.9;
 
         public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
