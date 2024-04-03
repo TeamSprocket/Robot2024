@@ -8,6 +8,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotState;
@@ -38,8 +39,7 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     Constants.robotState = RobotState.DISABLED;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
-    //m_robotContainer.getShintake().setNeutralMode(NeutralModeValue.Coast);
-    
+    // m_robotContainer.getShooterPivot().setNeutralMode(NeutralModeValue.Coast);
   }
 
   @Override
@@ -54,7 +54,7 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Constants.robotState = RobotState.AUTON;
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
-    m_robotContainer.getSwerveDrive().zeroGyro();
+    // m_robotContainer.getSwerveDrive().zeroGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
     // m_robotContainer.getSwerveDrive().resetModulesToAbsolute();   
     Timer.delay(0.05);

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.25,
-      "y": 5.5
+      "x": 2.0,
+      "y": 7.0
     },
     "rotation": 180.0
   },
@@ -12,21 +12,21 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ScoreSpeakerSubwooferShoot"
+            "pathName": "FigEightTest"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 7.0
+            "name": "PrintHello"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "SubwooferCenter to Taxi"
+            "pathName": "FigEightTest"
           }
         }
       ]

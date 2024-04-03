@@ -47,7 +47,6 @@ public final class RobotMap {
     public static final int INDEXER = 14;
     public static final int PIVOT = 15;
     public static final int SHINTAKE = 16;
-
   }
 
   public static final class Controller {

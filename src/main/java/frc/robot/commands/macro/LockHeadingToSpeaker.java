@@ -5,36 +5,34 @@
 package frc.robot.commands.macro;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Shintake;
-import frc.robot.subsystems.Shintake.ShintakeStates;
+import frc.robot.Constants;
+import frc.robot.Constants.RobotState;
 
-public class EjectNote extends Command {
-  /** Creates a new EjectIntake. */
-  Shintake shintake;
-  public EjectNote(Shintake shintake) {
-    this.shintake = shintake;
-    // Use addRequirements() here to declare subsystem dependencies.
-  }
+public class LockHeadingToSpeaker extends Command {
+
+  public LockHeadingToSpeaker() {}
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    shintake.setState(ShintakeStates.EJECT_NOTE);
+    Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    shintake.setState(ShintakeStates.STOWED);
+    Constants.robotState = RobotState.TELEOP;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (!shintake.hasNote());
+    return false;
   }
 }
