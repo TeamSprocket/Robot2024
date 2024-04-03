@@ -27,8 +27,8 @@ public class SwerveDrive extends SubsystemBase {
   // Vision vision;
 
   double xSpeed, ySpeed, tSpeed;
-  // double targetHeadingRad = Math.PI;
-  // PIDController headingController;
+  double targetHeadingRad = Math.PI;
+  PIDController headingController;
   PIDController speakerLockPIDController;
   SwerveDriveKinematics m_kinematics;
 
@@ -97,8 +97,8 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive() {
     // this.vision = vision;
 
-    // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-    // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+    this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
+    this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
     
     this.speakerLockPIDController = new PIDController(Constants.Drivetrain.kPIDSpeakerHeadingLock.kP, Constants.Drivetrain.kPIDSpeakerHeadingLock.kI, Constants.Drivetrain.kPIDSpeakerHeadingLock.kD);
     this.speakerLockPIDController.enableContinuousInput(0, (2.0 * Math.PI));
@@ -138,9 +138,9 @@ public class SwerveDrive extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
     ShuffleboardPIDTuner.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
 
-    // ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    // ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+    ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
     gyro.calibrate();
   }
@@ -152,8 +152,8 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
     // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
-    // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
-    // SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
+    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
 
     SmartDashboard.putNumber("Gyro Yaw", getHeading());
 
@@ -202,12 +202,12 @@ public class SwerveDrive extends SubsystemBase {
   
 
   public double getHeading() {
-    // double angle = gyro.getAngle() % 360.0;
-    // if (angle < 0) {
-    //     angle += 360;
-    // }
-    // return angle;
-    return 180.0;
+    double angle = gyro.getAngle() % 360.0;
+    if (angle < 0) {
+        angle += 360;
+    }
+    return angle;
+    // return 180.0;
   }
 
   public SwerveModulePosition[] getModulePositions() {
@@ -250,16 +250,16 @@ public class SwerveDrive extends SubsystemBase {
     // gyro.setGyroAngleY(0);
     // gyro.setGyroAngleZ(0);
     gyro.reset();
-    // targetHeadingRad = Math.PI;
+    targetHeadingRad = Math.PI;
   }
 
   // public void calibrateGyro() {
   //   gyro.calibrate();
   // }
 
-  // public void setTargetHeadingRad(double targetHeadingRad) {
-  //   this.targetHeadingRad = targetHeadingRad;
-  // }
+  public void setTargetHeadingRad(double targetHeadingRad) {
+    this.targetHeadingRad = targetHeadingRad;
+  }
 
   public void resetModulesToAbsolute() {
     frontLeft.zeroTurnMotorABS();
@@ -351,7 +351,7 @@ public class SwerveDrive extends SubsystemBase {
     moduleStates[1].speedMetersPerSecond = moduleStates[1].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
     moduleStates[2].speedMetersPerSecond = moduleStates[2].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
     moduleStates[3].speedMetersPerSecond = moduleStates[3].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
-    // this.targetHeadingRad = getHeading();
+    this.targetHeadingRad = getHeading();
 
     setModuleStates(moduleStates);
   }
@@ -378,19 +378,19 @@ public class SwerveDrive extends SubsystemBase {
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {
     this.xSpeed = xSpeed;
     this.ySpeed = ySpeed;
-    this.tSpeed = tSpeed;
+    // this.tSpeed = tSpeed;
 
     // Removed PID Heading
-    // this.targetHeadingRad += tSpeed;
-    // this.targetHeadingRad %= (2.0 * Math.PI);
-    // this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    // this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
+    this.targetHeadingRad += tSpeed;
+    this.targetHeadingRad %= (2.0 * Math.PI);
+    this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
+    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
 
   }
   public void updateShuffleboardPIDConstants() {//
-    // headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
+    headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
     // headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
-    // headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
+    headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
 
     frontLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID FL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FL kD [SD]"));
     frontRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID FR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FR kD [SD]"));
