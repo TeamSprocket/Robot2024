@@ -30,7 +30,7 @@ import frc.robot.subsystems.*;
 
 public class RobotContainer {
 
-  private final CommandXboxController driver = new CommandXboxController(0);
+  public final static CommandXboxController driver = new CommandXboxController(0);
   public final static CommandXboxController secondary = new CommandXboxController(1);
 
   PowerDistribution pdh = new PowerDistribution();
@@ -85,7 +85,8 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autonChooser.getSelected();
+    return null;
+    // autonChooser.getSelected();
     // return new OneNoteAuton(shooter, intake);
   }
 
@@ -98,7 +99,7 @@ public class RobotContainer {
         () -> -driver.getRightX() * -1));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
-    driver.leftBumper().onTrue(new LockHeadingToSpeaker()); // TODO: remove this later plz holy sh
+    // driver.leftBumper().onTrue(new LockHeadingToSpeaker()); // TODO: remove this later plz holy sh
     
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
@@ -112,12 +113,12 @@ public class RobotContainer {
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
     // --------------------=Secondary=--------------------
-    secondary.a().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
-    secondary.x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    secondary.leftBumper().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    secondary.y().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
+    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
-    secondary.y().whileTrue(new WaitAmp(elevator, shooterPivot));
-    secondary.rightBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
+    secondary.leftBumper().whileTrue(new WaitAmp(elevator, shooterPivot));
+    secondary.a().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
   }
 
   public void resetModulesToAbsolute() {

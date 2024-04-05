@@ -46,7 +46,7 @@ public class IntakeNoteManual  extends Command {
 
     hasNote = false;
 
-    intake.setState(IntakeStates.INTAKE); // put back
+    intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE_ACCEL);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
     

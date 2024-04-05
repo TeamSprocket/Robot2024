@@ -83,7 +83,7 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         // TODO: REMOVE - TEMP
-        setState(selectIntakeState.getSelected());
+        // setState(selectIntakeState.getSelected());
         // pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
         // pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
 

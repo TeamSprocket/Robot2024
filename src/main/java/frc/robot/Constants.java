@@ -116,8 +116,8 @@ public class Constants {
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
-        public static final double kTargetAngleSpeakerFromSubwoofer = 10.0;
-        public static final double kTargetAngleAmp = 111.0;
+        public static final double kTargetAngleSpeakerFromSubwoofer = 2.0;
+        public static final double kTargetAngleAmp = 109.0;
         public static final double kTargetAngleSource = kTargetAngleStowed;
     }
 
@@ -285,8 +285,8 @@ public class Constants {
         public static double kMaxAccel = 2.3; // 1.0 // 1.9 
 
 
-        public static double kMaxTurnSpeed = 0.1; //1.1 // 0.08 WITH PID, 1.35 WITHOUT
-        public static double kMaxTurnAccel = 10; // Instant manual turning
+        public static double kMaxTurnSpeed = 0.95; // 0.2 //1.1 // 0.08 WITH PID, 1.35 WITHOUT
+        public static double kMaxTurnAccel = 10.0; // 1.5; // Instant manual turning
 
         
 
@@ -333,10 +333,11 @@ public class Constants {
         // public static double kCANCoderOffsetBackRight = 340.9; // 234.1
         
         // in rotations
-        public static double kCANCoderOffsetFrontLeft = -0.062988; // 236.1;
-        public static double kCANCoderOffsetFrontRight = -0.092041; // 302.0
-        public static double kCANCoderOffsetBackLeft = -0.457520; // 113.4
-        public static double kCANCoderOffsetBackRight = -0.017578; // 338.7
+        public static double kCANCoderOffsetFrontLeft = -0.055908; // 236.1;
+        public static double kCANCoderOffsetFrontRight = -0.098389; // 302.0
+        public static double kCANCoderOffsetBackLeft = -0.357178; // 113.4
+        public static double kCANCoderOffsetBackRight = -0.013916; // 338.7
+
 
         // public static final double FRONT_RIGHT_ABS_ENCODER_OFFSET_RAD =
         // Math.toRadians(303.2);

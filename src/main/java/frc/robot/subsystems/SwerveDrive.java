@@ -363,10 +363,10 @@ public class SwerveDrive extends SubsystemBase {
     this.tSpeed = tSpeed;
 
     // Removed PID Heading
-    this.targetHeadingRad += tSpeed;
-    this.targetHeadingRad %= (2.0 * Math.PI);
-    this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
-    this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
+    // this.targetHeadingRad += tSpeed;
+    // this.targetHeadingRad %= (2.0 * Math.PI);
+    // this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
+    // this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
 
   }
   public void updateShuffleboardPIDConstants() {//
@@ -389,7 +389,7 @@ public class SwerveDrive extends SubsystemBase {
 
     SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
-    // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
   
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());

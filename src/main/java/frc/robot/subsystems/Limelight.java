@@ -117,12 +117,12 @@ public class Limelight extends SubsystemBase {
     // }
 
     private void debug() {
-        SmartDashboard.putNumber("Robot Pose X [LL]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Robot Pose Y [LL]", getTranslation2d().getY());
-        SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
-        SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
-        SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
-        SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
-        SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
+        // SmartDashboard.putNumber("Robot Pose X [LL]", getTranslation2d().getX());
+        // SmartDashboard.putNumber("Robot Pose Y [LL]", getTranslation2d().getY());
+        // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
+        // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
+        // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
+        // SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
+        // SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
     }
 }
