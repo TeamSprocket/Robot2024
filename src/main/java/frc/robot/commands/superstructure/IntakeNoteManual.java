@@ -68,7 +68,7 @@ public class IntakeNoteManual  extends Command {
 
     if (state == IntakeCommandStates.INTAKE && shooter.beamBroken()) {
       state = IntakeCommandStates.ROLLFORWARD;
-      intake.setState(IntakeStates.STOWED); // put back
+      intake.setState(IntakeStates.INDEXER);
     }
 
     if (state == IntakeCommandStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
@@ -97,8 +97,6 @@ public class IntakeNoteManual  extends Command {
       state = IntakeCommandStates.DONE;
     }
 
-
-
     if (state == IntakeCommandStates.ACCEL) {
       shooter.setState(ShooterStates.INTAKE_ACCEL);
     } else if (state == IntakeCommandStates.INTAKE) {
@@ -115,7 +113,7 @@ public class IntakeNoteManual  extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    intake.setState(IntakeStates.STOWED); // put back
+    intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);    
     shooterPivot.setState(ShooterPivotStates.STOWED);
   }

@@ -50,6 +50,7 @@ public class Intake extends SubsystemBase {
         STOWED,
         INTAKE,
         INTAKE_ROLLBACK,
+        INDEXER,
         SCORE_SPEAKER, 
         EJECT_NOTE
     }
@@ -109,6 +110,15 @@ public class Intake extends SubsystemBase {
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
+                break;
+
+            case INDEXER:
+                pidController.setSetpoint(Constants.Intake.kIndexingAngleIntake);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
+
+                rollIntake.set(0.0);
                 break;
 
             case INTAKE_ROLLBACK:

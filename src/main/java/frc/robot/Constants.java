@@ -180,6 +180,7 @@ public class Constants {
         public static final double kPivotAngleIntake = 120.0;
         public static final double kPivotAngleEject = 55.0;
         public static final double kPivotAngleScoreSpeaker = kPivotAngleStowed;
+        public static final double kIndexingAngleIntake = 10.0; // TODO: tune this
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.4;
