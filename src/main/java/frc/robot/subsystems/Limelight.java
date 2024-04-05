@@ -7,17 +7,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelpers;
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 
 public class Limelight extends SubsystemBase {
-    
-    //  Shooter table key: 
-    //    Param 1: x pos of robot (use odometry or if u wanna go fancy use swerveposeestimator)
-    //    Param 2: pivot angle (get through trial and error)
-    private static final InterpolatingDoubleTreeMap shooterPivotTable = new InterpolatingDoubleTreeMap();
-    static {
-        shooterPivotTable.put(null, null); // TODO: add values
-    }
 
     Translation2d targetSpeaker;
 

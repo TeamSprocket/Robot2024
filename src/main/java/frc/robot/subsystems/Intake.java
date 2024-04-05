@@ -83,7 +83,7 @@ public class Intake extends SubsystemBase {
     @Override
     public void periodic() {
         // TODO: REMOVE - TEMP
-        // setState(selectIntakeState.getSelected());
+        setState(selectIntakeState.getSelected());
         // pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
         // pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
 
@@ -150,9 +150,9 @@ public class Intake extends SubsystemBase {
         // clearStickyFaults();
         lastState = state;
 
-        // SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
-        // SmartDashboard.putBoolean("At Goal [IN]", atGoal());
-        // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
+        SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
+        SmartDashboard.putBoolean("At Goal [IN]", atGoal());
+        SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
         // SmartDashboard.putString("State[IN]", state.toString());
 
         // SmartDashboard.putNumber("", pivotSpeed)

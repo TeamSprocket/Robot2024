@@ -22,6 +22,7 @@ import frc.robot.commands.auto.IntakeNoteManualTimed;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
 import frc.robot.commands.instant.*;
+import frc.robot.commands.macro.LockHeadingToSpeaker;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 // import frc.robot.commands.macro.*;
@@ -97,7 +98,8 @@ public class RobotContainer {
         () -> -driver.getRightX() * -1));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
-    // driver.leftBumper().onTrue(new InstantCommand(swerveDrive::resetModulesToAbsolute)); // use for debugging
+    driver.leftBumper().onTrue(new LockHeadingToSpeaker()); // TODO: remove this later plz holy sh
+    
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
     // driver.button(RobotMap.Controller.Y)

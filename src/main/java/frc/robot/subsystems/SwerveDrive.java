@@ -415,6 +415,6 @@ public class SwerveDrive extends SubsystemBase {
 
     // these two hehe
     SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
-    SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget());
+    SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget()); // distance is displayed in shooter pivot
   }
 }

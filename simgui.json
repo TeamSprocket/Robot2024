@@ -4,6 +4,7 @@
       "/FMSInfo": "FMSInfo",
       "/SmartDashboard/Auto Routine Selector": "String Chooser",
       "/SmartDashboard/Auton Chooser": "String Chooser",
+      "/SmartDashboard/Elevator State Chooser [EL]": "String Chooser",
       "/SmartDashboard/STATES[IN]": "String Chooser",
       "/SmartDashboard/SendableChooser[0]": "String Chooser",
       "/SmartDashboard/SendableChooser[1]": "String Chooser",

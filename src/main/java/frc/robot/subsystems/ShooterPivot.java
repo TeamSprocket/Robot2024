@@ -18,6 +18,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // import edu.wpi.first.math.controller.pidController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -59,6 +60,14 @@ public class ShooterPivot extends SubsystemBase {
     CLIMB,
     SOURCE
   }
+
+  // //  Shooter table key: 
+  // //    Param 1: x pos of robot (use odometry or if u wanna go fancy use swerveposeestimator)
+  // //    Param 2: pivot angle (get through trial and error)
+  // private static final InterpolatingDoubleTreeMap shooterPivotTable = new InterpolatingDoubleTreeMap();
+  // static {
+  //     shooterPivotTable.put(null, null); // TODO: add values
+  // }
 
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Double> distToTagSupplier) {
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
@@ -134,13 +143,14 @@ public class ShooterPivot extends SubsystemBase {
         double dist = distToTagSupplier.get();
         // System.out.println(dist);
         if (dist != 0.0) {
+          // double angleTarget = shooterPivotTable.get(dist);
           double angleTarget = Constants.ShootingSetpoints.getValues(dist)[0];
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
 
           pidController.setSetpoint(angleTargetAdjusted);
 
-          // SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
-          // SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
+          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
+          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
         }
         SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
