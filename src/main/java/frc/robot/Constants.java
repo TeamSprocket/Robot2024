@@ -70,6 +70,10 @@ public class Constants {
 
         public static final double kMaxVelocity = 0.0;
         public static final double kMaxAccel = 0.0;
+
+        public static final double kMotionMagicCruiseVelocity = 1.0;
+        public static final double kMotionMagicAcceleration = 0.5;
+        public static final double kMotionMagicJerk = 2.0;
     }
 
     public static final class ShooterPivot {

@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import java.util.function.Supplier;
@@ -27,8 +28,10 @@ import edu.wpi.first.wpilibj2.command.TrapezoidProfileSubsystem;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 
 public class Elevator extends SubsystemBase {
@@ -53,7 +56,9 @@ public class Elevator extends SubsystemBase {
   SendableChooser<ElevatorStates> stateChooser = new SendableChooser<ElevatorStates>();
   TalonFXConfiguration talonFXConfigs = new TalonFXConfiguration();
 
-  
+  private final MotionMagicExpoTorqueCurrentFOC PoseRequest =
+        new MotionMagicExpoTorqueCurrentFOC(-0.12)
+            .withSlot(0);
   
   public Elevator() {
     elevatorFollowerMotor.setControl(new StrictFollower(elevatorMotor.getDeviceID()));
@@ -61,13 +66,29 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.setInverted(Constants.Elevator.kLeftMotorIsInverted);
     elevatorFollowerMotor.setInverted(Constants.Elevator.kRightMotorIsInverted);
 
-    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
-    elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Brake);
+    talonFXConfigs.withMotionMagic(
+      new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(Constants.Elevator.kMotionMagicCruiseVelocity)
+        .withMotionMagicAcceleration(Constants.Elevator.kMotionMagicAcceleration)
+        .withMotionMagicJerk(Constants.Elevator.kMotionMagicJerk)
+    );
 
-    MotionMagicConfigs mm = talonFXConfigs.MotionMagic;
-    mm = mm.withMotionMagicCruiseVelocity(10);
-    mm = mm.withMotionMagicAcceleration(5);
-    mm = mm.withMotionMagicJerk(50);
+    talonFXConfigs.withSlot0(
+      new Slot0Configs()
+        .withKP(Constants.Elevator.kPIDElevator.getP())
+        .withKI(Constants.Elevator.kPIDElevator.getI())
+        .withKD(Constants.Elevator.kPIDElevator.getD())
+    );
+
+    talonFXConfigs.withFeedback(
+      new FeedbackConfigs()
+        .withSensorToMechanismRatio(117.6)
+    );
+
+    talonFXConfigs.withMotorOutput(
+      new MotorOutputConfigs()
+        .withNeutralMode(NeutralModeValue.Brake)
+    );
     
     elevatorMotor.getConfigurator().apply(talonFXConfigs);
     elevatorFollowerMotor.getConfigurator().apply(talonFXConfigs);
@@ -101,11 +122,11 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        moveToHeight(Constants.Elevator.kElevatorHeightStowed);
+        elevatorMotor.setPosition(0.12);
         break;
         
       case AMP:
-        moveToHeight(Constants.Elevator.kElevatorHeightAmp);
+        elevatorMotor.setPosition(0.17);
         break; 
 
       case MANUAL:
@@ -122,11 +143,11 @@ public class Elevator extends SubsystemBase {
   }
 
   public void moveToHeight(double targetHeight) {
-    double motorOutput = pidController.calculate(getHeight(), targetHeight);
-    //motorOutput += Constants.Elevator.PIDTuner.kFF;
-    motorOutput += ShuffleboardPIDTuner.get("Elevator kFF [EL]");
-    motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
-    elevatorMotor.set(motorOutput);
+    // double motorOutput = pidController.calculate(getHeight(), targetHeight);
+    // //motorOutput += Constants.Elevator.PIDTuner.kFF;
+    // motorOutput += ShuffleboardPIDTuner.get("Elevator kFF [EL]");
+    // motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
+    // elevatorMotor.set(motorOutput);
   }
 
   public double getHeight() {
