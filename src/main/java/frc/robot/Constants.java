@@ -33,7 +33,7 @@ public class Constants {
 
         public static final double kIndexerIntakeRollForwardTimeSec = 0.2;
 
-        public static final double kRollForwardtoRollBackWaitTime = 0.3;
+        public static final double kRollForwardtoRollBackWaitTime = 0.5;
 
         // Elapsed time all elements at wait speaker pos before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.05;
@@ -43,19 +43,28 @@ public class Constants {
 
         public static final double kScoreSpeakerPivotTimeToleranceSec = 0.3;
 
+        public static final double kScoreAmpDuration = 1.5;
+
         //
         public static final double kScoreSpeakerHeadingTolerance = 0.25;
     }
 
     public static final class Elevator {
-        public static final double kElevatorHeightStowed = 0.0;
-        public static final double kElevatorHeightAmp = 0.0;
+        public static final double kElevatorHeightStowed = 0.005;
+        public static final double kElevatorHeightAmp = 0.18;
 
-        public static final double kElevatorHeightTrap = 0.0; 
+        // public static final double kElevatorHeightTrap = 0.0; 
 
-        public static final PIDConst kPIDElevator = new PIDConst(0.0, 0.0, 0.0, 0.0);
+        public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
+        public static final double kElevatorFF = 0.18;
 
-        public static final double kElevatorMotorMaxOutput = 0.05;
+        public static final double kFFScaleWithHeight = 0.55;
+        public static final double kFFBaseWithHeight = 0.015;
+        
+        
+        public static final double kFFtoPIDTransitionToleranceM = 0.005;
+
+        public static final double kElevatorMotorMaxOutput = 0.2;
 
         public static final double kManualMultiplier = 0.1;
 
@@ -65,11 +74,11 @@ public class Constants {
         public static final double kElevatorWinchDiameterM = Conversions.inchesToMeters(1.5);
         public static final double kElevatorWinchCircumM = kElevatorWinchDiameterM * Math.PI;
 
-        public static final boolean kLeftMotorIsInverted = false;
-        public static final boolean kRightMotorIsInverted = true;
+        public static final boolean kLeftMotorIsInverted = true;
+        public static final boolean kRightMotorIsInverted = false;
 
-        public static final double kMaxVelocity = 0.0;
-        public static final double kMaxAccel = 0.0;
+        public static final double kMaxVelocity = 0.03;
+        public static final double kMaxAccel = 0.02;
     }
 
     public static final class ShooterPivot {
@@ -100,7 +109,7 @@ public class Constants {
         public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromSubwoofer = 10.0;
-        public static final double kTargetAngleAmp = kTargetAngleStowed;
+        public static final double kTargetAngleAmp = 111.0;
         public static final double kTargetAngleSource = kTargetAngleStowed;
     }
 
@@ -112,7 +121,7 @@ public class Constants {
         public static final double kShooterSpeedScoreSpeakerSubwoofer = 15.0; // 10.0
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
-        public static final double kShooterSpeedScoreAmp = 1.0;
+        public static final double kShooterSpeedScoreAmp = 0.25;
         public static final double kShooterEjectNoteSpeed = -0.25;
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 1.0;
@@ -120,7 +129,7 @@ public class Constants {
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
-        public static final double kIndexerSpeedScoreAmp = 0.4;
+        public static final double kIndexerSpeedScoreAmp = 0.25;
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 3.0;
         public static final double kIndexerSpeedRollback = -1.0;
@@ -159,7 +168,7 @@ public class Constants {
     }
 
     public static final class Intake {
-        public static final double kPivotAngleStowed = 20.0; // 20
+        public static final double kPivotAngleStowed = 18.0; // 20
         public static final double kPivotAngleIntake = 120.0;
         public static final double kPivotAngleEject = 55.0;
         public static final double kPivotAngleScoreSpeaker = kPivotAngleStowed;

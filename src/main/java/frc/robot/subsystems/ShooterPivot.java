@@ -208,7 +208,7 @@ public class ShooterPivot extends SubsystemBase {
 
     // clearStickyFaults();
     lastState = state;
-    // SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
+    SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
   }
 
   /**

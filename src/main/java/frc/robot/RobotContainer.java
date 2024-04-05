@@ -36,7 +36,7 @@ public class RobotContainer {
 
   Vision vision = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(vision);
-  // Elevator elevator = new Elevator(() -> secondary.getLeftTriggerAxis(), () -> secondary.getRightTriggerAxis());
+  Elevator elevator = new Elevator();
   ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis());
   Intake intake = new Intake();
@@ -111,10 +111,12 @@ public class RobotContainer {
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
     // --------------------=Secondary=--------------------
-    secondary.leftBumper().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
-    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    secondary.a().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
+    secondary.x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    secondary.leftBumper().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
+    secondary.y().whileTrue(new WaitAmp(elevator, shooterPivot));
+    secondary.rightBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
   }
 
   public void resetModulesToAbsolute() {

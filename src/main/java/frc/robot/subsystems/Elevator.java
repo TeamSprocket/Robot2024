@@ -4,10 +4,12 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,21 +37,29 @@ public class Elevator extends SubsystemBase {
     AMP,
     MANUAL
   }
-  private ElevatorStates state = ElevatorStates.NONE;
+  private ElevatorStates state = ElevatorStates.STOWED;
 
   private TalonFX elevatorMotor = new TalonFX(RobotMap.Elevator.ELEVATOR_LEFT);
   private TalonFX elevatorFollowerMotor = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
 
+  // ProfiledPIDController pidController = new ProfiledPIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD,
+  //   new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel));
   PIDController pidController = new PIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD);
 
   SendableChooser<ElevatorStates> stateChooser = new SendableChooser<ElevatorStates>();
 
   
-  public Elevator() {
+  public Elevator() { 
+    elevatorMotor.setPosition(0);
+    elevatorFollowerMotor.setPosition(0);
+
     elevatorFollowerMotor.setControl(new StrictFollower(elevatorMotor.getDeviceID()));
 
     elevatorMotor.setInverted(Constants.Elevator.kLeftMotorIsInverted);
     elevatorFollowerMotor.setInverted(Constants.Elevator.kRightMotorIsInverted);
+
+    elevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Coast);
 
     ShuffleboardPIDTuner.addSlider("Elevator kP [EL]", 0, 1, Constants.Elevator.kPIDElevator.kP);
     ShuffleboardPIDTuner.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
@@ -61,18 +71,19 @@ public class Elevator extends SubsystemBase {
     stateChooser.addOption("AMP", ElevatorStates.AMP);
     stateChooser.addOption("Manual", ElevatorStates.MANUAL);
 
-    SmartDashboard.putData("Shooter State Chooser [ST]", stateChooser);
+    SmartDashboard.putData("Elevator State Chooser [EL]", stateChooser);
   }
 
 
 
   @Override
   public void periodic() {
-    setState(stateChooser.getSelected());
+    // setState(stateChooser.getSelected());
     
-    pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
-    pidController.setD(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
-    pidController.setD(ShuffleboardPIDTuner.get("Elevator kFF [EL]"));
+    // pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
+    // pidController.setD(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
+    // Constants.Elevator.kPIDElevator.kFF = ShuffleboardPIDTuner.get("Elevator kFF [EL]");
+    
 
 
     switch (state) {
@@ -93,6 +104,9 @@ public class Elevator extends SubsystemBase {
         manual();
         break;
     }
+
+
+    SmartDashboard.putNumber("Elevator Height M [EL]", getHeight());
    
   }
 
@@ -102,15 +116,29 @@ public class Elevator extends SubsystemBase {
     this.state = state;
   }
 
+
   public void moveToHeight(double targetHeight) {
     pidController.setSetpoint(targetHeight);
     double currentHeight = getHeight();
 
-    double motorOutput = pidController.calculate(currentHeight);
-    motorOutput += Constants.Elevator.kPIDElevator.kFF;
+    double motorOutput = 0.0;
+
+    if (Math.abs(currentHeight - targetHeight) > Constants.Elevator.kFFtoPIDTransitionToleranceM) {
+      motorOutput = Constants.Elevator.kElevatorFF * Util.getSign(targetHeight - currentHeight);
+    } else {
+      motorOutput = pidController.calculate(currentHeight) + Constants.Elevator.kPIDElevator.kFF;
+    }
+
     motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
     elevatorMotor.set(motorOutput);
+    SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
   }
+
+
+  // public double getScaledFFWithHeight() {
+  //   return Constants.Elevator.kPIDElevator.kFF * Constants.Elevator.kFFScaleWithHeight + Constants.Elevator.kFFBaseWithHeight;
+  // }
+
 
   public double getHeight() {
     return Conversions.falconToMeters(elevatorMotor.getPosition().getValueAsDouble(), Constants.Elevator.kElevatorWinchCircumM, Constants.Elevator.kElevatorGearRatio);

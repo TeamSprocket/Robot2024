@@ -12,6 +12,9 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -30,6 +33,7 @@ public class SwerveDrive extends SubsystemBase {
   PIDController headingController;
   PIDController speakerLockPIDController;
   SwerveDriveKinematics m_kinematics;
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Odometry [SD]", Pose2d.struct).publish();
 
   public static enum Directions {
     FORWARD,
@@ -359,6 +363,8 @@ public class SwerveDrive extends SubsystemBase {
   }
 
   private void debug() {
+    publisher.set(odometry.getPoseMeters());
+
     // SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
     // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
     // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
@@ -366,7 +372,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
     // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
-
+  
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
     SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());

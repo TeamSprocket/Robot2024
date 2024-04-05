@@ -128,6 +128,10 @@ public final class Util {
     return valSign * Math.pow(value, 2.0);
   }
 
+  public static double getSign(double value) {
+    return value / Math.abs(value);
+  }
+
 
 
 
