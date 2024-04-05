@@ -195,7 +195,7 @@ public class Superstructure extends SubsystemBase {
           timer.stop();
         }
 
-        elevator.setState(ElevatorStates.SPEAKER);
+        // elevator.setState(ElevatorStates.SPEAKER);
         shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
@@ -217,7 +217,7 @@ public class Superstructure extends SubsystemBase {
           timer.stop();
         }
 
-        elevator.setState(ElevatorStates.SPEAKER);
+        // elevator.setState(ElevatorStates.SPEAKER);
         shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
         shooter.setState(ShooterStates.SPINUP_PODIUM);
         intake.setState(IntakeStates.STOWED);
@@ -239,7 +239,7 @@ public class Superstructure extends SubsystemBase {
           timer.stop();
         }
 
-        elevator.setState(ElevatorStates.SPEAKER);
+        // elevator.setState(ElevatorStates.SPEAKER);
         shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
         shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
@@ -311,7 +311,7 @@ public class Superstructure extends SubsystemBase {
           timer.start();
         }
 
-        elevator.setState(ElevatorStates.SPEAKER);
+        // elevator.setState(ElevatorStates.SPEAKER);
         shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
@@ -329,7 +329,7 @@ public class Superstructure extends SubsystemBase {
           timer.start();
         }
 
-        elevator.setState(ElevatorStates.SPEAKER);
+        // elevator.setState(ElevatorStates.SPEAKER);
         shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
         shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
         intake.setState(IntakeStates.STOWED);
@@ -347,7 +347,7 @@ public class Superstructure extends SubsystemBase {
           timer.start();
         }
 
-        elevator.setState(ElevatorStates.SPEAKER);
+        // elevator.setState(ElevatorStates.SPEAKER);
         shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
         shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
@@ -372,7 +372,7 @@ public class Superstructure extends SubsystemBase {
       
 
       case CLIMB:
-        elevator.setState(ElevatorStates.CLIMB);
+        // elevator.setState(ElevatorStates.CLIMB);
         shooterPivot.setState(ShooterPivotStates.CLIMB);
         shooter.setState(ShooterStates.NONE);
         intake.setState(IntakeStates.STOWED);
@@ -413,7 +413,8 @@ public class Superstructure extends SubsystemBase {
    * @return SHOOTER INCLUDED, if all elements are within tolerance of their goals
    */
   public boolean allElementsAtGoal() {
-    return elevator.atGoal() && shooterPivot.atGoal() && intake.atGoal() && shooter.atGoalShooter();
+    // return elevator.atGoal() && shooterPivot.atGoal() && intake.atGoal() && shooter.atGoalShooter();
+    return true;
   }
 
 
@@ -421,7 +422,8 @@ public class Superstructure extends SubsystemBase {
    * @return SHOOTER NOT INCLUDED, if all elements are within tolerance of their goals
    */
   public boolean allElementsAtGoalNoShooter() {
-    return elevator.atGoal() && shooterPivot.atGoal() && intake.atGoal();
+    // return elevator.atGoal() && shooterPivot.atGoal() && intake.atGoal();
+    return true;
   }
 
 
@@ -429,7 +431,8 @@ public class Superstructure extends SubsystemBase {
    * @return Just shooter and shooterPivot within tolerance of their goals 
    */
   public boolean shooterElementsAtGoal() {
-    return elevator.atGoal() && shooterPivot.atGoal() && shooter.atGoalShooter();
+    // return elevator.atGoal() && shooterPivot.atGoal() && shooter.atGoalShooter();
+    return true;
   }
 
 

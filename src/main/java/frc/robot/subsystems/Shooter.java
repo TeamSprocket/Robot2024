@@ -115,8 +115,8 @@ public class Shooter extends SubsystemBase {
     // setState(stateChooser.getSelected());
     // postSmartDashboardDebug();
 
-    shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
-    shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
+    // shooterPID.setP(ShuffleboardPIDTuner.get("Shooter kP [ST]"));
+    // shooterPID.setD(ShuffleboardPIDTuner.get("Shooter kD [ST]"));
 
     // indexerPID.setP(ShuffleboardPIDTuner.get("Indexer kP [ST]"));
     // indexerPID.setD(ShuffleboardPIDTuner.get("Indexer kD [ST]"));

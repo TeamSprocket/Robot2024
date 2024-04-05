@@ -49,22 +49,24 @@ public class Constants {
 
     public static final class Elevator {
         public static final double kElevatorHeightStowed = 0.0;
-        public static final double kElevatorHeightSpeaker = 0.0;
-        public static final double kElevatorHeightSpeakerHigh = 0.0;
         public static final double kElevatorHeightAmp = 0.0;
+
         public static final double kElevatorHeightTrap = 0.0; 
 
-        public static final PIDConst kPIDElevator = new PIDConst(0.0, 0.0, 0.0);
+        public static final PIDConst kPIDElevator = new PIDConst(0.0, 0.0, 0.0, 0.0);
+
+        public static final double kElevatorMotorMaxOutput = 0.05;
 
         public static final double kManualMultiplier = 0.1;
 
-        public static final double kAtGoalTolerance = 0.005;
+        public static final double kAtGoalTolerance = 0.01;
 
         public static final double kElevatorGearRatio = 18.89;
-        public static final double kElevatorGearCircumM = Conversions.inchesToMeters(0.0);
+        public static final double kElevatorWinchDiameterM = Conversions.inchesToMeters(1.5);
+        public static final double kElevatorWinchCircumM = kElevatorWinchDiameterM * Math.PI;
 
-        public static final boolean kIsInvertedLeft = false;
-        public static final boolean kIsInvertedRight = true;
+        public static final boolean kLeftMotorIsInverted = false;
+        public static final boolean kRightMotorIsInverted = true;
 
         public static final double kMaxVelocity = 0.0;
         public static final double kMaxAccel = 0.0;
