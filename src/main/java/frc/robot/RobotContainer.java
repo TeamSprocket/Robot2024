@@ -34,11 +34,11 @@ public class RobotContainer {
 
   PowerDistribution pdh = new PowerDistribution();
 
-  Vision vision = new Vision();
-  SwerveDrive swerveDrive = new SwerveDrive(vision);
+  Limelight limelight = new Limelight();
+  SwerveDrive swerveDrive = new SwerveDrive(limelight);
   Elevator elevator = new Elevator();
-  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> vision.getDistanceFromTarget());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> vision.getDistanceFromTarget(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis());
+  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> swerveDrive.getDistToTarget());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(),  () -> swerveDrive.getDistToTarget(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis());
   Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
@@ -98,7 +98,6 @@ public class RobotContainer {
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
     // driver.leftBumper().onTrue(new InstantCommand(swerveDrive::resetModulesToAbsolute)); // use for debugging
-    driver.a().onTrue(new InstantCommand(vision::setVisionDriverMode));
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
     // driver.button(RobotMap.Controller.Y)

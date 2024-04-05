@@ -3,7 +3,10 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -15,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -26,7 +30,7 @@ import frc.robot.Constants.RobotState;
 
 public class SwerveDrive extends SubsystemBase {
 
-  Vision vision;
+  Limelight limelight;
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
@@ -95,8 +99,8 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  public SwerveDrive(Vision vision) {
-    this.vision = vision;
+  public SwerveDrive(Limelight limelight) {
+    this.limelight = limelight;
 
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
     this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
@@ -168,7 +172,6 @@ public class SwerveDrive extends SubsystemBase {
     // Update Odometer
     this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
     updateOdometryWithVision();
-    
   }
 
   /**
@@ -267,24 +270,39 @@ public class SwerveDrive extends SubsystemBase {
     backRight.setNeutralModeTurn(neutralMode);
   }
 
+  // <-- limelight --> //
+
+  // TODO: make sure these methods work plzplzplzplz
+
   public void updateOdometryWithVision() {
-    Translation2d pos = vision.getTranslation2d();
-    if (vision.getIsNotVolatile()) { // LL readings not volatile
-      if (vision.hasTargets(pos)) { // LL can see tags
-        resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
-      }
+    Translation2d pos = limelight.getTranslation2d();
+    if (limelight.hasTargets(pos)) { // LL can see tags
+      resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
     }
   }
 
-  /**
-   * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
-   */
-  public double getLockHeadingToSpeakerTSpeed() {
-    double yawOffset = vision.getYaw();
-    speakerLockPIDController.setSetpoint(0.0); // just in case :P
-    double yawSpeed = speakerLockPIDController.calculate(yawOffset);
-    return yawSpeed;
+  public double getDistToTarget() {
+    return limelight.getDistanceToTarget(getPose().getTranslation());
   }
+
+  // /**
+  //  * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
+  //  */
+  public double getLockHeadingToSpeakerTSpeed() {
+    // in the docs, tX is the horiz offset from LL to target
+    double offset = limelight.getXOffset();
+    return speakerLockPIDController.calculate(offset, 0.0);
+  }
+
+  // public double getLockHeadingToSpeakerTSpeed() {
+  //   Translation2d robotToTarget = limelight.getTranslationRobotToGoal();
+  //   double angleOffset = Math.toDegrees(robotToTarget.getAngle().getRadians() - getHeading());
+  //   speakerLockPIDController.setSetpoint(0.0);
+  //   double yawSpeed = speakerLockPIDController.calculate(angleOffset);
+  //   return yawSpeed;
+  // }
+
+  // <-- --> //
 
   // Stuff for Pathplanner
   public Pose2d getPose() {
@@ -393,8 +411,10 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
     // SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
 
-    SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
-
     SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
+
+    // these two hehe
+    SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
+    SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget());
   }
 }

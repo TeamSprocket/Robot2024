@@ -49,6 +49,14 @@ public class Constants {
         public static final double kScoreSpeakerHeadingTolerance = 0.25;
     }
 
+    public static final class FieldConstants {
+
+        // in meters
+        public static final double kFieldLength = 16.54;
+        public static final double kSpeakerY = 5.55;
+        public static final double kSpeakerAprilTagHeightMeters = 1.451;
+    }
+
     public static final class Elevator {
         public static final double kElevatorHeightStowed = 0.005;
         public static final double kElevatorHeightAmp = 0.18;
@@ -197,10 +205,9 @@ public class Constants {
 
     }
 
-    public static final class Vision {
+    public static final class Limelight {
 
         // measurements
-        public static final double kSpeakerAprilTagHeightMeters = 1.451;
         public static final double kLimelightPitchAngleDegrees = 5.0;
         public static final double kLimelightHeightMeters = 0.534;
 
