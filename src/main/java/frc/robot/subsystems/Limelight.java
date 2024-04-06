@@ -10,7 +10,7 @@ import frc.robot.LimelightHelpers;
 
 public class Limelight extends SubsystemBase {
 
-    Translation2d targetSpeaker;
+    Translation2d targetSpeaker = new Translation2d(0.0, 0.0);
 
     public Limelight() {}
 

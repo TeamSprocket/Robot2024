@@ -138,7 +138,8 @@ public class Intake extends SubsystemBase {
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
-                rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                rollIntake.set(0.0);
+                // rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
                 break;
 
             case SCORE_SPEAKER:
@@ -208,17 +209,17 @@ public class Intake extends SubsystemBase {
   }
 
   private void configMotors() {
-    CurrentLimitsConfigs currentLimitsConfigsPivot = new CurrentLimitsConfigs();
-    currentLimitsConfigsPivot.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitPivot);
-    currentLimitsConfigsPivot.withSupplyCurrentLimitEnable(true);
-    CurrentLimitsConfigs currentLimitsConfigsRoll = new CurrentLimitsConfigs();
-    currentLimitsConfigsRoll.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitRoll);
-    currentLimitsConfigsRoll.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigsPivot = new CurrentLimitsConfigs();
+    // currentLimitsConfigsPivot.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitPivot);
+    // currentLimitsConfigsPivot.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigsRoll = new CurrentLimitsConfigs();
+    // currentLimitsConfigsRoll.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitRoll);
+    // currentLimitsConfigsRoll.withSupplyCurrentLimitEnable(true);
 
     TalonFXConfiguration motorConfigPivot = new TalonFXConfiguration();
-    motorConfigPivot.withCurrentLimits(currentLimitsConfigsPivot);
+    // motorConfigPivot.withCurrentLimits(currentLimitsConfigsPivot);
     TalonFXConfiguration motorConfigRoll = new TalonFXConfiguration();
-    motorConfigRoll.withCurrentLimits(currentLimitsConfigsRoll);
+    // motorConfigRoll.withCurrentLimits(currentLimitsConfigsRoll);
 
     pivotIntake.getConfigurator().apply(motorConfigPivot);
     rollIntake.getConfigurator().apply(motorConfigRoll);

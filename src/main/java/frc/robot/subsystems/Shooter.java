@@ -446,17 +446,17 @@ public class Shooter extends SubsystemBase {
   }
 
   private void configMotors() {
-    CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
-    currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);
-    currentLimitsConfigsShooter.withSupplyCurrentLimitEnable(true);
-    CurrentLimitsConfigs currentLimitsConfigsIndexer = new CurrentLimitsConfigs();
-    currentLimitsConfigsIndexer.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitIndexer);
-    currentLimitsConfigsIndexer.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
+    // currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);
+    // currentLimitsConfigsShooter.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigsIndexer = new CurrentLimitsConfigs();
+    // currentLimitsConfigsIndexer.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitIndexer);
+    // currentLimitsConfigsIndexer.withSupplyCurrentLimitEnable(true);
 
     TalonFXConfiguration motorConfigShooter = new TalonFXConfiguration();
-    motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
+    // motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
     TalonFXConfiguration motorConfigIndexer = new TalonFXConfiguration();
-    motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
+    // motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
 
     shooterMotor.getConfigurator().apply(motorConfigShooter);
     indexerMotor.getConfigurator().apply(motorConfigIndexer);

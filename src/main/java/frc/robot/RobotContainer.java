@@ -66,7 +66,7 @@ public class RobotContainer {
     // autonChooser.addOption("PrintHello", new PathPlannerAuto("TestingNamedCommands"));
     // autonChooser.addOption("PPTranslationTuning", new PathPlannerAuto("PPTranslationTuning"));
     // autonChooser.addOption("Just Moving", new PathPlannerAuto("JustTranslation"));
-    // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
+    autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
     // autonChooser.addOption("B2 3Note", new PathPlannerAuto("B2 3Note")); 
 
     // autonChooser = AutoBuilder.buildAutoChooser();
@@ -85,8 +85,7 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return null;
-    // autonChooser.getSelected();
+    return autonChooser.getSelected();
     // return new OneNoteAuton(shooter, intake);
   }
 
@@ -115,11 +114,12 @@ public class RobotContainer {
     // --------------------=Secondary=--------------------
     secondary.y().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
     secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    secondary.x().whileTrue(new ScoreSpeakerTEST(shooter, intake, shooterPivot)); // TODO: remove this
+    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    // secondary.x().whileTrue(new ScoreSpeakerTEST(shooter, intake, shooterPivot)); // TODO: remove this
     secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
     secondary.leftBumper().whileTrue(new WaitAmp(elevator, shooterPivot));
     secondary.a().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
+    secondary.button(8).whileTrue(new AlignNoteIndexing(shooter, shooterPivot));
   }
 
   public void resetModulesToAbsolute() {

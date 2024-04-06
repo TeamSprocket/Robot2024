@@ -219,19 +219,19 @@ public class SwerveModule extends SubsystemBase {
   }
 
   private void configMotors() {
-    CurrentLimitsConfigs currentLimitsConfigsDrive = new CurrentLimitsConfigs();
-    currentLimitsConfigsDrive.withSupplyCurrentLimit(Constants.Drivetrain.kSupplyCurrentLimitDrive);
-    currentLimitsConfigsDrive.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigsDrive = new CurrentLimitsConfigs();
+    // currentLimitsConfigsDrive.withSupplyCurrentLimit(Constants.Drivetrain.kSupplyCurrentLimitDrive);
+    // currentLimitsConfigsDrive.withSupplyCurrentLimitEnable(true);
 
-    CurrentLimitsConfigs currentLimitsConfigsTurn = new CurrentLimitsConfigs();
-    currentLimitsConfigsTurn.withSupplyCurrentLimit(Constants.Drivetrain.kSupplyCurrentLimitTurn);
-    currentLimitsConfigsTurn.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigsTurn = new CurrentLimitsConfigs();
+    // currentLimitsConfigsTurn.withSupplyCurrentLimit(Constants.Drivetrain.kSupplyCurrentLimitTurn);
+    // currentLimitsConfigsTurn.withSupplyCurrentLimitEnable(true);
 
     TalonFXConfiguration motorConfigDrive = new TalonFXConfiguration();
-    motorConfigDrive.withCurrentLimits(currentLimitsConfigsDrive);
+    // motorConfigDrive.withCurrentLimits(currentLimitsConfigsDrive);
 
     TalonFXConfiguration motorConfigTurn = new TalonFXConfiguration();
-    motorConfigDrive.withCurrentLimits(currentLimitsConfigsTurn);
+    // motorConfigDrive.withCurrentLimits(currentLimitsConfigsTurn);
 
     driveMotor.getConfigurator().apply(motorConfigDrive);
     turnMotor.getConfigurator().apply(motorConfigTurn);

@@ -270,12 +270,12 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   private void configMotors() {
-    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
-    currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
+    // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    // currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
+    // currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-    motorConfig.withCurrentLimits(currentLimitsConfigs);
+    // motorConfig.withCurrentLimits(currentLimitsConfigs);
 
     motor.getConfigurator().apply(motorConfig);
   }
