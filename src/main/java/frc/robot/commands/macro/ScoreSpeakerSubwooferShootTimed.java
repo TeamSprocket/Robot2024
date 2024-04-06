@@ -54,7 +54,7 @@ public class ScoreSpeakerSubwooferShootTimed extends Command { // EXACT SAME AS 
 
     // Start timed scoring sequence
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      intake.setState(IntakeStates.SCORE_SPEAKER);
+      intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
       scoreTimer.start();   
     }
 

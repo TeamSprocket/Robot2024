@@ -58,8 +58,10 @@ public class Constants {
     }
 
     public static final class Elevator {
+        public static final double kSupplyCurrentLimit = 0.0;
+        
         public static final double kElevatorHeightStowed = 0.005;
-        public static final double kElevatorHeightAmp = 0.18;
+        public static final double kElevatorHeightAmp = 0.21;
 
         // public static final double kElevatorHeightTrap = 0.0; 
 
@@ -82,14 +84,17 @@ public class Constants {
         public static final double kElevatorWinchDiameterM = Conversions.inchesToMeters(1.5);
         public static final double kElevatorWinchCircumM = kElevatorWinchDiameterM * Math.PI;
 
-        public static final boolean kLeftMotorIsInverted = true;
-        public static final boolean kRightMotorIsInverted = false;
+        public static final boolean kLeftMotorIsInverted = true; // true
+        public static final boolean kRightMotorIsInverted = false; // false
 
         public static final double kMaxVelocity = 0.03;
         public static final double kMaxAccel = 0.02;
     }
 
     public static final class ShooterPivot {
+
+        public static final double kSupplyCurrentLimit = 0.0; // TODO: tune current limit
+
         public static final boolean kIsShooterPivotInverted = false;
 
         public static PIDConst kPID = new PIDConst(0.00675, 0, 0, 0.015); // ff 0.015
@@ -114,22 +119,25 @@ public class Constants {
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
+        public static final double kTargetAngleSpeakerFromAmp = 30.0; // TUNE
         public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromSubwoofer = 2.0;
-        public static final double kTargetAngleAmp = 109.0;
+        public static final double kTargetAngleAmp = 35.6; // 35.6 // 109.0
         public static final double kTargetAngleSource = kTargetAngleStowed;
     }
 
     public static final class Shooter {
+        public static final double kSupplyCurrentLimitShooter = 0.0;
+        public static final double kSupplyCurrentLimitIndexer = 0.0;     
+
         public static final boolean kIsShooterTopInverted = false;
         public static final boolean kIsShooterBottomInverted = false;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 15.0; // 10.0
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 17.0; // 15.0 // 10.0
         public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
-        public static final double kShooterSpeedScoreAmp = 0.25;
+        public static final double kShooterSpeedScoreAmp = -0.25; // 0.25
         public static final double kShooterEjectNoteSpeed = -0.25;
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 1.0;
@@ -137,7 +145,7 @@ public class Constants {
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
-        public static final double kIndexerSpeedScoreAmp = 0.25;
+        public static final double kIndexerSpeedScoreAmp = -0.25; // 0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 3.0;
         public static final double kIndexerSpeedRollback = -1.0;
@@ -176,10 +184,14 @@ public class Constants {
     }
 
     public static final class Intake {
+        public static final double kSupplyCurrentLimitPivot = 0.0;
+        public static final double kSupplyCurrentLimitRoll = 0.0;
+
         public static final double kPivotAngleStowed = 18.0; // 20
         public static final double kPivotAngleIntake = 120.0;
         public static final double kPivotAngleEject = 55.0;
-        public static final double kPivotAngleScoreSpeaker = kPivotAngleStowed;
+        public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
+        public static final double kPivotAngleScoreSpeaker = 26.0;
         public static final double kIndexingAngleIntake = 10.0; // TODO: tune this
 
         public static final double kRollSpeedStowed = 0.0;
@@ -223,6 +235,10 @@ public class Constants {
     }
 
     public static final class Drivetrain {
+
+        public static final double kSupplyCurrentLimitDrive = 0.0;
+        public static final double kSupplyCurrentLimitTurn = 0.0;
+
         // Measurements
         public static final double kWheelDiameterMeters = Units.inchesToMeters(4);
         public static final double kModuleOffsetMeters = 0.572;

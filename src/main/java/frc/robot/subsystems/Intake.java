@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 //phoenix imports for pivot intake
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -51,12 +53,15 @@ public class Intake extends SubsystemBase {
         INTAKE,
         INTAKE_ROLLBACK,
         INDEXER,
-        SCORE_SPEAKER, 
+        SCORE_SPEAKER_SUBWOOFER, 
+        SCORE_SPEAKER,
         EJECT_NOTE
     }
 
 
     public Intake() {
+        configMotors();
+
         // TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
         // profiledPIDController = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
         pidController = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
@@ -127,13 +132,22 @@ public class Intake extends SubsystemBase {
                 rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
                 break;
                 
+            case SCORE_SPEAKER_SUBWOOFER:
+                pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
+
+                rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                break;
+
             case SCORE_SPEAKER:
                 pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeaker);
                 pivotSpeed = pidController.calculate(getPivotAngle());
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
-                rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                rollIntake.set(0.0);
                 break;
 
             case EJECT_NOTE:
@@ -191,5 +205,22 @@ public class Intake extends SubsystemBase {
   public void clearStickyFaults() {
     pivotIntake.clearStickyFaults();
     rollIntake.clearStickyFaults();
+  }
+
+  private void configMotors() {
+    CurrentLimitsConfigs currentLimitsConfigsPivot = new CurrentLimitsConfigs();
+    currentLimitsConfigsPivot.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitPivot);
+    currentLimitsConfigsPivot.withSupplyCurrentLimitEnable(true);
+    CurrentLimitsConfigs currentLimitsConfigsRoll = new CurrentLimitsConfigs();
+    currentLimitsConfigsRoll.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitRoll);
+    currentLimitsConfigsRoll.withSupplyCurrentLimitEnable(true);
+
+    TalonFXConfiguration motorConfigPivot = new TalonFXConfiguration();
+    motorConfigPivot.withCurrentLimits(currentLimitsConfigsPivot);
+    TalonFXConfiguration motorConfigRoll = new TalonFXConfiguration();
+    motorConfigRoll.withCurrentLimits(currentLimitsConfigsRoll);
+
+    pivotIntake.getConfigurator().apply(motorConfigPivot);
+    rollIntake.getConfigurator().apply(motorConfigRoll);
   }
 }

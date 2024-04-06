@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 // import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 // import com.ctre.phoenix.sensors.CANCoderConfiguration;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -51,11 +52,7 @@ public class SwerveModule extends SubsystemBase {
     
     // cancoder.configFactoryDefault();
     // CANCoderConfiguration cancoderConfig = new CANCoderConfiguration();
-    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-    cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; // makes range of abs sensor to [-0.5, 0.5)
-    cancoderConfig.MagnetSensor.MagnetOffset = offset; // configure offset of encoder - read absolute position of encoders without offset and make negative
-    cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // make sure it matches turn degrees of motors
-    cancoder.getConfigurator().apply(cancoderConfig);
+    configCancoders();
     configMotors();
 
     // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
@@ -221,6 +218,33 @@ public class SwerveModule extends SubsystemBase {
     turnMotor.clearStickyFaults();
   }
 
+  private void configMotors() {
+    CurrentLimitsConfigs currentLimitsConfigsDrive = new CurrentLimitsConfigs();
+    currentLimitsConfigsDrive.withSupplyCurrentLimit(Constants.Drivetrain.kSupplyCurrentLimitDrive);
+    currentLimitsConfigsDrive.withSupplyCurrentLimitEnable(true);
+
+    CurrentLimitsConfigs currentLimitsConfigsTurn = new CurrentLimitsConfigs();
+    currentLimitsConfigsTurn.withSupplyCurrentLimit(Constants.Drivetrain.kSupplyCurrentLimitTurn);
+    currentLimitsConfigsTurn.withSupplyCurrentLimitEnable(true);
+
+    TalonFXConfiguration motorConfigDrive = new TalonFXConfiguration();
+    motorConfigDrive.withCurrentLimits(currentLimitsConfigsDrive);
+
+    TalonFXConfiguration motorConfigTurn = new TalonFXConfiguration();
+    motorConfigDrive.withCurrentLimits(currentLimitsConfigsTurn);
+
+    driveMotor.getConfigurator().apply(motorConfigDrive);
+    turnMotor.getConfigurator().apply(motorConfigTurn);
+  }
+
+  private void configCancoders() {
+    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+    cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; // makes range of abs sensor to [-0.5, 0.5)
+    cancoderConfig.MagnetSensor.MagnetOffset = offset; // configure offset of encoder - read absolute position of encoders without offset and make negative
+    cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // make sure it matches turn degrees of motors
+    cancoder.getConfigurator().apply(cancoderConfig);
+  }
+
   private void debug() {
     SmartDashboard.putNumber("ResetTicks", Conversions.degreesToFalcon(cancoder.getAbsolutePosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
     SmartDashboard.putNumber("TurnPosDeg2", getTurnPosition());
@@ -233,11 +257,4 @@ public class SwerveModule extends SubsystemBase {
     // deg -= (deg >  180) ? 360 : 0;
     // SmartDashboard.putNumber("Degree", deg); 
   }
-
-  private void configMotors() { // configure motors just in case
-    TalonFXConfiguration config = new TalonFXConfiguration();
-      driveMotor.getConfigurator().apply(config);
-      turnMotor.getConfigurator().apply(config);
-  }
-  
 }

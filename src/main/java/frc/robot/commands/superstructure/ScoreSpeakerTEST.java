@@ -7,26 +7,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.util.Conversions;
 
-public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
+public class ScoreSpeakerTEST extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
 
   Shooter shooter;
   Intake intake;
+  ShooterPivot shooterPivot;
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerSubwooferShoot(Shooter shooter, Intake intake) {
+  public ScoreSpeakerTEST(Shooter shooter, Intake intake, ShooterPivot shooterPivot) {
     this.shooter = shooter;
     this.intake = intake;
+    this.shooterPivot = shooterPivot;
   }
 
   @Override
   public void initialize() {
+    // intake.setState(IntakeStates.SCORE_SPEAKER);
     shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
+    shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
 
     waitTimer.reset();
     waitTimer.stop();
@@ -39,6 +45,7 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
 
   @Override
   public void execute() {
+
     if (shooter.atGoalShooter()) { // At speed
       waitTimer.start();
     } else {
@@ -50,8 +57,7 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
       // intake.setState(IntakeStates.SCORE_SPEAKER); // We don't need this yet
       scoreTimer.start();   
-      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
-      intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
+      shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE); 
     }
 
     // if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
@@ -67,8 +73,9 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
 
   @Override
   public void end(boolean interrupted) {
-    intake.setState(IntakeStates.STOWED);
+    // intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
+    shooterPivot.setState(ShooterPivotStates.STOWED);
   }
 
   @Override

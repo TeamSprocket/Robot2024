@@ -3,6 +3,8 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -71,7 +73,8 @@ public class Shooter extends SubsystemBase {
   double dist = 0.0;
 
   public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> distToTagSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier) {
-    
+    configMotors();
+
     shooterMotor.setInverted(Constants.Shooter.kIsShooterTopInverted);
     shooterFollowerMotor.setInverted(Constants.Shooter.kIsShooterBottomInverted);
     indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
@@ -217,7 +220,6 @@ public class Shooter extends SubsystemBase {
           shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
           shooterMotor.set(shooterInc);
         } 
-        // TODO: add an else statement if we do not see an april tag
       break;
 
       case SPINUP_SUBWOOFER: 
@@ -277,7 +279,7 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(shooterInc);
       break;
 
-      case SCORE_SPEAKER:
+      case SCORE_SPEAKER: // TODO: shooter speeds will be constant for simplicity
         if (lastState != ShooterStates.SCORE_SPEAKER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
@@ -327,7 +329,7 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(shooterInc);
       break;
 
-      case SCORE_SPEAKER_AMP_ZONE:
+      case SCORE_SPEAKER_AMP_ZONE: // FOR TESTING
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
@@ -336,7 +338,7 @@ public class Shooter extends SubsystemBase {
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
 
         // Spin up shooter
-        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerAmpZone) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer;
         shooterMotor.set(shooterInc);
       break;
 
@@ -443,6 +445,23 @@ public class Shooter extends SubsystemBase {
     return !beamBreak.get();
   }
 
+  private void configMotors() {
+    CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
+    currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);
+    currentLimitsConfigsShooter.withSupplyCurrentLimitEnable(true);
+    CurrentLimitsConfigs currentLimitsConfigsIndexer = new CurrentLimitsConfigs();
+    currentLimitsConfigsIndexer.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitIndexer);
+    currentLimitsConfigsIndexer.withSupplyCurrentLimitEnable(true);
+
+    TalonFXConfiguration motorConfigShooter = new TalonFXConfiguration();
+    motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
+    TalonFXConfiguration motorConfigIndexer = new TalonFXConfiguration();
+    motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
+
+    shooterMotor.getConfigurator().apply(motorConfigShooter);
+    indexerMotor.getConfigurator().apply(motorConfigIndexer);
+  }
+
   public void postSmartDashboardDebug() {
     SmartDashboard.putString("State [ST]", state.toString());
 
@@ -464,5 +483,4 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putBoolean("Has Detected Note [ST]", beamBroken());
   }
-  
 }

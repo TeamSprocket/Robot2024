@@ -99,7 +99,7 @@ public class RobotContainer {
         () -> -driver.getRightX() * -1));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
-    // driver.leftBumper().onTrue(new LockHeadingToSpeaker()); // TODO: remove this later plz holy sh
+    // driver.leftBumper().onTrue(new LockHeadingToSpeaker()); // TODO: remove this later plz holy shiz
     
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
@@ -115,7 +115,8 @@ public class RobotContainer {
     // --------------------=Secondary=--------------------
     secondary.y().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
     secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    secondary.x().whileTrue(new ScoreSpeakerTEST(shooter, intake, shooterPivot)); // TODO: remove this
     secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
     secondary.leftBumper().whileTrue(new WaitAmp(elevator, shooterPivot));
     secondary.a().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));

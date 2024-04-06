@@ -26,7 +26,7 @@
 //     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
     
 //     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-//     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,5,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center // TODO: change transform based on cam mounting
+//     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,5,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center
 //     private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, shooterLL, robotToCam); // there are different types of pose strategies, using lowest ambiguity for now to get clearest april tag in limelight view
 //     // used to get robot position on field by looking at april tags
 
@@ -51,7 +51,7 @@
 //     // volatility
 
 //     public Vision() {
-//         // intakeLL.setPipelineIndex(0); // TODO: update pipelines to note
+//         // intakeLL.setPipelineIndex(0);
 //         // shooterLL.setPipelineIndex(0); // apriltag
 //         shooterLL.setDriverMode(true); // will need to change this once we use pose for auton
 
@@ -143,7 +143,7 @@
 //         if (shooterLL.getDriverMode()) {
 //             shooterLL.setDriverMode(true);
 //         } else {
-//             shooterLL.setDriverMode(false); // TODO: change to intake LL + make sure pipeline returns to normal
+//             shooterLL.setDriverMode(false);
 //         }
 //     }
 

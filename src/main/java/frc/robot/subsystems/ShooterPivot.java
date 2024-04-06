@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 //import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
@@ -19,6 +21,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 // import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -70,6 +73,8 @@ public class ShooterPivot extends SubsystemBase {
   // }
 
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Double> distToTagSupplier) {
+    configMotors(); // TODO: find current limits
+
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
@@ -108,7 +113,7 @@ public class ShooterPivot extends SubsystemBase {
     // SmartDashboard.putNumber("Motor Speed [sp]", motorspeed);
     // setState(selectShooterPivotState.getSelected());
 
-    switch(state) { // TODO: figure out target angles
+    switch(state) {
 
       case NONE:
         motor.set(0);
@@ -141,7 +146,6 @@ public class ShooterPivot extends SubsystemBase {
 
       case SPEAKER:
         double dist = distToTagSupplier.get();
-        // System.out.println(dist);
         if (dist != 0.0) {
           // double angleTarget = shooterPivotTable.get(dist);
           double angleTarget = Constants.ShootingSetpoints.getValues(dist)[0];
@@ -263,5 +267,16 @@ public class ShooterPivot extends SubsystemBase {
   
   public void clearStickyFaults() {
     motor.clearStickyFaults();
+  }
+
+  private void configMotors() {
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
+    currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
+
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    motorConfig.withCurrentLimits(currentLimitsConfigs);
+
+    motor.getConfigurator().apply(motorConfig);
   }
 }

@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -50,6 +51,8 @@ public class Elevator extends SubsystemBase {
 
   
   public Elevator() { 
+    configMotors();
+    
     elevatorMotor.setPosition(0);
     elevatorFollowerMotor.setPosition(0);
 
@@ -83,8 +86,7 @@ public class Elevator extends SubsystemBase {
     // pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
     // pidController.setD(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
     // Constants.Elevator.kPIDElevator.kFF = ShuffleboardPIDTuner.get("Elevator kFF [EL]");
-    
-
+    SmartDashboard.putNumber("Target height elevator [EL]", pidController.getSetpoint());
 
     switch (state) {
         
@@ -153,7 +155,17 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(0.0);
   }
 
-  
+  private void configMotors() {
+    CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
+    currentLimitsConfigs.withSupplyCurrentLimit(Constants.Elevator.kSupplyCurrentLimit);
+    currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
+
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    motorConfig.withCurrentLimits(currentLimitsConfigs);
+
+    elevatorMotor.getConfigurator().apply(motorConfig);
+    elevatorFollowerMotor.getConfigurator().apply(motorConfig);
+  }
 }
 
 

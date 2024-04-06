@@ -281,6 +281,7 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
+  // TODO: move to shooter pivot
   public double getDistToTarget() {
     return limelight.getDistanceToTarget(getPose().getTranslation());
   }
