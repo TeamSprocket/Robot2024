@@ -33,10 +33,12 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Elevator extends SubsystemBase {
   Supplier <Double> joyvalue;
   double output;
+  Timer timer = new Timer();
   
 
   public static enum ElevatorStates {
@@ -104,16 +106,31 @@ public class Elevator extends SubsystemBase {
     stateChooser.addOption("Manual", ElevatorStates.MANUAL);
 
     SmartDashboard.putData("Elevator State Chooser [EL]", stateChooser);
+    timer.start();
   }
 
 
 
   @Override
   public void periodic() {
-    setState(stateChooser.getSelected());
-    
+    //setState(stateChooser.getSelected());
+    SmartDashboard.putNumber("Elevator Position[EL]", getPosition());
+    SmartDashboard.putNumber("Timer for Elevator [EL]", timer.get());
+    SmartDashboard.putNumber("Elevator Height[EL]", getHeight());
     pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
     pidController.setD(ShuffleboardPIDTuner.get("Elevator kD [EL]"));
+    
+    //TESTER
+    // if (timer.get() > 5.0) {
+    //   if (state == ElevatorStates.AMP) {
+    //     setState(ElevatorStates.STOWED);
+    //   } else {
+    //     setState(ElevatorStates.AMP);
+    //   }
+    //   timer.stop();
+    //   timer.reset();
+    //   timer.start();
+    // }
 
     switch (state) {
         
@@ -122,18 +139,18 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        elevatorMotor.setPosition(0.12);
+        elevatorMotor.setPosition(5);
         break;
         
       case AMP:
-        elevatorMotor.setPosition(0.17);
+        elevatorMotor.setPosition(10);
         break; 
 
       case MANUAL:
         manual();
         break;
     }
-   
+
   }
 
 
@@ -152,6 +169,10 @@ public class Elevator extends SubsystemBase {
 
   public double getHeight() {
     return Conversions.falconToMeters(elevatorMotor.getPosition().getValueAsDouble(), Constants.Elevator.kElevatorWinchCircumM, Constants.Elevator.kElevatorGearRatio);
+  }
+
+  public double getPosition() {
+    return elevatorMotor.getPosition().getValueAsDouble();
   }
 
 
