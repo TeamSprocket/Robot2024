@@ -84,7 +84,7 @@ public class Elevator extends SubsystemBase {
 
     talonFXConfigs.withFeedback(
       new FeedbackConfigs()
-        .withSensorToMechanismRatio(117.6)
+        .withSensorToMechanismRatio(Constants.Elevator.kElevatorGearRatio)
     );
 
     talonFXConfigs.withMotorOutput(
@@ -117,6 +117,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Position[EL]", getPosition());
     SmartDashboard.putNumber("Timer for Elevator [EL]", timer.get());
     SmartDashboard.putNumber("Elevator Height[EL]", getHeight());
+    SmartDashboard.putNumber("Elevator Speed [EL]", getSpeed());
     pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
     pidController.setD(ShuffleboardPIDTuner.get("Elevator kD [EL]"));
     
@@ -139,11 +140,12 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        elevatorMotor.setPosition(5);
+        elevatorMotor.setControl(mmV.withSlot(0).withPosition(5));
         break;
         
       case AMP:
-        elevatorMotor.setPosition(10);
+        // elevatorMotor.setPosition(10);
+        elevatorMotor.setControl(mmV.withSlot(0).withPosition(10));
         break; 
 
       case MANUAL:
@@ -173,6 +175,10 @@ public class Elevator extends SubsystemBase {
 
   public double getPosition() {
     return elevatorMotor.getPosition().getValueAsDouble();
+  }
+
+  public double getSpeed() {
+    return elevatorMotor.get();
   }
 
 
