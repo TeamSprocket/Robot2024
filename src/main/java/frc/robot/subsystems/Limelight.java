@@ -17,6 +17,7 @@ public class Limelight extends SubsystemBase {
     @Override
     public void periodic() {
         debug();
+        LimelightHelpers.SetRobotOrientation("limelight",0,0,0,0,0,0);
     }
 
     /**
@@ -27,14 +28,13 @@ public class Limelight extends SubsystemBase {
 
         if (LimelightHelpers.getTV("limelight")) {
             // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                 estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-                // estimate = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
-            Translation2d negative = estimate.pose.getTranslation();
-            return new Translation2d(negative.getX(), negative.getY());
+            }
+            else {
+                estimate = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+            }
+            return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
 
         } else {
             return new Translation2d(0.0, 0.0);
@@ -65,16 +65,6 @@ public class Limelight extends SubsystemBase {
         else {
             this.targetSpeaker = new Translation2d(Constants.FieldConstants.kFieldLength, Constants.FieldConstants.kSpeakerY);
         }
-
-    }
-
-    public Translation2d getTranslationRobotToGoal() {
-        getTargetSpeaker();
-        Translation2d robotToGoal;
-
-        robotToGoal = targetSpeaker.minus(getTranslation2d());
-
-        return robotToGoal;
     }
 
     public double getDistanceToTarget(Translation2d robotTranslation) { // TODO: find distance offset + add filter if needed
@@ -84,6 +74,26 @@ public class Limelight extends SubsystemBase {
 
     public double getDistToTarget() { // TODO: check which one is more accurate
         return Math.hypot(getTranslationRobotToGoal().getX(), getTranslationRobotToGoal().getY());
+    }
+
+    private Translation2d getTranslationRobotToGoal() {
+        getTargetSpeaker();
+        Translation2d robotToGoal;
+
+        robotToGoal = targetSpeaker.minus(getTranslation2d());
+
+        return robotToGoal;
+    }
+
+    private void debug() {
+        SmartDashboard.putNumber("Robot Pose X [LL]", getTranslation2d().getX());
+        SmartDashboard.putNumber("Robot Pose Y [LL]", getTranslation2d().getY());
+        SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
+        // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
+        // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
+        SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
+        SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
+        SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
     }
 
     // public Translation2d getTranslationRobotToGoal() {
@@ -101,15 +111,4 @@ public class Limelight extends SubsystemBase {
 
         // return Math.atan(y/x);
     // }
-
-    private void debug() {
-        SmartDashboard.putNumber("Robot Pose X [LL]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Robot Pose Y [LL]", getTranslation2d().getY());
-        SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
-        // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
-        // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
-        SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
-        SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
-        SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
-    }
 }

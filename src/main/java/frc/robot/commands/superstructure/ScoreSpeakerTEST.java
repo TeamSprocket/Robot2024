@@ -1,8 +1,6 @@
-
 package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.Intake;
@@ -11,28 +9,25 @@ import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
-import frc.robot.subsystems.Superstructure.SSStates;
-import frc.util.Conversions;
 
-public class ScoreSpeakerTEST extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
+public class ScoreSpeakerTEST extends Command {
 
   Shooter shooter;
   Intake intake;
   ShooterPivot shooterPivot;
+  Timer intakeTimer = new Timer();
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerTEST(Shooter shooter, Intake intake, ShooterPivot shooterPivot) {
+  public ScoreSpeakerTEST(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
+    this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
-    this.shooterPivot = shooterPivot;
   }
 
   @Override
   public void initialize() {
-    // intake.setState(IntakeStates.SCORE_SPEAKER);
-    shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
-    shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
+    intake.setState(IntakeStates.SCORE_SPEAKER);
 
     waitTimer.reset();
     waitTimer.stop();
@@ -40,40 +35,36 @@ public class ScoreSpeakerTEST extends Command { // EXACT SAME AS ScoreSpeakerSub
     scoreTimer.reset();
     scoreTimer.stop();
 
-    // System.out.println("RUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\n");
+    intakeTimer.reset();
+    intakeTimer.start();
   }
 
   @Override
   public void execute() {
 
+    if (intakeTimer.get() > 1.0) {
+      shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
+      shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
+    }
+    
     if (shooter.atGoalShooter()) { // At speed
       waitTimer.start();
-    } else {
-      waitTimer.reset();
-      waitTimer.stop();
-    }
+    } 
+    // else {
+    //   waitTimer.reset();
+    //   waitTimer.stop();
+    // }
 
     // Start timed scoring sequence
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      // intake.setState(IntakeStates.SCORE_SPEAKER); // We don't need this yet
       scoreTimer.start();   
       shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE); 
     }
-
-    // if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
-      // shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
-    // } 
-    
-
-    SmartDashboard.putNumber("Score Timer", scoreTimer.get());
-    SmartDashboard.putBoolean("Score Timer Over Threshold", scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec);
-
-
   }
 
   @Override
   public void end(boolean interrupted) {
-    // intake.setState(IntakeStates.STOWED);
+    intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
   }
