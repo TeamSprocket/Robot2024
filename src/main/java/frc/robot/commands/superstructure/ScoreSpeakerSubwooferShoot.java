@@ -41,10 +41,11 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
   public void execute() {
     if (shooter.atGoalShooter()) { // At speed
       waitTimer.start();
-    } else {
-      waitTimer.reset();
-      waitTimer.stop();
-    }
+    } 
+    // else { // caused indexer to stutter
+    //   waitTimer.reset();
+    //   waitTimer.stop();
+    // }
 
     // Start timed scoring sequence
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {

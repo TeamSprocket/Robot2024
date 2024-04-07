@@ -27,6 +27,7 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
+import frc.robot.LimelightHelpers;
 
 public class SwerveDrive extends SubsystemBase {
 
@@ -150,6 +151,7 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     updateShuffleboardPIDConstants();
     gyro.clearStickyFaults();
+    LimelightHelpers.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
 
     debug();
 
@@ -170,8 +172,12 @@ public class SwerveDrive extends SubsystemBase {
 
 
     // Update Odometer
-    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    // updateOdometryWithVision();
+
+    // if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) { // TODO: test odometry update!! 
+    //   updateOdometryWithVision();
+    // } else {
+      this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    // }
   }
 
   /**
@@ -272,8 +278,6 @@ public class SwerveDrive extends SubsystemBase {
 
   // <-- limelight --> //
 
-  // TODO: make sure these methods work plzplzplzplz
-
   public void updateOdometryWithVision() {
     Translation2d pos = limelight.getTranslation2d();
     if (limelight.hasTargets(pos)) { // LL can see tags
@@ -281,7 +285,6 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
-  // TODO: move to shooter pivot
   public double getDistToTarget() {
     return limelight.getDistanceToTarget(getPose().getTranslation());
   }

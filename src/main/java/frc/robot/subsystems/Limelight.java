@@ -17,7 +17,6 @@ public class Limelight extends SubsystemBase {
     @Override
     public void periodic() {
         debug();
-        LimelightHelpers.SetRobotOrientation("limelight",0,0,0,0,0,0);
     }
 
     /**
@@ -35,10 +34,13 @@ public class Limelight extends SubsystemBase {
                 estimate = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
             }
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
-
         } else {
             return new Translation2d(0.0, 0.0);
         }
+    }
+
+    public boolean hasTargets() {
+        return LimelightHelpers.getTV("limelight");
     }
 
     public boolean hasTargets(Translation2d translation) {
