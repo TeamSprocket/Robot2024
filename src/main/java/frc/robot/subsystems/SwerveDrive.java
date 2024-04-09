@@ -143,6 +143,9 @@ public class SwerveDrive extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
     ShuffleboardPIDTuner.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
 
+    ShuffleboardPIDTuner.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPIDSpeakerHeadingLock.getP());
+    ShuffleboardPIDTuner.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.Drivetrain.kPIDSpeakerHeadingLock.getD());
+
     ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
     ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
@@ -389,6 +392,9 @@ public class SwerveDrive extends SubsystemBase {
     frontRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID FR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FR kD [SD]"));
     backLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID BL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BL kD [SD]"));
     backRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID BR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BR kD [SD]"));
+
+    speakerLockPIDController.setP(ShuffleboardPIDTuner.get("PID Turn Vision kP [SD]"));
+    speakerLockPIDController.setD(ShuffleboardPIDTuner.get("PID Turn Vision kD [SD]"));
   }
 
   private void debug() {
