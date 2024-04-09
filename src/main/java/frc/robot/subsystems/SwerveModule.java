@@ -177,9 +177,9 @@ public class SwerveModule extends SubsystemBase {
   }
 
 
-  public double getPIDOutput(SwerveModuleState state) {
-    return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
-  }
+  // public double getPIDOutput(SwerveModuleState state) {
+  //   return turnPIDController.calculate(getTurnPosition(), state.angle.getDegrees());
+  // }
 
   // public double getPIDOutput(double turnAngle, double targetAngle) {
   //   SwerveModuleState state = new SwerveModuleState(1.0, new Rotation2d(Math.toRadians(targetAngle)));
@@ -187,16 +187,16 @@ public class SwerveModule extends SubsystemBase {
   //   return turnPIDController.calculate(turnAngle, state.angle.getDegrees());
   // }
 
-  public double getTurnPIDOutput(double turnAngle, double targetAngle) {
-    double kFF = Constants.Drivetrain.kTurnFF;
-    double error = Math.abs(targetAngle - turnAngle);
-    if (error < Constants.Drivetrain.kTurnPIDTolerance) {
-      return turnPIDController.calculate(turnAngle, targetAngle);
-    }
-    else {
-      return kFF;
-    }
-  }
+  // public double getTurnPIDOutput(double turnAngle, double targetAngle) {
+  //   double kFF = Constants.Drivetrain.kTurnFF;
+  //   double error = Math.abs(targetAngle - turnAngle);
+  //   if (error < Constants.Drivetrain.kTurnPIDTolerance) {
+  //     return turnPIDController.calculate(turnAngle, targetAngle);
+  //   }
+  //   else {
+  //     return kFF;
+  //   }
+  // }
 
   public PIDController getPIDController() {
     return turnPIDController;

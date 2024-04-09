@@ -92,7 +92,7 @@ public class Constants {
 
     public static final class ShooterPivot {
 
-        public static final double kSupplyCurrentLimit = 0.0; // TODO: tune current limit
+        public static final double kSupplyCurrentLimit = 0.0;
 
         public static final boolean kIsShooterPivotInverted = false;
 
@@ -113,8 +113,8 @@ public class Constants {
         // public static final double kMaxVelocityDeg = 0.0;
         // public static final double kMaxAccelerationDeg = 0.0;
 
-        public static final double kTargetAngleStowed = 12.0;
-        public static final double kTargetAngleIntake = 12.0;
+        public static final double kTargetAngleStowed = 5.0;
+        public static final double kTargetAngleIntake = 5.0;
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
@@ -186,7 +186,7 @@ public class Constants {
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
-        public static final double kPivotAngleStowed = 18.0; // 20
+        public static final double kPivotAngleStowed = 20.0; // 20
         public static final double kPivotAngleIntake = 120.0;
         public static final double kPivotAngleEject = 55.0;
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
@@ -207,7 +207,7 @@ public class Constants {
         // public static final double kPivotMaxAccel = 0.0;
         public static final double kMaxPivotOutput = 0.15;
 
-        public static final double kAtGoalTolerance = 5; // 0.5
+        public static final double kAtGoalTolerance = 0.5; 
 
         public static final double kPivotIntakeGearRatio = 36.0;
 
@@ -276,7 +276,7 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
-        public static final PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.005, 0, 0);
+        public static final PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.005, 0, 0); // TODO: should be the same as heading controller
 
         public static final double kPTranslationPP = 3.0; // 5.5
         public static final double kITranslationPP = 0.0;

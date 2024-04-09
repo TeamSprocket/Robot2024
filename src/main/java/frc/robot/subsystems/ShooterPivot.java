@@ -42,6 +42,7 @@ public class ShooterPivot extends SubsystemBase {
   ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
   double motorspeed = 0.0;
+  double pivotAngle = 5.0; // testing only!!
 
   // ProfiledpidController profiledpidController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
@@ -74,7 +75,7 @@ public class ShooterPivot extends SubsystemBase {
   // }
 
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
-    configMotors(); // TODO: find current limits
+    configMotors();
 
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
@@ -100,6 +101,7 @@ public class ShooterPivot extends SubsystemBase {
 
     // ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 1, Constants.ShooterPivot.kPID.kP);
     // ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.05, 0.0);
+    ShuffleboardPIDTuner.addSlider("ShooterPivot Angle [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
   }
 
   @Override
@@ -108,6 +110,8 @@ public class ShooterPivot extends SubsystemBase {
 
     // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
+
+    pivotAngle = ShuffleboardPIDTuner.get("ShooterPivot Angle [SP]");
 
     // SmartDashboard.putString("PivotState", state.toString());
     // SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
@@ -169,9 +173,9 @@ public class ShooterPivot extends SubsystemBase {
 
       // <--- --->
 
-      case SPEAKER_TEST: // SPEAKER_AMP_ZONE
-        // pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromAmp);
-        pidController.setSetpoint(30); 
+      case SPEAKER_TEST:
+
+        pidController.setSetpoint(pivotAngle); 
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);

@@ -60,11 +60,12 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        configMotors();
+        // configMotors();
 
         // TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
         // profiledPIDController = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
         pidController = new PIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot);
+        pidController.setTolerance(Constants.Intake.kAtGoalTolerance);
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
@@ -89,8 +90,8 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         // TODO: REMOVE - TEMP
         // setState(selectIntakeState.getSelected());
-        // pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
-        // pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
+        pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
+        pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
 
 
         switch (state) {
@@ -120,6 +121,9 @@ public class Intake extends SubsystemBase {
             case INDEXER:
                 pidController.setSetpoint(Constants.Intake.kIndexingAngleIntake);
                 pivotSpeed = pidController.calculate(getPivotAngle());
+                if (pidController.atSetpoint()) {
+                    pivotSpeed = 0.0;
+                }
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
@@ -135,6 +139,9 @@ public class Intake extends SubsystemBase {
             case SCORE_SPEAKER_SUBWOOFER:
                 pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer);
                 pivotSpeed = pidController.calculate(getPivotAngle());
+                if (pidController.atSetpoint()) {
+                    pivotSpeed = 0.0;
+                }
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
@@ -145,6 +152,9 @@ public class Intake extends SubsystemBase {
             case SCORE_SPEAKER:
                 pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeaker);
                 pivotSpeed = pidController.calculate(getPivotAngle());
+                if (pidController.atSetpoint()) {
+                    pivotSpeed = 0.0;
+                }
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
@@ -154,6 +164,9 @@ public class Intake extends SubsystemBase {
             case EJECT_NOTE:
                 pidController.setSetpoint(Constants.Intake.kPivotAngleEject);
                 pivotSpeed = pidController.calculate(getPivotAngle());
+                if (pidController.atSetpoint()) {
+                    pivotSpeed = 0.0;
+                }
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
 
@@ -168,6 +181,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
         SmartDashboard.putBoolean("At Goal [IN]", atGoal());
         SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
+        SmartDashboard.putString("State Intake [IN]", state.toString());
         // SmartDashboard.putString("State[IN]", state.toString());
 
         // SmartDashboard.putNumber("", pivotSpeed)
