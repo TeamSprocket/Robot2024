@@ -56,7 +56,7 @@ public class ShooterPivot extends SubsystemBase {
     STOWED,
     INTAKE,
     EJECT_NOTE,
-    SPEAKER_SUBWOOFER, SPEAKER_PODIUM, SPEAKER_AMP_ZONE,
+    SPEAKER_SUBWOOFER, SPEAKER_PODIUM, SPEAKER_TEST,
     SPEAKER,
     // SPEAKER_HIGH,
     AMP,
@@ -90,7 +90,7 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
     selectShooterPivotState.addOption("SPEAKER", ShooterPivotStates.SPEAKER);
     // selectShooterPivotState.addOption("SPEAKER_HIGH", ShooterPivotStates.SPEAKER_HIGH);
-    selectShooterPivotState.addOption("SPEAKER AMP ZONE", ShooterPivotStates.SPEAKER_AMP_ZONE);
+    selectShooterPivotState.addOption("SPEAKER AMP ZONE", ShooterPivotStates.SPEAKER_TEST);
     selectShooterPivotState.addOption("SPEAKER PODIUM", ShooterPivotStates.SPEAKER_PODIUM);
     selectShooterPivotState.addOption("SPEAKER SUBWOOFER", ShooterPivotStates.SPEAKER_SUBWOOFER);
     selectShooterPivotState.addOption("AMP", ShooterPivotStates.AMP);
@@ -147,7 +147,7 @@ public class ShooterPivot extends SubsystemBase {
       case SPEAKER:
         double dist = distToTagSupplier.get();
         if (dist != 0.0) {
-          // double angleTarget = shooterPivotTable.get(dist);
+          // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
           double angleTarget = Constants.ShootingSetpoints.getValues(dist)[0];
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
 
@@ -164,13 +164,18 @@ public class ShooterPivot extends SubsystemBase {
         motor.set(motorspeed);
         break;
 
-      case SPEAKER_AMP_ZONE:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromAmp);
+      // <--- --->
+
+      case SPEAKER_TEST: // SPEAKER_AMP_ZONE
+        // pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromAmp);
+        pidController.setSetpoint(30); 
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
+
+      // <--- --->
 
       case SPEAKER_PODIUM:
         pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromPodium);

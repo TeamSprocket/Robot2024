@@ -240,7 +240,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
         shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
@@ -348,7 +348,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
         shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 

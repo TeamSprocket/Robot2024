@@ -1,6 +1,9 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -11,11 +14,14 @@ import frc.robot.LimelightHelpers;
 public class Limelight extends SubsystemBase {
 
     Translation2d targetSpeaker = new Translation2d(0.0, 0.0);
+    StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("Robot Pose", Pose2d.struct).publish();
 
     public Limelight() {}
 
     @Override
     public void periodic() {
+        publisher.set(getPose2d());
         debug();
     }
 
@@ -36,6 +42,24 @@ public class Limelight extends SubsystemBase {
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
         } else {
             return new Translation2d(0.0, 0.0);
+        }
+    }
+
+    public Pose2d getPose2d() { // DEBUG ONLY
+        LimelightHelpers.PoseEstimate estimate;
+
+        if (LimelightHelpers.getTV("limelight")) {
+            // get pose estimate using megatag2 localization
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                estimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            }
+            else {
+                estimate = LimelightHelpers.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+            }
+
+            return estimate.pose;
+        } else {
+            return new Pose2d();
         }
     }
 
@@ -90,7 +114,7 @@ public class Limelight extends SubsystemBase {
     private void debug() {
         SmartDashboard.putNumber("Robot Pose X [LL]", getTranslation2d().getX());
         SmartDashboard.putNumber("Robot Pose Y [LL]", getTranslation2d().getY());
-        SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
+        // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
         // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
         // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
         SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
