@@ -20,6 +20,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // import edu.wpi.first.math.controller.pidController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -47,7 +48,7 @@ public class ShooterPivot extends SubsystemBase {
   PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
 
   Supplier<Double> joystickSupplier;
-  Supplier<Double> distToTagSupplier;
+  Supplier<Translation3d> botPoseSupplier;
 
   SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
 
@@ -72,13 +73,13 @@ public class ShooterPivot extends SubsystemBase {
   //     shooterPivotTable.put(null, null); // TODO: add values
   // }
 
-  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Double> distToTagSupplier) {
+  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
     configMotors(); // TODO: find current limits
 
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
-    this.distToTagSupplier = distToTagSupplier;
+    this.botPoseSupplier = botPoseSupplier;
 
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
@@ -103,6 +104,8 @@ public class ShooterPivot extends SubsystemBase {
 
   @Override
   public void periodic() {
+    debug();
+
     // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
@@ -145,10 +148,10 @@ public class ShooterPivot extends SubsystemBase {
         break;
 
       case SPEAKER:
-        double dist = distToTagSupplier.get();
-        if (dist != 0.0) {
+        Translation3d botPose = botPoseSupplier.get();
+        if (botPose.getX() + botPose.getY() + botPose.getZ() != 0.0) {
           // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
-          double angleTarget = Constants.ShootingSetpoints.getValues(dist)[0];
+          double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
 
           pidController.setSetpoint(angleTargetAdjusted);
@@ -156,7 +159,7 @@ public class ShooterPivot extends SubsystemBase {
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
         }
-        SmartDashboard.putNumber("Pivot Distance [SP]", dist);
+        // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
         motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
@@ -176,14 +179,6 @@ public class ShooterPivot extends SubsystemBase {
         break;
 
       // <--- --->
-
-      case SPEAKER_PODIUM:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromPodium);
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
-
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
-        motor.set(motorspeed);
-        break;
 
       case SPEAKER_SUBWOOFER:
         pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);

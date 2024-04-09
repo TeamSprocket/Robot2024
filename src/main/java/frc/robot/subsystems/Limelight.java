@@ -75,13 +75,35 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    /**
+     * @return Offset of limelight crosshair center to fiducials in DEGREES
+     */
     public double getXOffset() {
         if (LimelightHelpers.getTV("limelight")) {
-            return LimelightHelpers.getTX("limelight");
+            if (LimelightHelpers.getFiducialID("limelight") == 7 || LimelightHelpers.getFiducialID("limelight") == 4) {
+                return LimelightHelpers.getTX("limelight");
+            }
+            else {
+                return 0.0;
+            }
         } else {
             return 0.0;
         }
     }
+
+
+    // public double getSpeakerAngleOffset() {
+    //     Translation2d speakerPoint = targetSpeaker;
+    //     Translation2d currentPos = getTranslation2d();
+
+    //     // Driver POV NOT FIELD POV
+    //     double speakerX = targetSpeaker.getX();
+    //     double speakerY = targetSpeaker.getY();
+    //     double botX = targetSpeaker.getX();
+    //     double speakerY = targetSpeaker.getY();
+
+    // }
+
 
     public void getTargetSpeaker() {
 

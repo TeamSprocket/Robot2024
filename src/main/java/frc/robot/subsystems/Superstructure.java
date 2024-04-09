@@ -440,10 +440,11 @@ public class Superstructure extends SubsystemBase {
    * @return Heading of bot pointed at correct target
    */
   public boolean headingAtGoal() {
-    double targetHeadingRad = Conversions.poseToTargetHeadingRad(botPose2dSupplier.get().getTranslation(), Constants.ShootingSetpoints.targetPoint);
-    double currentHeadingRad = botPose2dSupplier.get().getRotation().getRadians();
-    double error = Math.abs(targetHeadingRad - currentHeadingRad);
-    return error < Constants.Superstructure.kScoreSpeakerHeadingTolerance;
+    // double targetHeadingRad = Conversions.poseToTargetHeadingRad(botPose2dSupplier.get().getTranslation(), Constants.ShootingSetpoints.targetPoint);
+    // double currentHeadingRad = botPose2dSupplier.get().getRotation().getRadians();
+    // double error = Math.abs(targetHeadingRad - currentHeadingRad);
+    // return error < Constants.Superstructure.kScoreSpeakerHeadingTolerance;
+    return false;
   }
 
 

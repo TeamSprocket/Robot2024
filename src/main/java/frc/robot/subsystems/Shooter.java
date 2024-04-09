@@ -10,6 +10,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -63,6 +64,7 @@ public class Shooter extends SubsystemBase {
   // Supplier<Double> distToTagSupplier;
   Supplier<Double> manualOutputAddSupplier;
   Supplier<Double> manualOutputMinusSupplier;
+  Supplier<Translation3d> botTranslation3D;
 
   SendableChooser<ShooterStates> stateChooser = new SendableChooser<ShooterStates>();
 
@@ -72,7 +74,7 @@ public class Shooter extends SubsystemBase {
 
   // double dist = 0.0;
 
-  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier) {
+  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier, Supplier<Translation3d> botTranslation3D) {
     configMotors();
 
     shooterMotor.setInverted(Constants.Shooter.kIsShooterTopInverted);
@@ -87,6 +89,7 @@ public class Shooter extends SubsystemBase {
 
     this.botPoseSupplier = botPoseSupplier;
     // this.distToTagSupplier = distToTagSupplier;
+    this.botTranslation3D = botTranslation3D;
 
     stateChooser.setDefaultOption("NONE", ShooterStates.NONE);
     stateChooser.addOption("STANDBY", ShooterStates.STANDBY);
@@ -218,7 +221,7 @@ public class Shooter extends SubsystemBase {
 
         // if (dist != 0.0) {
           // shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
-          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterInc += shooterPID.calculate(getShooterMPS(), Util.getTargetScaledVelocity(botTranslation3D.get(), Util.getSpeakerTargetBasedOnAllianceColor())) * Constants.Shooter.kShooterIncramentMultiplier;
           shooterMotor.set(shooterInc);
         // } 
       break;
@@ -293,7 +296,7 @@ public class Shooter extends SubsystemBase {
         
         // if (dist != 0.0) {
           // shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
-          shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
+          shooterInc += shooterPID.calculate(getShooterMPS(), Util.getTargetScaledVelocity(botTranslation3D.get(), Util.getSpeakerTargetBasedOnAllianceColor())) * Constants.Shooter.kShooterIncramentMultiplier;
           shooterMotor.set(shooterInc);
         // } 
       break;

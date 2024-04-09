@@ -38,8 +38,8 @@ public class RobotContainer {
   Limelight limelight = new Limelight();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
   Elevator elevator = new Elevator();
-  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> swerveDrive.getDistToTarget());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis());
+  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> swerveDrive.getTranslation3d());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);

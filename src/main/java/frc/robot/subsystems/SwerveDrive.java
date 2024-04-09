@@ -10,6 +10,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
@@ -294,8 +295,9 @@ public class SwerveDrive extends SubsystemBase {
   //  */
   public double getLockHeadingToSpeakerTSpeed() {
     // in the docs, tX is the horiz offset from LL to target
-    double offset = limelight.getXOffset();
-    return speakerLockPIDController.calculate(offset, 0.0);
+    double offsetDeg = limelight.getXOffset();
+    double offsetRad = Math.toRadians(offsetDeg);
+    return speakerLockPIDController.calculate(offsetRad, 0.0);
   }
 
   // public double getLockHeadingToSpeakerTSpeed() {
@@ -311,6 +313,11 @@ public class SwerveDrive extends SubsystemBase {
   // Stuff for Pathplanner
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  public Translation3d getTranslation3d() {
+    Pose2d pose = getPose();
+    return new Translation3d(pose.getX(), pose.getY(), 0.0);
   }
 
   public void resetPose(Pose2d pose) {
@@ -418,7 +425,7 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
 
     // these two hehe
-    SmartDashboard.putNumber("turning speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
+    SmartDashboard.putNumber("Heading Lock Turning Speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
     SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget()); // distance is displayed in shooter pivot
   }
 }

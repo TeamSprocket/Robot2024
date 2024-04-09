@@ -66,15 +66,14 @@ public class Constants {
         // public static final double kElevatorHeightTrap = 0.0; 
 
         public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
-        public static final double kElevatorFF = 0.18;
+        public static final double kElevatorFF = 0.25;
+        public static final double kElevatorMotorMaxOutput = 0.3;
 
         public static final double kFFScaleWithHeight = 0.55;
         public static final double kFFBaseWithHeight = 0.015;
         
         
         public static final double kFFtoPIDTransitionToleranceM = 0.005;
-
-        public static final double kElevatorMotorMaxOutput = 0.2;
 
         public static final double kManualMultiplier = 0.1;
 
@@ -472,15 +471,15 @@ public class Constants {
     }
 
     public static final class ShootingSetpoints {
-        // public static final Translation3d targetPointBlue = new Translation3d(-0.1,
-        // 5.548, 0);
-        // public static final Translation3d targetPointRed = new Translation3d(-0.1,
-        // (8.211-5.548), 0);
+        public static final Translation3d targetPointBlue = new Translation3d(-0.1,
+        5.548, 0);
+        public static final Translation3d targetPointRed = new Translation3d(-0.1,
+        (8.211-5.548), 0);
 
         // Most likely can be same blue/red
-        public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211 - 5.548), 0);
+        // public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211 - 5.548), 0);
 
-
+        public static final double kBaseShooterVelocity = 17.0;
         
         /**
          * @param dist Distance from bot shooter to targetPoint in meters
