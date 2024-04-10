@@ -102,30 +102,21 @@ public class Intake extends SubsystemBase {
                 break;
 
             case STOWED:
-                pidController.setSetpoint(Constants.Intake.kPivotAngleStowed);
-                pivotSpeed = pidController.calculate(getPivotAngle());
-                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleStowed);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
                 break;
 
             case INTAKE:
-                pidController.setSetpoint(Constants.Intake.kPivotAngleIntake);
-                pivotSpeed = pidController.calculate(getPivotAngle());
-                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleIntake);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
 
             case INDEXER:
-                pidController.setSetpoint(Constants.Intake.kIndexingAngleIntake);
-                pivotSpeed = pidController.calculate(getPivotAngle());
-                if (pidController.atSetpoint()) {
-                    pivotSpeed = 0.0;
-                }
-                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kIndexingAngleIntake);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
@@ -138,12 +129,7 @@ public class Intake extends SubsystemBase {
                 break;
                 
             case SCORE_SPEAKER_SUBWOOFER:
-                pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer);
-                pivotSpeed = pidController.calculate(getPivotAngle());
-                if (pidController.atSetpoint()) {
-                    pivotSpeed = 0.0;
-                }
-                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
@@ -151,12 +137,7 @@ public class Intake extends SubsystemBase {
                 break;
 
             case SCORE_SPEAKER:
-                pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeaker);
-                pivotSpeed = pidController.calculate(getPivotAngle());
-                if (pidController.atSetpoint()) {
-                    pivotSpeed = 0.0;
-                }
-                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreSpeaker);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
@@ -175,12 +156,7 @@ public class Intake extends SubsystemBase {
                 break;
 
             case EJECT_NOTE:
-                pidController.setSetpoint(Constants.Intake.kPivotAngleEject);
-                pivotSpeed = pidController.calculate(getPivotAngle());
-                if (pidController.atSetpoint()) {
-                    pivotSpeed = 0.0;
-                }
-                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleEject);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kEjectNoteSpeed);
@@ -207,6 +183,24 @@ public class Intake extends SubsystemBase {
 
     public IntakeStates getState() {
         return state;
+    }
+
+    public double getPivotSpeed(double targetAngle) {
+        double pivotSpeed;
+
+        pidController.setSetpoint(targetAngle);
+        double currentAngle = getPivotAngle();
+        if (Math.abs(targetAngle - currentAngle) > Constants.Intake.kFFtoPIDPivotTransitionTolerance) {
+            pivotSpeed =  Constants.Intake.kFFPivot;
+        } else {
+            pivotSpeed = pidController.calculate(currentAngle);
+            if (pidController.atSetpoint()) {
+                pivotSpeed = 0;
+            }
+        }
+
+        pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+        return pivotSpeed;
     }
 
     public double getPivotAngle() {

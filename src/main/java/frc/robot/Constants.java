@@ -45,6 +45,8 @@ public class Constants {
 
         public static final double kScoreAmpDuration = 1.5;
 
+        public static final double kRumbleHasNoteTime = 0.5;
+
         //
         public static final double kScoreSpeakerHeadingTolerance = 0.25;
     }
@@ -204,12 +206,15 @@ public class Constants {
         public static final double kMaxPivotOutput = 0.15;
 
         public static final double kAtGoalTolerance = 0.5; 
+        public static final double kFFtoPIDPivotTransitionTolerance = 10.0;
 
         public static final double kPivotIntakeGearRatio = 36.0;
 
         public static final double kPPivot = 0.0058305929; // 1, 0.1
         public static final double kIPivot = 0.0;
         public static final double kDPivot = 0.0000748355;
+
+        public static final double kFFPivot = 0.25;
 
     }
 
