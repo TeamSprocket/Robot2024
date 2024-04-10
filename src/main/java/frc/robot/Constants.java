@@ -108,7 +108,7 @@ public class Constants {
 
         public static final double kHorizontalAngle = 52.0;
 
-        public static final double kMaxShooterPivotOutput = 1.0;
+        public static final double kMaxShooterPivotOutput = 0.5;
 
         public static final double kMaxDistance = 6.0;
 
