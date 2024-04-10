@@ -55,6 +55,6 @@ public class ScoreSpeakerSubwoofer extends Command {
 
   @Override
   public boolean isFinished() {
-    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec;
   }
 }

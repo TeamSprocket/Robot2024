@@ -66,6 +66,6 @@ public class ShootCrossfield extends Command {
 
   @Override
   public boolean isFinished() {
-    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
   }
 }

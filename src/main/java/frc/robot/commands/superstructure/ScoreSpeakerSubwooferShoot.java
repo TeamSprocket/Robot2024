@@ -61,7 +61,7 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     
 
     SmartDashboard.putNumber("Score Timer", scoreTimer.get());
-    SmartDashboard.putBoolean("Score Timer Over Threshold", scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec);
+    SmartDashboard.putBoolean("Score Timer Over Threshold", scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec);
 
 
   }
@@ -74,6 +74,6 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
 
   @Override
   public boolean isFinished() {
-    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
   }
 }

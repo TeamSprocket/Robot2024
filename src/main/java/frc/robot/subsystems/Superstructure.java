@@ -312,7 +312,7 @@ public class Superstructure extends SubsystemBase {
         shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec) {
           setState(SSStates.STOWED);
         }
       break;

@@ -35,11 +35,11 @@ public class Constants {
 
         public static final double kRollForwardtoRollBackWaitTime = 0.5;
 
-        // Elapsed time all elements at wait speaker pos before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.1;
+        // Elapsed time after shooter hits speaker speed before score speaker
+        public static final double kWaitSpeakerTimeToleranceSec = 0.2;
 
         // Elapsed time shooting into speaker before stow
-        public static final double kScoreSpeakerShootTimeToleranceSec = 1.5; // intake fallback = 0.5s,\1.0
+        public static final double kScoreSpeakerShootDurationSec = 1.5; // intake fallback = 0.5s,\1.0
 
         public static final double kScoreSpeakerPivotTimeToleranceSec = 0.3;
 
@@ -246,7 +246,7 @@ public class Constants {
         // Most likely can be same blue/red
         // public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211 - 5.548), 0);
 
-        public static final double kShooterVelocityLinearMultiplier = 1.5;
+        public static final double kShooterVelocityLinearMultiplier = 1.75;
         public static final double kShooterVelocityBase = 17.0;
         
         /**
