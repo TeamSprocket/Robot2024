@@ -8,7 +8,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,6 +43,8 @@ public class RobotContainer {
   ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> swerveDrive.getTranslation3d());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   Intake intake = new Intake();
+
+  Timer timer = new Timer();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
@@ -121,7 +125,8 @@ public class RobotContainer {
     secondary.leftBumper().whileTrue(new WaitAmp(elevator, shooterPivot));
     secondary.a().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
     // secondary.button(8).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // TODO: change button bindings for Corey
-    secondary.button(8).whileTrue(new AlignNoteIndexing(shooter, shooterPivot));
+    // secondary.button(7).whileTrue(new AlignNoteIndexing(shooter, shooterPivot));
+    secondary.button(8).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake));
   }
 
   public void resetModulesToAbsolute() {
@@ -138,6 +143,25 @@ public class RobotContainer {
 
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
+  }
+  
+  public void updateNoteRumbleListener() {
+    boolean r = true;
+    if (shooter.beamBroken() && r) {
+      timer.start();
+      r = false;
+    }
+    else if (timer.get() < Constants.Superstructure.kRumbleHasNoteTime && !r) {
+      driver.getHID().setRumble(RumbleType.kBothRumble, 0.5);
+      secondary.getHID().setRumble(RumbleType.kBothRumble, 0.5);
+    }
+    else if (timer.get() >= Constants.Superstructure.kRumbleHasNoteTime) {
+      timer.stop();
+      timer.reset();
+    }
+    if (!shooter.beamBroken() && !r) {
+      r = true;
+    }
   }
 
 

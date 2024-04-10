@@ -186,14 +186,16 @@ public class Intake extends SubsystemBase {
     }
 
     public double getPivotSpeed(double targetAngle) {
-        double pivotSpeed;
-
         pidController.setSetpoint(targetAngle);
         double currentAngle = getPivotAngle();
+
+        double pivotSpeed;
+        double PIDOutput = pidController.calculate(currentAngle); 
+
         if (Math.abs(targetAngle - currentAngle) > Constants.Intake.kFFtoPIDPivotTransitionTolerance) {
-            pivotSpeed =  Constants.Intake.kFFPivot;
+            pivotSpeed = Constants.Intake.kFFPivot * Util.getSign(PIDOutput);
         } else {
-            pivotSpeed = pidController.calculate(currentAngle);
+            pivotSpeed = PIDOutput;
             if (pidController.atSetpoint()) {
                 pivotSpeed = 0;
             }

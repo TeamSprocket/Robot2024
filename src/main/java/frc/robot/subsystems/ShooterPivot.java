@@ -51,6 +51,7 @@ public class ShooterPivot extends SubsystemBase {
   Supplier<Double> joystickSupplier;
   Supplier<Translation3d> botPoseSupplier;
 
+
   SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
 
   public enum ShooterPivotStates {
@@ -101,8 +102,8 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("CLIMB", ShooterPivotStates.CLIMB);
     SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
 
-    // ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 1, Constants.ShooterPivot.kPID.kP);
-    // ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.05, 0.0);
+    ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
+    ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
     ShuffleboardPIDTuner.addSlider("ShooterPivot Angle [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
   }
 
@@ -110,8 +111,8 @@ public class ShooterPivot extends SubsystemBase {
   public void periodic() {
     debug();
 
-    // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
-    // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
+    pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
+    pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
     pivotAngle = ShuffleboardPIDTuner.get("ShooterPivot Angle [SP]");
 
@@ -134,6 +135,8 @@ public class ShooterPivot extends SubsystemBase {
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case EJECT_NOTE:
@@ -142,6 +145,8 @@ public class ShooterPivot extends SubsystemBase {
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
 
@@ -151,6 +156,8 @@ public class ShooterPivot extends SubsystemBase {
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case INDEXING:
@@ -159,6 +166,8 @@ public class ShooterPivot extends SubsystemBase {
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case SPEAKER:
@@ -179,6 +188,8 @@ public class ShooterPivot extends SubsystemBase {
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case SPEAKER_TEST:
@@ -189,7 +200,7 @@ public class ShooterPivot extends SubsystemBase {
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
-
+ 
       case CROSSFIELD:
 
         pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleCrossfield); 
@@ -197,6 +208,8 @@ public class ShooterPivot extends SubsystemBase {
 
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
 
         break;
         
@@ -207,6 +220,8 @@ public class ShooterPivot extends SubsystemBase {
         motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         
         motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case CLIMB: // TODO: add limit
