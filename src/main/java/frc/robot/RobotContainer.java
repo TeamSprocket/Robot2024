@@ -38,7 +38,7 @@ public class RobotContainer {
 
   PowerDistribution pdh = new PowerDistribution();
 
-  Limelight limelight = new Limelight();
+  Vision limelight = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
   Elevator elevator = new Elevator();
   ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());

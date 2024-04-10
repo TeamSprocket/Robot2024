@@ -1,247 +1,170 @@
-// package frc.robot.subsystems;
+package frc.robot.subsystems;
 
-// import java.util.ArrayList;
-// import java.util.List;
-// import java.util.Optional;
-// import org.photonvision.EstimatedRobotPose;
-// import org.photonvision.PhotonCamera;
-// import org.photonvision.PhotonPoseEstimator;
-// import org.photonvision.PhotonPoseEstimator.PoseStrategy;
-// import org.photonvision.targeting.PhotonTrackedTarget;
-// import edu.wpi.first.apriltag.AprilTagFieldLayout;
-// import edu.wpi.first.apriltag.AprilTagFields;
-// import edu.wpi.first.math.filter.MedianFilter;
-// import edu.wpi.first.math.geometry.Pose2d;
-// import edu.wpi.first.math.geometry.Rotation3d;
-// import edu.wpi.first.math.geometry.Transform3d;
-// import edu.wpi.first.math.geometry.Translation2d;
-// import edu.wpi.first.math.geometry.Translation3d;
-// import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj2.command.SubsystemBase;
-// import frc.robot.Constants;
-// import frc.util.Util;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.LimelightHelper;
 
-// public class Vision extends SubsystemBase {    
-//     private PhotonCamera shooterLL = new PhotonCamera("shooter-limelight");
-//     // private PhotonCamera intakeLL = new PhotonCamera("CAMERA NAME");
-    
-//     private AprilTagFieldLayout aprilTagFieldLayout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
-//     private Transform3d robotToCam = new Transform3d(new Translation3d(0.5, 0.0, 0.5), new Rotation3d(0,5,0)); //Cam mounted facing forward, half a meter forward of center, half a meter up from center
-//     private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(aprilTagFieldLayout, PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, shooterLL, robotToCam); // there are different types of pose strategies, using lowest ambiguity for now to get clearest april tag in limelight view
-//     // used to get robot position on field by looking at april tags
+public class Vision extends SubsystemBase {
 
-//     private List<PhotonTrackedTarget> targets;
-//     private PhotonTrackedTarget target;
-//     // private PhotonTrackedTarget note;
-//     // targets for camera
+    Translation2d targetSpeaker = new Translation2d(0.0, 0.0);
+    StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
+    .getStructTopic("Robot Pose", Pose2d.struct).publish();
 
-//     private MedianFilter filterYaw = new MedianFilter(10);
-//     private MedianFilter filterPitch = new MedianFilter(10);
-//     // private MedianFilter filterIntake = new MedianFilter(5);
-//     // filters for shooter and intake
+    public Vision() {}
 
-//     private ArrayList<Double> xPoseReadings = new ArrayList<Double>(Constants.Vision.kVolatilitySlidingWindowLen);
-//     private ArrayList<Double> yPoseReadings = new ArrayList<Double>(Constants.Vision.kVolatilitySlidingWindowLen);
+    @Override
+    public void periodic() {
+        publisher.set(getPose2d());
+        debug();
+    }
 
-//     private double totalX = 0.00;
-//     private double totalY = 0.00;
+    /**
+     * @return {xCoord, yCoord, timestamp}
+     */
+    public Translation2d getTranslation2d() { // TODO: check if we only want coords from blue side
+        LimelightHelper.PoseEstimate estimate;
 
-//     private double averageX = 0.00;
-//     private double averageY = 0.00;
-//     // volatility
+        if (LimelightHelper.getTV("limelight")) {
+            // get pose estimate using megatag2 localization
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            }
+            else {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+            }
+            return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
+        } else {
+            return new Translation2d(0.0, 0.0);
+        }
+    }
 
-//     public Vision() {
-//         // intakeLL.setPipelineIndex(0);
-//         // shooterLL.setPipelineIndex(0); // apriltag
-//         shooterLL.setDriverMode(true); // will need to change this once we use pose for auton
+    public Pose2d getPose2d() { // DEBUG ONLY
+        LimelightHelper.PoseEstimate estimate;
 
-//         for (int i = 0; i < Constants.Vision.kVolatilitySlidingWindowLen; i++) {
-//             xPoseReadings.add(0.0);
-//             yPoseReadings.add(0.0);
-//         }
-//     }
+        if (LimelightHelper.getTV("limelight")) {
+            // get pose estimate using megatag2 localization
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            }
+            else {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+            }
 
-//     @Override
-//     public void periodic() {
-//         Translation2d currentPose = getTranslation2d();
+            return estimate.pose;
+        } else {
+            return new Pose2d();
+        }
+    }
 
-//         targets = shooterLL.getLatestResult().getTargets();
-//         updateTargets();
+    public boolean hasTargets() {
+        return LimelightHelper.getTV("limelight");
+    }
 
-//         SmartDashboard.putNumber("Pose tX [V]", currentPose.getX());
-//         SmartDashboard.putNumber("Pose tY [V]", currentPose.getY());
-//         debug();
+    public boolean hasTargets(Translation2d translation) {
+        if (translation.getX() != 0.0 && translation.getY() != 0.0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-//         // note = intakeLL.getLatestResult().getBestTarget();
-//         // gets closest note
+    /**
+     * @return Offset of limelight crosshair center to fiducials in DEGREES
+     */
+    public double getXOffset() {
+        if (LimelightHelper.getTV("limelight")) {
+            if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
+                return LimelightHelper.getTX("limelight");
+            }
+            else {
+                return 0.0;
+            }
+        } else {
+            return 0.0;
+        }
+    }
 
-//         totalX += currentPose.getX();
-//         totalX -= xPoseReadings.get(0);
-//         averageX = totalX / Constants.Vision.kVolatilitySlidingWindowLen;
+    public double getSpeakerAngle() {
+        if (LimelightHelper.getTV("limelight")) {
+            Translation2d robotToSpeakerPose = targetSpeaker.minus(getTranslation2d());
+            return robotToSpeakerPose.getAngle().getDegrees();
+        } else {
+            return 0.0;
+        }
+    }
 
-//         totalY += currentPose.getY();
-//         totalY -= yPoseReadings.get(0);
-//         averageY = totalY / Constants.Vision.kVolatilitySlidingWindowLen;
+    // public double getSpeakerAngleOffset() {
+    //     Translation2d speakerPoint = targetSpeaker;
+    //     Translation2d currentPos = getTranslation2d();
 
-//         xPoseReadings.add(currentPose.getX());
-//         xPoseReadings.remove(0);
+    //     // Driver POV NOT FIELD POV
+    //     double speakerX = targetSpeaker.getX();
+    //     double speakerY = targetSpeaker.getY();
+    //     double botX = targetSpeaker.getX();
+    //     double speakerY = targetSpeaker.getY();
 
-//         yPoseReadings.add(currentPose.getY());
-//         yPoseReadings.remove(0);
-//         // volatility calculations
-//     }
+    // }
 
-//     /**
-//      * @return x and y position of the robot on the field
-//      */
-//     public Translation2d getTranslation2d() {
-//         Optional<EstimatedRobotPose> result = photonPoseEstimator.update();
 
-//         if (result.isPresent()) {
-//             Pose2d pose = result.get().estimatedPose.toPose2d();
-//             // uses april tags to find robot position on field (we have to convert to pose 2d then translation)
+    public void getTargetSpeaker() {
 
-//             return new Translation2d(pose.getX(), pose.getY());
-//         } else {
-//             return new Translation2d(0.0, 0.0);
-//         }   
-//     }
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            this.targetSpeaker = new Translation2d(0.0, Constants.FieldConstants.kSpeakerY);
+        }
+        else {
+            this.targetSpeaker = new Translation2d(Constants.FieldConstants.kFieldLength, Constants.FieldConstants.kSpeakerY);
+        }
+    }
 
-//     /**
-//      * @return distance from the april tag when the robot is in front of the april tag
-//      */
-//     public double getDistanceFromTarget() {
-        
-//         if (target != null) {
-//             double angleToGoalRadians = Math.toRadians(getPitch() + Constants.Vision.kLimelightPitchAngleDegrees);
-//             double distanceFromTarget = (Constants.Vision.kSpeakerAprilTagHeightMeters  - Constants.Vision.kLimelightHeightMeters) / Math.tan(angleToGoalRadians);
+    public double getDistanceToTarget(Translation2d robotTranslation) { // TODO: find distance offset + add filter if needed
+        getTargetSpeaker();
+        return targetSpeaker.getDistance(robotTranslation);
+    }
 
-//             distanceFromTarget -= 0.0; // ??? wut
-            
-//             if (distanceFromTarget < 0) {
-//                 distanceFromTarget = 0.0;
-//             }
+    public double getDistToTarget() { // TODO: check which one is more accurate
+        return Math.hypot(getTranslationRobotToGoal().getX(), getTranslationRobotToGoal().getY());
+    }
 
-//             // height from cam to april tag / tan(angle) = distance from cam to april tag
-//             return distanceFromTarget - Constants.Vision.kdistanceOffset;
-//         } else {
-//             return 0.0;
-//         }
-//     }
+    private Translation2d getTranslationRobotToGoal() {
+        getTargetSpeaker();
+        Translation2d robotToGoal;
 
-//     /**
-//      * @return Highest axial volatility reading
-//      */
-//     private double getOverallVolatility() {
-//         double volatilityX = getVolatilityAxis(averageX, xPoseReadings);
-//         double volatilityY = getVolatilityAxis(averageY, yPoseReadings);
-//         double overallVolatility = Util.max(volatilityX, volatilityY);
-//         return overallVolatility;
-//     }
+        robotToGoal = targetSpeaker.minus(getTranslation2d());
 
-//     public void setVisionDriverMode() {
-//         if (shooterLL.getDriverMode()) {
-//             shooterLL.setDriverMode(true);
-//         } else {
-//             shooterLL.setDriverMode(false);
-//         }
-//     }
+        return robotToGoal;
+    }
 
-//     /**
-//      * @param translation of the robot on the field
-//      * @return checks if translation is valid before doing math
-//      */
-//     public boolean hasTargets(Translation2d translation) {
-//         if (translation.getX() != 0.0 && translation.getY() != 0.0) {
-//             return true;
-//         } else {
-//             return false;
-//         }
-//     }
+    private void debug() {
+        SmartDashboard.putNumber("Robot Pose X [LL]", getTranslation2d().getX());
+        SmartDashboard.putNumber("Robot Pose Y [LL]", getTranslation2d().getY());
+        // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
+        // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
+        // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
+        SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
+        SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
+        SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
+    }
 
-//     public boolean getIsNotVolatile() {
-//         return getOverallVolatility() < Constants.Vision.kAcceptableVolatilityThreshold;
-//     }
+    // public Translation2d getTranslationRobotToGoal() {
+        // double x = 0.0;
+        // double y = 0.0;
 
-//     public double getYaw() {
-//         if (target != null) {
-//             return filterYaw.calculate(target.getYaw());    
-//         }
-//         else {
-//             return 0.0;
-//         }
-//     }
+        // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+        //     x = Math.abs(Constants.Limelight.speakerBlue.getX() - getTranslation2d().getX()); 
+        //     y = Math.abs(Constants.Limelight.speakerBlue.getY() - getTranslation2d().getY());
+        // }
+        // else {
+        //     x = Math.abs(Constants.Limelight.speakerRed.getX() - getTranslation2d().getX());
+        //     y = Math.abs(Constants.Limelight.speakerRed.getY() - getTranslation2d().getY());
+        // }
 
-//     public double getPitch() {
-//         if (target != null) {
-//             return filterPitch.calculate(target.getPitch());  
-//         }
-//         else {
-//             return 0.0;
-//         }
-//     }
-
-//     public double getSkew() {
-//         if (target != null) {
-//             return filterPitch.calculate(target.getSkew());
-//         }
-//         else {
-//             return 0.0;
-//         }
-//     }
-
-//     // public double getIntakeYaw() {
-//     //     double intakeNoteReading = note.getYaw();
-//     //     return filterIntake.calculate(intakeNoteReading);
-//     // }
-
-//     public PhotonCamera getShooterLL() {
-//         return shooterLL;
-//     }
-
-//     // public PhotonCamera getIntakeLL() {
-//     //     return intakeLL;
-//     // }
-
-//     /**
-//      * sets target april tag to the middle speaker tags for correct alignment
-//      */
-//     private void updateTargets() {
-//         for (PhotonTrackedTarget i : targets) {
-//             if (i.getFiducialId() == 7 || i.getFiducialId() == 4) {
-//                 this.target = i;
-//             }
-//             else {
-//                 this.target = null;
-//             }
-//         }
-//     }
-
-//     /**
-//      * @return axial volatility
-//      */
-//     private double getVolatilityAxis(double average, ArrayList<Double> llOdometry){
-//         double volatility = 0.00;
-
-//         for (int i = 0; i < Constants.Vision.kVolatilitySlidingWindowLen; i++){
-//             volatility += Math.abs(average - (double)llOdometry.get(i));
-//         }
-//         return volatility;
-//     }
-
-//     private boolean getDriverMode() {
-//         return shooterLL.getDriverMode();
-//     }
-
-//     private void debug() {
-//         // SmartDashboard.putNumber("Distance from Target [V]", getDistanceFromTarget());
-//         // // SmartDashboard.putNumber("Distance from Target Straight [V]", getStraightDistanceFromTarget());
-//         // SmartDashboard.putBoolean("isVolatile [V]", getIsNotVolatile());
-//         // // SmartDashboard.putBoolean("Driver mode", getDriverMode());
-//         // SmartDashboard.putNumber("Tag Yaw [V]", getYaw());
-//         // SmartDashboard.putNumber("Tag Skew [V]", getSkew());
-//         // SmartDashboard.putNumber("Tag Pitch [V]", getPitch());
-//         // SmartDashboard.putBoolean("Has Target", shooterLL.getLatestResult().hasTargets());
-//         // SmartDashboard.putNumber("Volatility [V]", getOverallVolatility());
-//     }
-// }
+        // return Math.atan(y/x);
+    // }
+}

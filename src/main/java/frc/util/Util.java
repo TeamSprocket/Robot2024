@@ -159,9 +159,9 @@ public final class Util {
 
   public static Translation3d getSpeakerTargetBasedOnAllianceColor() {
     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-      return Constants.ShootingSetpoints.targetPointBlue;
+      return Constants.Vision.targetPointBlue;
     } else if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-      return Constants.ShootingSetpoints.targetPointRed;
+      return Constants.Vision.targetPointRed;
     } else {
       return new Translation3d();
     }
@@ -170,7 +170,7 @@ public final class Util {
 
   public static double getTargetScaledVelocity(Translation3d botPose, Translation3d targetPose) {
     double dist = Math.sqrt(Math.pow(targetPose.getX() - botPose.getX(), 2.0) + Math.pow(targetPose.getY() - botPose.getY(), 2.0));
-    return 2.0 * dist + Constants.ShootingSetpoints.kBaseShooterVelocity;
+    return Constants.Vision.kShooterVelocityLinearMultiplier * dist + Constants.Vision.kShooterVelocityBase;
   }
 
 

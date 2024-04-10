@@ -28,11 +28,11 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
-import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelper;
 
 public class SwerveDrive extends SubsystemBase {
 
-  Limelight limelight;
+  Vision limelight;
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
@@ -101,7 +101,7 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  public SwerveDrive(Limelight limelight) {
+  public SwerveDrive(Vision limelight) {
     this.limelight = limelight;
 
     this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
@@ -155,7 +155,7 @@ public class SwerveDrive extends SubsystemBase {
   public void periodic() {
     updateShuffleboardPIDConstants();
     gyro.clearStickyFaults();
-    LimelightHelpers.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
+    LimelightHelper.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
 
     debug();
 

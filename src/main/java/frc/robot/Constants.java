@@ -224,9 +224,12 @@ public class Constants {
 
     }
 
-    public static final class Limelight {
+    public static final class Vision {
 
         // measurements
+        public static final Translation3d targetPointBlue = new Translation3d(-0.1, 5.548, 0);
+        public static final Translation3d targetPointRed = new Translation3d(-0.1, (8.211-5.548), 0);
+        
         public static final double kLimelightPitchAngleDegrees = 5.0;
         public static final double kLimelightHeightMeters = 0.534;
 
@@ -238,6 +241,29 @@ public class Constants {
         public static final int kVolatilitySlidingWindowLen = 20;
 
         public static final double kdistanceOffset = 0.7642; // 0.5992
+
+
+        // Most likely can be same blue/red
+        // public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211 - 5.548), 0);
+
+        public static final double kShooterVelocityLinearMultiplier = 1.5;
+        public static final double kShooterVelocityBase = 17.0;
+        
+        /**
+         * @param dist Distance from bot shooter to targetPoint in meters
+         * @return Array of 2 values: shooterPivot angle in degrees, shooter velocity in MPS
+         */
+        // public static double[] getValues(double dist) {
+        //     int index = (int) ((dist - 0.5) * 100);
+        //     double[] retArr = {vals[index][1], vals[index][2]};
+        //     return retArr;
+        // }
+
+        
+
+        // VALS HERE
+        // distance in meters of april tag, angle from 0-90 (0 is horiz), shooter mps
+
     }
 
     public static final class Drivetrain {
@@ -372,34 +398,6 @@ public class Constants {
 
     }
 
-
-    public static final class ShootingSetpoints {
-        public static final Translation3d targetPointBlue = new Translation3d(-0.1,
-        5.548, 0);
-        public static final Translation3d targetPointRed = new Translation3d(-0.1,
-        (8.211-5.548), 0);
-
-        // Most likely can be same blue/red
-        // public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211 - 5.548), 0);
-
-        public static final double kBaseShooterVelocity = 17.0;
-        
-        /**
-         * @param dist Distance from bot shooter to targetPoint in meters
-         * @return Array of 2 values: shooterPivot angle in degrees, shooter velocity in MPS
-         */
-        // public static double[] getValues(double dist) {
-        //     int index = (int) ((dist - 0.5) * 100);
-        //     double[] retArr = {vals[index][1], vals[index][2]};
-        //     return retArr;
-        // }
-
-        
-
-        // VALS HERE
-        // distance in meters of april tag, angle from 0-90 (0 is horiz), shooter mps
-
-    }
 
 
 
