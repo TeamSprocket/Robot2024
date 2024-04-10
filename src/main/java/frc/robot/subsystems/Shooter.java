@@ -12,13 +12,10 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.RobotContainer;
 import frc.robot.RobotMap;
 import frc.util.ShuffleboardPIDTuner;
 import frc.util.Util;
@@ -57,8 +54,6 @@ public class Shooter extends SubsystemBase {
   TalonFX shooterFollowerMotor = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM, "canivore");
   TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER, "canivore");
   DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
-
-  Timer timer = new Timer();
 
   PIDController shooterPID = new PIDController(Constants.Shooter.kPShooter, Constants.Shooter.kIShooter, Constants.Shooter.kDShooter);
   PIDController indexerPID = new PIDController(Constants.Shooter.kPIndexer, Constants.Shooter.kIIndexer, Constants.Shooter.kDIndexer);
@@ -454,25 +449,6 @@ public class Shooter extends SubsystemBase {
 
   public boolean beamBroken() {
     return !beamBreak.get();
-  }
-
-  public void rumbleNote() {
-    boolean r = true;
-    if (beamBroken() && r) {
-      timer.start();
-      r = false;
-    }
-    else if (timer.get() < Constants.Superstructure.kRumbleHasNoteTime && !r) {
-      RobotContainer.driver.getHID().setRumble(RumbleType.kBothRumble, 0.5);
-      RobotContainer.secondary.getHID().setRumble(RumbleType.kBothRumble, 0.5);
-    }
-    else if (timer.get() >= Constants.Superstructure.kRumbleHasNoteTime) {
-      timer.stop();
-      timer.reset();
-    }
-    if (!beamBroken() && !r) {
-      r = true;
-    }
   }
 
   private void configMotors() {
