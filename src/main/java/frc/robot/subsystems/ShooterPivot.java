@@ -254,10 +254,12 @@ public class ShooterPivot extends SubsystemBase {
     double pivotSpeed;
     pidController.setSetpoint(targetAngle);
     double currentAngle = getShooterPivotAngle();
+    double PIDoutput = pidController.calculate(currentAngle);
+
     if(Math.abs(targetAngle - currentAngle) > Constants.ShooterPivot.kFFtoPIDTransitionTolerance) {
-      pivotSpeed = Constants.ShooterPivot.kFFPivot;
+      pivotSpeed = Constants.ShooterPivot.kFFPivot * Util.getSign(PIDoutput);
     } else {
-      pivotSpeed = pidController.calculate(currentAngle);
+      pivotSpeed = PIDoutput;
       if (pidController.atSetpoint()) {
         pivotSpeed = 0;
       }
