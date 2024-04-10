@@ -129,35 +129,27 @@ public class ShooterPivot extends SubsystemBase {
         break;
 
       case STOWED:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleStowed);
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case EJECT_NOTE:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleEject);
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleEject);
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
 
       case INTAKE:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleIntake);
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIntake);
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case INDEXING:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleIndexing);
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIndexing);
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
@@ -168,55 +160,43 @@ public class ShooterPivot extends SubsystemBase {
           double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
 
-          pidController.setSetpoint(angleTargetAdjusted);
+          motorspeed = getPivotSpeed(angleTargetAdjusted);
 
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
         }
         // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
-
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case SPEAKER_TEST:
 
-        pidController.setSetpoint(pivotAngle); 
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(pivotAngle); 
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
         break;
 
       case CROSSFIELD:
 
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleCrossfield); 
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleCrossfield); 
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         motor.set(motorspeed);
 
         break;
         
       case AMP:
-        pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleAmp);
-        motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleAmp);
 
-        motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
         
         motor.set(motorspeed);
         break;
 
       case CLIMB: // TODO: add limit
         double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
-        pidController.setSetpoint(pidController.getSetpoint() + (speed));
+        motorspeed = getPivotSpeed(pidController.getSetpoint() + (speed));
 
-        double finalspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
-
-        finalspeed = Util.minmax(finalspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
-        motor.set(finalspeed);
+        motor.set(motorspeed);
         break;
     }
 
@@ -246,6 +226,23 @@ public class ShooterPivot extends SubsystemBase {
       deg -= (360); 
     }
     return deg;
+  }
+
+  public double getPivotSpeed(double targetAngle) {
+    double pivotSpeed;
+    pidController.setSetpoint(targetAngle);
+    double currentAngle = getShooterPivotAngle();
+    if(Math.abs(targetAngle - currentAngle) > Constants.ShooterPivot.kFFtoPIDTransitionTolerance) {
+      pivotSpeed = Constants.ShooterPivot.kFFPivot;
+    } else {
+      pivotSpeed = pidController.calculate(currentAngle);
+      if (pidController.atSetpoint()) {
+        pivotSpeed = 0;
+      }
+    }
+
+    pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
+    return pivotSpeed;
   }
 
   public void setState(ShooterPivotStates state) {
