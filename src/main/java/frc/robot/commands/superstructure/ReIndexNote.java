@@ -11,7 +11,7 @@ import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
 
-public class AlignNoteIndexing  extends Command {
+public class ReIndexNote  extends Command {
 
   Shooter shooter;
   ShooterPivot shooterPivot;
@@ -19,23 +19,23 @@ public class AlignNoteIndexing  extends Command {
   Timer accelTimer = new Timer();
   boolean hasNote = false;
 
-  public enum AlignNote {
+  public enum ReIndexNoteStates {
     START,
     ROLLFORWARD,
     WAIT,
     ROLLBACK,
     DONE
   }
-  AlignNote state = AlignNote.START;
+  ReIndexNoteStates state = ReIndexNoteStates.START;
 
-  public AlignNoteIndexing(Shooter shooter, ShooterPivot shooterPivot) {
+  public ReIndexNote(Shooter shooter, ShooterPivot shooterPivot) {
     this.shooter = shooter;
     this.shooterPivot = shooterPivot;
   }
 
   @Override
   public void initialize() {
-    this.state = AlignNote.START;
+    this.state = ReIndexNoteStates.START;
     
     // Constants.robotState = Constants.RobotState.TELEOP_DISABLE_SWERVE;
     // superstructure.setState(SSStates.INTAKE);
@@ -54,39 +54,39 @@ public class AlignNoteIndexing  extends Command {
   public void execute() {
 
     if (shooter.beamBroken()) {
-      state = AlignNote.ROLLFORWARD;
+      state = ReIndexNoteStates.ROLLFORWARD;
     }
 
-    if (state == AlignNote.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
+    if (state == ReIndexNoteStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
       timer.start();
     }
 
-    if (state == AlignNote.ROLLFORWARD && timer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSec) {
-      state = AlignNote.WAIT;
+    if (state == ReIndexNoteStates.ROLLFORWARD && timer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSec) {
+      state = ReIndexNoteStates.WAIT;
       timer.stop();
       timer.reset();
       timer.start();
     }
 
-    if (state == AlignNote.WAIT && timer.get() > Constants.Superstructure.kRollForwardtoRollBackWaitTime) {
+    if (state == ReIndexNoteStates.WAIT && timer.get() > Constants.Superstructure.kRollForwardtoRollBackWaitTime) {
       timer.stop();
       timer.reset();
-      state = AlignNote.ROLLBACK;
+      state = ReIndexNoteStates.ROLLBACK;
     }
 
-    if (state == AlignNote.ROLLBACK && shooter.hasNoteRollbackIndexer()) {
+    if (state == ReIndexNoteStates.ROLLBACK && shooter.hasNoteRollbackIndexer()) {
       timer.start();
     }
     
-    if (state == AlignNote.ROLLBACK && timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec) {
-      state = AlignNote.DONE;
+    if (state == ReIndexNoteStates.ROLLBACK && timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec) {
+      state = ReIndexNoteStates.DONE;
     }
 
-    if (state == AlignNote.ROLLFORWARD) {
+    if (state == ReIndexNoteStates.ROLLFORWARD) {
       shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
-    } else if (state == AlignNote.WAIT) {
+    } else if (state == ReIndexNoteStates.WAIT) {
       shooter.setState(ShooterStates.HOLD_NOTE);
-    } else if (state == AlignNote.ROLLBACK) {
+    } else if (state == ReIndexNoteStates.ROLLBACK) {
       shooter.setState(ShooterStates.INTAKE_ROLLBACK);
     }
 
@@ -102,6 +102,6 @@ public class AlignNoteIndexing  extends Command {
   public boolean isFinished() {
     // return timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec;
     // return shooter.beamBroken();
-    return state == AlignNote.DONE;
+    return state == ReIndexNoteStates.DONE;
   }
 }

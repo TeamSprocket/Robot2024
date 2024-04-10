@@ -27,24 +27,25 @@ import frc.robot.commands.instant.*;
 import frc.robot.commands.macro.LockHeadingToSpeaker;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
+import frc.robot.controls.Controller;
 // import frc.robot.commands.macro.*;
 import frc.robot.subsystems.*;
 
 public class RobotContainer {
 
-  public final static CommandXboxController driver = new CommandXboxController(0);
-  public final static CommandXboxController secondary = new CommandXboxController(1);
+  public final static Controller driver = new Controller(0);
+  public final static Controller operator = new Controller(1);
 
   PowerDistribution pdh = new PowerDistribution();
 
   Limelight limelight = new Limelight();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
   Elevator elevator = new Elevator();
-  ShooterPivot shooterPivot = new ShooterPivot(() -> secondary.getLeftY(), () -> swerveDrive.getTranslation3d());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> secondary.getRightTriggerAxis(), () -> secondary.getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
+  ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
+  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   Intake intake = new Intake();
 
-  Timer timer = new Timer();
+  
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
@@ -97,11 +98,11 @@ public class RobotContainer {
     // --------------------=Driver=--------------------
     swerveDrive.setDefaultCommand(new DriveTeleop(
         swerveDrive,
-        () -> -driver.getLeftX(),
-        () -> driver.getLeftY(),
-        () -> -driver.getRightX() * -1));
+        () -> -driver.getController().getLeftX(),
+        () -> driver.getController().getLeftY(),
+        () -> -driver.getController().getRightX()));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
-    driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
+    driver.getController().rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
     // driver.leftBumper().onTrue(new LockHeadingToSpeaker());
     
     
@@ -115,22 +116,34 @@ public class RobotContainer {
     // driver.button(RobotMap.Controller.A)
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
-    // --------------------=Secondary=--------------------
-    secondary.y().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
-    secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
-    // secondary.x().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
-    // secondary.x().whileTrue(new ScoreSpeakerTEST(shooterPivot, shooter, intake)); // for localization
-    secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
-    secondary.leftBumper().whileTrue(new WaitAmp(elevator, shooterPivot));
-    secondary.a().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
-    // secondary.button(8).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // TODO: change button bindings for Corey
-    // secondary.button(7).whileTrue(new AlignNoteIndexing(shooter, shooterPivot));
-    secondary.button(8).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake));
+    // --------------------=operator=--------------------
+    operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
+    operator.getController().rightBumper().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+
+    operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot));
+    operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
+    // operator.b().whileTrue(new ScoreSpeakerAmpZoneSpinup(intake, shooter, shooterPivot));
+    operator.getController().a().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
+
+    operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
+    operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // Menu button
+
+    operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).whileTrue(new ReIndexNote(shooter, shooterPivot));
+
   }
 
   public void resetModulesToAbsolute() {
     swerveDrive.resetModulesToAbsolute();
+  }
+
+  public void updateNoteRumbleListener() {
+    driver.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
+    operator.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
+  }
+
+  public void stopNoteRumbleListener() {
+    driver.stopNoteRumbleListener();
+    operator.stopNoteRumbleListener();
   }
 
   public SwerveDrive getSwerveDrive() {
@@ -145,24 +158,10 @@ public class RobotContainer {
     pdh.clearStickyFaults();
   }
   
-  public void updateNoteRumbleListener() {
-    boolean r = true;
-    if (shooter.beamBroken() && r) {
-      timer.start();
-      r = false;
-    }
-    else if (timer.get() < Constants.Superstructure.kRumbleHasNoteTime && !r) {
-      driver.getHID().setRumble(RumbleType.kBothRumble, 0.5);
-      secondary.getHID().setRumble(RumbleType.kBothRumble, 0.5);
-    }
-    else if (timer.get() >= Constants.Superstructure.kRumbleHasNoteTime) {
-      timer.stop();
-      timer.reset();
-    }
-    if (!shooter.beamBroken() && !r) {
-      r = true;
-    }
-  }
+
+  
+
+  
 
 
   

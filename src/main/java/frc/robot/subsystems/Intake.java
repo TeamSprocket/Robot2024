@@ -52,7 +52,7 @@ public class Intake extends SubsystemBase {
         STOWED,
         INTAKE,
         INTAKE_ROLLBACK,
-        INDEXER,
+        INDEXING,
         SCORE_SPEAKER_SUBWOOFER, 
         SCORE_SPEAKER,
         CROSSFIELD,
@@ -115,7 +115,7 @@ public class Intake extends SubsystemBase {
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
 
-            case INDEXER:
+            case INDEXING:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kIndexingAngleIntake);
                 pivotIntake.set(pivotSpeed);
 
