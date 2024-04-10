@@ -91,6 +91,14 @@ public class Limelight extends SubsystemBase {
         }
     }
 
+    public double getSpeakerAngle() {
+        if (LimelightHelpers.getTV("limelight")) {
+            Translation2d robotToSpeakerPose = targetSpeaker.minus(getTranslation2d());
+            return robotToSpeakerPose.getAngle().getDegrees();
+        } else {
+            return 0.0;
+        }
+    }
 
     // public double getSpeakerAngleOffset() {
     //     Translation2d speakerPoint = targetSpeaker;

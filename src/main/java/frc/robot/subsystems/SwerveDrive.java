@@ -298,8 +298,12 @@ public class SwerveDrive extends SubsystemBase {
   //  */
   public double getLockHeadingToSpeakerTSpeed() {
     // in the docs, tX is the horiz offset from LL to target
-    double offsetDeg = limelight.getXOffset();
-    double offsetRad = Math.toRadians(offsetDeg);
+    double offsetRad = Math.toRadians(limelight.getXOffset());
+    return speakerLockPIDController.calculate(offsetRad, 0.0);
+  }
+
+  public double getLockHeadingToSpeakerTSpeed(double angleSpeaker) {
+    double offsetRad = getHeading() - limelight.getSpeakerAngle();
     return speakerLockPIDController.calculate(offsetRad, 0.0);
   }
 

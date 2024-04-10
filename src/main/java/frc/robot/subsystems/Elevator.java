@@ -61,8 +61,8 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.setInverted(Constants.Elevator.kLeftMotorIsInverted);
     elevatorFollowerMotor.setInverted(Constants.Elevator.kRightMotorIsInverted);
 
-    elevatorMotor.setNeutralMode(NeutralModeValue.Coast);
-    elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Coast);
+    elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
+    elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Brake);
 
     ShuffleboardPIDTuner.addSlider("Elevator kP [EL]", 0, 1, Constants.Elevator.kPIDElevator.kP);
     ShuffleboardPIDTuner.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
@@ -126,7 +126,7 @@ public class Elevator extends SubsystemBase {
     double motorOutput = 0.0;
 
     if (Math.abs(currentHeight - targetHeight) > Constants.Elevator.kFFtoPIDTransitionToleranceM) {
-      motorOutput = Constants.Elevator.kElevatorFF * Util.getSign(targetHeight - currentHeight);
+      motorOutput = Constants.Elevator.kElevatorVelocity * Util.getSign(targetHeight - currentHeight);
     } else {
       motorOutput = pidController.calculate(currentHeight) + Constants.Elevator.kPIDElevator.kFF;
     }

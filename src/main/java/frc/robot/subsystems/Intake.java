@@ -55,6 +55,7 @@ public class Intake extends SubsystemBase {
         INDEXER,
         SCORE_SPEAKER_SUBWOOFER, 
         SCORE_SPEAKER,
+        CROSSFIELD,
         EJECT_NOTE
     }
 
@@ -151,6 +152,18 @@ public class Intake extends SubsystemBase {
 
             case SCORE_SPEAKER:
                 pidController.setSetpoint(Constants.Intake.kPivotAngleScoreSpeaker);
+                pivotSpeed = pidController.calculate(getPivotAngle());
+                if (pidController.atSetpoint()) {
+                    pivotSpeed = 0.0;
+                }
+                pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
+                pivotIntake.set(pivotSpeed);
+
+                rollIntake.set(0.0);
+                break;
+
+            case CROSSFIELD: // might be unecessary
+                pidController.setSetpoint(Constants.Intake.kPivotAngleShootCrossfield);
                 pivotSpeed = pidController.calculate(getPivotAngle());
                 if (pidController.atSetpoint()) {
                     pivotSpeed = 0.0;

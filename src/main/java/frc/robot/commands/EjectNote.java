@@ -40,12 +40,16 @@ public class EjectNote extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setState(IntakeStates.EJECT_NOTE);
-    if (waitTimer.get() > 0.5) {
-      pivot.setState(ShooterPivotStates.EJECT_NOTE);
-    }
-    if (waitTimer.get() > 1.5){
-      shooter.setState(ShooterStates.EJECT_NOTE);
+    if (waitTimer.get() < 2.2) {
+      intake.setState(IntakeStates.EJECT_NOTE);
+      if (waitTimer.get() > 0.5) {
+        pivot.setState(ShooterPivotStates.EJECT_NOTE);
+      }
+      if (waitTimer.get() > 1.5){
+        shooter.setState(ShooterStates.EJECT_NOTE);
+      }
+    } else {
+      pivot.setState(ShooterPivotStates.STOWED);
     }
   }
 
@@ -60,6 +64,6 @@ public class EjectNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return waitTimer.get() > 2.5;
   }
 }

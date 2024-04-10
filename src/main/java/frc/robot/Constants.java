@@ -31,7 +31,7 @@ public class Constants {
         // Elapsed time beam break detecting note before stow
         public static final double kIndexerIntakeRollBackTimeSec = 0.15; // 0.2
 
-        public static final double kIndexerIntakeRollForwardTimeSec = 0.2;
+        public static final double kIndexerIntakeRollForwardTimeSec = 0.15;
 
         public static final double kRollForwardtoRollBackWaitTime = 0.5;
 
@@ -39,7 +39,7 @@ public class Constants {
         public static final double kWaitSpeakerTimeToleranceSec = 0.05;
 
         // Elapsed time shooting into speaker before stow
-        public static final double kScoreSpeakerShootTimeToleranceSec = 1.0; // intake fallback = 0.5s,\1.0
+        public static final double kScoreSpeakerShootTimeToleranceSec = 100.0; // intake fallback = 0.5s,\1.0
 
         public static final double kScoreSpeakerPivotTimeToleranceSec = 0.3;
 
@@ -61,12 +61,12 @@ public class Constants {
         public static final double kSupplyCurrentLimit = 0.0;
         
         public static final double kElevatorHeightStowed = 0.005;
-        public static final double kElevatorHeightAmp = 0.21;
+        public static final double kElevatorHeightAmp = 0.14; // 0.22; // 0.21;
 
         // public static final double kElevatorHeightTrap = 0.0; 
 
         public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
-        public static final double kElevatorFF = 0.25;
+        public static final double kElevatorVelocity = 0.25; // 0.25
         public static final double kElevatorMotorMaxOutput = 0.3;
 
         public static final double kFFScaleWithHeight = 0.55;
@@ -114,15 +114,13 @@ public class Constants {
         // public static final double kMaxAccelerationDeg = 0.0;
 
         public static final double kTargetAngleStowed = 5.0;
-        public static final double kTargetAngleIntake = 5.0;
+        public static final double kTargetAngleIntake = 13.5;
+        public static final double kTargetAngleIndexing = 12.5;
         public static final double kTargetAngleEject = 60.0;
-        // public static final double kTargetAngleSpeaker = 0.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromAmp = kTargetAngleStowed;
-        public static final double kTargetAngleSpeakerFromPodium = kTargetAngleStowed;
         public static final double kTargetAngleSpeakerFromSubwoofer = 2.0;
-        public static final double kTargetAngleAmp = 35.6; // 35.6 // 109.0
-        public static final double kTargetAngleSource = kTargetAngleStowed;
+        public static final double kTargetAngleAmp = 98; // 102; //32; // 35.6 // 109.0
+        public static final double kTargetAngleCrossfield = 70.0; // TODO: tune it
     }
 
     public static final class Shooter {
@@ -134,28 +132,25 @@ public class Constants {
         public static final boolean kIsIndexerInverted = false;
 
         public static final double kShooterSpeedScoreSpeakerSubwoofer = 17.0; // 15.0 // 10.0
-        public static final double kShooterSpeedScoreSpeakerPodium = 5.0;
-        public static final double kShooterSpeedScoreSpeakerAmpZone = 10.0;
-        public static final double kShooterSpeedScoreAmp = -0.25; // 0.25
+        public static final double kShooterSpeedScoreAmp = 0.4; // -0.25
         public static final double kShooterEjectNoteSpeed = -0.25;
         public static final double kShooterIntakeNoteSpeed = 0.0;
-        public static final double kShooterSpeedRollforward = 1.0;
+        public static final double kShooterSpeedRollforward = 0.75;
         public static final double kShooterSpeedRollback = -1.0;
+        public static final double kShooterSpeedCrossField = 17.0; // TODO: tune if needed
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
-        public static final double kIndexerSpeedScoreAmp = -0.25; // 0.25
+        public static final double kIndexerSpeedScoreAmp = 0.4; // -0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
-        public static final double kIndexerSpeedRollforward = 3.0;
+        public static final double kIndexerSpeedRollforward = 2.0;
         public static final double kIndexerSpeedRollback = -1.0;
+        public static final double kIndexerSpeedCrossField = 17.0; // TODO: tune if needed
 
 
         public static final double kManualIntakeSupplierTolerance = 0.05;
         public static final double kManualSpeedMultiplier = 0.1;
         
-        // JUST IN CASE
-        public static final double kIndexerSpeedSource = -0.1;
-
         public static final double kShooterkIndexerIncramentMultiplier = 0.01;
         public static final double kShooterIncramentMultiplier = 0.01;
 
@@ -186,12 +181,13 @@ public class Constants {
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
-        public static final double kPivotAngleStowed = 20.0; // 20
-        public static final double kPivotAngleIntake = 120.0;
+        public static final double kPivotAngleStowed = 25.0; // 20
+        public static final double kPivotAngleIntake = 130.0;
         public static final double kPivotAngleEject = 55.0;
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 26.0;
-        public static final double kIndexingAngleIntake = 10.0; // TODO: tune this
+        public static final double kIndexingAngleIntake = 10.0; 
+        public static final double kPivotAngleShootCrossfield = 26.0; // TODO: tune this
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.4;
@@ -211,9 +207,9 @@ public class Constants {
 
         public static final double kPivotIntakeGearRatio = 36.0;
 
-        public static final double kPPivot = 0.002914; // 1, 0.1
+        public static final double kPPivot = 0.0058305929; // 1, 0.1
         public static final double kIPivot = 0.0;
-        public static final double kDPivot = 0.00002445;
+        public static final double kDPivot = 0.0000748355;
 
     }
 
@@ -276,7 +272,7 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
-        public static final PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.005, 0, 0); // TODO: should be the same as heading controller
+        public static final PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.005, 0, 0); // TODO: tune PID note heading lock is in radians while heading controller is in degrees
 
         public static final double kPTranslationPP = 3.0; // 5.5
         public static final double kITranslationPP = 0.0;

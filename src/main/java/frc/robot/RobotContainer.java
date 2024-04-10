@@ -114,12 +114,13 @@ public class RobotContainer {
     // --------------------=Secondary=--------------------
     secondary.y().whileTrue(new IntakeNoteManual(intake, shooter, shooterPivot));
     secondary.rightBumper().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter));
-    // secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
+    secondary.x().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake));
     // secondary.x().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
-    secondary.x().whileTrue(new ScoreSpeakerTEST(shooterPivot, shooter, intake)); // TODO: remove this
+    // secondary.x().whileTrue(new ScoreSpeakerTEST(shooterPivot, shooter, intake)); // for localization
     secondary.b().whileTrue(new EjectNote(intake, shooter, shooterPivot));
     secondary.leftBumper().whileTrue(new WaitAmp(elevator, shooterPivot));
     secondary.a().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
+    // secondary.button(8).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // TODO: change button bindings for Corey
     secondary.button(8).whileTrue(new AlignNoteIndexing(shooter, shooterPivot));
   }
 

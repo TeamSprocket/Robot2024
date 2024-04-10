@@ -69,6 +69,7 @@ public class IntakeNoteManual  extends Command {
     if (state == IntakeCommandStates.INTAKE && shooter.beamBroken()) {
       state = IntakeCommandStates.ROLLFORWARD;
       intake.setState(IntakeStates.INDEXER);
+      shooterPivot.setState(ShooterPivotStates.INDEXING);
     }
 
     if (state == IntakeCommandStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {

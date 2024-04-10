@@ -10,16 +10,16 @@ import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
-public class ScoreSpeakerTEST extends Command {
+public class ShootCrossfield extends Command {
 
   Shooter shooter;
-  Intake intake;
+  Intake intake; // check if intake is necessary
   ShooterPivot shooterPivot;
   Timer intakeTimer = new Timer();
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerTEST(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
+  public ShootCrossfield(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
@@ -43,8 +43,8 @@ public class ScoreSpeakerTEST extends Command {
   public void execute() {
 
     if (intakeTimer.get() > 1.0) {
-      shooter.setState(ShooterStates.SPINUP_TEST);
-      shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
+      shooter.setState(ShooterStates.SHOOT_CROSSFIELD);
+      shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
     }
     
     if (shooter.atGoalShooter()) { // At speed
@@ -54,7 +54,7 @@ public class ScoreSpeakerTEST extends Command {
     // Start timed scoring sequence
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
       scoreTimer.start();   
-      shooter.setState(ShooterStates.SCORE_SPEAKER_TEST); 
+      shooter.setState(ShooterStates.SHOOT_CROSSFIELD); 
     }
   }
 
