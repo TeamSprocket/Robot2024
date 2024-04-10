@@ -42,7 +42,7 @@ public class ScoreSpeakerTEST extends Command {
   @Override
   public void execute() {
 
-    if (intakeTimer.get() > 1.0) {
+    if (intakeTimer.get() > 0.5) {
       shooter.setState(ShooterStates.SPINUP_TEST);
       shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
     }

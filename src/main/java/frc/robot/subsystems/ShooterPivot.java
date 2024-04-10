@@ -60,7 +60,7 @@ public class ShooterPivot extends SubsystemBase {
     INTAKE,
     INDEXING,
     EJECT_NOTE,
-    // SPEAKER_SUBWOOFER, SPEAKER_PODIUM, 
+    SPEAKER_PODIUM, 
     SPEAKER_TEST,
     SPEAKER,
     // SPEAKER_HIGH,
@@ -186,6 +186,13 @@ public class ShooterPivot extends SubsystemBase {
         motorspeed = getPivotSpeed(pivotAngle); 
 
         motor.set(motorspeed);
+        break;
+
+      case SPEAKER_PODIUM:
+
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAnglePodium);
+        motor.set(motorspeed);
+
         break;
  
       case CROSSFIELD:

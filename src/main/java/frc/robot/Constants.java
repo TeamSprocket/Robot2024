@@ -112,6 +112,9 @@ public class Constants {
 
         public static final double kMaxDistance = 6.0;
 
+        public static final double kFFtoPIDTransitionTolerance = 20;
+        public static final double kFFPivot = 0.15;
+
         // public static final double kMaxVelocityDeg = 0.0;
         // public static final double kMaxAccelerationDeg = 0.0;
 
@@ -122,7 +125,8 @@ public class Constants {
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = 2.0;
         public static final double kTargetAngleAmp = 98; // 102; //32; // 35.6 // 109.0
-        public static final double kTargetAngleCrossfield = 16.0; // TODO: tune it
+        public static final double kTargetAngleCrossfield = 16.0;
+        public static final double kTargetAnglePodium = kTargetAngleStowed;
     }
 
     public static final class Shooter {
@@ -139,7 +143,8 @@ public class Constants {
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 0.75;
         public static final double kShooterSpeedRollback = -1.0;
-        public static final double kShooterSpeedCrossField = 24.0; // TODO: tune if needed
+        public static final double kShooterSpeedCrossField = 24.0;
+        public static final double kShooterSpeedScoreSpeakerPodium = kShooterSpeedScoreSpeakerSubwoofer;
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
@@ -147,7 +152,7 @@ public class Constants {
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 2.0;
         public static final double kIndexerSpeedRollback = -1.0;
-        public static final double kIndexerSpeedCrossField = 6.5; // TODO: tune if needed
+        public static final double kIndexerSpeedCrossField = 6.5;
 
         public static final double kShooterBottomSpeedMultiplier = 1.01;
 

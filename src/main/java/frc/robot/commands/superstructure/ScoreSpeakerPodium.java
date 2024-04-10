@@ -1,47 +1,72 @@
-
 package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.Superstructure;
-import frc.robot.subsystems.SwerveDrive;
-import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
-import frc.robot.subsystems.Superstructure.SSStates;
-import frc.util.Conversions;
+import frc.robot.subsystems.Intake.IntakeStates;
+import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
 public class ScoreSpeakerPodium extends Command {
 
-  Superstructure superstructure;
-  SwerveDrive swerveDrive;
   Shooter shooter;
+  Intake intake;
   ShooterPivot shooterPivot;
-  Timer timer = new Timer();
+  Timer intakeTimer = new Timer();
+  Timer waitTimer = new Timer();
+  Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerPodium(Superstructure superstructure, SwerveDrive swerveDrive) {
-    this.superstructure = superstructure;
-    this.swerveDrive = swerveDrive;
+  public ScoreSpeakerPodium(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
+    this.shooterPivot = shooterPivot;
+    this.shooter = shooter;
+    this.intake = intake;
   }
 
   @Override
   public void initialize() {
-    superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM);
+    intake.setState(IntakeStates.SCORE_SPEAKER); // might not need intake
+
+    waitTimer.reset();
+    waitTimer.stop();
+
+    scoreTimer.reset();
+    scoreTimer.stop();
+
+    intakeTimer.reset();
+    intakeTimer.start();
   }
 
   @Override
   public void execute() {
-    //swerveDrive.setTargetHeadingRad(Conversions.poseToTargetHeadingRad(swerveDrive.getPose().getTranslation(), Constants.ShootingSetpoints.targetPoint));
+
+    if (intakeTimer.get() > 0.5) {
+      shooter.setState(ShooterStates.SPINUP_PODIUM);
+      shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
+    }
+    
+    if (shooter.atGoalShooter()) { // At speed
+      waitTimer.start();
+    } 
+
+    // Start timed scoring sequence
+    if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+      scoreTimer.start();   
+      shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM); 
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
-    superstructure.setState(SSStates.STOWED);
+    intake.setState(IntakeStates.STOWED);
+    shooter.setState(ShooterStates.STANDBY);
+    shooterPivot.setState(ShooterPivotStates.STOWED);
   }
 
   @Override
   public boolean isFinished() {
-    return superstructure.getState() == SSStates.STOWED;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
   }
 }

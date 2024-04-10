@@ -102,7 +102,7 @@ public class RobotContainer {
         () -> -driver.getRightX() * -1));
     // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
     driver.rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
-    driver.leftBumper().onTrue(new LockHeadingToSpeaker()); // TODO: remove this later plz holy shiz
+    // driver.leftBumper().onTrue(new LockHeadingToSpeaker());
     
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
