@@ -98,7 +98,7 @@ public class Constants {
 
         public static final boolean kIsShooterPivotInverted = false;
 
-        public static PIDConst kPID = new PIDConst(0.00675, 0, 0, 0.015); // ff 0.015
+        public static PIDConst kPID = new PIDConst(0.0075, 0, 0, 0.015); // p: 0.00675
 
         public static final double kManualMultiplier = 0.001;
 
@@ -113,7 +113,7 @@ public class Constants {
         public static final double kMaxDistance = 6.0;
 
         public static final double kFFtoPIDTransitionTolerance = 20;
-        public static final double kFFPivot = 0.15;
+        public static final double kFFPivot = 0.35;
 
         // public static final double kMaxVelocityDeg = 0.0;
         // public static final double kMaxAccelerationDeg = 0.0;
@@ -124,7 +124,7 @@ public class Constants {
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = 2.0;
-        public static final double kTargetAngleAmp = 98; // 102; //32; // 35.6 // 109.0
+        public static final double kTargetAngleAmp = 95; // 98 // 102; //32; // 35.6 // 109.0
         public static final double kTargetAngleCrossfield = 16.0;
         public static final double kTargetAnglePodium = kTargetAngleStowed;
     }
