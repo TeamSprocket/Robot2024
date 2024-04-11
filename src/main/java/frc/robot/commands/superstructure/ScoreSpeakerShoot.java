@@ -14,7 +14,7 @@ import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.util.Conversions;
 
-public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
+public class ScoreSpeakerShoot extends Command { // EXACT SAME AS ScoreSpeakerSubwoofer.java
 
   Shooter shooter;
   Intake intake;
@@ -22,7 +22,7 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerSubwooferShoot(Shooter shooter, Intake intake, ShooterPivot shooterPivot) {
+  public ScoreSpeakerShoot(Shooter shooter, Intake intake, ShooterPivot shooterPivot) {
     this.shooter = shooter;
     this.intake = intake;
     this.shooterPivot = shooterPivot;
@@ -30,8 +30,8 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
 
   @Override
   public void initialize() {
-    shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
-    shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
+    shooter.setState(ShooterStates.SPINUP);
+    shooterPivot.setState(ShooterPivotStates.SPEAKER);
 
     waitTimer.reset();
     waitTimer.stop();
@@ -56,7 +56,7 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
       // intake.setState(IntakeStates.SCORE_SPEAKER); // We don't need this yet
       scoreTimer.start();   
-      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
+      shooter.setState(ShooterStates.SCORE_SPEAKER); 
       intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
     }
 

@@ -26,8 +26,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
-import frc.util.ShuffleboardPIDTuner;
 import frc.robot.Constants.RobotState;
+import frc.util.ShuffleboardPIDTuner;
+import frc.util.Util;
+// import frc.util.Constants.RobotState;
 import frc.robot.LimelightHelper;
 
 public class SwerveDrive extends SubsystemBase {
@@ -40,6 +42,7 @@ public class SwerveDrive extends SubsystemBase {
   PIDController speakerLockPIDController;
   SwerveDriveKinematics m_kinematics;
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Odometry [SD]", Pose2d.struct).publish();
+  double headingLockLastOffset;
 
   public static enum Directions {
     FORWARD,
@@ -149,6 +152,8 @@ public class SwerveDrive extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
     ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+
+   
   }
 
   @Override
@@ -158,6 +163,7 @@ public class SwerveDrive extends SubsystemBase {
     LimelightHelper.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
 
     debug();
+    SmartDashboard.putString("Robot State", Constants.robotState.toString());
 
     // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
@@ -299,13 +305,24 @@ public class SwerveDrive extends SubsystemBase {
   public double getLockHeadingToSpeakerTSpeed() {
     // in the docs, tX is the horiz offset from LL to target
     double offsetRad = Math.toRadians(limelight.getXOffset());
-    return speakerLockPIDController.calculate(offsetRad, 0.0);
+
+    if (Math.abs(offsetRad - headingLockLastOffset) > Constants.Drivetrain.kHeadingLockDegreeRejectionTolerance) {
+      offsetRad = headingLockLastOffset;
+    }
+
+    double PIDOutput = speakerLockPIDController.calculate(offsetRad, 0.0);
+
+    return Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
   }
 
-  public double getLockHeadingToSpeakerTSpeed(double angleSpeaker) {
-    double offsetRad = getHeading() - limelight.getSpeakerAngle();
-    return speakerLockPIDController.calculate(offsetRad, 0.0);
+  public void updateLastOffsets() {
+    headingLockLastOffset = Math.toRadians(limelight.getXOffset());
   }
+
+  // public double getLockHeadingToSpeakerTSpeed(double angleSpeaker) {
+  //   double offsetRad = getHeading() - limelight.getSpeakerAngle();
+  //   return speakerLockPIDController.calculate(offsetRad, 0.0);
+  // }
 
   // public double getLockHeadingToSpeakerTSpeed() {
   //   Translation2d robotToTarget = limelight.getTranslationRobotToGoal();

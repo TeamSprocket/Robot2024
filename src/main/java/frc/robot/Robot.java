@@ -40,6 +40,8 @@ public class Robot extends TimedRobot {
     Constants.robotState = RobotState.DISABLED;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
     m_robotContainer.getShooterPivot().setNeutralMode(NeutralModeValue.Coast);
+
+    CommandScheduler.getInstance().cancelAll();
   }
 
   @Override

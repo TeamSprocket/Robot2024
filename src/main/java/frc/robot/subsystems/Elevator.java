@@ -103,7 +103,7 @@ public class Elevator extends SubsystemBase {
         break; 
 
       case MANUAL:
-        manual();
+        // manual(0.0);
         break;
     }
 
@@ -147,13 +147,17 @@ public class Elevator extends SubsystemBase {
   }
 
 
-  public void manual() { // TODO: find deadband + correct speed
-    // double speed = joyvalue.get();
-    // pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
-    // motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
+  // public void manual(double motorOutput) { // TODO: find deadband + correct speed
+  //   // double speed = joyvalue.get();
+  //   // pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
+  //   // motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
 
-    elevatorMotor.set(0.0);
-  }
+  //   if (motorOutput < 0 && getHeight() <= 0.01) {
+  //     elevatorMotor.set(0);
+  //   } else {
+  //     elevatorMotor.set(Util.minmax(motorOutput, -0.1, 0.1));
+  //   }
+  // }
 
   private void configMotors() {
     // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();

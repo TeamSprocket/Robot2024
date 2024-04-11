@@ -61,6 +61,7 @@ public class ShooterPivot extends SubsystemBase {
     INDEXING,
     EJECT_NOTE,
     SPEAKER_PODIUM, 
+    SPEAKER_SUBWOOFER,
     SPEAKER_TEST,
     SPEAKER,
     // SPEAKER_HIGH,
@@ -180,6 +181,14 @@ public class ShooterPivot extends SubsystemBase {
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
+
+      case SPEAKER_SUBWOOFER:
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
+
+        motor.set(motorspeed);
+        
+        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      break;
 
       case SPEAKER_TEST:
 
