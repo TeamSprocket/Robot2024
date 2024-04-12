@@ -47,7 +47,7 @@ public class ScoreSpeaker extends Command {
       shooterPivot.setState(ShooterPivotStates.SPEAKER);
     }
     
-    if (shooter.atGoalShooter()) { // At speed
+    if (shooter.atGoalShooter() && shooterPivot.atGoal()) { // At speed
       waitTimer.start();
     } 
 

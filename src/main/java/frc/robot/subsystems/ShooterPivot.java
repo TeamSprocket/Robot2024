@@ -91,6 +91,9 @@ public class ShooterPivot extends SubsystemBase {
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(30)); // test values later
     
+    pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
+
+
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
@@ -105,7 +108,7 @@ public class ShooterPivot extends SubsystemBase {
 
     ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
     ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
-    ShuffleboardPIDTuner.addSlider("ShooterPivot Angle [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
+    ShuffleboardPIDTuner.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
   }
 
   @Override
@@ -115,7 +118,7 @@ public class ShooterPivot extends SubsystemBase {
     pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
-    pivotAngle = ShuffleboardPIDTuner.get("ShooterPivot Angle [SP]");
+    Constants.ShooterPivot.kHorizontalAngle = ShuffleboardPIDTuner.get("kHorizontalAngle ShooterPivot [SP]");
 
     // SmartDashboard.putString("PivotState", state.toString());
     // SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
@@ -301,8 +304,9 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   public boolean atGoal() {
-    double goal = pidController.getSetpoint();
-    return Util.inRange(getShooterPivotAngle(), (goal - Constants.ShooterPivot.kAtGoalTolerance), (goal + Constants.ShooterPivot.kAtGoalTolerance));
+    // double goal = pidController.getSetpoint();
+    // return Util.inRange(getShooterPivotAngle(), (goal - Constants.ShooterPivot.kAtGoalTolerance), (goal + Constants.ShooterPivot.kAtGoalTolerance));
+    return pidController.atSetpoint();
   }
   
   public void clearStickyFaults() {

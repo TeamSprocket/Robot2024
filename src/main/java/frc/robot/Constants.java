@@ -36,7 +36,7 @@ public class Constants {
         public static final double kRollForwardtoRollBackWaitTime = 0.0; // 0.4
 
         // Elapsed time after shooter hits speaker speed before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.2; 
+        public static final double kWaitSpeakerTimeToleranceSec = 0.25; 
 
         // Elapsed time shooting into speaker before stow
         public static final double kScoreSpeakerShootDurationSec = 1.5; // intake fallback = 0.5s,\1.0
@@ -106,7 +106,7 @@ public class Constants {
 
         public static final double kShooterPivotGearRatio = 148.15;
 
-        public static final double kHorizontalAngle = 52.0;
+        public static double kHorizontalAngle = 52.0;
 
         public static final double kMaxShooterPivotOutput = 0.55;
 
