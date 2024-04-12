@@ -236,8 +236,8 @@ public class Superstructure extends SubsystemBase {
         }
 
         // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
-        shooter.setState(ShooterStates.SPINUP_TEST);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
+        shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
         intake.setState(IntakeStates.STOWED);
 
         // Transitioner

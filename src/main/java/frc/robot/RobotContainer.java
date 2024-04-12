@@ -117,13 +117,15 @@ public class RobotContainer {
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
     // --------------------=operator=--------------------
-    operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter));
+    operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
     operator.getController().rightBumper().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake, shooterPivot));
     // operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
 
-    operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot));
+    operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    // operator.b().whileTrue(new ScoreSpeakerAmpZoneSpinup(intake, shooter, shooterPivot));
+    // operator.getController().b().whileTrue(new ScoreSpeakerShoot(shooterPivot, shooter, swerveDrive));
+    // operator.getController().b().whileTrue(new ScoreSpeakerAmpZone(shooterPivot, shooter, swerveDrive));
+    operator.getController().b().whileTrue(new ScoreSpeakerPodium(shooterPivot, shooter, swerveDrive)); // TODO: change later
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
 
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
