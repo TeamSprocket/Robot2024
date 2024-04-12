@@ -319,6 +319,16 @@ public class SwerveDrive extends SubsystemBase {
     headingLockLastOffset = Math.toRadians(limelight.getXOffset());
   }
 
+  public boolean isAlignedWithTarget() {
+    double offsetDeg = limelight.getXOffset();
+
+    if (Math.abs(offsetDeg) < Constants.Drivetrain.kHeadingLockDegreeTolerance) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // public double getLockHeadingToSpeakerTSpeed(double angleSpeaker) {
   //   double offsetRad = getHeading() - limelight.getSpeakerAngle();
   //   return speakerLockPIDController.calculate(offsetRad, 0.0);

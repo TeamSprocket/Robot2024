@@ -150,7 +150,7 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
         SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
         SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
-    }
+     }
 
     // public Translation2d getTranslationRobotToGoal() {
         // double x = 0.0;

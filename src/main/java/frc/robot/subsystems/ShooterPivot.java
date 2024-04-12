@@ -42,7 +42,6 @@ public class ShooterPivot extends SubsystemBase {
   ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
   double motorspeed = 0.0;
-  double pivotAngle = 5.0; // testing only!!
 
   // ProfiledpidController profiledpidController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
@@ -60,9 +59,9 @@ public class ShooterPivot extends SubsystemBase {
     INTAKE,
     INDEXING,
     EJECT_NOTE,
-    SPEAKER_PODIUM, 
+    SPEAKER_PODIUM,
+    SPEAKER_AMP_ZONE, 
     SPEAKER_SUBWOOFER,
-    SPEAKER_TEST,
     SPEAKER,
     // SPEAKER_HIGH,
     AMP,
@@ -96,8 +95,8 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
     selectShooterPivotState.addOption("SPEAKER", ShooterPivotStates.SPEAKER);
     // selectShooterPivotState.addOption("SPEAKER_HIGH", ShooterPivotStates.SPEAKER_HIGH);
-    selectShooterPivotState.addOption("SPEAKER AMP ZONE", ShooterPivotStates.SPEAKER_TEST);
-    // selectShooterPivotState.addOption("SPEAKER PODIUM", ShooterPivotStates.SPEAKER_PODIUM);
+    selectShooterPivotState.addOption("SPEAKER AMP ZONE", ShooterPivotStates.SPEAKER_AMP_ZONE);
+    selectShooterPivotState.addOption("SPEAKER PODIUM", ShooterPivotStates.SPEAKER_PODIUM);
     // selectShooterPivotState.addOption("SPEAKER SUBWOOFER", ShooterPivotStates.SPEAKER_SUBWOOFER);
     selectShooterPivotState.addOption("AMP", ShooterPivotStates.AMP);
     selectShooterPivotState.addOption("CLIMB", ShooterPivotStates.CLIMB);
@@ -114,8 +113,6 @@ public class ShooterPivot extends SubsystemBase {
 
     pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
-
-    pivotAngle = ShuffleboardPIDTuner.get("ShooterPivot Angle [SP]");
 
     // SmartDashboard.putString("PivotState", state.toString());
     // SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
@@ -170,7 +167,13 @@ public class ShooterPivot extends SubsystemBase {
           double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
 
-          motorspeed = getPivotSpeed(angleTargetAdjusted);
+          // if (angleTargetAdjusted > Constants.ShooterPivot.kMaxAngle) {
+          //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kMaxAngle);
+          // } else if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed) {
+          //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
+          // } else {
+          //   motorspeed = getPivotSpeed(angleTargetAdjusted);
+          // }
 
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
@@ -190,9 +193,9 @@ public class ShooterPivot extends SubsystemBase {
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
       break;
 
-      case SPEAKER_TEST:
+      case SPEAKER_AMP_ZONE:
 
-        motorspeed = getPivotSpeed(pivotAngle); 
+        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone); 
 
         motor.set(motorspeed);
         break;

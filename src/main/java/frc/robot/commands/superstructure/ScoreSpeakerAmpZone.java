@@ -1,42 +1,65 @@
+package frc.robot.commands.superstructure;
 
-// package frc.robot.commands.superstructure;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
+import frc.robot.Constants.RobotState;
+import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Shooter.ShooterStates;
+import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
+import frc.robot.subsystems.SwerveDrive;
 
-// import edu.wpi.first.wpilibj.Timer;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.Constants;
-// import frc.robot.subsystems.Superstructure;
-// import frc.robot.subsystems.SwerveDrive;
-// import frc.robot.subsystems.Superstructure.SSStates;
-// import frc.util.Conversions;
+public class ScoreSpeakerAmpZone extends Command {
 
-// public class ScoreSpeakerAmpZone extends Command {
+  Shooter shooter;
+  ShooterPivot shooterPivot;
+  SwerveDrive swerveDrive;
+  Timer waitTimer = new Timer();
+  Timer scoreTimer = new Timer();
 
-//   Superstructure superstructure;
-//   SwerveDrive swerveDrive;
-//   Timer timer = new Timer();
+  public ScoreSpeakerAmpZone(ShooterPivot shooterPivot, Shooter shooter, SwerveDrive swerveDrive) {
+    this.shooterPivot = shooterPivot;
+    this.shooter = shooter;
+  }
 
-//   public ScoreSpeakerAmpZone(Superstructure superstructure, SwerveDrive swerveDrive) {
-//     this.superstructure = superstructure;
-//     this.swerveDrive = swerveDrive;
-//   }
+  @Override
+  public void initialize() {
+    Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
+    swerveDrive.updateLastOffsets();
 
-//   @Override
-//   public void initialize() {
-//     superstructure.setState(SSStates.WAIT_SPEAKER_AMP_ZONE);
-//   }
+    shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
+    shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
 
-//   @Override
-//   public void execute() {
-//     swerveDrive.setTargetHeadingRad(Conversions.poseToTargetHeadingRad(swerveDrive.getPose().getTranslation(), Constants.ShootingSetpoints.targetPoint));
-//   }
+    waitTimer.reset();
+    waitTimer.stop();
 
-//   @Override
-//   public void end(boolean interrupted) {
-//     superstructure.setState(SSStates.STOWED);
-//   }
+    scoreTimer.reset();
+    scoreTimer.stop();
+  }
 
-//   @Override
-//   public boolean isFinished() {
-//     return superstructure.getState() == SSStates.STOWED;
-//   }
-// }
+  @Override
+  public void execute() {
+    
+    if (shooter.atGoalShooter() && swerveDrive.isAlignedWithTarget()) { // At speed
+      waitTimer.start();
+    } 
+
+    // Start timed scoring sequence
+    if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+      scoreTimer.start();   
+      shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE); 
+    }
+  }
+
+  @Override
+  public void end(boolean interrupted) {
+    shooter.setState(ShooterStates.STANDBY);
+    shooterPivot.setState(ShooterPivotStates.STOWED);
+  }
+
+  @Override
+  public boolean isFinished() {
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
+  }
+}

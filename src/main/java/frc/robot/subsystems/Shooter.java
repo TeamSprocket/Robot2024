@@ -32,19 +32,17 @@ public class Shooter extends SubsystemBase {
     INTAKE_ROLLBACK,
     SPINUP, 
     SCORE_SPEAKER,
-    // SCORE_SPEAKER_HIGH,
     SPINUP_SUBWOOFER,
     SPINUP_PODIUM,
-    SPINUP_TEST,
+    SPINUP_AMP_ZONE,
     SCORE_SPEAKER_SUBWOOFER,
     SCORE_SPEAKER_PODIUM,
-    SCORE_SPEAKER_TEST,
+    SCORE_SPEAKER_AMP_ZONE,
     SCORE_AMP,
     SPINUP_CROSSFIELD,
     SHOOT_CROSSFIELD,
     EJECT_NOTE,
 
-    // JUST IN CASE
     HOLD_NOTE,
     MANUAL
   }
@@ -104,10 +102,10 @@ public class Shooter extends SubsystemBase {
     stateChooser.addOption("INTAKE", ShooterStates.INTAKE);
     stateChooser.addOption("SPINUP_SUBWOOFER", ShooterStates.SPINUP_SUBWOOFER);
     stateChooser.addOption("SPINUP_PODIUM", ShooterStates.SPINUP_PODIUM);
-    stateChooser.addOption("SPINUP_AMP_ZONE", ShooterStates.SPINUP_TEST);
+    stateChooser.addOption("SPINUP_AMP_ZONE", ShooterStates.SPINUP_AMP_ZONE);
     stateChooser.addOption("SCORE_SPEAKER_SUBWOOFER", ShooterStates.SCORE_SPEAKER_SUBWOOFER);
     stateChooser.addOption("SCORE_SPEAKER_PODIUM", ShooterStates.SCORE_SPEAKER_PODIUM);
-    stateChooser.addOption("SCORE_SPEAKER_AMP_ZONE", ShooterStates.SCORE_SPEAKER_TEST);
+    stateChooser.addOption("SCORE_SPEAKER_AMP_ZONE", ShooterStates.SCORE_SPEAKER_AMP_ZONE);
     stateChooser.addOption("SCORE_AMP", ShooterStates.SCORE_AMP);
 
     SmartDashboard.putData("Shooter State Chooser [ST]", stateChooser);
@@ -266,6 +264,18 @@ public class Shooter extends SubsystemBase {
         shooterMotor.set(shooterInc);
       break;
 
+      case SPINUP_AMP_ZONE:
+
+        if (lastState != ShooterStates.SPINUP_PODIUM) {
+          indexerMotor.setNeutralMode(NeutralModeValue.Brake);
+        }
+        indexerMotor.set(0);
+        indexerInc = 0.0;
+
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerAmpZone) * Constants.Shooter.kShooterIncramentMultiplier;
+        shooterMotor.set(shooterInc);
+      break;
+
       case SCORE_SPEAKER_PODIUM:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
@@ -323,7 +333,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter PercentOutput [ST]", shooterInc);
       break;
 
-      case SCORE_SPEAKER_TEST:
+      case SCORE_SPEAKER_AMP_ZONE:
         if (lastState != ShooterStates.SCORE_SPEAKER_SUBWOOFER) {
           indexerMotor.setNeutralMode(NeutralModeValue.Coast);
         }
@@ -332,7 +342,7 @@ public class Shooter extends SubsystemBase {
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput));
 
         // Spin up shooter
-        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
+        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerAmpZone) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
         shooterMotor.set(shooterInc);
       break;
 

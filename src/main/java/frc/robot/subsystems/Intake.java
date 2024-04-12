@@ -55,6 +55,7 @@ public class Intake extends SubsystemBase {
         INDEXING,
         SCORE_SPEAKER_SUBWOOFER, 
         SCORE_SPEAKER,
+        AMP,
         CROSSFIELD,
         EJECT_NOTE
     }
@@ -121,7 +122,6 @@ public class Intake extends SubsystemBase {
 
                 rollIntake.set(0.0);
                 break;
-
             case INTAKE_ROLLBACK:
                 // Pivot maintains current pos
 
@@ -138,6 +138,13 @@ public class Intake extends SubsystemBase {
 
             case SCORE_SPEAKER:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreSpeaker);
+                pivotIntake.set(pivotSpeed);
+
+                rollIntake.set(0.0);
+                break;
+
+            case AMP:
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreAmp);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
