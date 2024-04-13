@@ -118,8 +118,8 @@ public class RobotContainer {
 
     // --------------------=operator=--------------------
     operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
-    operator.getController().rightBumper().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake, shooterPivot));
-    // operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
+    // operator.getController().rightBumper().whileTrue(new ScoreSpeakerSubwooferShoot(shooter, intake, shooterPivot));
+    operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
 
     operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));

@@ -150,10 +150,16 @@ public final class Util {
    */
   public static double getTargetShotAngleDeg(Translation3d botPose, Translation3d targetPose) {
     double dist = Math.sqrt(Math.pow(targetPose.getX() - botPose.getX(), 2.0) + Math.pow(targetPose.getY() - botPose.getY(), 2.0));
-    double height = targetPose.getZ() - botPose.getZ();
+    // double height = targetPose.getZ() - botPose.getZ();
+    double height = Constants.FieldConstants.kSpeakerTargetHeightMeters - Constants.Vision.kLimelightHeightMeters;
+
+    // System.out.println(dist);
+    // System.out.println(height);
 
     double angleRad = Math.atan(height / dist);
     double angleDeg = Math.toDegrees(angleRad);
+
+    // System.out.println(angleDeg);
     return angleDeg;
   }
 
@@ -173,6 +179,21 @@ public final class Util {
     return Constants.Vision.kShooterVelocityLinearMultiplier * dist + Constants.Vision.kShooterVelocityBase;
   }
 
+
+
+  public static double getSpeakerAngleOffset(Translation2d currentPos) {
+    Translation3d speakerPoint = Util.getSpeakerTargetBasedOnAllianceColor();
+
+    double x = currentPos.getX() - speakerPoint.getX();
+    double y = currentPos.getY() - speakerPoint.getY();
+
+    double angleRad = Math.atan(y / x);
+    double angleDeg = Math.toDegrees(angleRad);
+
+    double flippedDeg = -angleDeg;
+
+    return flippedDeg;
+}
 
 
 

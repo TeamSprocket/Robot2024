@@ -158,9 +158,9 @@ public class SwerveDrive extends SubsystemBase {
 
   @Override
   public void periodic() {
-    updateShuffleboardPIDConstants();
-    gyro.clearStickyFaults();
-    LimelightHelper.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
+    // updateShuffleboardPIDConstants();
+    // gyro.clearStickyFaults();
+    // LimelightHelper.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
 
     debug();
     SmartDashboard.putString("Robot State", Constants.robotState.toString());
@@ -184,9 +184,9 @@ public class SwerveDrive extends SubsystemBase {
     // Update Odometer
 
     // if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) { // TODO: test odometry update!! 
-    //   updateOdometryWithVision();
-    // } else {
-      this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    // if (limelight.hasTargets()) {
+      updateOdometryWithVision();
     // }
   }
 
@@ -295,24 +295,28 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
-  public double getDistToTarget() {
-    return limelight.getDistanceToTarget(getPose().getTranslation());
-  }
+  // public double getDistToTarget() {
+  //   return limelight.getDistanceToTarget(getPose().getTranslation());
+  // }
 
   // /**
   //  * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
   //  */
   public double getLockHeadingToSpeakerTSpeed() {
     // in the docs, tX is the horiz offset from LL to target
-    double offsetRad = Math.toRadians(limelight.getXOffset());
+    // double offsetRad = Math.toRadians(limelight.getXOffset());
+    double offsetRad = Math.toRadians(Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
 
     if (Math.abs(offsetRad - headingLockLastOffset) > Constants.Drivetrain.kHeadingLockDegreeRejectionTolerance) {
       offsetRad = headingLockLastOffset;
     }
 
     double PIDOutput = speakerLockPIDController.calculate(offsetRad, 0.0);
+    double limitedOutput = Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
 
-    return Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
+    SmartDashboard.putNumber("Speaker Lock Output [SD]", limitedOutput);
+
+    return limitedOutput;
   }
 
   public void updateLastOffsets() {
@@ -462,7 +466,8 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
 
     // these two hehe
-    SmartDashboard.putNumber("Heading Lock Turning Speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
-    SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget()); // distance is displayed in shooter pivot
+    // SmartDashboard.putNumber("Heading Lock Turning Speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
+    // SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget()); // distance is displayed in shooter pivot
+    SmartDashboard.putNumber("Speaker Offset Deg [VI]", Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
   }
 }

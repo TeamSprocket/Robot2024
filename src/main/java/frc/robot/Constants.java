@@ -56,6 +56,7 @@ public class Constants {
         // in meters
         public static final double kFieldLength = 16.54;
         public static final double kSpeakerY = 5.55;
+        public static final double kSpeakerTargetHeightMeters = 2.032;
         public static final double kSpeakerAprilTagHeightMeters = 1.451;
     }
 
@@ -98,22 +99,22 @@ public class Constants {
 
         public static final boolean kIsShooterPivotInverted = false;
 
-        public static PIDConst kPID = new PIDConst(0.0080, 0, 0, 0.015); // p: 0.00675
+        public static PIDConst kPID = new PIDConst(0.0090, 0, 0, 0.015); // p: 0.00675
 
         public static final double kManualMultiplier = 0.001;
 
-        public static final double kAtGoalTolerance = 0.25;
+        public static final double kAtGoalTolerance = 0.0; // 0.25
 
         public static final double kShooterPivotGearRatio = 148.15;
 
-        public static double kHorizontalAngle = 52.0;
+        public static double kHorizontalAngle = 60.985;
 
-        public static final double kMaxShooterPivotOutput = 0.55;
+        public static final double kMaxShooterPivotOutput = 0.55; // 0.55
         public static final double kMaxAngle = 90; // TODO: tune this
 
         public static final double kMaxDistance = 6.0;
 
-        public static final double kFFtoPIDTransitionTolerance = 10;
+        public static final double kFFtoPIDTransitionTolerance = 5;
         public static final double kFFPivot = 0.5;
 
         // public static final double kMaxVelocityDeg = 0.0;
@@ -126,7 +127,7 @@ public class Constants {
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = 12.0; 
         public static final double kTargetAngleAmp = 98; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0
-        public static final double kTargetAngleCrossfield = 16.0;
+        public static final double kTargetAngleCrossfield = 15.0;
         public static final double kTargetAnglePodium = 30; // TODO:tune
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune
     }
@@ -196,9 +197,9 @@ public class Constants {
         public static final double kPivotAngleIntake = 130.0;
         public static final double kPivotAngleEject = 55.0;
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
-        public static final double kPivotAngleScoreSpeaker = 20; // 26.0;
+        public static final double kPivotAngleScoreSpeaker = 28.0; // 26.0;
         public static final double kIndexingAngleIntake = 20.0;  // 10.0
-        public static final double kPivotAngleShootCrossfield = 35.0; // TODO: tune this
+        public static final double kPivotAngleShootCrossfield = 30.0; // TODO: tune this
         public static final double kPivotAngleScoreAmp = 27.0;
 
         public static final double kRollSpeedStowed = 0.0;
@@ -250,7 +251,7 @@ public class Constants {
         // Most likely can be same blue/red
         // public static final Translation3d targetPoint = new Translation3d(-0.1, (8.211 - 5.548), 0);
 
-        public static final double kShooterVelocityLinearMultiplier = 1.75;
+        public static final double kShooterVelocityLinearMultiplier = 1.5;
         public static final double kShooterVelocityBase = 17.0;
         
         /**
@@ -319,7 +320,7 @@ public class Constants {
         public static final double kIHeading = 0.0000;
         public static final double kDHeading = 0.0;
 
-        public static PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.005, 0, 0); // TODO: tune PID note heading lock is in radians while heading controller is in degrees
+        public static PIDConst kPIDSpeakerHeadingLock = new PIDConst(1.0, 0, 0); // TODO: tune PID note heading lock is in radians while heading controller is in degrees
 
         public static final double kPTranslationPP = 3.0; // 5.5
         public static final double kITranslationPP = 0.0;

@@ -6,6 +6,9 @@ package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -28,6 +31,9 @@ public class Robot extends TimedRobot {
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake);
     m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast);
+
+    UsbCamera camera = CameraServer.startAutomaticCapture();
+    camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 15);
   }
 
   @Override

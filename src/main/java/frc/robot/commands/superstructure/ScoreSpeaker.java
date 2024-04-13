@@ -28,6 +28,7 @@ public class ScoreSpeaker extends Command {
   @Override
   public void initialize() {
     intake.setState(IntakeStates.SCORE_SPEAKER);
+    shooter.setState(ShooterStates.SPINUP);
 
     waitTimer.reset();
     waitTimer.stop();
@@ -42,8 +43,7 @@ public class ScoreSpeaker extends Command {
   @Override
   public void execute() {
 
-    if (intakeTimer.get() > 1.0) {
-      shooter.setState(ShooterStates.SPINUP);
+    if (intakeTimer.get() > 0.1) {
       shooterPivot.setState(ShooterPivotStates.SPEAKER);
     }
     

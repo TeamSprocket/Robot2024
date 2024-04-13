@@ -30,7 +30,6 @@ public class ShootCrossfield extends Command {
   @Override
   public void initialize() {
     intake.setState(IntakeStates.SCORE_SPEAKER);
-    shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
 
     timer.reset();
@@ -42,18 +41,23 @@ public class ShootCrossfield extends Command {
 
   @Override
   public void execute() {
-    if (shooter.atGoalShooter() && timer.get() > 1.0) {
-      scoreTimer.start();
-    } 
-    if (!shooter.atGoalShooter() && !isShooting) {
-      scoreTimer.reset();
-      scoreTimer.stop();
+    if (timer.get() > 0.2) { // delay for intake move out
+      shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
     }
 
-    if (scoreTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      isShooting = true;
+    if (shooter.atGoalShooter() && timer.get() > 1.0) {
+      scoreTimer.start();
       shooter.setState(ShooterStates.SHOOT_CROSSFIELD);
-    }
+    } 
+    // if (!shooter.atGoalShooter() && !isShooting) {
+    //   scoreTimer.reset();
+    //   scoreTimer.stop();
+    // }
+
+    // if (scoreTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+    //   // isShooting = true;
+      
+    // }
     
   }
 
@@ -66,6 +70,6 @@ public class ShootCrossfield extends Command {
 
   @Override
   public boolean isFinished() {
-    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec;
   }
 }

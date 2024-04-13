@@ -38,9 +38,6 @@ public class ShooterPivot extends SubsystemBase {
   /** Creates a new ShooterPivot. */
   TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST, "canivore");
 
-  ShooterPivotStates state = ShooterPivotStates.NONE;
-  ShooterPivotStates lastState = ShooterPivotStates.NONE;
-
   double motorspeed = 0.0;
 
   // ProfiledpidController profiledpidController;
@@ -68,6 +65,9 @@ public class ShooterPivot extends SubsystemBase {
     CROSSFIELD,
     CLIMB  
   }
+
+  ShooterPivotStates state = ShooterPivotStates.STOWED;
+  ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
   // //  Shooter table key: 
   // //    Param 1: x pos of robot (use odometry or if u wanna go fancy use swerveposeestimator)
@@ -116,6 +116,7 @@ public class ShooterPivot extends SubsystemBase {
 
     pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
+
 
     Constants.ShooterPivot.kHorizontalAngle = ShuffleboardPIDTuner.get("kHorizontalAngle ShooterPivot [SP]");
 
@@ -167,10 +168,19 @@ public class ShooterPivot extends SubsystemBase {
 
       case SPEAKER:
         Translation3d botPose = botPoseSupplier.get();
+        System.out.println(botPose.getX() + botPose.getY() + botPose.getZ());
         if (botPose.getX() + botPose.getY() + botPose.getZ() != 0.0) {
           // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
           double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
+
+          if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed || angleTargetAdjusted > Constants.ShooterPivot.kTargetAngleAmp) {
+            angleTargetAdjusted = Constants.ShooterPivot.kTargetAngleStowed;
+          }
+
+          motorspeed = getPivotSpeed(angleTargetAdjusted);
+          motor.set(motorspeed);
+
 
           // if (angleTargetAdjusted > Constants.ShooterPivot.kMaxAngle) {
           //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kMaxAngle);
@@ -182,10 +192,14 @@ public class ShooterPivot extends SubsystemBase {
 
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
+        } else {
+          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", -1.0);
+          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", -1.0);
+          motor.set(0.0);
         }
         // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
-        motor.set(motorspeed);
+        
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
@@ -272,11 +286,12 @@ public class ShooterPivot extends SubsystemBase {
     pidController.setSetpoint(targetAngle);
     double currentAngle = getShooterPivotAngle();
     double PIDoutput = pidController.calculate(currentAngle);
+    double signedKFF = Constants.ShooterPivot.kPID.kFF * Util.getSign(PIDoutput);
 
     if(Math.abs(targetAngle - currentAngle) > Constants.ShooterPivot.kFFtoPIDTransitionTolerance) {
       pivotSpeed = Constants.ShooterPivot.kFFPivot * Util.getSign(PIDoutput);
     } else {
-      pivotSpeed = PIDoutput;
+      pivotSpeed = PIDoutput + signedKFF;
       if (pidController.atSetpoint()) {
         pivotSpeed = 0;
       }
@@ -306,6 +321,8 @@ public class ShooterPivot extends SubsystemBase {
 
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
+    SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
+    SmartDashboard.putString("State [SP]", state.toString());
   }
 
   public boolean atGoal() {
@@ -326,6 +343,6 @@ public class ShooterPivot extends SubsystemBase {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     // motorConfig.withCurrentLimits(currentLimitsConfigs);
 
-    motor.getConfigurator().apply(motorConfig);
+    motor.getConfigurator().apply(motorConfig); // i LOVOEEEEE :DDDD donson
   }
 }
