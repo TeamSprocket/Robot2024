@@ -21,12 +21,13 @@ public class ScoreSpeakerPodiumShoot extends Command {
   public ScoreSpeakerPodiumShoot(ShooterPivot shooterPivot, Shooter shooter, SwerveDrive swerveDrive) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
+    this.swerveDrive = swerveDrive;
   }
 
   @Override
   public void initialize() {
-    Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
-    swerveDrive.updateLastOffsets();
+    // Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
+    // swerveDrive.updateLastOffsets();
 
     shooter.setState(ShooterStates.SPINUP_PODIUM);
     shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
@@ -41,7 +42,7 @@ public class ScoreSpeakerPodiumShoot extends Command {
   @Override
   public void execute() {
     
-    if (shooter.atGoalShooter() && swerveDrive.isAlignedWithTarget()) { // At speed
+    if (shooter.atGoalShooter()) { // At speed
       waitTimer.start();
     } 
 
@@ -54,6 +55,8 @@ public class ScoreSpeakerPodiumShoot extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    // Constants.robotState = RobotState.TELEOP;
+
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
   }

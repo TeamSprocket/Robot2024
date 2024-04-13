@@ -29,14 +29,14 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollBackTimeSec = 0.3; // 0.2 // 0.15
+        public static final double kIndexerIntakeRollBackTimeSec = 0.05; // 0.2 // 0.15
 
-        public static final double kIndexerIntakeRollForwardTimeSec = 0.0; // 0.15 //.0.05
+        public static final double kIndexerIntakeRollForwardTimeSec = 0.3; // 0.15 //.0.05
 
-        public static final double kRollForwardtoRollBackWaitTime = 0.0; // 0.4
+        public static final double kRollForwardtoRollBackWaitTime = 0.4; // 0.4
 
         // Elapsed time after shooter hits speaker speed before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.25; 
+        public static final double kWaitSpeakerTimeToleranceSec = 0.3; 
 
         // Elapsed time shooting into speaker before stow
         public static final double kScoreSpeakerShootDurationSec = 1.5; // intake fallback = 0.5s,\1.0
@@ -129,7 +129,7 @@ public class Constants {
         public static final double kTargetAngleSpeakerFromSubwoofer = 12.0; 
         public static final double kTargetAngleAmp = 98; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0
         public static final double kTargetAngleCrossfield = 13.0;
-        public static final double kTargetAnglePodium = 30; // TODO:tune
+        public static final double kTargetAnglePodium = 32.0; // TODO:tune
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune
     }
 
@@ -145,21 +145,21 @@ public class Constants {
         public static final double kShooterSpeedScoreAmp = 0.3; // -0.25
         public static final double kShooterEjectNoteSpeed = -0.25;
         public static final double kShooterIntakeNoteSpeed = 0.0;
-        public static final double kShooterSpeedRollforward = 0.75;
-        public static final double kShooterSpeedRollback = -1.0;
-        public static final double kShooterSpeedCrossField = 24.0; 
-        public static final double kShooterSpeedScoreSpeakerPodium = kShooterSpeedScoreSpeakerSubwoofer;
+        public static final double kShooterSpeedRollforward = 0.25;
+        public static final double kShooterSpeedRollbackPercent = -0.1;
+        public static final double kShooterSpeedCrossField = 22.0; 
+        public static final double kShooterSpeedScoreSpeakerPodium = 22.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.4; // -0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
-        public static final double kIndexerSpeedRollforward = 2.0;
-        public static final double kIndexerSpeedRollback = -1.0;
+        public static final double kIndexerSpeedRollforward = 3.0;
+        public static final double kIndexerSpeedRollback = -2.5;
         public static final double kIndexerSpeedCrossField = 6.5;
 
-        public static final double kShooterBottomSpeedMultiplier = 0.99;
+        public static final double kShooterBottomSpeedMultiplier = 0.98;
 
         public static final double kManualIntakeSupplierTolerance = 0.05;
         public static final double kManualSpeedMultiplier = 0.1;
@@ -175,15 +175,16 @@ public class Constants {
 
         public static final double kHasNoteCurrentThresholdIndexer = 75.0; // 65.0, 90.0
         public static final double kHasNoteCurrentThresholdShooter = 15.0;
-        public static final double kIntakeRollbackCurrentThreshold = 48.0;
+        public static final double kIntakeRollbackCurrentThresholdIndexer = 25.0;
+        public static final double kIntakeRollbackCurrentThresholdShooter = 10.0;
 
         public static final double kMaxIndexerOutput = 0.9;
 
-        public static final double kAtGoalTolerance = 0.1; // 0.05 = precise for dynamic
+        public static final double kAtGoalTolerance = 0.25; // 0.05 = precise for dynamic
 
-        public static double kPShooter = 0.4;
+        public static double kPShooter = 4.5;
         public static double kIShooter = 0.0;
-        public static double kDShooter = 0.0075;
+        public static double kDShooter = 0.2;
 
         public static final double kPIndexer = 0.4;
         public static final double kIIndexer = 0.0;
@@ -233,8 +234,8 @@ public class Constants {
     public static final class Vision {
 
         // measurements
-        public static final Translation3d targetPointBlue = new Translation3d(-0.1, 5.548, 0);
-        public static final Translation3d targetPointRed = new Translation3d(-0.1, (8.211-5.548), 0);
+        public static final Translation3d targetPointBlue = new Translation3d(0.0, 5.648, 0); // 5.548  // Moved towards right red alliance 0.1m
+        public static final Translation3d targetPointRed = new Translation3d(0.0, 2.563, 0); //2.663
         
         public static final double kLimelightPitchAngleDegrees = 5.0;
         public static final double kLimelightHeightMeters = 0.534;
@@ -289,9 +290,9 @@ public class Constants {
                 new Translation2d(kModuleOffsetMeters / 2, -kModuleOffsetMeters / 2)); // +, +
 
 
-        public static final double kHeadingLockPIDMaxOutput = 1.0;
-        public static final double kHeadingLockDegreeRejectionTolerance = 5.0;
-        public static final double kHeadingLockDegreeTolerance = 0.5;
+        public static final double kHeadingLockPIDMaxOutput = 2.0;
+        public static final double kHeadingLockDegreeRejectionTolerance = 10.0;
+        public static final double kHeadingLockDegreeTolerance = 1.0;
 
 
         // public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -323,7 +324,7 @@ public class Constants {
 
         public static PIDConst kPIDSpeakerHeadingLock = new PIDConst(1.0, 0, 0); // TODO: tune PID note heading lock is in radians while heading controller is in degrees
 
-        public static final double kPTranslationPP = 3.0; // 5.5
+        public static final double kPTranslationPP = 0.25; // 3.0
         public static final double kITranslationPP = 0.0;
         public static final double kDTranslationPP = 0.0;
 
