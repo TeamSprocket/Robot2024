@@ -55,13 +55,19 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.0
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Subwoofer Right to Midline Top"
+                  "pathName": "Left to Midline Left"
                 }
               },
               {
