@@ -30,8 +30,8 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
 
   @Override
   public void initialize() {
-    shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
-    shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
+    shooter.setState(ShooterStates.SPINUP_PODIUM);
+    shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
 
     waitTimer.reset();
     waitTimer.stop();
@@ -39,7 +39,6 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     scoreTimer.reset();
     scoreTimer.stop();
 
-    // System.out.println("RUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\nRUNNING SHOOTER\n");
   }
 
   @Override
@@ -56,24 +55,21 @@ public class ScoreSpeakerSubwooferShoot extends Command { // EXACT SAME AS Score
     if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
       // intake.setState(IntakeStates.SCORE_SPEAKER); // We don't need this yet
       scoreTimer.start();   
-      shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
-      intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
+      shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM); 
+      // intake.setState(IntakeStates.SCORE_SPEAKER);
     }
 
     // if (scoreTimer.get() > Constants.Superstructure.kScoreSpeakerPivotTimeToleranceSec) {
       // shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER); 
     // } 
     
-
     SmartDashboard.putNumber("Score Timer", scoreTimer.get());
     SmartDashboard.putBoolean("Score Timer Over Threshold", scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec);
-
-
   }
 
   @Override
   public void end(boolean interrupted) {
-    intake.setState(IntakeStates.STOWED);
+    // intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
   }

@@ -125,7 +125,7 @@ public class RobotContainer {
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
     // operator.getController().b().whileTrue(new ScoreSpeakerShoot(shooterPivot, shooter, swerveDrive));
     // operator.getController().b().whileTrue(new ScoreSpeakerAmpZone(shooterPivot, shooter, swerveDrive));
-    operator.getController().b().whileTrue(new ScoreSpeakerPodium(shooterPivot, shooter, swerveDrive)); // TODO: change later
+    operator.getController().b().whileTrue(new ScoreSpeakerPodiumShoot(shooterPivot, shooter, swerveDrive));
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
 
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
@@ -133,7 +133,7 @@ public class RobotContainer {
 
     operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
 
-    elevator.setDefaultCommand(new ElevatorManual(elevator, () -> operator.getController().getLeftY()));
+    // elevator.setDefaultCommand(new ElevatorManual(elevator, () -> operator.getController().getLeftY()));
 
   }
 

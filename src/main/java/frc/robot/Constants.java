@@ -65,6 +65,7 @@ public class Constants {
         
         public static final double kElevatorHeightStowed = 0.005;
         public static final double kElevatorHeightAmp = 0.13; // 0.14 // 0.22; // 0.21;
+        public static final double kElevatorHeightClimb = 0.2; // TODO: tune
 
         // public static final double kElevatorHeightTrap = 0.0; 
 
