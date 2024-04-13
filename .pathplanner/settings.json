@@ -3,15 +3,17 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "Left Path",
-    "OCR",
-    "RightPath"
+    "Right 1 + 0 to Midline",
+    "Left 1 + 2 to Midline",
+    "Middle 1 + 3",
+    "Left 1 + 0 to Midline",
+    "Right 1 + 1 to Midline"
   ],
   "autoFolders": [
     "New Folder"
   ],
-  "defaultMaxVel": 3.0,
-  "defaultMaxAccel": 2.0,
+  "defaultMaxVel": 4.0,
+  "defaultMaxAccel": 2.3,
   "defaultMaxAngVel": 180.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

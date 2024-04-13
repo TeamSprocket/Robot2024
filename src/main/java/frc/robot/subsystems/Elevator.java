@@ -45,13 +45,15 @@ public class Elevator extends SubsystemBase {
 
   // ProfiledPIDController pidController = new ProfiledPIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD,
   //   new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel));
-  PIDController pidController = new PIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD);
+  //PIDController pidController = new PIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD);
 
   SendableChooser<ElevatorStates> stateChooser = new SendableChooser<ElevatorStates>();
 
   
-  public Elevator() { 
+  public Elevator(Supplier<Double> joystickValue) { 
     configMotors();
+
+    joyvalue = joystickValue;
     
     elevatorMotor.setPosition(0);
     elevatorFollowerMotor.setPosition(0);
@@ -86,7 +88,7 @@ public class Elevator extends SubsystemBase {
     // pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
     // pidController.setD(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
     // Constants.Elevator.kPIDElevator.kFF = ShuffleboardPIDTuner.get("Elevator kFF [EL]");
-    SmartDashboard.putNumber("Target height elevator [EL]", pidController.getSetpoint());
+    // SmartDashboard.putNumber("Target height elevator [EL]", pidController.getSetpoint());
 
     switch (state) {
         
@@ -94,16 +96,16 @@ public class Elevator extends SubsystemBase {
         elevatorMotor.set(0);
         break;
         
-      case STOWED:
-        moveToHeight(Constants.Elevator.kElevatorHeightStowed);
-        break;
+      // case STOWED:
+      //   moveToHeight(Constants.Elevator.kElevatorHeightStowed);
+      //   break;
         
-      case AMP:
-        moveToHeight(Constants.Elevator.kElevatorHeightAmp);
-        break; 
+      // case AMP:
+      //   moveToHeight(Constants.Elevator.kElevatorHeightAmp);
+      //   break; 
 
       case MANUAL:
-        // manual(0.0);
+        manual();
         break;
     }
 
@@ -119,22 +121,22 @@ public class Elevator extends SubsystemBase {
   }
 
 
-  public void moveToHeight(double targetHeight) {
-    pidController.setSetpoint(targetHeight);
-    double currentHeight = getHeight();
+  // public void moveToHeight(double targetHeight) {
+  //   pidController.setSetpoint(targetHeight);
+  //   double currentHeight = getHeight();
 
-    double motorOutput = 0.0;
+  //   double motorOutput = 0.0;
 
-    if (Math.abs(currentHeight - targetHeight) > Constants.Elevator.kFFtoPIDTransitionToleranceM) {
-      motorOutput = Constants.Elevator.kElevatorVelocity * Util.getSign(targetHeight - currentHeight);
-    } else {
-      motorOutput = pidController.calculate(currentHeight) + Constants.Elevator.kPIDElevator.kFF;
-    }
+  //   if (Math.abs(currentHeight - targetHeight) > Constants.Elevator.kFFtoPIDTransitionToleranceM) {
+  //     motorOutput = Constants.Elevator.kElevatorVelocity * Util.getSign(targetHeight - currentHeight);
+  //   } else {
+  //     motorOutput = pidController.calculate(currentHeight) + Constants.Elevator.kPIDElevator.kFF;
+  //   }
 
-    motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
-    elevatorMotor.set(motorOutput);
-    SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
-  }
+  //   motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
+  //   elevatorMotor.set(motorOutput);
+  //   SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
+  // }
 
 
   // public double getScaledFFWithHeight() {
@@ -147,17 +149,20 @@ public class Elevator extends SubsystemBase {
   }
 
 
-  // public void manual(double motorOutput) { // TODO: find deadband + correct speed
-  //   // double speed = joyvalue.get();
-  //   // pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
-  //   // motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
+  public void manual() { // TODO: find deadband + correct speed
+    // double speed = joyvalue.get();
+    // pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
+    // motorLeft.set(pidControllerLeft.calculate(pidControllerLeft.getSetpoint()));
 
-  //   if (motorOutput < 0 && getHeight() <= 0.01) {
-  //     elevatorMotor.set(0);
-  //   } else {
-  //     elevatorMotor.set(Util.minmax(motorOutput, -0.1, 0.1));
-  //   }
-  // }
+    double motorOutput = joyvalue.get();
+    motorOutput = Util.signedSquare(motorOutput);
+
+    if (motorOutput < 0 && getHeight() <= 0.01) {
+      elevatorMotor.set(0);
+    } else {
+      elevatorMotor.set(Util.minmax(motorOutput, -0.1, 0.1));
+    }
+  }
 
   private void configMotors() {
     // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();

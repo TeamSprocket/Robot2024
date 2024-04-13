@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7,
+      "y": 6.65
+    },
+    "rotation": -120.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sub to Midline Left"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M1 to M2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M2 to M3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M3 to M4"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "M4 to M5"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

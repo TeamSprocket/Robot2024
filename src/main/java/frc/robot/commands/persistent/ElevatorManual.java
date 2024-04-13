@@ -1,45 +1,47 @@
-// // Copyright (c) FIRST and other WPILib contributors.
-// // Open Source Software; you can modify and/or share it under the terms of
-// // the WPILib BSD license file in the root directory of this project.
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
 
-// package frc.robot.commands.persistent;
+package frc.robot.commands.persistent;
 
-// import java.util.function.Supplier;
+import java.util.function.Supplier;
 
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.subsystems.Elevator;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.ElevatorStates;
 
-// public class ElevatorManual extends Command {
-//   /** Creates a new ElevatorManual. */
-//   Elevator elevator;
-//   Supplier<Double> motorOutputSupplier;
 
-//   public ElevatorManual(Elevator elevator, Supplier<Double> motorOutputSupplier) {
-//     this.elevator = elevator;
-//     this.motorOutputSupplier = motorOutputSupplier;
+public class ElevatorManual extends Command {
+  /** Creates a new ElevatorManual. */
+  Elevator elevator;
+  Supplier<Double> motorOutputSupplier;
 
-//     addRequirements(elevator);
-//     // Use addRequirements() here to declare subsystem dependencies.
-//   }
+  public ElevatorManual(Elevator elevator, Supplier<Double> motorOutputSupplier) {
+    this.elevator = elevator;
+    this.motorOutputSupplier = motorOutputSupplier;
 
-//   // Called when the command is initially scheduled.
-//   @Override
-//   public void initialize() {}
+    addRequirements(elevator);
+    // Use addRequirements() here to declare subsystem dependencies.
+  }
 
-//   // Called every time the scheduler runs while the command is scheduled.
-//   @Override
-//   public void execute() {
-//     elevator.manual(motorOutputSupplier.get() * 0.2);
-//     System.out.println(motorOutputSupplier.get() * 0.2);
-//   }
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {}
 
-//   // Called once the command ends or is interrupted.
-//   @Override
-//   public void end(boolean interrupted) {}
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    elevator.setState(ElevatorStates.MANUAL);
+    System.out.println(motorOutputSupplier.get() * 0.2);
+  }
 
-//   // Returns true when the command should end.
-//   @Override
-//   public boolean isFinished() {
-//     return false;
-//   }
-// }
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {}
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
+  }
+}

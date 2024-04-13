@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "R B1 to B2"
+            "pathName": null
           }
         },
         {
@@ -38,7 +38,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "R B2 to B3"
+            "pathName": null
           }
         },
         {
@@ -56,7 +56,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "R B3 to B4"
+            "pathName": null
           }
         },
         {
