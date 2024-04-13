@@ -12,18 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "Start to Left Sub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSubwoofer"
-          }
-        },
-        {
           "type": "wait",
           "data": {
             "waitTime": 0

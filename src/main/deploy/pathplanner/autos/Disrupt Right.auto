@@ -20,24 +20,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Right Sub"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSubwoofer"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "Sub to Midline Right"
           }
         },
