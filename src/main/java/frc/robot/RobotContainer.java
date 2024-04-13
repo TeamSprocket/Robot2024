@@ -59,20 +59,22 @@ public class RobotContainer {
 
   public void initAutons() {
     autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    // autonChooser.addOption("One Note No Taxi", new OneNoteNoTaxi(shooter, intake));
     
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 4Note"));
-    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("Intake Test"));
-    // autonChooser.addOption("B1: Four Note", new PathPlannerAuto("B1 8Note"));
+
     autonChooser.addOption("ANY: Taxi", new PathPlannerAuto("ANY Taxi"));
-    autonChooser.addOption("ANY 1Note", new PathPlannerAuto("ANY 1Note"));
-    // autonChooser.addOption("B2: One Note", new PathPlannerAuto("B2 1Note"));
-    // autonChooser.addOption("PrintHello", new PathPlannerAuto("TestingNamedCommands"));
-    // autonChooser.addOption("PPTranslationTuning", new PathPlannerAuto("PPTranslationTuning"));
-    // autonChooser.addOption("Just Moving", new PathPlannerAuto("JustTranslation"));
     autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
-    // autonChooser.addOption("B2 3Note", new PathPlannerAuto("B2 3Note")); 
+    autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
+    autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
+    autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
+    autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
+    autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
+    autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
+    autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
+    autonChooser.addOption("Middle 1 + 3", new PathPlannerAuto("Middle 1 + 3"));
+    autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
+    autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
+    autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
 
     // autonChooser = AutoBuilder.buildAutoChooser();
     
