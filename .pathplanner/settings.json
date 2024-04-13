@@ -3,10 +3,7 @@
   "robotLength": 0.75,
   "holonomicMode": true,
   "pathFolders": [
-    "Left Path",
-    "Middle Path",
-    "OCR",
-    "RightPath"
+    "Middle Path"
   ],
   "autoFolders": [
     "New Folder"
