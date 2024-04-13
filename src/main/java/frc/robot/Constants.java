@@ -127,11 +127,11 @@ public class Constants {
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = 12.0; 
         public static final double kTargetAngleAmp = 98; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0
-        public static final double kTargetAngleCrossfield = 15.0;
+        public static final double kTargetAngleCrossfield = 13.0;
         public static final double kTargetAnglePodium = 30; // TODO:tune
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune
     }
-//
+
     public static final class Shooter {
         public static final double kSupplyCurrentLimitShooter = 0.0;
         public static final double kSupplyCurrentLimitIndexer = 0.0;     
@@ -146,7 +146,7 @@ public class Constants {
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 0.75;
         public static final double kShooterSpeedRollback = -1.0;
-        public static final double kShooterSpeedCrossField = 24.0;
+        public static final double kShooterSpeedCrossField = 24.0; 
         public static final double kShooterSpeedScoreSpeakerPodium = kShooterSpeedScoreSpeakerSubwoofer;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
@@ -195,7 +195,7 @@ public class Constants {
 
         public static final double kPivotAngleStowed = 20.0; // 20
         public static final double kPivotAngleIntake = 130.0;
-        public static final double kPivotAngleEject = 55.0;
+        public static final double kPivotAngleEject = 30.0; // 55.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 28.0; // 26.0;
         public static final double kIndexingAngleIntake = 20.0;  // 10.0

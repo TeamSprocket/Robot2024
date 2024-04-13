@@ -10,7 +10,7 @@ import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 import frc.robot.subsystems.SwerveDrive;
 
-public class ScoreSpeakerPodium extends Command {
+public class ScoreSpeakerPodiumShoot extends Command {
 
   Shooter shooter;
   ShooterPivot shooterPivot;
@@ -18,7 +18,7 @@ public class ScoreSpeakerPodium extends Command {
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
 
-  public ScoreSpeakerPodium(ShooterPivot shooterPivot, Shooter shooter, SwerveDrive swerveDrive) {
+  public ScoreSpeakerPodiumShoot(ShooterPivot shooterPivot, Shooter shooter, SwerveDrive swerveDrive) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
   }
