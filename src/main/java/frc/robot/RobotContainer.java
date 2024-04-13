@@ -40,7 +40,7 @@ public class RobotContainer {
 
   Vision limelight = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
-  Elevator elevator = new Elevator();
+  Elevator elevator = new Elevator(() -> operator.getController().getRightY());
   ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   Intake intake = new Intake();
@@ -132,6 +132,8 @@ public class RobotContainer {
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // Menu button
 
     operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
+
+    elevator.setDefaultCommand(new ElevatorManual(elevator, () -> operator.getController().getLeftY()));
 
   }
 
