@@ -3,7 +3,7 @@
   "startingPose": {
     "position": {
       "x": 0.5,
-      "y": 3.0
+      "y": 7.25
     },
     "rotation": 180.0
   },
@@ -12,9 +12,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Bottom to Subwoofer Right"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of Copy of Top to Subwoofer Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpinupSubwoofer"
+                }
+              }
+            ]
           }
         },
         {
@@ -30,7 +43,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Right Subwoofer to Bottom Mid"
+                  "pathName": "Copy of Copy of Left to Midline Left"
                 }
               },
               {
@@ -43,9 +56,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Bottom to Subwoofer Right"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Copy of Midline Left to Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpinupSubwoofer"
+                }
+              }
+            ]
           }
         },
         {

@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of Bottom to Subwoofer Left"
+            "pathName": "Copy of Bottom to Subwoofer Right"
           }
         },
         {
@@ -32,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of Left Subwoofer to Bottom Mid"
+            "pathName": "Copy of Right Subwoofer to Bottom Mid"
           }
         }
       ]

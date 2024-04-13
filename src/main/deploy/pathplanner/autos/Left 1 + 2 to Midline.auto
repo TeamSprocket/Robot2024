@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top to Subwoofer Right"
+            "pathName": "Top to Subwoofer Left"
           }
         },
         {
@@ -30,7 +30,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Subwoofer Right to Wing Top"
+                  "pathName": "Subwoofer Left to Wing Top"
                 }
               },
               {
@@ -45,7 +45,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Wing Top to Subwoofer Right"
+            "pathName": "Wing Top to Subwoofer Left"
           }
         },
         {
@@ -77,6 +77,31 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Midline Left to Left"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "SpinupSubwoofer"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
           }
         }
       ]
