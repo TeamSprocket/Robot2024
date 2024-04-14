@@ -2,21 +2,15 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5,
-      "y": 7.0
+      "x": 0.75,
+      "y": 6.7
     },
-    "rotation": 180.0
+    "rotation": -120.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of Top to Subwoofer Left"
-          }
-        },
         {
           "type": "named",
           "data": {

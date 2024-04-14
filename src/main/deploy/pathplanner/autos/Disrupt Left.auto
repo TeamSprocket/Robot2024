@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.51,
-      "y": 7.07
+      "x": 1.3439166878288153,
+      "y": 7.120859418189425
     },
     "rotation": 180.0
   },
@@ -26,25 +26,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "M1 to M2"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M2 to M3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M3 to M4"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "M4 to M5"
+            "pathName": "M1 to M5"
           }
         }
       ]

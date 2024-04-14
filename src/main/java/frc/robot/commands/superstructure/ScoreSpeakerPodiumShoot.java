@@ -44,10 +44,12 @@ public class ScoreSpeakerPodiumShoot extends Command {
     
     if (shooter.atGoalShooter()) { // At speed
       waitTimer.start();
-    } 
+    } else {
+      waitTimer.restart();
+    }
 
     // Start timed scoring sequence
-    if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+    if (waitTimer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSecPodium) {
       scoreTimer.start();   
       shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM); 
     }

@@ -32,6 +32,7 @@ public class Constants {
         public static final double kIndexerIntakeRollBackTimeSec = 0.05; // 0.2 // 0.15
 
         public static final double kIndexerIntakeRollForwardTimeSec = 0.3; // 0.15 //.0.05
+        public static final double kIndexerIntakeRollForwardTimeSecPodium = 0.15;
 
         public static final double kRollForwardtoRollBackWaitTime = 0.4; // 0.4
 
@@ -126,7 +127,7 @@ public class Constants {
         public static final double kTargetAngleIndexing = 6.0;
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromSubwoofer = 12.0; 
+        public static final double kTargetAngleSpeakerFromSubwoofer = 9.0; 
         public static final double kTargetAngleAmp = 98; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0
         public static final double kTargetAngleCrossfield = 13.0;
         public static final double kTargetAnglePodium = 32.0; // TODO:tune
@@ -195,7 +196,7 @@ public class Constants {
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
-        public static final double kPivotAngleStowed = 20.0; // 20
+        public static final double kPivotAngleStowed = 23.0; // 20
         public static final double kPivotAngleIntake = 130.0;
         public static final double kPivotAngleEject = 30.0; // 55.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;

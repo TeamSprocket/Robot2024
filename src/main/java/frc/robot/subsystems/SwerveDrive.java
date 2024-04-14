@@ -125,8 +125,8 @@ public class SwerveDrive extends SubsystemBase {
       () -> {
         // Boolean supplier for whether field is mirrored (mirrored = on red)
         var alliance = DriverStation.getAlliance();
-        if (alliance.equals(DriverStation.Alliance.Blue) || alliance.equals(DriverStation.Alliance.Red)) {
-            return alliance.equals(DriverStation.Alliance.Red);
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
         }
         return false;
     },

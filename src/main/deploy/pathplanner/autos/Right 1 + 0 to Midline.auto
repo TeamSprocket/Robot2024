@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5,
-      "y": 3.0
+      "x": 0.75,
+      "y": 4.4
     },
-    "rotation": 180.0
+    "rotation": 120.0
   },
   "command": {
     "type": "sequential",
@@ -15,12 +15,6 @@
           "type": "wait",
           "data": {
             "waitTime": 5.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Copy of Bottom to Subwoofer Right"
           }
         },
         {
