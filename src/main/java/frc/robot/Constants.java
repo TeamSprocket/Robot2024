@@ -66,13 +66,16 @@ public class Constants {
         
         public static final double kElevatorHeightStowed = 0.005;
         public static final double kElevatorHeightAmp = 0.13; // 0.14 // 0.22; // 0.21;
-        public static final double kElevatorHeightClimb = 0.2; // TODO: tune
+        public static final double kElevatorHeightClimbUp = 0.18; // TODO: tune
+        public static final double kElevatorHeightClimbDown = 0.005;
+
 
         // public static final double kElevatorHeightTrap = 0.0; 
 
         public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
         public static final double kElevatorVelocity = 0.35; // 0.25
         public static final double kElevatorMotorMaxOutput = 0.4;
+        public static final double kElevatorMotorMaxOutputClimb = 0.2;
 
         public static final double kFFScaleWithHeight = 0.55;
         public static final double kFFBaseWithHeight = 0.015;
@@ -418,6 +421,8 @@ public class Constants {
     public static final class Controller {
         public static final double kHasNoteRumbleTimeSec = 0.5;
         public static final double kHasNoteRumbleIntensity = 0.8;
+        
+        public static final double kClimbTriggerAxisPercent = 0.1;
     }
 
 }

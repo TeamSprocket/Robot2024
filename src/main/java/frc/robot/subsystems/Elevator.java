@@ -107,13 +107,11 @@ public class Elevator extends SubsystemBase {
         break; 
 
       case CLIMB_UP:
-        speed = Util.minmax(pidController.calculate(getHeight(), Constants.Elevator.kElevatorHeightClimb), -1, 1);
-        elevatorMotor.set(speed);
+        moveToHeight(Constants.Elevator.kElevatorHeightClimbUp, Constants.Elevator.kElevatorMotorMaxOutputClimb);
         break;
 
       case CLIMB_DOWN:
-        speed = Util.minmax(pidController.calculate(getHeight(), Constants.Elevator.kElevatorHeightStowed), -1, 1);
-        elevatorMotor.set(speed);
+      moveToHeight(Constants.Elevator.kElevatorHeightClimbDown, Constants.Elevator.kElevatorMotorMaxOutputClimb);
         break;
 
       case MANUAL:
@@ -147,7 +145,23 @@ public class Elevator extends SubsystemBase {
 
     motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
     elevatorMotor.set(motorOutput);
-    SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
+    // SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
+  }
+
+  public void moveToHeight(double targetHeight, double maxOutput) {
+    pidController.setSetpoint(targetHeight);
+    double currentHeight = getHeight();
+
+    double motorOutput = 0.0;
+
+    if (Math.abs(currentHeight - targetHeight) > Constants.Elevator.kFFtoPIDTransitionToleranceM) {
+      motorOutput = Constants.Elevator.kElevatorVelocity * Util.getSign(targetHeight - currentHeight);
+    } else {
+      motorOutput = pidController.calculate(currentHeight) + Constants.Elevator.kPIDElevator.kFF;
+    }
+
+    motorOutput = Util.minmax(motorOutput, -1.0 * maxOutput, maxOutput);
+    elevatorMotor.set(motorOutput);
   }
 
   // public double getScaledFFWithHeight() {
