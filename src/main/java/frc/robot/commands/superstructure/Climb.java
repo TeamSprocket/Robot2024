@@ -22,7 +22,7 @@ public class Climb extends Command {
   ShooterPivot shooterPivot;
   Intake intake;
 
-  Timer timer;
+  Timer timer = new Timer();
   /** Creates a new Climb. */
   public Climb(Elevator elevator, Shooter shooter, ShooterPivot shooterPivot, Intake intake) {
     this.elevator = elevator;

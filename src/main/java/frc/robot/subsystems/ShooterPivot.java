@@ -108,17 +108,19 @@ public class ShooterPivot extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
     ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
     ShuffleboardPIDTuner.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
+
+    ShuffleboardPIDTuner.addSlider("kStartingOffsetAngleDeg [SP]", -5.0, 5, 0.0);
   }
 
   @Override
   public void periodic() {
     debug();
 
-    pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
-    pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
+    // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
+    // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
 
-
-    Constants.ShooterPivot.kHorizontalAngle = ShuffleboardPIDTuner.get("kHorizontalAngle ShooterPivot [SP]");
+    Constants.ShooterPivot.kStartingOffsetAngleDeg = ShuffleboardPIDTuner.get("kStartingOffsetAngleDeg [SP]");
+    // Constants.ShooterPivot.kHorizontalAngle = ShuffleboardPIDTuner.get("kHorizontalAngle ShooterPivot [SP]");
 
     // SmartDashboard.putString("PivotState", state.toString());
     // SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
@@ -274,6 +276,9 @@ public class ShooterPivot extends SubsystemBase {
    */
   public double getShooterPivotAngle() {
     double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.ShooterPivot.kShooterPivotGearRatio);
+
+    deg -= Constants.ShooterPivot.kStartingOffsetAngleDeg;
+
     deg %= 360;
     if (deg > 180) {
       deg -= (360); 

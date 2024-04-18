@@ -65,9 +65,9 @@ public class Constants {
         public static final double kSupplyCurrentLimit = 0.0;
         
         public static final double kElevatorHeightStowed = 0.005;
-        public static final double kElevatorHeightAmp = 0.13; // 0.14 // 0.22; // 0.21;
-        public static final double kElevatorHeightClimbUp = 0.18; // TODO: tune
-        public static final double kElevatorHeightClimbDown = 0.005;
+        public static final double kElevatorHeightAmp = 0.11; // 0.14 // 0.22; // 0.21; // 0.13
+        public static final double kElevatorHeightClimbUp = 0.24; // TODO: tune
+        public static final double kElevatorHeightClimbDown = 0.11;
 
 
         // public static final double kElevatorHeightTrap = 0.0; 
@@ -99,6 +99,7 @@ public class Constants {
     } 
 
     public static final class ShooterPivot {
+        public static double kStartingOffsetAngleDeg = 0.0;
 
         public static final double kSupplyCurrentLimit = 0.0;
 
@@ -130,8 +131,8 @@ public class Constants {
         public static final double kTargetAngleIndexing = 6.0;
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromSubwoofer = 9.0; 
-        public static final double kTargetAngleAmp = 98; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0
+        public static final double kTargetAngleSpeakerFromSubwoofer = 5.0; 
+        public static final double kTargetAngleAmp = 90; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
         public static final double kTargetAngleCrossfield = 13.0;
         public static final double kTargetAnglePodium = 32.0; // TODO:tune
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune

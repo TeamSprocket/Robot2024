@@ -65,6 +65,9 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.setInverted(Constants.Elevator.kLeftMotorIsInverted);
     elevatorFollowerMotor.setInverted(Constants.Elevator.kRightMotorIsInverted);
 
+    // elevatorMotor.setNeutralMode(NeutralModeValue.Coast);
+    // elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Coast);
+
     elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Brake);
 
