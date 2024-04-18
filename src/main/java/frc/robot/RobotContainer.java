@@ -64,6 +64,10 @@ public class RobotContainer {
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
 
     autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
+
+    autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
+    autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
+
     // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
 
     // autonChooser.addOption("", getAutonomousCommand());
@@ -136,7 +140,7 @@ public class RobotContainer {
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // Menu button
 
-    operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).whileTrue(new Climb(elevator, shooter, shooterPivot, intake));
+    // operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).whileTrue(new Climb(elevator, shooter, shooterPivot, intake));
 
 
     // operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
