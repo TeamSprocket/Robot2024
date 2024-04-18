@@ -65,7 +65,7 @@ public class Constants {
         public static final double kSupplyCurrentLimit = 0.0;
         
         public static final double kElevatorHeightStowed = 0.005;
-        public static final double kElevatorHeightAmp = 0.11; // 0.14 // 0.22; // 0.21; // 0.13
+        public static double kElevatorHeightAmp = 0.11; // 0.14 // 0.22; // 0.21; // 0.13
         public static final double kElevatorHeightClimbUp = 0.24; // TODO: tune
         public static final double kElevatorHeightClimbDown = 0.11;
 
@@ -132,9 +132,9 @@ public class Constants {
         public static final double kTargetAngleEject = 60.0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = 5.0; 
-        public static final double kTargetAngleAmp = 90; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
-        public static final double kTargetAngleCrossfield = 13.0;
-        public static final double kTargetAnglePodium = 32.0; // TODO:tune
+        public static double kTargetAngleAmp = 90.0; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
+        public static final double kTargetAngleCrossfield = 9.0;
+        public static final double kTargetAnglePodium = 28.0; // TODO:tune
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune
     }
 
@@ -147,7 +147,7 @@ public class Constants {
         public static final boolean kIsIndexerInverted = false;
 
         public static final double kShooterSpeedScoreSpeakerSubwoofer = 18.0; // 17.0
-        public static final double kShooterSpeedScoreAmp = 0.3; // -0.25
+        public static double kShooterSpeedScoreAmp = 0.3; // -0.25
         public static final double kShooterEjectNoteSpeed = -0.25;
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 0.25;
@@ -158,7 +158,7 @@ public class Constants {
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
-        public static final double kIndexerSpeedScoreAmp = 0.4; // -0.25
+        public static final double kIndexerSpeedScoreAmp = 0.5; // -0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 3.0;
         public static final double kIndexerSpeedRollback = -2.5;

@@ -116,13 +116,17 @@ public class Shooter extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("Indexer kP [ST]", 0, 1, Constants.Shooter.kPIndexer);
     ShuffleboardPIDTuner.addSlider("Indexer kD [ST]", 0, 1, Constants.Shooter.kDIndexer);
 
-    ShuffleboardPIDTuner.addSlider("Indexer Output Amps [ST]", 0, 10, 1);
+    // ShuffleboardPIDTuner.addSlider("Indexer Output Amps [ST]", 0, 10, 1);
+
+    ShuffleboardPIDTuner.addSlider("kShooterSpeedScoreAmp [ST]", 0, 1.0, Constants.Shooter.kShooterSpeedScoreAmp);
   }
 
   
   @Override
   public void periodic() {
     postSmartDashboardDebug();
+    
+    Constants.Shooter.kShooterSpeedScoreAmp = ShuffleboardPIDTuner.get("kShooterSpeedScoreAmp [ST]");
 
     // dist = distToTagSupplier.get();
 

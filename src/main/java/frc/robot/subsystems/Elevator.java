@@ -75,6 +75,8 @@ public class Elevator extends SubsystemBase {
     ShuffleboardPIDTuner.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
     ShuffleboardPIDTuner.addSlider("Elevator kFF [EL]", 0, 0.1, Constants.Elevator.kPIDElevator.kFF);
 
+    ShuffleboardPIDTuner.addSlider("kElevatorHeightAmp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightAmp);
+
 
     stateChooser.setDefaultOption("NONE", ElevatorStates.NONE);
     stateChooser.addOption("SCORE_AMP", ElevatorStates.STOWED);
@@ -88,6 +90,8 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Constants.Elevator.kElevatorHeightAmp = ShuffleboardPIDTuner.get("kElevatorHeightAmp [SP]");
+
     // setState(stateChooser.getSelected());
     
     // pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
