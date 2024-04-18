@@ -174,6 +174,14 @@ public class RobotContainer {
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
   }
+
+  public void zeroSuperstructurePositions() {
+    shooter.zeroPosition();
+    intake.zeroPosition();
+    shooterPivot.zeroPosition();
+    elevator.zeroPosition();
+    
+  }
   
 
   

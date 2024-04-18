@@ -61,6 +61,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     Constants.robotState = RobotState.AUTON;
+    // m_robotContainer.zeroSuperstructurePositions();
     m_robotContainer.getSwerveDrive().zeroDriveMotors();
     // m_robotContainer.getSwerveDrive().zeroGyro();
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
