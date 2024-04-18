@@ -492,6 +492,12 @@ public class Shooter extends SubsystemBase {
     shooterBottom.set(speed * Constants.Shooter.kShooterBottomSpeedMultiplier);
   }
 
+  public void zeroPosition() {
+    shooterTop.setPosition(0);
+    shooterBottom.setPosition(0);
+    indexerMotor.setPosition(0);
+  }
+
   private void configMotors() {
     // CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
     // currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);

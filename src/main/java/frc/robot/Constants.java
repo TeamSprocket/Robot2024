@@ -66,8 +66,8 @@ public class Constants {
         
         public static final double kElevatorHeightStowed = 0.005;
         public static double kElevatorHeightAmp = 0.13422; // 0.14 // 0.22; // 0.21; // 0.13
-        public static final double kElevatorHeightClimbUp = 0.24; // TODO: tune
-        public static final double kElevatorHeightClimbDown = 0.11;
+        public static double kElevatorHeightClimbUp = 0.24; // TODO: tune
+        public static double kElevatorHeightClimbDown = 0.11;
 
 
         // public static final double kElevatorHeightTrap = 0.0; 
@@ -75,7 +75,7 @@ public class Constants {
         public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
         public static final double kElevatorVelocity = 0.35; // 0.25
         public static final double kElevatorMotorMaxOutput = 0.4;
-        public static final double kElevatorMotorMaxOutputClimb = 0.2;
+        public static double kElevatorMotorMaxOutputClimb = 0.2;
 
         public static final double kFFScaleWithHeight = 0.55;
         public static final double kFFBaseWithHeight = 0.015;

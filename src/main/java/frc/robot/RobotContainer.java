@@ -140,7 +140,7 @@ public class RobotContainer {
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // Menu button
 
-    // operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).whileTrue(new Climb(elevator, shooter, shooterPivot, intake));
+    operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).whileTrue(new Climb(elevator, shooter, shooterPivot, intake));
 
 
     // operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));

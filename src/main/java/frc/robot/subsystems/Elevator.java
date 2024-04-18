@@ -77,6 +77,10 @@ public class Elevator extends SubsystemBase {
 
     ShuffleboardPIDTuner.addSlider("kElevatorHeightAmp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightAmp);
 
+    ShuffleboardPIDTuner.addSlider("kElevatorHeightClimbUp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightClimbUp);
+    ShuffleboardPIDTuner.addSlider("kElevatorHeightClimbDown [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightClimbDown);
+    ShuffleboardPIDTuner.addSlider("kElevatorMotorMaxOutputClimb [EL]", 0, 0.2, Constants.Elevator.kElevatorMotorMaxOutputClimb);
+
 
     stateChooser.setDefaultOption("NONE", ElevatorStates.NONE);
     stateChooser.addOption("SCORE_AMP", ElevatorStates.STOWED);
@@ -90,6 +94,10 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardPIDTuner.get("kElevatorHeightClimbUp [EL]");
+    Constants.Elevator.kElevatorHeightClimbDown = ShuffleboardPIDTuner.get("kElevatorHeightClimbDown [EL]");
+    Constants.Elevator.kElevatorMotorMaxOutputClimb = ShuffleboardPIDTuner.get("kElevatorMotorMaxOutputClimb [EL]");
+
     // Constants.Elevator.kElevatorHeightAmp = ShuffleboardPIDTuner.get("kElevatorHeightAmp [EL]");
 
     // setState(stateChooser.getSelected());
@@ -203,6 +211,11 @@ public class Elevator extends SubsystemBase {
     else {
       return false;
     }
+  }
+
+  public void zeroPosition() {
+    elevatorMotor.setPosition(0);
+    elevatorFollowerMotor.setPosition(0);
   }
 
   private void configMotors() {

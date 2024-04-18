@@ -336,6 +336,10 @@ public class ShooterPivot extends SubsystemBase {
     // return Util.inRange(getShooterPivotAngle(), (goal - Constants.ShooterPivot.kAtGoalTolerance), (goal + Constants.ShooterPivot.kAtGoalTolerance));
     return pidController.atSetpoint();
   }
+
+  public void zeroPosition() {
+    motor.setPosition(0);
+  }
   
   public void clearStickyFaults() {
     motor.clearStickyFaults();

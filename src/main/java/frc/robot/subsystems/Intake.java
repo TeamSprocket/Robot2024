@@ -233,6 +233,11 @@ public class Intake extends SubsystemBase {
     return Util.inRange(getPivotAngle(), (goal - Constants.Intake.kAtGoalTolerance), (goal + Constants.Intake.kAtGoalTolerance));
   }
 
+  public void zeroPosition() {
+    pivotIntake.setPosition(0);
+    rollIntake.setPosition(0);
+  }
+
   public void clearStickyFaults() {
     pivotIntake.clearStickyFaults();
     rollIntake.clearStickyFaults();
