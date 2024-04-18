@@ -126,7 +126,7 @@ public class Shooter extends SubsystemBase {
   public void periodic() {
     postSmartDashboardDebug();
     
-    Constants.Shooter.kShooterSpeedScoreAmp = ShuffleboardPIDTuner.get("kShooterSpeedScoreAmp [ST]");
+    // Constants.Shooter.kShooterSpeedScoreAmp = ShuffleboardPIDTuner.get("kShooterSpeedScoreAmp [ST]");
 
     // dist = distToTagSupplier.get();
 

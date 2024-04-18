@@ -117,7 +117,7 @@ public class ShooterPivot extends SubsystemBase {
   public void periodic() {
     debug();
 
-    Constants.ShooterPivot.kTargetAngleAmp = ShuffleboardPIDTuner.get("kTargetAngleAmp [SP]");
+    // Constants.ShooterPivot.kTargetAngleAmp = ShuffleboardPIDTuner.get("kTargetAngleAmp [SP]");
 
     // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
     // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));

@@ -90,7 +90,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Constants.Elevator.kElevatorHeightAmp = ShuffleboardPIDTuner.get("kElevatorHeightAmp [SP]");
+    // Constants.Elevator.kElevatorHeightAmp = ShuffleboardPIDTuner.get("kElevatorHeightAmp [EL]");
 
     // setState(stateChooser.getSelected());
     
