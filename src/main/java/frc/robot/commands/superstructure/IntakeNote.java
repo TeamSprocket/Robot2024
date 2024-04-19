@@ -96,7 +96,8 @@ public class IntakeNote  extends Command {
       shooter.setState(ShooterStates.INTAKE_ROLLBACK);
     }
 
-    if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackShooter()) {
+    // if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackShooter()) {
+    if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackIndexer()) {
       timer.start();
     }
     

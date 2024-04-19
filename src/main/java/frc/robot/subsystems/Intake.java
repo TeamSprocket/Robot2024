@@ -117,7 +117,7 @@ public class Intake extends SubsystemBase {
                 break;
 
             case INDEXING:
-                pivotSpeed = getPivotSpeed(Constants.Intake.kIndexingAngleIntake);
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleIndexing);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);

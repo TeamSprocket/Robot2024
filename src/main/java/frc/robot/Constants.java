@@ -207,7 +207,7 @@ public class Constants {
         public static final double kPivotAngleEject = 30.0; // 55.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 28.0; // 26.0;
-        public static final double kIndexingAngleIntake = 20.0;  // 10.0
+        public static final double kPivotAngleIndexing = 20.0;  // 10.0
         public static final double kPivotAngleShootCrossfield = 30.0; // TODO: tune this
         public static final double kPivotAngleScoreAmp = 27.0;
 
