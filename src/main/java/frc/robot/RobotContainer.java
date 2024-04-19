@@ -134,11 +134,12 @@ public class RobotContainer {
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
     // operator.getController().b().whileTrue(new ScoreSpeakerShoot(shooterPivot, shooter, swerveDrive));
     // operator.getController().b().whileTrue(new ScoreSpeakerAmpZone(shooterPivot, shooter, swerveDrive));
-    operator.getController().b().whileTrue(new ScoreSpeakerPodiumShoot(shooterPivot, shooter, swerveDrive));
-    operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
+    // operator.getController().b().whileTrue(new ScoreSpeakerPodiumShoot(shooterPivot, shooter, swerveDrive));
+    operator.getController().a().onTrue(new IntakeNote(intake, shooter, shooterPivot));
+    operator.getController().b().onTrue(new CancelIntake(intake, shooter, shooterPivot));
 
-    operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
-    operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // Menu button
+    operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
+    operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new ShootCrossfield(shooterPivot, shooter, intake)); // Menu button
 
     operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).whileTrue(new Climb(elevator, shooter, shooterPivot, intake));
 

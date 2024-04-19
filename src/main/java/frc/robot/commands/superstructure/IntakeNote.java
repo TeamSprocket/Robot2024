@@ -39,6 +39,8 @@ public class IntakeNote  extends Command {
 
   @Override
   public void initialize() {
+    Constants.Intake.RunIntake = true;
+
     this.state = IntakeCommandStates.ACCEL;
     
     // Constants.robotState = Constants.RobotState.TELEOP_DISABLE_SWERVE;
@@ -136,6 +138,8 @@ public class IntakeNote  extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    Constants.Intake.RunIntake = false;
+
     intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);    
     shooterPivot.setState(ShooterPivotStates.STOWED);
@@ -145,6 +149,6 @@ public class IntakeNote  extends Command {
   public boolean isFinished() {
     // return timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec;
     // return shooter.beamBroken();
-    return state == IntakeCommandStates.DONE;
+    return !Constants.Intake.RunIntake || state == IntakeCommandStates.DONE;
   }
 }

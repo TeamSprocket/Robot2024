@@ -197,6 +197,8 @@ public class Constants {
     }
 
     public static final class Intake {
+        public static boolean RunIntake = false;
+
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
