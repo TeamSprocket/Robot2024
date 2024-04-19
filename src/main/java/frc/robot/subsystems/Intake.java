@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.Conversions;
-import frc.util.ShuffleboardPIDTuner;
+import frc.util.ShuffleboardIO;
 import frc.util.Util;
 
 /** Add your docs here. */
@@ -42,7 +42,7 @@ public class Intake extends SubsystemBase {
     // ProfiledPIDController profiledPIDController;
     PIDController pidController;
 
-    private IntakeStates state = IntakeStates.STOWED;
+    private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
 
     SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
@@ -57,7 +57,8 @@ public class Intake extends SubsystemBase {
         SCORE_SPEAKER,
         AMP,
         CROSSFIELD,
-        EJECT_NOTE
+        EJECT_NOTE,
+        CLIMB
     }
 
 
@@ -84,16 +85,16 @@ public class Intake extends SubsystemBase {
 
         SmartDashboard.putData("STATES[IN]", selectIntakeState);
 
-        ShuffleboardPIDTuner.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
-        ShuffleboardPIDTuner.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
+        ShuffleboardIO.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
+        ShuffleboardIO.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
     }
 
     @Override
     public void periodic() {
         // TODO: REMOVE - TEMP
         // setState(selectIntakeState.getSelected());
-        // pidController.setP(ShuffleboardPIDTuner.get("PIVOT KP [IN]"));
-        // pidController.setD(ShuffleboardPIDTuner.get("PIVOT KD [IN]"));
+        // pidController.setP(ShuffleboardIO.getDouble("PIVOT KP [IN]"));
+        // pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
 
 
         switch (state) {
@@ -168,6 +169,15 @@ public class Intake extends SubsystemBase {
 
                 rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 break;
+
+            case CLIMB:
+                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleClimb);
+                pivotIntake.set(pivotSpeed);
+
+                rollIntake.set(0.0);
+                break;
+
+            
             
         }
 

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotState;
+import frc.util.ShuffleboardIO;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
@@ -33,7 +34,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast);
 
     // UsbCamera camera = CameraServer.startAutomaticCapture();
-    // camera.setVideoMode(PixelFormat.kMJPEG, 320*2, 240*2, 15);
+    // camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 15);
   }
 
   @Override

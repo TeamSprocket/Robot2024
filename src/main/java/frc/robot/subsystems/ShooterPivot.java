@@ -31,7 +31,7 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 // import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
-import frc.util.ShuffleboardPIDTuner;
+import frc.util.ShuffleboardIO;
 import frc.util.Util;
 
 public class ShooterPivot extends SubsystemBase {
@@ -66,7 +66,7 @@ public class ShooterPivot extends SubsystemBase {
     CLIMB  
   }
 
-  ShooterPivotStates state = ShooterPivotStates.STOWED;
+  ShooterPivotStates state = ShooterPivotStates.NONE;
   ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
   // //  Shooter table key: 
@@ -105,25 +105,25 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("CLIMB", ShooterPivotStates.CLIMB);
     SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
 
-    ShuffleboardPIDTuner.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
-    ShuffleboardPIDTuner.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
-    ShuffleboardPIDTuner.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
+    ShuffleboardIO.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
+    ShuffleboardIO.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
+    ShuffleboardIO.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
 
-    // ShuffleboardPIDTuner.addSlider("kStartingOffsetAngleDeg [SP]", -5.0, 5, 0.0);
-    ShuffleboardPIDTuner.addSlider("kTargetAngleAmp [SP]", 60.0, 120, Constants.ShooterPivot.kTargetAngleAmp);
+    // ShuffleboardIO.addSlider("kStartingOffsetAngleDeg [SP]", -5.0, 5, 0.0);
+    ShuffleboardIO.addSlider("kTargetAngleAmp [SP]", 60.0, 120, Constants.ShooterPivot.kTargetAngleAmp);
   }
 
   @Override
   public void periodic() {
     debug();
 
-    // Constants.ShooterPivot.kTargetAngleAmp = ShuffleboardPIDTuner.get("kTargetAngleAmp [SP]");
+    // Constants.ShooterPivot.kTargetAngleAmp = ShuffleboardIO.getDouble("kTargetAngleAmp [SP]");
 
-    // pidController.setP(ShuffleboardPIDTuner.get("shooterPivot kP"));
-    // pidController.setD(ShuffleboardPIDTuner.get("shooterPivot kD"));
+    // pidController.setP(ShuffleboardIO.getDouble("shooterPivot kP"));
+    // pidController.setD(ShuffleboardIO.getDouble("shooterPivot kD"));
 
-    // Constants.ShooterPivot.kStarting` = ShuffleboardPIDTuner.get("kStartingOffsetAngleDeg [SP]");
-    // Constants.ShooterPivot.kHorizontalAngle = ShuffleboardPIDTuner.get("kHorizontalAngle ShooterPivot [SP]");
+    // Constants.ShooterPivot.kStarting` = ShuffleboardIO.getDouble("kStartingOffsetAngleDeg [SP]");
+    // Constants.ShooterPivot.kHorizontalAngle = ShuffleboardIO.getDouble("kHorizontalAngle ShooterPivot [SP]");
 
     // SmartDashboard.putString("PivotState", state.toString());
     // SmartDashboard.putNumber("shooterPivot angle [SP]", getShooterPivotAngle());
@@ -261,7 +261,7 @@ public class ShooterPivot extends SubsystemBase {
     // clearStickyFaults();
     lastState = state;
     SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
-
+    SmartDashboard.putBoolean("Shooter Pivot atGoal [SP]", atGoal());
     // <-- delete later -->
 
     // case SPEAKER_SUBWOOFER:

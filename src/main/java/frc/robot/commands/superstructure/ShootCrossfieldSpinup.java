@@ -10,52 +10,41 @@ import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
-public class ScoreSpeaker extends Command {
+public class ShootCrossfieldSpinup extends Command {
 
   Shooter shooter;
-  Intake intake;
+  Intake intake; // check if intake is necessary
   ShooterPivot shooterPivot;
-  Timer intakeTimer = new Timer();
-  Timer waitTimer = new Timer();
+  Timer timer = new Timer();
   Timer scoreTimer = new Timer();
+  Boolean isShooting;
 
-  public ScoreSpeaker(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
+  public ShootCrossfieldSpinup(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
+    
+    this.isShooting = false;
   }
 
   @Override
   public void initialize() {
     intake.setState(IntakeStates.SCORE_SPEAKER);
-    shooter.setState(ShooterStates.SPINUP);
+    shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
 
-    waitTimer.reset();
-    waitTimer.stop();
+    timer.reset();
+    timer.start();
 
     scoreTimer.reset();
     scoreTimer.stop();
-
-    intakeTimer.reset();
-    intakeTimer.start();
   }
 
   @Override
   public void execute() {
-
-    if (intakeTimer.get() > 0.1) {
-      shooterPivot.setState(ShooterPivotStates.SPEAKER);
+    if (timer.get() > 0.2) { // delay for intake move out
+      shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
     }
     
-    if (shooter.atGoalShooter() && shooterPivot.atGoal()) { // At speed
-      waitTimer.start();
-    } 
-
-    // Start timed scoring sequence
-    if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      scoreTimer.start();   
-      shooter.setState(ShooterStates.SCORE_SPEAKER); 
-    }
   }
 
   @Override
@@ -67,6 +56,6 @@ public class ScoreSpeaker extends Command {
 
   @Override
   public boolean isFinished() {
-    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec + Constants.Superstructure.kWaitSpeakerTimeToleranceSec;
+    return scoreTimer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec;
   }
 }

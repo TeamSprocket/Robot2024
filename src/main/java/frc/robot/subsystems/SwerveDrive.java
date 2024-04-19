@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.Constants.RobotState;
-import frc.util.ShuffleboardPIDTuner;
+import frc.util.ShuffleboardIO;
 import frc.util.Util;
 // import frc.util.Constants.RobotState;
 import frc.robot.LimelightHelper;
@@ -133,25 +133,25 @@ public class SwerveDrive extends SubsystemBase {
     this
     );
 
-    // ShuffleboardPIDTuner.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
-    // ShuffleboardPIDTuner.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
+    // ShuffleboardIO.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
+    // ShuffleboardIO.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
 
-    ShuffleboardPIDTuner.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
-    ShuffleboardPIDTuner.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
-    ShuffleboardPIDTuner.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBL);
-    ShuffleboardPIDTuner.addSlider("PID BR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBR);
+    ShuffleboardIO.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
+    ShuffleboardIO.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
+    ShuffleboardIO.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBL);
+    ShuffleboardIO.addSlider("PID BR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBR);
     
-    ShuffleboardPIDTuner.addSlider("PID FL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFL);
-    ShuffleboardPIDTuner.addSlider("PID FR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFR);
-    ShuffleboardPIDTuner.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
-    ShuffleboardPIDTuner.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
+    ShuffleboardIO.addSlider("PID FL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFL);
+    ShuffleboardIO.addSlider("PID FR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFR);
+    ShuffleboardIO.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
+    ShuffleboardIO.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
 
-    ShuffleboardPIDTuner.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPIDSpeakerHeadingLock.getP());
-    ShuffleboardPIDTuner.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.Drivetrain.kPIDSpeakerHeadingLock.getD());
+    ShuffleboardIO.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPIDSpeakerHeadingLock.getP());
+    ShuffleboardIO.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.Drivetrain.kPIDSpeakerHeadingLock.getD());
 
-    ShuffleboardPIDTuner.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
-    // ShuffleboardPIDTuner.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    ShuffleboardPIDTuner.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+    ShuffleboardIO.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    // ShuffleboardIO.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
+    ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
    
   }
@@ -165,7 +165,7 @@ public class SwerveDrive extends SubsystemBase {
     debug();
     SmartDashboard.putString("Robot State", Constants.robotState.toString());
 
-    // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardPIDTuner.get("Turn Angle FR Slider [SD]"), ShuffleboardPIDTuner.get("Target Angle FR Slider [SD]")));
+    // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardIO.getDouble("Turn Angle FR Slider [SD]"), ShuffleboardIO.getDouble("Target Angle FR Slider [SD]")));
     // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
 
     
@@ -421,17 +421,17 @@ public class SwerveDrive extends SubsystemBase {
 
   }
   public void updateShuffleboardPIDConstants() {//
-    headingController.setP(ShuffleboardPIDTuner.get("kPSwerveDriveHeading"));
-    // headingController.setI(ShuffleboardPIDTuner.get("kISwerveDriveHeading"));
-    headingController.setD(ShuffleboardPIDTuner.get("kDSwerveDriveHeading"));
+    headingController.setP(ShuffleboardIO.getDouble("kPSwerveDriveHeading"));
+    // headingController.setI(ShuffleboardIO.getDouble("kISwerveDriveHeading"));
+    headingController.setD(ShuffleboardIO.getDouble("kDSwerveDriveHeading"));
 
-    frontLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID FL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FL kD [SD]"));
-    frontRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID FR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID FR kD [SD]"));
-    backLeft.updatePIDConstants(ShuffleboardPIDTuner.get("PID BL kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BL kD [SD]"));
-    backRight.updatePIDConstants(ShuffleboardPIDTuner.get("PID BR kP [SD]"), 0.0, ShuffleboardPIDTuner.get("PID BR kD [SD]"));
+    frontLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID FL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID FL kD [SD]"));
+    frontRight.updatePIDConstants(ShuffleboardIO.getDouble("PID FR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID FR kD [SD]"));
+    backLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID BL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BL kD [SD]"));
+    backRight.updatePIDConstants(ShuffleboardIO.getDouble("PID BR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BR kD [SD]"));
 
-    speakerLockPIDController.setP(ShuffleboardPIDTuner.get("PID Turn Vision kP [SD]"));
-    speakerLockPIDController.setD(ShuffleboardPIDTuner.get("PID Turn Vision kD [SD]"));
+    speakerLockPIDController.setP(ShuffleboardIO.getDouble("PID Turn Vision kP [SD]"));
+    speakerLockPIDController.setD(ShuffleboardIO.getDouble("PID Turn Vision kD [SD]"));
   }
 
   private void debug() {

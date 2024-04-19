@@ -14,7 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "SpinupSubwoofer"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootNote"
           }
         }
       ]

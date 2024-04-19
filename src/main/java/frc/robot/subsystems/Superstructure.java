@@ -309,7 +309,7 @@ public class Superstructure extends SubsystemBase {
 
         // elevator.setState(ElevatorStates.SPEAKER);
         // shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
-        shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
+        // shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
         if (timer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec) {

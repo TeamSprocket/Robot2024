@@ -29,7 +29,7 @@ public class Constants {
         public static final double kIntakeTimeToStowToleranceSec = 0.25;
 
         // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollBackTimeSec = 0.05; // 0.2 // 0.15
+        public static final double kIndexerIntakeRollBackTimeSec = 0.10; // 0.2 // 0.15
 
         public static final double kIndexerIntakeRollForwardTimeSec = 0.3; // 0.3
         public static final double kIndexerIntakeRollForwardTimeSecPodium = 0.15;
@@ -66,8 +66,8 @@ public class Constants {
         
         public static final double kElevatorHeightStowed = 0.005;
         public static double kElevatorHeightAmp = 0.13422; // 0.14 // 0.22; // 0.21; // 0.13
-        public static double kElevatorHeightClimbUp = 0.24; // TODO: tune
-        public static double kElevatorHeightClimbDown = 0.11;
+        public static double kElevatorHeightClimbUp = 0.25; // TODO: tune
+        public static double kElevatorHeightClimbDown = 0.01; // 0.11;
 
 
         // public static final double kElevatorHeightTrap = 0.0; 
@@ -75,7 +75,7 @@ public class Constants {
         public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
         public static final double kElevatorVelocity = 0.35; // 0.25
         public static final double kElevatorMotorMaxOutput = 0.4;
-        public static double kElevatorMotorMaxOutputClimb = 0.2;
+        public static double kElevatorMotorMaxOutputClimb = 0.45; // 0.2;
 
         public static final double kFFScaleWithHeight = 0.55;
         public static final double kFFBaseWithHeight = 0.015;
@@ -96,6 +96,8 @@ public class Constants {
 
         public static final double kMaxVelocity = 0.03;
         public static final double kMaxAccel = 0.02;
+
+        public static final double kClimbHookedCurrentThreshold = 65.0;
     } 
 
     public static final class ShooterPivot {
@@ -133,7 +135,7 @@ public class Constants {
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = 5.0; 
         public static double kTargetAngleAmp = 83.43575; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
-        public static final double kTargetAngleCrossfield = 9.0;
+        public static final double kTargetAngleCrossfield = 7.0;
         public static final double kTargetAnglePodium = 28.0; // TODO:tune
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune
     }
@@ -152,7 +154,7 @@ public class Constants {
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 0.25;
         public static final double kShooterSpeedRollbackPercent = -0.1;
-        public static final double kShooterSpeedCrossField = 22.0; 
+        public static final double kShooterSpeedCrossField = 21.0; 
         public static final double kShooterSpeedScoreSpeakerPodium = 22.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
@@ -210,6 +212,7 @@ public class Constants {
         public static final double kPivotAngleIndexing = 20.0;  // 10.0
         public static final double kPivotAngleShootCrossfield = 30.0; // TODO: tune this
         public static final double kPivotAngleScoreAmp = 27.0;
+        public static final double kPivotAngleClimb = 130.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.4;
@@ -241,7 +244,7 @@ public class Constants {
     public static final class Vision {
 
         // measurements
-        public static final Translation3d targetPointBlue = new Translation3d(0.0, 5.648, 0); // 5.548  // Moved towards right red alliance 0.1m
+        public static final Translation3d targetPointBlue = new Translation3d(0.0, 5.448, 0); // 5.548  // Moved towards right red alliance 0.1m
         public static final Translation3d targetPointRed = new Translation3d(0.0, 2.563, 0); //2.663
         
         public static final double kLimelightPitchAngleDegrees = 5.0;
@@ -349,7 +352,7 @@ public class Constants {
         // Speed/Accel
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 0.8; // 0.8 //1.0 // 0.6 - latest
+        public static double kMaxSpeed = 0.85; // 0.8 //1.0 // 0.6 - latest
         public static double kMaxAccel = 2.3; // 1.0 // 1.9 
 
 

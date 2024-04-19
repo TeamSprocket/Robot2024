@@ -3,62 +3,60 @@ package frc.robot.commands.superstructure;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.Constants.RobotState;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
-import frc.robot.subsystems.SwerveDrive;
 
-public class ScoreSpeakerPodiumShoot extends Command {
+public class ShootNote extends Command {
 
   Shooter shooter;
+  Intake intake;
   ShooterPivot shooterPivot;
-  SwerveDrive swerveDrive;
   Timer waitTimer = new Timer();
   Timer scoreTimer = new Timer();
+  Timer timer = new Timer();
 
-  public ScoreSpeakerPodiumShoot(ShooterPivot shooterPivot, Shooter shooter, SwerveDrive swerveDrive) {
+  public ShootNote(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
-    this.swerveDrive = swerveDrive;
+    this.intake = intake;
   }
 
   @Override
   public void initialize() {
-    // Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
-    // swerveDrive.updateLastOffsets();
-
-    shooter.setState(ShooterStates.SPINUP_PODIUM);
-    shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
+    intake.setState(IntakeStates.SCORE_SPEAKER);
 
     waitTimer.reset();
     waitTimer.stop();
 
     scoreTimer.reset();
     scoreTimer.stop();
+
+    timer.reset();
+    timer.start();
   }
 
   @Override
   public void execute() {
     
-    if (shooter.atGoalShooter()) { // At speed
+    if (shooter.atGoalShooter() || timer.get() > 3.0) { // At speed
       waitTimer.start();
-    } else {
-      waitTimer.restart();
-    }
+    } 
 
     // Start timed scoring sequence
-    if (waitTimer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSecPodium) {
+    if (waitTimer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
       scoreTimer.start();   
-      shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM); 
+      shooter.setIndexerSpeedScoreSpeaker();
+      // System.out.println("Shoot Note\nShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot NoteShoot Note");
     }
   }
 
   @Override
   public void end(boolean interrupted) {
-    // Constants.robotState = RobotState.TELEOP;
-
+    intake.setState(IntakeStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
   }

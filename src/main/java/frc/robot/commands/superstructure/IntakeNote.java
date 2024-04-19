@@ -63,6 +63,8 @@ public class IntakeNote  extends Command {
 
   @Override
   public void execute() {
+    // System.out.println(Constants.Intake.RunIntake);
+
     // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, 0, 0));
     if (state == IntakeCommandStates.ACCEL && accelTimer.get() > 0.5) {
       state = IntakeCommandStates.INTAKE;
@@ -150,6 +152,6 @@ public class IntakeNote  extends Command {
   public boolean isFinished() {
     // return timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec;
     // return shooter.beamBroken();
-    return !Constants.Intake.RunIntake || state == IntakeCommandStates.DONE;
+    return Constants.Intake.RunIntake == false || state == IntakeCommandStates.DONE;
   }
 }

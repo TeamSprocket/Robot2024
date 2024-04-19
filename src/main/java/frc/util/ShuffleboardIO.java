@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Add your docs here. */
-public class ShuffleboardPIDTuner extends SubsystemBase{
+public class ShuffleboardIO extends SubsystemBase{
     private static ShuffleboardTab tab = Shuffleboard.getTab("PIDTuner2");
     private static ArrayList<GenericEntry> values = new ArrayList<GenericEntry>();
     private static ArrayList<String> tags = new ArrayList<String>();
@@ -32,7 +32,13 @@ public class ShuffleboardPIDTuner extends SubsystemBase{
         defaultVals.add(defaultValue);
     }
 
-    public static double get(String widgetName) {
+    // public static boolean getBoolean(String widgetName) {
+    //     int entryInd = tags.indexOf(widgetName);
+    //     double defaultVal = defaultVals.get(entryInd);
+    //     return values.get(entryInd).getDouble(defaultVal) == 1.0;
+    // }
+
+    public static double getDouble(String widgetName) {
         int entryInd = tags.indexOf(widgetName);
         double defaultVal = defaultVals.get(entryInd);
         return values.get(entryInd).getDouble(defaultVal);

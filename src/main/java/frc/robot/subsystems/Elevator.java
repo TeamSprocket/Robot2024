@@ -19,7 +19,7 @@ import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.util.Conversions;
-import frc.util.ShuffleboardPIDTuner;
+import frc.util.ShuffleboardIO;
 import frc.util.Util;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -31,6 +31,7 @@ public class Elevator extends SubsystemBase {
   Supplier <Double> joyvalue;
   double output;
   double speed = 0.0;
+  boolean hasClimbed = false;
   
   public static enum ElevatorStates {
     NONE,
@@ -71,15 +72,15 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.setNeutralMode(NeutralModeValue.Brake);
     elevatorFollowerMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    ShuffleboardPIDTuner.addSlider("Elevator kP [EL]", 0, 1, Constants.Elevator.kPIDElevator.kP);
-    ShuffleboardPIDTuner.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
-    ShuffleboardPIDTuner.addSlider("Elevator kFF [EL]", 0, 0.1, Constants.Elevator.kPIDElevator.kFF);
+    ShuffleboardIO.addSlider("Elevator kP [EL]", 0, 1, Constants.Elevator.kPIDElevator.kP);
+    ShuffleboardIO.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
+    ShuffleboardIO.addSlider("Elevator kFF [EL]", 0, 0.1, Constants.Elevator.kPIDElevator.kFF);
 
-    ShuffleboardPIDTuner.addSlider("kElevatorHeightAmp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightAmp);
+    ShuffleboardIO.addSlider("kElevatorHeightAmp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightAmp);
 
-    ShuffleboardPIDTuner.addSlider("kElevatorHeightClimbUp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightClimbUp);
-    ShuffleboardPIDTuner.addSlider("kElevatorHeightClimbDown [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightClimbDown);
-    ShuffleboardPIDTuner.addSlider("kElevatorMotorMaxOutputClimb [EL]", 0, 0.2, Constants.Elevator.kElevatorMotorMaxOutputClimb);
+    ShuffleboardIO.addSlider("kElevatorHeightClimbUp [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightClimbUp);
+    ShuffleboardIO.addSlider("kElevatorHeightClimbDown [EL]", 0, 0.2, Constants.Elevator.kElevatorHeightClimbDown);
+    ShuffleboardIO.addSlider("kElevatorMotorMaxOutputClimb [EL]", 0, 0.2, Constants.Elevator.kElevatorMotorMaxOutputClimb);
 
 
     stateChooser.setDefaultOption("NONE", ElevatorStates.NONE);
@@ -94,17 +95,18 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardPIDTuner.get("kElevatorHeightClimbUp [EL]");
-    Constants.Elevator.kElevatorHeightClimbDown = ShuffleboardPIDTuner.get("kElevatorHeightClimbDown [EL]");
-    Constants.Elevator.kElevatorMotorMaxOutputClimb = ShuffleboardPIDTuner.get("kElevatorMotorMaxOutputClimb [EL]");
 
-    // Constants.Elevator.kElevatorHeightAmp = ShuffleboardPIDTuner.get("kElevatorHeightAmp [EL]");
+    // Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardIO.getDouble("kElevatorHeightClimbUp [EL]");
+    // Constants.Elevator.kElevatorHeightClimbDown = ShuffleboardIO.getDouble("kElevatorHeightClimbDown [EL]");
+    // Constants.Elevator.kElevatorMotorMaxOutputClimb = ShuffleboardIO.getDouble("kElevatorMotorMaxOutputClimb [EL]");
+
+    // Constants.Elevator.kElevatorHeightAmp = ShuffleboardIO.getDouble("kElevatorHeightAmp [EL]");
 
     // setState(stateChooser.getSelected());
     
-    // pidController.setP(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
-    // pidController.setD(ShuffleboardPIDTuner.get("Elevator kP [EL]"));
-    // Constants.Elevator.kPIDElevator.kFF = ShuffleboardPIDTuner.get("Elevator kFF [EL]");
+    // pidController.setP(ShuffleboardIO.getDouble("Elevator kP [EL]"));
+    // pidController.setD(ShuffleboardIO.getDouble("Elevator kP [EL]"));
+    // Constants.Elevator.kPIDElevator.kFF = ShuffleboardIO.getDouble("Elevator kFF [EL]");
     // SmartDashboard.putNumber("Target height elevator [EL]", pidController.getSetpoint());
 
     switch (state) {
@@ -136,6 +138,7 @@ public class Elevator extends SubsystemBase {
 
 
     SmartDashboard.putNumber("Elevator Height M [EL]", getHeight());
+    SmartDashboard.putNumber("Elevator Left Stator [EL]", elevatorMotor.getStatorCurrent().getValueAsDouble());
    
   }
 
@@ -161,6 +164,10 @@ public class Elevator extends SubsystemBase {
     motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
     elevatorMotor.set(motorOutput);
     // SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
+  }
+
+  public boolean climbHasHooked() {
+    return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbHookedCurrentThreshold;
   }
 
   public void moveToHeight(double targetHeight, double maxOutput) {

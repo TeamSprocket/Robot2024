@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
 import frc.util.Conversions;
-import frc.util.ShuffleboardPIDTuner;
+import frc.util.ShuffleboardIO;
 
 public class SwerveModule extends SubsystemBase {
   
@@ -55,16 +55,16 @@ public class SwerveModule extends SubsystemBase {
     configCancoders();
     configMotors();
 
-    // ShuffleboardPIDTuner.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
-    // ShuffleboardPIDTuner.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
+    // ShuffleboardIO.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
+    // ShuffleboardIO.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
   }
 
   @Override
   public void periodic() { 
     debug();
 
-    // turnPIDController.setP(ShuffleboardPIDTuner.get("Swerve PID kP [SD]"));
-    // turnPIDController.setD(ShuffleboardPIDTuner.get("Swerve PID kD [SD]"));
+    // turnPIDController.setP(ShuffleboardIO.getDouble("Swerve PID kP [SD]"));
+    // turnPIDController.setD(ShuffleboardIO.getDouble("Swerve PID kD [SD]"));
 
     // clearStickyFaults();
   }

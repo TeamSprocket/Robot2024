@@ -6,6 +6,7 @@ package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
@@ -15,7 +16,7 @@ import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
-public class Climb extends Command {
+public class ClimbUp extends Command {
 
   Elevator elevator;
   Shooter shooter;
@@ -24,7 +25,7 @@ public class Climb extends Command {
 
   Timer timer = new Timer();
   /** Creates a new Climb. */
-  public Climb(Elevator elevator, Shooter shooter, ShooterPivot shooterPivot, Intake intake) {
+  public ClimbUp(Elevator elevator, Shooter shooter, ShooterPivot shooterPivot, Intake intake) {
     this.elevator = elevator;
     this.shooter = shooter;
     this.shooterPivot = shooterPivot;
@@ -40,7 +41,7 @@ public class Climb extends Command {
   public void initialize() {
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
-    intake.setState(IntakeStates.STOWED);
+    intake.setState(IntakeStates.CLIMB);
 
     elevator.setState(ElevatorStates.CLIMB_UP);
   }
@@ -51,13 +52,13 @@ public class Climb extends Command {
     // Continuously prevent state updates 
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
-    intake.setState(IntakeStates.STOWED);
+    intake.setState(IntakeStates.CLIMB);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.setState(ElevatorStates.CLIMB_DOWN);
+    CommandScheduler.getInstance().schedule(new ClimbDown(elevator));
   }
 
   // Returns true when the command should end.
