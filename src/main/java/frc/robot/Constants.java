@@ -31,10 +31,10 @@ public class Constants {
         // Elapsed time beam break detecting note before stow
         public static final double kIndexerIntakeRollBackTimeSec = 0.05; // 0.2 // 0.15
 
-        public static final double kIndexerIntakeRollForwardTimeSec = 0.3; // 0.15 //.0.05
+        public static final double kIndexerIntakeRollForwardTimeSec = 0.3; // 0.3
         public static final double kIndexerIntakeRollForwardTimeSecPodium = 0.15;
 
-        public static final double kRollForwardtoRollBackWaitTime = 0.4; // 0.4
+        public static final double kRollForwardtoRollBackWaitTime = 0.15; // 0.4
 
         // Elapsed time after shooter hits speaker speed before score speaker
         public static final double kWaitSpeakerTimeToleranceSec = 0.3; 
