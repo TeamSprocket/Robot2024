@@ -38,7 +38,7 @@ public class SwerveDrive extends SubsystemBase {
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
-  PIDController headingController;
+  // PIDController headingController;
   PIDController speakerLockPIDController;
   SwerveDriveKinematics m_kinematics;
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Odometry [SD]", Pose2d.struct).publish();
@@ -107,12 +107,13 @@ public class SwerveDrive extends SubsystemBase {
   public SwerveDrive(Vision limelight) {
     this.limelight = limelight;
 
-    this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-    this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+    // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
+    // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
     
     this.speakerLockPIDController = new PIDController(Constants.Drivetrain.kPIDSpeakerHeadingLock.kP, Constants.Drivetrain.kPIDSpeakerHeadingLock.kI, Constants.Drivetrain.kPIDSpeakerHeadingLock.kD);
     this.speakerLockPIDController.enableContinuousInput(0, (2.0 * Math.PI));
     this.speakerLockPIDController.setSetpoint(0.0);
+    this.speakerLockPIDController.setTolerance(2.0);
     
 
     // Config Pathplanner
@@ -149,16 +150,16 @@ public class SwerveDrive extends SubsystemBase {
     ShuffleboardIO.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPIDSpeakerHeadingLock.getP());
     ShuffleboardIO.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.Drivetrain.kPIDSpeakerHeadingLock.getD());
 
-    ShuffleboardIO.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+    // ShuffleboardIO.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
     // ShuffleboardIO.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+    // ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
    
   }
 
   @Override
   public void periodic() {
-    // updateShuffleboardPIDConstants();
+    updateShuffleboardPIDConstants();
     // gyro.clearStickyFaults();
     // LimelightHelper.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
 
@@ -305,15 +306,20 @@ public class SwerveDrive extends SubsystemBase {
   //  * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
   //  */
   public double getLockHeadingToSpeakerTSpeed() {
-    // in the docs, tX is the horiz offset from LL to target
-    // double offsetRad = Math.toRadians(limelight.getXOffset());
-    double offsetRad = Math.toRadians(Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
+    // // in the docs, tX is the horiz offset from LL to target
+    // // double offsetRad = Math.toRadians(limelight.getXOffset());
+    // double offsetRad = Math.toRadians(Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
 
-    if (Math.abs(offsetRad - headingLockLastOffset) > Constants.Drivetrain.kHeadingLockDegreeRejectionTolerance) {
-      offsetRad = headingLockLastOffset;
+    // if (Math.abs(offsetRad - headingLockLastOffset) > Constants.Drivetrain.kHeadingLockDegreeRejectionTolerance) {
+    //   offsetRad = headingLockLastOffset;
+    // }
+
+    // double PIDOutput = speakerLockPIDController.calculate(offsetRad, 0.0);
+    double PIDOutput = speakerLockPIDController.calculate(getHeading(), 210.0);
+    if (speakerLockPIDController.atSetpoint()) {
+      PIDOutput = 0.0;
     }
 
-    double PIDOutput = speakerLockPIDController.calculate(offsetRad, 0.0);
     double limitedOutput = Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
 
     SmartDashboard.putNumber("Speaker Lock Output [SD]", limitedOutput);
@@ -421,14 +427,14 @@ public class SwerveDrive extends SubsystemBase {
 
   }
   public void updateShuffleboardPIDConstants() {//
-    headingController.setP(ShuffleboardIO.getDouble("kPSwerveDriveHeading"));
+    // headingController.setP(ShuffleboardIO.getDouble("kPSwerveDriveHeading"));
     // headingController.setI(ShuffleboardIO.getDouble("kISwerveDriveHeading"));
-    headingController.setD(ShuffleboardIO.getDouble("kDSwerveDriveHeading"));
+    // headingController.setD(ShuffleboardIO.getDouble("kDSwerveDriveHeading"));
 
-    frontLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID FL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID FL kD [SD]"));
-    frontRight.updatePIDConstants(ShuffleboardIO.getDouble("PID FR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID FR kD [SD]"));
-    backLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID BL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BL kD [SD]"));
-    backRight.updatePIDConstants(ShuffleboardIO.getDouble("PID BR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BR kD [SD]"));
+    // frontLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID FL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID FL kD [SD]"));
+    // frontRight.updatePIDConstants(ShuffleboardIO.getDouble("PID FR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID FR kD [SD]"));
+    // backLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID BL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BL kD [SD]"));
+    // backRight.updatePIDConstants(ShuffleboardIO.getDouble("PID BR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BR kD [SD]"));
 
     speakerLockPIDController.setP(ShuffleboardIO.getDouble("PID Turn Vision kP [SD]"));
     speakerLockPIDController.setD(ShuffleboardIO.getDouble("PID Turn Vision kD [SD]"));

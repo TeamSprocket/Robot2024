@@ -6,6 +6,7 @@ package frc.robot.commands.superstructure;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Elevator.ElevatorStates;
@@ -31,12 +32,17 @@ public class ClimbDown extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    if (timer.get() > 2.5) {
+      CommandScheduler.getInstance().cancelAll();
+    }
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     intake.setState(IntakeStates.STOWED);
+    CommandScheduler.getInstance().cancelAll();
   }
 
   // Returns true when the command should end.
@@ -44,6 +50,6 @@ public class ClimbDown extends Command {
   public boolean isFinished() {
     System.out.println("COMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDED");
     // return elevator.climbHasHooked();
-    return timer.get() > 2.0;
+    return timer.get() > 2.5;
   }
 }

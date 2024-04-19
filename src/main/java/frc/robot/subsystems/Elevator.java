@@ -39,7 +39,8 @@ public class Elevator extends SubsystemBase {
     AMP,
     CLIMB_UP,
     CLIMB_DOWN,
-    MANUAL
+    MANUAL,
+    ZEROING
   }
   private ElevatorStates state = ElevatorStates.STOWED;
 
@@ -95,8 +96,10 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
+    // TODO: post values, add tuners and sliders
+    // SmartDashboard.putNumber("", output)
 
-    // Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardIO.getDouble("kElevatorHeightClimbUp [EL]");
+    Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardIO.getDouble("kElevatorHeightClimbUp [EL]");
     // Constants.Elevator.kElevatorHeightClimbDown = ShuffleboardIO.getDouble("kElevatorHeightClimbDown [EL]");
     // Constants.Elevator.kElevatorMotorMaxOutputClimb = ShuffleboardIO.getDouble("kElevatorMotorMaxOutputClimb [EL]");
 
@@ -134,6 +137,10 @@ public class Elevator extends SubsystemBase {
       case MANUAL:
         manual();
         break;
+
+      case ZEROING:
+        elevatorMotor.set(-0.1);
+        break;
     }
 
 
@@ -147,6 +154,10 @@ public class Elevator extends SubsystemBase {
 
   public void setState(ElevatorStates state) {
     this.state = state;
+  }
+
+  public ElevatorStates getState() {
+      return state;
   }
 
 
@@ -165,6 +176,10 @@ public class Elevator extends SubsystemBase {
     motorOutput = Util.minmax(motorOutput, -1.0 * Constants.Elevator.kElevatorMotorMaxOutput, Constants.Elevator.kElevatorMotorMaxOutput);
     elevatorMotor.set(motorOutput);
     // SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
+  }
+
+  public boolean elevatorHitBottom() {
+    return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbHitBottomCurrentThreshold;
   }
 
   public boolean climbHasHooked() {

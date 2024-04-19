@@ -66,7 +66,7 @@ public class Constants {
         
         public static final double kElevatorHeightStowed = 0.005;
         public static double kElevatorHeightAmp = 0.13422; // 0.14 // 0.22; // 0.21; // 0.13
-        public static double kElevatorHeightClimbUp = 0.25; // TODO: tune
+        public static double kElevatorHeightClimbUp = 0.28; // TODO: tune
         public static double kElevatorHeightClimbDown = 0.01; // 0.11;
 
 
@@ -98,6 +98,7 @@ public class Constants {
         public static final double kMaxAccel = 0.02;
 
         public static final double kClimbHookedCurrentThreshold = 65.0;
+        public static final double kClimbHitBottomCurrentThreshold = 10.0;
     } 
 
     public static final class ShooterPivot {
@@ -154,7 +155,7 @@ public class Constants {
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 0.25;
         public static final double kShooterSpeedRollbackPercent = -0.1;
-        public static final double kShooterSpeedCrossField = 21.0; 
+        public static final double kShooterSpeedCrossField = 20.0; 
         public static final double kShooterSpeedScoreSpeakerPodium = 22.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
@@ -328,11 +329,11 @@ public class Constants {
         public static double kITurnMotorBR = 0.00;
         public static double kDTurnMotorBR = 0.000025; // 0.000025
 
-        public static final double kPHeading = 1.6; // 1.2 // 0.6
-        public static final double kIHeading = 0.0000;
-        public static final double kDHeading = 0.0;
+        // public static final double kPHeading = 0.2; // 1.2 // 0.6 // 1.6
+        // public static final double kIHeading = 0.0000;
+        // public static final double kDHeading = 0.0;
 
-        public static PIDConst kPIDSpeakerHeadingLock = new PIDConst(1.0, 0, 0); // TODO: tune PID note heading lock is in radians while heading controller is in degrees
+        public static PIDConst kPIDSpeakerHeadingLock = new PIDConst(0.2, 0, 0); // TODO: tune PID note heading lock is in radians while heading controller is in degrees
 
         public static final double kPTranslationPP = 0.25; // 3.0
         public static final double kITranslationPP = 0.0;
@@ -352,7 +353,7 @@ public class Constants {
         // Speed/Accel
         public static final double kMaxDriveModuleSpeedMPS = 4.0;
 
-        public static double kMaxSpeed = 0.85; // 0.8 //1.0 // 0.6 - latest
+        public static double kMaxSpeed = 0.9; // 0.8 //1.0 // 0.6 - latest
         public static double kMaxAccel = 2.3; // 1.0 // 1.9 
 
 

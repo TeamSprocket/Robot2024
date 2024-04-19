@@ -22,6 +22,7 @@ public class ClimbUp extends Command {
   Shooter shooter;
   ShooterPivot shooterPivot;
   Intake intake;
+  boolean hasZeroed;
 
   Timer timer = new Timer();
   /** Creates a new Climb. */
@@ -39,20 +40,34 @@ public class ClimbUp extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    hasZeroed = false;
+    
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
     intake.setState(IntakeStates.CLIMB);
-
-    elevator.setState(ElevatorStates.CLIMB_UP);
+    elevator.setState(ElevatorStates.STOWED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (!hasZeroed) {
+      elevator.setState(ElevatorStates.ZEROING);
+    } 
+    
+    if (!hasZeroed && elevator.elevatorHitBottom()) {
+      elevator.zeroPosition();
+      hasZeroed = true;
+    }
+
+    if (hasZeroed && elevator.getState() != ElevatorStates.CLIMB_UP) {
+      elevator.setState(ElevatorStates.CLIMB_UP);
+    }
+
     // Continuously prevent state updates 
-    shooter.setState(ShooterStates.STANDBY);
-    shooterPivot.setState(ShooterPivotStates.STOWED);
-    intake.setState(IntakeStates.CLIMB);
+    // shooter.setState(ShooterStates.STANDBY);
+    // shooterPivot.setState(ShooterPivotStates.STOWED);
+    // intake.setState(IntakeStates.CLIMB);
   }
 
   // Called once the command ends or is interrupted.
