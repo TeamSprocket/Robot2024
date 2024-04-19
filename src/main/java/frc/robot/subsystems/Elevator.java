@@ -139,6 +139,7 @@ public class Elevator extends SubsystemBase {
 
     SmartDashboard.putNumber("Elevator Height M [EL]", getHeight());
     SmartDashboard.putNumber("Elevator Left Stator [EL]", elevatorMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putBoolean("Climb Has Hooked [EL]", climbHasHooked());
    
   }
 

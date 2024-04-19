@@ -58,7 +58,7 @@ public class ClimbUp extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    CommandScheduler.getInstance().schedule(new ClimbDown(elevator));
+    CommandScheduler.getInstance().schedule(new ClimbDown(elevator, intake));
   }
 
   // Returns true when the command should end.

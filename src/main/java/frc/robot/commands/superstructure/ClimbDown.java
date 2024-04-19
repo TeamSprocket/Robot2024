@@ -4,16 +4,22 @@
 
 package frc.robot.commands.superstructure;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Elevator.ElevatorStates;
+import frc.robot.subsystems.Intake.IntakeStates;
 
 public class ClimbDown extends Command {
   /** Creates a new ClimbDown. */
   Elevator elevator;
+  Intake intake;
+  Timer timer = new Timer();
 
-  public ClimbDown(Elevator elevator) {
+  public ClimbDown(Elevator elevator, Intake intake) {
     this.elevator = elevator;
+    this.intake = intake;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -30,12 +36,14 @@ public class ClimbDown extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.setState(ElevatorStates.NONE);
+    intake.setState(IntakeStates.STOWED);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.climbHasHooked();
+    System.out.println("COMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDEDCOMMAND HAS ENDED");
+    // return elevator.climbHasHooked();
+    return timer.get() > 2.0;
   }
 }
