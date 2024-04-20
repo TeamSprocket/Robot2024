@@ -10,7 +10,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
+import frc.robot.Constants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.Elevator.ClimbStates;
 import frc.robot.subsystems.Elevator.ElevatorStates;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
@@ -22,7 +24,8 @@ public class ClimbUp extends Command {
   Shooter shooter;
   ShooterPivot shooterPivot;
   Intake intake;
-  boolean hasZeroed;
+
+  boolean hasFoundCeiling;
 
   Timer timer = new Timer();
   /** Creates a new Climb. */
@@ -31,54 +34,43 @@ public class ClimbUp extends Command {
     this.shooter = shooter;
     this.shooterPivot = shooterPivot;
     this.intake = intake;
-
-    timer.reset();
-    timer.start();
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hasZeroed = false;
-    
     shooter.setState(ShooterStates.STANDBY);
     shooterPivot.setState(ShooterPivotStates.STOWED);
     intake.setState(IntakeStates.CLIMB);
-    elevator.setState(ElevatorStates.STOWED);
+
+    elevator.setState(ElevatorStates.FIND_TOP);
+
+    timer.reset();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (!hasZeroed) {
-      elevator.setState(ElevatorStates.ZEROING);
-    } 
-    
-    if (!hasZeroed && elevator.elevatorHitBottom()) {
-      elevator.zeroPosition();
-      hasZeroed = true;
-    }
-
-    if (hasZeroed && elevator.getState() != ElevatorStates.CLIMB_UP) {
-      elevator.setState(ElevatorStates.CLIMB_UP);
-    }
-
     // Continuously prevent state updates 
-    // shooter.setState(ShooterStates.STANDBY);
-    // shooterPivot.setState(ShooterPivotStates.STOWED);
-    // intake.setState(IntakeStates.CLIMB);
+    shooter.setState(ShooterStates.STANDBY);
+    shooterPivot.setState(ShooterPivotStates.STOWED);
+    intake.setState(IntakeStates.CLIMB);
+    
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    CommandScheduler.getInstance().schedule(new ClimbDown(elevator, intake));
+    // CommandScheduler.getInstance().schedule(new ClimbDown(elevator));
+    elevator.setTopHeight(elevator.getHeight());
+    elevator.setState(ElevatorStates.CLIMB_HOLD_TOP);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return elevator.climbHasHitTop() || timer.get() > 4.0;
   }
 }

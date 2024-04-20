@@ -32,17 +32,29 @@ public class Elevator extends SubsystemBase {
   double output;
   double speed = 0.0;
   boolean hasClimbed = false;
+  double topHeight, bottomHeight;
   
   public static enum ElevatorStates {
     NONE,
     STOWED,
     AMP,
-    CLIMB_UP,
-    CLIMB_DOWN,
-    MANUAL,
-    ZEROING
+    CLIMB_HOLD_TOP,
+    CLIMB_HOLD_BOTTOM,
+    FIND_TOP, 
+    FIND_BOTTOM,
+    MANUAL
   }
   private ElevatorStates state = ElevatorStates.STOWED;
+
+  public static enum ClimbStates {
+    UP,
+    DOWN,
+    HOLD,
+    NONE
+  }
+  private ClimbStates climbState = ClimbStates.NONE;
+
+
 
   private TalonFX elevatorMotor = new TalonFX(RobotMap.Elevator.ELEVATOR_LEFT);
   private TalonFX elevatorFollowerMotor = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
@@ -96,10 +108,8 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // TODO: post values, add tuners and sliders
-    // SmartDashboard.putNumber("", output)
 
-    Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardIO.getDouble("kElevatorHeightClimbUp [EL]");
+    // Constants.Elevator.kElevatorHeightClimbUp = ShuffleboardIO.getDouble("kElevatorHeightClimbUp [EL]");
     // Constants.Elevator.kElevatorHeightClimbDown = ShuffleboardIO.getDouble("kElevatorHeightClimbDown [EL]");
     // Constants.Elevator.kElevatorMotorMaxOutputClimb = ShuffleboardIO.getDouble("kElevatorMotorMaxOutputClimb [EL]");
 
@@ -126,27 +136,30 @@ public class Elevator extends SubsystemBase {
         moveToHeight(Constants.Elevator.kElevatorHeightAmp);
         break; 
 
-      case CLIMB_UP:
-        moveToHeight(Constants.Elevator.kElevatorHeightClimbUp, Constants.Elevator.kElevatorMotorMaxOutputClimb);
+      case CLIMB_HOLD_TOP:
+        moveToTop();
         break;
 
-      case CLIMB_DOWN:
-      moveToHeight(Constants.Elevator.kElevatorHeightClimbDown, Constants.Elevator.kElevatorMotorMaxOutputClimb);
+      case CLIMB_HOLD_BOTTOM:
+        moveToHeight(Constants.Elevator.kElevatorHeightClimbDown, Constants.Elevator.kElevatorMotorMaxOutputClimb);
+        break;
+
+      case FIND_TOP:
+        elevatorMotor.set(Constants.Elevator.kClimbFindTopSpeed);
+        break;
+
+      case FIND_BOTTOM:
+        elevatorMotor.set(Constants.Elevator.kClimbFindBottomSpeed);
         break;
 
       case MANUAL:
         manual();
-        break;
-
-      case ZEROING:
-        elevatorMotor.set(-0.1);
         break;
     }
 
 
     SmartDashboard.putNumber("Elevator Height M [EL]", getHeight());
     SmartDashboard.putNumber("Elevator Left Stator [EL]", elevatorMotor.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putBoolean("Climb Has Hooked [EL]", climbHasHooked());
    
   }
 
@@ -154,10 +167,6 @@ public class Elevator extends SubsystemBase {
 
   public void setState(ElevatorStates state) {
     this.state = state;
-  }
-
-  public ElevatorStates getState() {
-      return state;
   }
 
 
@@ -178,13 +187,36 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
   }
 
-  public boolean elevatorHitBottom() {
-    return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbHitBottomCurrentThreshold;
+  public void moveToTop() {
+    moveToHeight(topHeight);
   }
+
+  // public void moveToBottom() {
+  //   moveToHeight(bottomHeight);
+  // }
+
+
+  public void setTopHeight(double topHeight) {
+    this.topHeight = topHeight;
+  }
+
+  // public void setBottomHeight(double bottomHeight) {
+  //   this.bottomHeight = bottomHeight;
+  // }
+
 
   public boolean climbHasHooked() {
     return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbHookedCurrentThreshold;
   }
+
+  public boolean climbHasHitTop() {
+    return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbFindTopCurrentThreshold;
+  }
+
+  public boolean climbHasHitBottom() {
+    return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbFindBottomCurrentThreshold;
+  }
+
 
   public void moveToHeight(double targetHeight, double maxOutput) {
     pidController.setSetpoint(targetHeight);
@@ -202,6 +234,14 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(motorOutput);
   }
 
+  public void setClimbState(ClimbStates climbState) {
+      this.climbState = climbState;
+  }
+
+  public ClimbStates getClimbState() {
+      return climbState;
+  }
+  
   // public double getScaledFFWithHeight() {
   //   return Constants.Elevator.kPIDElevator.kFF * Constants.Elevator.kFFScaleWithHeight + Constants.Elevator.kFFBaseWithHeight;
   // }
