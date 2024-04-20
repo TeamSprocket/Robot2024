@@ -97,8 +97,8 @@ public class Constants {
         public static final double kMaxVelocity = 0.03;
         public static final double kMaxAccel = 0.02;
 
-        public static final double kClimbFindTopSpeed = 0.2;
-        public static final double kClimbFindBottomSpeed = -0.2;
+        public static final double kClimbFindTopSpeed = 0.2; // 0.5
+        public static final double kClimbFindBottomSpeed = -0.2; // -0.5
         public static final double kClimbFindTopCurrentThreshold = 195.0;
         public static final double kClimbFindBottomCurrentThreshold = 65.0;
 
