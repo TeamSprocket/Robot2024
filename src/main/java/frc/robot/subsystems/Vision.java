@@ -32,34 +32,34 @@ public class Vision extends SubsystemBase {
     /**
      * @return {xCoord, yCoord, timestamp}
      */
-    public Translation2d getTranslation2d() { // TODO: check if we only want coords from blue side
+    public Translation2d getTranslation2d() {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
             // get pose estimate using megatag2 localization
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                 estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            }
-            else {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            }
+            // }
+            // else {
+            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+            // }
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
         } else {
             return new Translation2d(0.0, 0.0);
         }
     }
 
-    public Pose2d getPose2d() { // DEBUG ONLY
+    public Pose2d getPose2d() {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
             // get pose estimate using megatag2 localization
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                 estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            }
-            else {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            }
+            // }
+            // else {
+            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
+            // }
 
             return estimate.pose;
         } else {
@@ -103,20 +103,6 @@ public class Vision extends SubsystemBase {
     //         return 0.0;
     //     }
     // }
-
-
-    // public double getSpeakerAngleOffset() {
-    //     Translation2d speakerPoint = targetSpeaker;
-    //     Translation2d currentPos = getTranslation2d();
-
-    //     // Driver POV NOT FIELD POV
-    //     double speakerX = targetSpeaker.getX();
-    //     double speakerY = targetSpeaker.getY();
-    //     double botX = targetSpeaker.getX();
-    //     double speakerY = targetSpeaker.getY();
-
-    // }
-
 
     // public void getTargetSpeaker() {
 

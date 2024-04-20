@@ -184,13 +184,12 @@ public class SwerveDrive extends SubsystemBase {
 
     // Update Odometer
 
-    // if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) { // TODO: test odometry update!! 
-    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    // if (limelight.hasTargets()) {
+    if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) {
 
-    if (Constants.robotState != RobotState.AUTON) {
+    // if (Constants.robotState != RobotState.AUTON) {
       updateOdometryWithVision();
     }
+    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
   }
 
   /**

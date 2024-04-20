@@ -21,6 +21,8 @@ import frc.robot.auto.DoNothing;
 import frc.robot.auto.OneNoteNoTaxi;
 import frc.robot.commands.EjectNote;
 import frc.robot.commands.auto.IntakeNoteManualTimed;
+import frc.robot.commands.auto.PreloadtoMidlineBlue;
+import frc.robot.commands.auto.PreloadtoMidlineRed;
 // import frc.robot.commands.auto.OneNoteAuton;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
@@ -67,6 +69,19 @@ public class RobotContainer {
 
     autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
     autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
+
+    // path planner
+
+    autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
+    autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
+
+    // by encoder ticks
+
+    autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
+    autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
+
+    // manual auton
+
 
     // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
 
