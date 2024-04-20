@@ -80,9 +80,6 @@ public class RobotContainer {
     autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
     autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
 
-    // manual auton
-
-
     // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
 
     // autonChooser.addOption("", getAutonomousCommand());

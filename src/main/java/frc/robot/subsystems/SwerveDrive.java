@@ -189,7 +189,9 @@ public class SwerveDrive extends SubsystemBase {
     // if (Constants.robotState != RobotState.AUTON) {
       updateOdometryWithVision();
     }
-    this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    else {
+      this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    }
   }
 
   /**

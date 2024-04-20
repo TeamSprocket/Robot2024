@@ -20,8 +20,8 @@ public class PreloadtoMidlineBlue extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SequentialCommandGroup(
-        new ScoreSpeakerSubwooferShootTimed(shooter, intake, 2),
-        new Backup(swerveDrive, -3.48, 0), // make sure this ranslates horizontally
+        new ScoreSpeakerSubwooferShootTimed(shooter, intake, shooterPivot), // check if there is a better way to do this
+        new Backup(swerveDrive, -3.48, 0), // make sure this translates horizontally
         new Backup(swerveDrive, 0, -7.16),
         new IntakeNoteManualTimed(intake, shooter, shooterPivot, 3)
       )

@@ -19,7 +19,7 @@ public class PreloadtoMidlineRed extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new ScoreSpeakerSubwooferShootTimed(shooter, intake, 2),
+      new ScoreSpeakerSubwooferShootTimed(shooter, intake, shooterPivot),
       new Backup(swerveDrive, 3.57, 0),
       new Backup(swerveDrive, 0, -7.11),
       new IntakeNoteManualTimed(intake, shooter, shooterPivot, 3)
