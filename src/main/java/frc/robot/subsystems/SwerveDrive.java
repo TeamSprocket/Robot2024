@@ -3,10 +3,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,9 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,20 +24,28 @@ import frc.robot.RobotMap;
 import frc.robot.Constants.RobotState;
 import frc.util.ShuffleboardIO;
 import frc.util.Util;
+
 // import frc.util.Constants.RobotState;
-import frc.robot.LimelightHelper;
+// import edu.wpi.first.math.util.Units;
+// import edu.wpi.first.networktables.StructArrayPublisher;
+// import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+// import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
+// import edu.wpi.first.math.VecBuilder;
 
 public class SwerveDrive extends SubsystemBase {
 
   Vision limelight;
+  private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
+  SwerveDriveKinematics m_kinematics;
+
+  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Odometry [SD]", Pose2d.struct).publish(); // for advantage scope
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
+  double headingLockLastOffset;
+
   // PIDController headingController;
   PIDController speakerLockPIDController;
-  SwerveDriveKinematics m_kinematics;
-  StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Odometry [SD]", Pose2d.struct).publish();
-  double headingLockLastOffset;
 
   public static enum Directions {
     FORWARD,
@@ -51,8 +54,7 @@ public class SwerveDrive extends SubsystemBase {
     BACK
   } 
 
-  private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
-
+  // initialize swervemodules
   private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
         RobotMap.Drivetrain.FRONT_LEFT_TALON_T,
@@ -98,7 +100,7 @@ public class SwerveDrive extends SubsystemBase {
         Constants.Drivetrain.kDTurnMotorBR
   );
 
-  private SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+  private SwerveDriveOdometry odometry = new SwerveDriveOdometry( // used to track position of robot on field
     Constants.Drivetrain.kDriveKinematics,
     new Rotation2d(getHeading()),
     getModulePositions()
@@ -115,7 +117,6 @@ public class SwerveDrive extends SubsystemBase {
     this.speakerLockPIDController.setSetpoint(0.0);
     this.speakerLockPIDController.setTolerance(2.0);
     
-
     // Config Pathplanner
     AutoBuilder.configureHolonomic(
       this::getPose,
@@ -124,7 +125,7 @@ public class SwerveDrive extends SubsystemBase {
       this::driveRobotRelative,
       Constants.Drivetrain.kPathFollowerConfig,
       () -> {
-        // Boolean supplier for whether field is mirrored (mirrored = on red)
+        // Boolean supplier for whether field is mirrored (mirrored = red)
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
@@ -134,9 +135,7 @@ public class SwerveDrive extends SubsystemBase {
     this
     );
 
-    // ShuffleboardIO.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
-    // ShuffleboardIO.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
-
+    // PID tuners for individual swerve module
     ShuffleboardIO.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
     ShuffleboardIO.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
     ShuffleboardIO.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBL);
@@ -154,50 +153,46 @@ public class SwerveDrive extends SubsystemBase {
     // ShuffleboardIO.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
     // ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
-   
+    // ShuffleboardIO.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
+    // ShuffleboardIO.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
   }
 
   @Override
   public void periodic() {
     updateShuffleboardPIDConstants();
-    // gyro.clearStickyFaults();
-    // LimelightHelper.SetRobotOrientation("limelight",getHeading(),0,0,0,0,0); // reset gyro facing red alliance
 
     debug();
-    SmartDashboard.putString("Robot State", Constants.robotState.toString());
 
-    // SmartDashboard.putNumber("Turn PID Testing Output [SD]", frontRight.getPIDOutput(ShuffleboardIO.getDouble("Turn Angle FR Slider [SD]"), ShuffleboardIO.getDouble("Target Angle FR Slider [SD]")));
-    // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnMotor());
-
-    
     if (Constants.robotState == RobotState.TELEOP || Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) {
-      if (Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) { // Override turning if turn locked to speaker 
+
+      if (Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) { // override teleop turning to lock onto a speaker 
         this.tSpeed = getLockHeadingToSpeakerTSpeed();
       }
 
+      // set module states
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
       SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
       SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Drivetrain.kMaxSpeed);
       setModuleStates(moduleStates);
     } 
 
-
-    // Update Odometer
-
+    // update odometry with vision if we have targets + gyro is not shaky
     if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) {
-
     // if (Constants.robotState != RobotState.AUTON) {
       updateOdometryWithVision();
     }
-    else {
+    else { // otherwise, update with gyro
       this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
     }
+    // gyro.clearStickyFaults();
   }
+
+  //------Get Methods------
 
   /**
    * @return Heading in radians [0, 2PI) 
    */
-  public double getHeading() { // ? why 0
+  public double getHeading() {
     double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
     angle *= -1.0;
     return angle;
@@ -213,44 +208,21 @@ public class SwerveDrive extends SubsystemBase {
     return modulePositions;
   }
 
-  // public void switchDirection(Directions direction) {
-  //   switch (direction) {
-  //     case FORWARD:
-  //       targetHeadingRad = 0;
-  //       break;
-
-  //     case BACK:
-  //       targetHeadingRad = Math.PI;
-  //       break;
-
-  //     case LEFT:
-  //       targetHeadingRad = Math.PI / 2.0;
-  //       break;
-
-  //     case RIGHT:
-  //       targetHeadingRad = 3.0 * Math.PI / 2.0;
-  //       break;
-  //   }
-  // }
-  
-  // public void initGyro() {
-  //   gyro.setYaw(0);
-  //   // gyro.enterCalibrationMode();
-  //   // gyro.reset();
-  // }
+  //------Zero Methods------
 
   public void zeroHeading() {
     gyro.setYaw(0);
     targetHeadingRad = Math.PI;
   }
 
-  // public void calibrateGyro() {
-    // gyro.calibrate();
-  // }
+  public void zeroDriveMotors() {
+    frontLeft.zeroDriveMotor();
+    frontRight.zeroDriveMotor();
+    backLeft.zeroDriveMotor();
+    backRight.zeroDriveMotor();
+  }
 
-  // public void setTargetHeadingRad(double targetHeadingRad) {
-  //   this.targetHeadingRad = targetHeadingRad;
-  // }
+  //------Reset Methods------
 
   public void resetModulesToAbsolute() {
     frontLeft.zeroTurnMotorABS();
@@ -262,12 +234,7 @@ public class SwerveDrive extends SubsystemBase {
     backRight.zeroTurnMotorABS();
   }
 
-  public void zeroDriveMotors() {
-    frontLeft.zeroDriveMotor();
-    frontRight.zeroDriveMotor();
-    backLeft.zeroDriveMotor();
-    backRight.zeroDriveMotor();
-  }
+  //------Set Neutral Mode Methods------
 
   public void setNeutralMode(NeutralModeValue neutralMode) {
     frontLeft.setNeutralMode(neutralMode);
@@ -299,28 +266,18 @@ public class SwerveDrive extends SubsystemBase {
     }
   }
 
-  // public double getDistToTarget() {
-  //   return limelight.getDistanceToTarget(getPose().getTranslation());
-  // }
-
-  // /**
-  //  * Requires that Constants.RobotState is TELEOP_DISABLE_TURN
-  //  */
+  // Requires that Constants.RobotState is TELEOP_DISABLE_TURN
   public double getLockHeadingToSpeakerTSpeed() {
-    // // in the docs, tX is the horiz offset from LL to target
-    // // double offsetRad = Math.toRadians(limelight.getXOffset());
     // double offsetRad = Math.toRadians(Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
-
     // if (Math.abs(offsetRad - headingLockLastOffset) > Constants.Drivetrain.kHeadingLockDegreeRejectionTolerance) {
     //   offsetRad = headingLockLastOffset;
     // }
-
     // double PIDOutput = speakerLockPIDController.calculate(offsetRad, 0.0);
+
     double PIDOutput = speakerLockPIDController.calculate(getHeading(), 210.0);
     if (speakerLockPIDController.atSetpoint()) {
       PIDOutput = 0.0;
     }
-
     double limitedOutput = Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
 
     SmartDashboard.putNumber("Speaker Lock Output [SD]", limitedOutput);
@@ -328,60 +285,27 @@ public class SwerveDrive extends SubsystemBase {
     return limitedOutput;
   }
 
-  public void updateLastOffsets() {
-    headingLockLastOffset = Math.toRadians(limelight.getXOffset());
+  //------PathPlanner Methods------
+
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    frontLeft.setState(desiredStates[0]); //currently setting 
+    frontRight.setState(desiredStates[1]);
+    backLeft.setState(desiredStates[2]);
+    backRight.setState(desiredStates[3]);
+
+    // SmartDashboard.putNumber("getPIDOutput", frontRight.getPIDOutput(desiredStates[1]));
+
+    // SmartDashboard.putNumber("front left turn deg target [SD]", desiredStates[0].angle.getDegrees());
+    // SmartDashboard.putNumber("front right turn deg target [SD]", desiredStates[1].angle.getDegrees());
+    // SmartDashboard.putNumber("back right turn deg target [SD]", desiredStates[2].angle.getDegrees());
+    // SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
+
+    // SmartDashboard.putNumber("front left turn PID Output [SD]", frontLeft.getPIDOutput(state));
+    // SmartDashboard.putNumber("front right turn PID Output [SD]", frontRight.getPIDOutput(desiredStates[1]));
+    // SmartDashboard.putNumber("back right turn PID Output [SD]", backRight.getPIDOutput(state));
+    // SmartDashboard.putNumber("back left turn PID Output [SD]", backLeft.getPIDOutput(state));
   }
 
-  public boolean isAlignedWithTarget() {
-    double offsetDeg = limelight.getXOffset();
-
-    if (Math.abs(offsetDeg) < Constants.Drivetrain.kHeadingLockDegreeTolerance) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  // public double getLockHeadingToSpeakerTSpeed(double angleSpeaker) {
-  //   double offsetRad = getHeading() - limelight.getSpeakerAngle();
-  //   return speakerLockPIDController.calculate(offsetRad, 0.0);
-  // }
-
-  // public double getLockHeadingToSpeakerTSpeed() {
-  //   Translation2d robotToTarget = limelight.getTranslationRobotToGoal();
-  //   double angleOffset = Math.toDegrees(robotToTarget.getAngle().getRadians() - getHeading());
-  //   speakerLockPIDController.setSetpoint(0.0);
-  //   double yawSpeed = speakerLockPIDController.calculate(angleOffset);
-  //   return yawSpeed;
-  // }
-
-  // <-- --> //
-
-  // Stuff for Pathplanner
-  public Pose2d getPose() {
-    return odometry.getPoseMeters();
-  }
-
-  public Translation3d getTranslation3d() {
-    Pose2d pose = getPose();
-    return new Translation3d(pose.getX(), pose.getY(), 0.0);
-  }
-
-  public void resetPose(Pose2d pose) {
-    // zeroDriveMotors();
-    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), pose);
-  }
-
-  public ChassisSpeeds getChassisSpeeds() {
-    SwerveModuleState[] moduleStates = {
-      frontLeft.getModuleState(),
-      frontRight.getModuleState(),
-      backLeft.getModuleState(),
-      backRight.getModuleState()
-    };
-    return Constants.Drivetrain.kDriveKinematics.toChassisSpeeds(moduleStates);
-  }
-  
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
     chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond * 0.25;
@@ -396,25 +320,6 @@ public class SwerveDrive extends SubsystemBase {
     setModuleStates(moduleStates);
   }
 
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    frontLeft.setState(desiredStates[0]); //currently setting 
-    frontRight.setState(desiredStates[1]);
-    backLeft.setState(desiredStates[2]);
-    backRight.setState(desiredStates[3]);
-
-    // SmartDashboard.putNumber("front left turn deg target [SD]", desiredStates[0].angle.getDegrees());
-    // SmartDashboard.putNumber("front right turn deg target [SD]", desiredStates[1].angle.getDegrees());
-    // SmartDashboard.putNumber("back right turn deg target [SD]", desiredStates[2].angle.getDegrees());
-    // SmartDashboard.putNumber("back left turn deg target [SD]", desiredStates[3].angle.getDegrees());
-
-    // SmartDashboard.putNumber("getPIDOutput", frontRight.getPIDOutput(desiredStates[1]));
-
-    // SmartDashboard.putNumber("front left turn PID Output [SD]", frontLeft.getPIDOutput(state));
-    // SmartDashboard.putNumber("front right turn PID Output [SD]", frontRight.getPIDOutput(desiredStates[1]));
-    // SmartDashboard.putNumber("back right turn PID Output [SD]", backRight.getPIDOutput(state));
-    // SmartDashboard.putNumber("back left turn PID Output [SD]", backLeft.getPIDOutput(state));
-  }
-
   public void updateChassisSpeeds(double xSpeed, double ySpeed, double tSpeed) {
     this.xSpeed = xSpeed;
     this.ySpeed = ySpeed;
@@ -425,8 +330,34 @@ public class SwerveDrive extends SubsystemBase {
     // this.targetHeadingRad %= (2.0 * Math.PI);
     // this.targetHeadingRad = (targetHeadingRad < 0) ? (targetHeadingRad + (2.0 * Math.PI)) : targetHeadingRad;
     // this.tSpeed = headingController.calculate(getHeading(), targetHeadingRad) * -1.0; // Inverted PID output because ¯\_(ツ)_/¯
-
   }
+
+  public Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  public Translation3d getTranslation3d() {
+    Pose2d pose = getPose();
+    return new Translation3d(pose.getX(), pose.getY(), 0.0);
+  }
+
+  public ChassisSpeeds getChassisSpeeds() {
+    SwerveModuleState[] moduleStates = {
+      frontLeft.getModuleState(),
+      frontRight.getModuleState(),
+      backLeft.getModuleState(),
+      backRight.getModuleState()
+    };
+    return Constants.Drivetrain.kDriveKinematics.toChassisSpeeds(moduleStates);
+  }
+
+  public void resetPose(Pose2d pose) {
+    // zeroDriveMotors();
+    odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), pose);
+  }
+
+  //------Smartdashboard Methods------
+
   public void updateShuffleboardPIDConstants() {//
     // headingController.setP(ShuffleboardIO.getDouble("kPSwerveDriveHeading"));
     // headingController.setI(ShuffleboardIO.getDouble("kISwerveDriveHeading"));
@@ -444,9 +375,7 @@ public class SwerveDrive extends SubsystemBase {
   private void debug() {
     publisher.set(odometry.getPoseMeters());
 
-    // SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
-    // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
-    // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
+    SmartDashboard.putString("Robot State", Constants.robotState.toString());
 
     SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
@@ -467,16 +396,82 @@ public class SwerveDrive extends SubsystemBase {
     SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
     SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
 
+    SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
+    SmartDashboard.putNumber("Speaker Offset Deg [VI]", Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
+
     // SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
     // SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
     // SmartDashboard.putNumber("back right drive velocity rps [SD]", backRight.getDriveVelocity());
     // SmartDashboard.putNumber("back left drive velocity rps [SD]", backLeft.getDriveVelocity());
-
-    SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
-
-    // these two hehe
     // SmartDashboard.putNumber("Heading Lock Turning Speed (for LL aligning) [SD]", getLockHeadingToSpeakerTSpeed());
     // SmartDashboard.putNumber("Distance to Target [SD]", getDistToTarget()); // distance is displayed in shooter pivot
-    SmartDashboard.putNumber("Speaker Offset Deg [VI]", Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
+    // SmartDashboard.putNumber("DEBUG - xSpeed [SD]", xSpeed);
+    // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
+    // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
   }
+
+  // public void updateLastOffsets() {
+  //   headingLockLastOffset = Math.toRadians(limelight.getXOffset());
+  // }
+
+  // public boolean isAlignedWithTarget() {
+  //   double offsetDeg = limelight.getXOffset();
+
+  //   if (Math.abs(offsetDeg) < Constants.Drivetrain.kHeadingLockDegreeTolerance) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // public double getDistToTarget() {
+  //   return limelight.getDistanceToTarget(getPose().getTranslation());
+  // }
+
+  // public void calibrateGyro() {
+    // gyro.calibrate();
+  // }
+
+  // public void setTargetHeadingRad(double targetHeadingRad) {
+  //   this.targetHeadingRad = targetHeadingRad;
+  // }
+
+  // public void switchDirection(Directions direction) {
+  //   switch (direction) {
+  //     case FORWARD:
+  //       targetHeadingRad = 0;
+  //       break;
+
+  //     case BACK:
+  //       targetHeadingRad = Math.PI;
+  //       break;
+
+  //     case LEFT:
+  //       targetHeadingRad = Math.PI / 2.0;
+  //       break;
+
+  //     case RIGHT:
+  //       targetHeadingRad = 3.0 * Math.PI / 2.0;
+  //       break;
+  //   }
+  // }
+  
+  // public void initGyro() {
+  //   gyro.setYaw(0);
+  //   // gyro.enterCalibrationMode();
+  //   // gyro.reset();
+  // }
+
+  // public double getLockHeadingToSpeakerTSpeed(double angleSpeaker) {
+  //   double offsetRad = getHeading() - limelight.getSpeakerAngle();
+  //   return speakerLockPIDController.calculate(offsetRad, 0.0);
+  // }
+
+  // public double getLockHeadingToSpeakerTSpeed() {
+  //   Translation2d robotToTarget = limelight.getTranslationRobotToGoal();
+  //   double angleOffset = Math.toDegrees(robotToTarget.getAngle().getRadians() - getHeading());
+  //   speakerLockPIDController.setSetpoint(0.0);
+  //   double yawSpeed = speakerLockPIDController.calculate(angleOffset);
+  //   return yawSpeed;
+  // }
 }
