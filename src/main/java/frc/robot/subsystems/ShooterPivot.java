@@ -50,6 +50,9 @@ public class ShooterPivot extends SubsystemBase {
 
   SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
 
+  /**
+   * Individual shooterPivot states; for each state, different things are activated to satisfy each state.
+   */
   public enum ShooterPivotStates {
     NONE,
     STOWED,
@@ -57,7 +60,7 @@ public class ShooterPivot extends SubsystemBase {
     INDEXING,
     EJECT_NOTE,
     SPEAKER_PODIUM,
-    SPEAKER_AMP_ZONE, 
+    SPEAKER_AMP_ZONE,
     SPEAKER_SUBWOOFER,
     SPEAKER,
     // SPEAKER_HIGH,
@@ -77,6 +80,11 @@ public class ShooterPivot extends SubsystemBase {
   //     shooterPivotTable.put(null, null); // TODO: add values
   // }
 
+  /**
+   * Constructor for shooterPivot
+   * @param joystickSupplier
+   * @param botPoseSupplier
+   */
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
     configMotors();
 
@@ -85,6 +93,7 @@ public class ShooterPivot extends SubsystemBase {
     this.joystickSupplier = joystickSupplier;
     this.botPoseSupplier = botPoseSupplier;
 
+    //configures the motors
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
     motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
@@ -92,7 +101,7 @@ public class ShooterPivot extends SubsystemBase {
     
     pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
 
-
+    //Adds options for the selection thing
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
@@ -132,6 +141,7 @@ public class ShooterPivot extends SubsystemBase {
     // SmartDashboard.putNumber("Motor Speed [sp]", motorspeed);
     // setState(selectShooterPivotState.getSelected());
 
+    //switches the state
     switch(state) {
 
       case NONE:
@@ -274,7 +284,6 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   /**
-   * TODO: Test CW or CCW signage 
    * @return Angle of the shooterPivot in degrees, CW+, CCW-
    */
   public double getShooterPivotAngle() {
@@ -287,6 +296,11 @@ public class ShooterPivot extends SubsystemBase {
     return deg;
   }
 
+  /**
+   * Gets the pivot speed
+   * @param targetAngle Uses the targetAngle to get a set pivot speed.
+   * @return
+   */
   public double getPivotSpeed(double targetAngle) {
     double pivotSpeed;
     pidController.setSetpoint(targetAngle);
@@ -331,6 +345,10 @@ public class ShooterPivot extends SubsystemBase {
     SmartDashboard.putString("State [SP]", state.toString());
   }
 
+  /**
+   * 
+   * @return If the shooterPivot is at the setpoint.
+   */
   public boolean atGoal() {
     // double goal = pidController.getSetpoint();
     // return Util.inRange(getShooterPivotAngle(), (goal - Constants.ShooterPivot.kAtGoalTolerance), (goal + Constants.ShooterPivot.kAtGoalTolerance));
@@ -345,6 +363,7 @@ public class ShooterPivot extends SubsystemBase {
     motor.clearStickyFaults();
   }
 
+  //Configurate the motors.
   private void configMotors() {
     // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     // currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
