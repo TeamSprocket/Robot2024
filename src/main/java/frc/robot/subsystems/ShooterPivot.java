@@ -185,6 +185,8 @@ public class ShooterPivot extends SubsystemBase {
         Translation3d botPose = botPoseSupplier.get();
         System.out.println(botPose.getX() + botPose.getY() + botPose.getZ());
         if (botPose.getX() + botPose.getY() + botPose.getZ() != 0.0) {
+
+          // set angle for pivot target
           // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
           double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
           double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
@@ -272,7 +274,6 @@ public class ShooterPivot extends SubsystemBase {
     lastState = state;
     SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
     SmartDashboard.putBoolean("Shooter Pivot atGoal [SP]", atGoal());
-    // <-- delete later -->
 
     // case SPEAKER_SUBWOOFER:
       //   pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
@@ -286,6 +287,7 @@ public class ShooterPivot extends SubsystemBase {
   /**
    * @return Angle of the shooterPivot in degrees, CW+, CCW-
    */
+
   public double getShooterPivotAngle() {
     double deg = Conversions.falconToDegrees(motor.getRotorPosition().getValueAsDouble(), Constants.ShooterPivot.kShooterPivotGearRatio);
 
@@ -365,13 +367,16 @@ public class ShooterPivot extends SubsystemBase {
 
   //Configurate the motors.
   private void configMotors() {
+    // current limiting configs
+
     // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
     // currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
     // currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
 
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
     // motorConfig.withCurrentLimits(currentLimitsConfigs);
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-    motor.getConfigurator().apply(motorConfig); // i LOVOEEEEE :DDDD donson
+
+    motor.getConfigurator().apply(motorConfig);
   }
 }

@@ -91,12 +91,10 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // TODO: REMOVE - TEMP
+        // debug - state selector
         // setState(selectIntakeState.getSelected());
         // pidController.setP(ShuffleboardIO.getDouble("PIVOT KP [IN]"));
         // pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
-
-
         switch (state) {
             case NONE:
                 pivotIntake.set(0);
@@ -124,8 +122,7 @@ public class Intake extends SubsystemBase {
                 rollIntake.set(0.0);
                 break;
             case INTAKE_ROLLBACK:
-                // Pivot maintains current pos
-
+                // Pivot maintains current position
                 rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
                 break;
                 
@@ -134,7 +131,6 @@ public class Intake extends SubsystemBase {
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
-                // rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
                 break;
 
             case SCORE_SPEAKER:
@@ -150,8 +146,10 @@ public class Intake extends SubsystemBase {
 
                 rollIntake.set(0.0);
                 break;
+            
 
-            case CROSSFIELD: // might be unecessary
+            // shoot note across field
+            case CROSSFIELD:
                 pidController.setSetpoint(Constants.Intake.kPivotAngleShootCrossfield);
                 pivotSpeed = pidController.calculate(getPivotAngle());
                 if (pidController.atSetpoint()) {
@@ -159,7 +157,6 @@ public class Intake extends SubsystemBase {
                 }
                 pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
                 pivotIntake.set(pivotSpeed);
-
                 rollIntake.set(0.0);
                 break;
 
@@ -181,15 +178,15 @@ public class Intake extends SubsystemBase {
             
         }
 
-        // clearStickyFaults();
         lastState = state;
 
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
         SmartDashboard.putBoolean("At Goal [IN]", atGoal());
         SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
         SmartDashboard.putString("State Intake [IN]", state.toString());
-        // SmartDashboard.putString("State[IN]", state.toString());
 
+        //debug
+        // SmartDashboard.putString("State[IN]", state.toString());
         // SmartDashboard.putNumber("", pivotSpeed)
     }
 
@@ -229,14 +226,6 @@ public class Intake extends SubsystemBase {
         deg = (deg > 270) ? 0 : deg;
         return deg;
     }
-
-    // public void runPivotToSetpoint(double setpoint){
-    //     /*Don't know which calculate methods to use */
-    //     //setpoint = pivotProfile.calculate(0.02, setpoint, goal);
-    //     double output = pivotPIDProfiled.calculate(getPivotAngle(), setpoint); 
-    //     pivotIntake.setVoltage(output + pivotFeedForward.calculate(pivotPIDProfiled.getSetpoint().velocity, 0)); 
-    // }
-    
 
   public boolean atGoal() {
     double goal = pidController.getSetpoint();
