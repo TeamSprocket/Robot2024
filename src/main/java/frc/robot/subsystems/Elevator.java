@@ -33,7 +33,11 @@ public class Elevator extends SubsystemBase {
   double speed = 0.0;
   boolean hasClimbed = false;
   double topHeight, bottomHeight;
-  
+
+  /**
+   * Elevator States: Different states for the elvator to be in to do. They do different things in each state to run to a specific position for a function.
+   * Use setState to set to an elevator state, and make sure to import elevatorStates in the command so you can use the state to put it in.
+   * */  
   public static enum ElevatorStates {
     NONE,
     STOWED,
@@ -55,7 +59,7 @@ public class Elevator extends SubsystemBase {
   private ClimbStates climbState = ClimbStates.NONE;
 
 
-
+  // Different motors for the elevator.
   private TalonFX elevatorMotor = new TalonFX(RobotMap.Elevator.ELEVATOR_LEFT);
   private TalonFX elevatorFollowerMotor = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
 
@@ -63,9 +67,10 @@ public class Elevator extends SubsystemBase {
   //   new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel));
   PIDController pidController = new PIDController(Constants.Elevator.kPIDElevator.kP, Constants.Elevator.kPIDElevator.kI, Constants.Elevator.kPIDElevator.kD);
 
+  // State chooser for the things to change the state manually on shuffleBoard.
   SendableChooser<ElevatorStates> stateChooser = new SendableChooser<ElevatorStates>();
 
-  
+  //Elevator Constructor
   public Elevator(Supplier<Double> joystickValue) { 
     configMotors();
 
@@ -157,19 +162,25 @@ public class Elevator extends SubsystemBase {
         break;
     }
 
-
+    // SmartDashboard Shenanigans
     SmartDashboard.putNumber("Elevator Height M [EL]", getHeight());
     SmartDashboard.putNumber("Elevator Left Stator [EL]", elevatorMotor.getStatorCurrent().getValueAsDouble());
    
   }
 
 
-
+  /**
+   * Sets the state of the elevator
+   * @param state
+   */
   public void setState(ElevatorStates state) {
     this.state = state;
   }
 
-
+  /**
+   * Moves to a specific height. Uses a feed forward until it reaches a certain setpoint where it converts to PID movement.
+   * @param targetHeight
+   */
   public void moveToHeight(double targetHeight) {
     pidController.setSetpoint(targetHeight);
     double currentHeight = getHeight();
@@ -187,6 +198,9 @@ public class Elevator extends SubsystemBase {
     // SmartDashboard.putNumber("Elevator PID Output [EL]", motorOutput);
   }
 
+  /**
+   * Move directly to the max height of elevator.
+   */
   public void moveToTop() {
     moveToHeight(topHeight);
   }
@@ -195,7 +209,10 @@ public class Elevator extends SubsystemBase {
   //   moveToHeight(bottomHeight);
   // }
 
-
+  /**
+   * Sets the top height
+   * @param topHeight
+   */
   public void setTopHeight(double topHeight) {
     this.topHeight = topHeight;
   }
@@ -217,7 +234,11 @@ public class Elevator extends SubsystemBase {
     return Math.abs(elevatorMotor.getStatorCurrent().getValueAsDouble()) > Constants.Elevator.kClimbFindBottomCurrentThreshold;
   }
 
-
+  /**
+   * Moves to the specific height for the elevator.
+   * @param targetHeight
+   * @param maxOutput
+   */
   public void moveToHeight(double targetHeight, double maxOutput) {
     pidController.setSetpoint(targetHeight);
     double currentHeight = getHeight();
@@ -234,6 +255,10 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.set(motorOutput);
   }
 
+  /**
+   * Sets the climb state.
+   * @param climbState
+   */
   public void setClimbState(ClimbStates climbState) {
       this.climbState = climbState;
   }
@@ -246,12 +271,17 @@ public class Elevator extends SubsystemBase {
   //   return Constants.Elevator.kPIDElevator.kFF * Constants.Elevator.kFFScaleWithHeight + Constants.Elevator.kFFBaseWithHeight;
   // }
 
-
+  /**
+   * Returns the height of the elevator.
+   * @return
+   */
   public double getHeight() {
     return Conversions.falconToMeters(elevatorMotor.getPosition().getValueAsDouble(), Constants.Elevator.kElevatorWinchCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
-
+  /**
+   * Manual controls for the elevator.
+   */
   public void manual() { // TODO: find deadband + correct speed
     // double speed = joyvalue.get();
     // pidControllerLeft.setSetpoint(motorLeft.getSelectedSensorPosition() + speed);
