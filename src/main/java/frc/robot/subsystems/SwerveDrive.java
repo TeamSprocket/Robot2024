@@ -259,6 +259,10 @@ public class SwerveDrive extends SubsystemBase {
 
   // <-- limelight --> //
 
+  public void updateLastOffsets() {
+    headingLockLastOffset = Math.toRadians(limelight.getXOffset());
+  }
+
   public void updateOdometryWithVision() {
     Translation2d pos = limelight.getTranslation2d();
     if (limelight.hasTargets(pos)) { // LL can see tags
@@ -409,10 +413,6 @@ public class SwerveDrive extends SubsystemBase {
     // SmartDashboard.putNumber("DEBUG - ySpeed [SD]", ySpeed);
     // SmartDashboard.putNumber("DEBUG - tSpeed [SD]", tSpeed);
   }
-
-  // public void updateLastOffsets() {
-  //   headingLockLastOffset = Math.toRadians(limelight.getXOffset());
-  // }
 
   // public boolean isAlignedWithTarget() {
   //   double offsetDeg = limelight.getXOffset();
