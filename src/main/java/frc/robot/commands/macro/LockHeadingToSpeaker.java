@@ -7,15 +7,20 @@ package frc.robot.commands.macro;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.RobotState;
+import frc.robot.subsystems.SwerveDrive;
 
 public class LockHeadingToSpeaker extends Command {
 
-  public LockHeadingToSpeaker() {}
+  SwerveDrive swerveDrive;
+  public LockHeadingToSpeaker(SwerveDrive swerveDrive) {
+    this.swerveDrive = swerveDrive;
+  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
+    //swerveDrive.updateLastOffsets();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

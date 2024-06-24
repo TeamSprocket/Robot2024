@@ -80,6 +80,7 @@ public class Elevator extends SubsystemBase {
         .withKP(Constants.Elevator.kPIDElevator.getP())
         .withKI(Constants.Elevator.kPIDElevator.getI())
         .withKD(Constants.Elevator.kPIDElevator.getD())
+        .withKG(0.01)
     );
 
     talonFXConfigs.withFeedback(
