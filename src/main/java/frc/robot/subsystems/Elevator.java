@@ -95,9 +95,9 @@ public class Elevator extends SubsystemBase {
     elevatorMotor.setInverted(Constants.Elevator.kLeftMotorIsInverted);
     elevatorFollowerMotor.setInverted(Constants.Elevator.kRightMotorIsInverted);
 
-    ShuffleboardPIDTuner.addSlider("Elevator kP [EL]", 0, 1, Constants.Elevator.kPIDElevator.kP);
-    ShuffleboardPIDTuner.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
-    ShuffleboardPIDTuner.addSlider("Elevator kFF [EL]", 0, 0.1, Constants.Elevator.kPIDElevator.kFF);
+    // ShuffleboardIO.addSlider("Elevator kP [EL]", 0, 1, Constants.Elevator.kPIDElevator.kP);
+    // ShuffleboardIO.addSlider("Elevator kD [EL]", 0, 1, Constants.Elevator.kPIDElevator.kD);
+    // ShuffleboardIO.addSlider("Elevator kFF [EL]", 0, 0.1, Constants.Elevator.kPIDElevator.kFF);
 
 
     stateChooser.setDefaultOption("NONE", ElevatorStates.NONE);

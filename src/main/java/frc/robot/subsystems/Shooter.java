@@ -2,9 +2,12 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
-
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;  
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -70,6 +73,8 @@ public class Shooter extends SubsystemBase {
   double indexerInc = 0.0;
 
   // double dist = 0.0;
+
+  MotionMagicVoltage mmV = new MotionMagicVoltage(0); // remove
 
   public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier, Supplier<Translation3d> botTranslation3D) {
     configMotors();
@@ -241,8 +246,11 @@ public class Shooter extends SubsystemBase {
         // indexerMotor.set(0);
         // indexerInc = 0.0;
 
-        shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
-        setShooterSpeed(shooterInc);
+        // <-- BRING BACK AAAA -->
+        // shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
+        // setShooterSpeed(shooterInc);
+
+        shooterTop.setControl(mmV.withPosition(0.01)); // remove
 
         SmartDashboard.putNumber("Shooter PercentOutput [ST]", shooterInc);
       break;
@@ -518,6 +526,28 @@ public class Shooter extends SubsystemBase {
     // current limiting
     // motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
     // motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
+        
+    // <-- remove -->
+    motorConfigShooter.withMotionMagic(
+        new MotionMagicConfigs()
+            .withMotionMagicCruiseVelocity(5)
+            .withMotionMagicAcceleration(5)
+    );
+
+    motorConfigShooter.withSlot0(
+        new Slot0Configs()
+            .withKS(0.25)
+            .withKV(0.1)
+            .withKA(0.01)
+            .withKP(Constants.Intake.kPPivot)
+            .withKI(Constants.Intake.kIPivot)
+            .withKD(Constants.Intake.kDPivot)
+    );
+
+    motorConfigShooter.withFeedback(
+        new FeedbackConfigs()
+            .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
+    );
 
     shooterTop.getConfigurator().apply(motorConfigShooter);
     indexerMotor.getConfigurator().apply(motorConfigIndexer);

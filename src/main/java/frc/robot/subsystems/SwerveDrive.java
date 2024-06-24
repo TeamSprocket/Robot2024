@@ -379,29 +379,31 @@ public class SwerveDrive extends SubsystemBase {
   private void debug() {
     publisher.set(odometry.getPoseMeters());
 
-    SmartDashboard.putString("Robot State", Constants.robotState.toString());
+    // SmartDashboard.putString("Robot State", Constants.robotState.toString());
 
-    SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
-    SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
-    SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
+    // SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
+    // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
   
-    SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
-    SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
-    SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
-    SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
+    // SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
+    // SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
+    // SmartDashboard.putNumber("Odometry T (Deg) [SD]", odometry.getPoseMeters().getRotation().getDegrees());
+    // SmartDashboard.putString("Odometry Pose [SD]", odometry.getPoseMeters().toString());
 
-    SmartDashboard.putNumber("front left cancoder degrees [SD]", frontLeft.getCANCoderDegrees());
-    SmartDashboard.putNumber("front right cancoder degrees [SD]", frontRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back right cancoder degrees [SD]", backRight.getCANCoderDegrees());
-    SmartDashboard.putNumber("back left cancoder degrees [SD]", backLeft.getCANCoderDegrees());
+    // SmartDashboard.putNumber("front left cancoder degrees [SD]", frontLeft.getCANCoderDegrees());
+    // SmartDashboard.putNumber("front right cancoder degrees [SD]", frontRight.getCANCoderDegrees());
+    // SmartDashboard.putNumber("back right cancoder degrees [SD]", backRight.getCANCoderDegrees());
+    // SmartDashboard.putNumber("back left cancoder degrees [SD]", backLeft.getCANCoderDegrees());
 
-    SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
-    SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
-    SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
-    SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
+    // SmartDashboard.putNumber("front left turn deg [SD]", frontLeft.getTurnPosition());
+    // SmartDashboard.putNumber("front right turn deg [SD]", frontRight.getTurnPosition());
+    // SmartDashboard.putNumber("back right turn deg [SD]", backRight.getTurnPosition());
+    // SmartDashboard.putNumber("back left turn deg [SD]", backLeft.getTurnPosition());
 
-    SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
-    SmartDashboard.putNumber("Speaker Offset Deg [VI]", Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
+    // SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
+    // SmartDashboard.putNumber("Speaker Offset Deg [VI]", Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
+
+    // <-- -->
 
     // SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
     // SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());

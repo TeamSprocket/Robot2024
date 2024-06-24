@@ -1,4 +1,18 @@
 {
+  "HALProvider": {
+    "Other Devices": {
+      "Talon FX (v6)[14]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[14]/Rotor Sensor": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",

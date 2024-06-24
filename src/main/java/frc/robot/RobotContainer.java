@@ -65,20 +65,20 @@ public class RobotContainer {
     
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
 
-    autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
+    // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
 
-    autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
-    autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
+    // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
+    // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
 
     // path planner
 
-    autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
-    autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
+    // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
+    // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
 
     // by encoder ticks
 
-    autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
-    autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
+    // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
+    // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
 
     // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
 
