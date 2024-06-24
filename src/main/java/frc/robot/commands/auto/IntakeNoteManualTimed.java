@@ -12,21 +12,31 @@ import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
 
 
-public class IntakeNoteManualTimed  extends Command {
-  Timer overallTimer = new Timer();
-  double duration;
-
+public class IntakeNoteManualTimed extends Command {
   Intake intake;
   Shooter shooter;
   ShooterPivot shooterPivot;
   Timer timer = new Timer();
   Timer accelTimer = new Timer();
   boolean hasNote = false;
+  Timer overallTimer = new Timer();
+  double duration;
+
+  public enum IntakeCommandStates {
+    ACCEL,
+    INTAKE,
+    ROLLFORWARD,
+    WAIT,
+    ROLLBACK,
+    DONE
+  }
+  IntakeCommandStates state = IntakeCommandStates.ACCEL;
 
   public IntakeNoteManualTimed(Intake intake, Shooter shooter, ShooterPivot shooterPivot, double duration) {
     this.intake = intake;
     this.shooter = shooter;
     this.shooterPivot = shooterPivot;
+    this.duration = duration;
   }
 
   @Override
@@ -34,13 +44,16 @@ public class IntakeNoteManualTimed  extends Command {
     overallTimer.reset();
     overallTimer.start();
 
+    Constants.Intake.RunIntake = true;
 
+    this.state = IntakeCommandStates.ACCEL;
+    
     // Constants.robotState = Constants.RobotState.TELEOP_DISABLE_SWERVE;
     // superstructure.setState(SSStates.INTAKE);
 
     hasNote = false;
 
-    intake.setState(IntakeStates.INTAKE); // put back
+    intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE_ACCEL);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
     
@@ -55,35 +68,70 @@ public class IntakeNoteManualTimed  extends Command {
 
   @Override
   public void execute() {
-    // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, 0, 0));
-    if (!hasNote && accelTimer.get() > 0.5) {
+
+    if (state == IntakeCommandStates.ACCEL && accelTimer.get() > 0.5) {
+      state = IntakeCommandStates.INTAKE;
       shooter.setState(ShooterStates.INTAKE);
     }
 
-    if (shooter.beamBroken()) { // Note in shooter 
-      hasNote = true;
-      timer.start();
-    } 
+    if (state == IntakeCommandStates.INTAKE && shooter.beamBroken()) {
+      state = IntakeCommandStates.ROLLFORWARD;
+      intake.setState(IntakeStates.INDEXING);
+      shooterPivot.setState(ShooterPivotStates.INDEXING);
+      shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+    }
 
-    if (hasNote) {
-      // intake.setState(IntakeStates.INTAKE_ROLLBACK);
+    if (state == IntakeCommandStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
+      timer.start();
+    }
+
+    if (state == IntakeCommandStates.ROLLFORWARD && timer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSec) {
+      state = IntakeCommandStates.WAIT;
+      timer.stop();
+      timer.reset();
+      timer.start();
+      shooter.setState(ShooterStates.HOLD_NOTE);
+    }
+
+    if (state == IntakeCommandStates.WAIT && timer.get() > Constants.Superstructure.kRollForwardtoRollBackWaitTime) {
+      timer.stop();
+      timer.reset();
+      state = IntakeCommandStates.ROLLBACK;
+      hasNote = false;
       shooter.setState(ShooterStates.INTAKE_ROLLBACK);
-      
+    }
+
+    // if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackShooter()) {
+    if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackIndexer()) {
+      timer.start();
     }
     
+    if (state == IntakeCommandStates.ROLLBACK && timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec) {
+      state = IntakeCommandStates.DONE;
+    }
 
+    if (state == IntakeCommandStates.ACCEL) {
+      shooter.setState(ShooterStates.INTAKE_ACCEL);
+    } else if (state == IntakeCommandStates.INTAKE) {
+      shooter.setState(ShooterStates.INTAKE);
+    } else if (state == IntakeCommandStates.ROLLFORWARD) {
+      shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+    } else if (state == IntakeCommandStates.WAIT) {
+      shooter.setState(ShooterStates.HOLD_NOTE);
+    } else if (state == IntakeCommandStates.ROLLBACK) {
+      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
-    // Constants.robotState = Constants.RobotState.TELEOP;
-    // superstructure.setState(SSStates.STOWED);
+    Constants.Intake.RunIntake = false;
 
-    intake.setState(IntakeStates.STOWED); // put back
-    shooter.setState(ShooterStates.STANDBY);
-    System.out.println("COMMAND ENDED\n ");
-    
+    intake.setState(IntakeStates.STOWED);
+    shooter.setState(ShooterStates.STANDBY);    
+    shooterPivot.setState(ShooterPivotStates.STOWED);
   }
+
 
   @Override
   public boolean isFinished() {

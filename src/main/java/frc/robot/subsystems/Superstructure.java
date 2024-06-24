@@ -22,10 +22,7 @@ public class Superstructure extends SubsystemBase {
     /*WAIT_SPEAKER, WAIT_SPEAKER_HIGH,*/ WAIT_AMP,
     SCORE_SPEAKER_SUBWOOFER, SCORE_SPEAKER_PODIUM, SCORE_SPEAKER_AMP_ZONE,
     /*SCORE_SPEAKER, SCORE_SPEAKER_HIGH,*/ SCORE_AMP,
-    CLIMB,
-
-    // JUST IN CASE
-    SOURCE
+    CLIMB
   }
   public SSStates state = SSStates.NONE;
   public SSStates lastState = SSStates.NONE;
@@ -196,7 +193,7 @@ public class Superstructure extends SubsystemBase {
         }
 
         // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
+        // shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
         shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
@@ -209,25 +206,24 @@ public class Superstructure extends SubsystemBase {
       
       
 
-      case WAIT_SPEAKER_PODIUM:
-        if (shooterElementsAtGoal() && headingAtGoal()) {
-          timer.start();
-        } else {
-          timer.reset();
-          timer.stop();
-        }
+      // case WAIT_SPEAKER_PODIUM:
+      //   if (shooterElementsAtGoal() && headingAtGoal()) {
+      //     timer.start();
+      //   } else {
+      //     timer.reset();
+      //     timer.stop();
+      //   }
 
-        // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
-        shooter.setState(ShooterStates.SPINUP_PODIUM);
-        intake.setState(IntakeStates.STOWED);
+      //   // elevator.setState(ElevatorStates.SPEAKER);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
+      //   shooter.setState(ShooterStates.SPINUP_PODIUM);
+      //   intake.setState(IntakeStates.STOWED);
 
-        // Transitioner
-        if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-          setState(SSStates.SCORE_SPEAKER_PODIUM);
-        }
-        
-      break;
+      //   // Transitioner
+      //   if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
+      //     setState(SSStates.SCORE_SPEAKER_PODIUM);
+      //   }
+      // break;
       
 
 
@@ -312,56 +308,50 @@ public class Superstructure extends SubsystemBase {
         }
 
         // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
-        shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
+        // shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
+        // shooter.setState(ShooterStates.SCORE_SPEAKER_SUBWOOFER);
         intake.setState(IntakeStates.STOWED);
 
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
+        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootDurationSec) {
           setState(SSStates.STOWED);
         }
       break;
 
       
 
-      case SCORE_SPEAKER_PODIUM:
-        if (lastState != SSStates.SCORE_SPEAKER_PODIUM) {
-          timer.reset();
-          timer.start();
-        }
+      // case SCORE_SPEAKER_PODIUM:
+      //   if (lastState != SSStates.SCORE_SPEAKER_PODIUM) {
+      //     timer.reset();
+      //     timer.start();
+      //   }
 
-        // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
-        shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
-        intake.setState(IntakeStates.STOWED);
+      //   // elevator.setState(ElevatorStates.SPEAKER);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
+      //   shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
+      //   intake.setState(IntakeStates.STOWED);
 
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
-          setState(SSStates.STOWED);
-        }
-      break;
-
-
-
-      case SCORE_SPEAKER_AMP_ZONE:
-        if (lastState != SSStates.SCORE_SPEAKER_AMP_ZONE) {
-          timer.reset();
-          timer.start();
-        }
-
-        // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
-        shooter.setState(ShooterStates.SCORE_SPEAKER_AMP_ZONE);
-        intake.setState(IntakeStates.STOWED);
-
-        if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
-          setState(SSStates.STOWED);
-        }
-      break;
+      //   if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
+      //     setState(SSStates.STOWED);
+      //   }
+      // break;
 
 
 
+      // case SCORE_SPEAKER_AMP_ZONE:
+      //   if (lastState != SSStates.SCORE_SPEAKER_AMP_ZONE) {
+      //     timer.reset();
+      //     timer.start();
+      //   }
 
+      //   // elevator.setState(ElevatorStates.SPEAKER);
+      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
+      //   shooter.setState(ShooterStates.SCORE_SPEAKER_TEST);
+      //   intake.setState(IntakeStates.STOWED);
 
-
+      //   if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
+      //     setState(SSStates.STOWED);
+      //   }
+      // break;
 
       case SCORE_AMP:
         elevator.setState(ElevatorStates.AMP);
@@ -375,13 +365,6 @@ public class Superstructure extends SubsystemBase {
         // elevator.setState(ElevatorStates.CLIMB);
         shooterPivot.setState(ShooterPivotStates.CLIMB);
         shooter.setState(ShooterStates.NONE);
-        intake.setState(IntakeStates.STOWED);
-      break;
-
-      case SOURCE:
-        elevator.setState(ElevatorStates.STOWED);
-        shooterPivot.setState(ShooterPivotStates.SOURCE);
-        shooter.setState(ShooterStates.SOURCE);
         intake.setState(IntakeStates.STOWED);
       break;
     }
@@ -440,10 +423,11 @@ public class Superstructure extends SubsystemBase {
    * @return Heading of bot pointed at correct target
    */
   public boolean headingAtGoal() {
-    double targetHeadingRad = Conversions.poseToTargetHeadingRad(botPose2dSupplier.get().getTranslation(), Constants.ShootingSetpoints.targetPoint);
-    double currentHeadingRad = botPose2dSupplier.get().getRotation().getRadians();
-    double error = Math.abs(targetHeadingRad - currentHeadingRad);
-    return error < Constants.Superstructure.kScoreSpeakerHeadingTolerance;
+    // double targetHeadingRad = Conversions.poseToTargetHeadingRad(botPose2dSupplier.get().getTranslation(), Constants.ShootingSetpoints.targetPoint);
+    // double currentHeadingRad = botPose2dSupplier.get().getRotation().getRadians();
+    // double error = Math.abs(targetHeadingRad - currentHeadingRad);
+    // return error < Constants.Superstructure.kScoreSpeakerHeadingTolerance;
+    return false;
   }
 
 

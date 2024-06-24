@@ -78,8 +78,8 @@ public final class RobotMap {
     public static final int Y = 4;
     public static final int LB = 5;
     public static final int RB = 6;
-    public static final int LOGO_LEFT = 7;
-    public static final int LOGO_RIGHT = 8;
+    public static final int VIEW_BUTTON = 7;
+    public static final int MENU_BUTTON = 8;
     public static final int LEFT_STICK_BUTTON = 9;
     public static final int RIGHT_STICK_BUTTON = 10;
   }

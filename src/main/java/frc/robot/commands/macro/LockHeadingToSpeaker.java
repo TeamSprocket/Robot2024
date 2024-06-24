@@ -20,7 +20,6 @@ public class LockHeadingToSpeaker extends Command {
   @Override
   public void initialize() {
     Constants.robotState = RobotState.TELEOP_LOCK_TURN_TO_SPEAKER;
-    //swerveDrive.updateLastOffsets();
   }
 
   // Called every time the scheduler runs while the command is scheduled.

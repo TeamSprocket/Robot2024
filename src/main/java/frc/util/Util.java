@@ -10,6 +10,12 @@ package frc.util;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants;
+
 /**
  * This class contains miscellaneous utility functions that can be used anywhere
  * in the robot project.
@@ -128,6 +134,66 @@ public final class Util {
     return valSign * Math.pow(value, 2.0);
   }
 
+  public static double getSign(double value) {
+    return value / Math.abs(value);
+  }
+
+
+
+
+
+  // CRESCENDO Specific 
+
+  /**
+   * 
+   * @return Angle in degrees
+   */
+  public static double getTargetShotAngleDeg(Translation3d botPose, Translation3d targetPose) {
+    double dist = Math.sqrt(Math.pow(targetPose.getX() - botPose.getX(), 2.0) + Math.pow(targetPose.getY() - botPose.getY(), 2.0));
+    // double height = targetPose.getZ() - botPose.getZ();
+    double height = Constants.FieldConstants.kSpeakerTargetHeightMeters - Constants.Vision.kLimelightHeightMeters;
+
+    // System.out.println(dist);
+    // System.out.println(height);
+
+    double angleRad = Math.atan(height / dist);
+    double angleDeg = Math.toDegrees(angleRad);
+
+    // System.out.println(angleDeg);
+    return angleDeg;
+  }
+
+  public static Translation3d getSpeakerTargetBasedOnAllianceColor() {
+    if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+      return Constants.Vision.targetPointBlue;
+    } else if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+      return Constants.Vision.targetPointRed;
+    } else {
+      return new Translation3d();
+    }
+  }
+
+
+  public static double getTargetScaledVelocity(Translation3d botPose, Translation3d targetPose) {
+    double dist = Math.sqrt(Math.pow(targetPose.getX() - botPose.getX(), 2.0) + Math.pow(targetPose.getY() - botPose.getY(), 2.0));
+    return Constants.Vision.kShooterVelocityLinearMultiplier * dist + Constants.Vision.kShooterVelocityBase;
+  }
+
+
+
+  public static double getSpeakerAngleOffset(Translation2d currentPos) {
+    Translation3d speakerPoint = Util.getSpeakerTargetBasedOnAllianceColor();
+
+    double x = currentPos.getX() - speakerPoint.getX();
+    double y = currentPos.getY() - speakerPoint.getY();
+
+    double angleRad = Math.atan(y / x);
+    double angleDeg = Math.toDegrees(angleRad);
+
+    double flippedDeg = -angleDeg;
+
+    return flippedDeg;
+}
 
 
 
