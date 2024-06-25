@@ -43,7 +43,7 @@ public class RobotContainer {
 
   Vision limelight = new Vision();
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
-  Elevator elevator = new Elevator(() -> operator.getController().getRightY());
+  // Elevator elevator = new Elevator(() -> operator.getController().getRightY());
   ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   Intake intake = new Intake();
@@ -138,12 +138,13 @@ public class RobotContainer {
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
     // --------------------=operator=--------------------
-    operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
+    // operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
     operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
     // operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
 
-    operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot, intake));
+    // operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
+
     operator.getController().b().whileTrue(new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, swerveDrive));
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
     // operator.getController().b().whileTrue(new ScoreSpeakerShoot(shooterPivot, shooter, swerveDrive));
@@ -155,8 +156,8 @@ public class RobotContainer {
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new ShootCrossfieldSpinup(shooterPivot, shooter, intake)); // Menu button
 
-    operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbUp(elevator, shooter, shooterPivot, intake));
-    operator.getController().rightTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbDown(elevator, intake));
+    // operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbUp(elevator, shooter, shooterPivot, intake));
+    // operator.getController().rightTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbDown(elevator, intake));
 
 
     // operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
@@ -187,6 +188,10 @@ public class RobotContainer {
     return shooterPivot;
   }
 
+  public Intake getIntake() {
+    return intake;
+  }
+
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
   }
@@ -195,7 +200,7 @@ public class RobotContainer {
     shooter.zeroPosition();
     intake.zeroPosition();
     shooterPivot.zeroPosition();
-    elevator.zeroPosition();
+    // elevator.zeroPosition();
     
   }
   

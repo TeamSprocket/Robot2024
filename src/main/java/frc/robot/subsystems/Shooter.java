@@ -250,7 +250,7 @@ public class Shooter extends SubsystemBase {
         // shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
         // setShooterSpeed(shooterInc);
 
-        shooterTop.setControl(mmV.withPosition(0.01)); // remove
+        shooterTop.setControl(mmV.withPosition(1)); // remove
 
         SmartDashboard.putNumber("Shooter PercentOutput [ST]", shooterInc);
       break;

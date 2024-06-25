@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
     m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
     m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake);
     m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast);
+    m_robotContainer.getIntake().setNeutralModePivot(NeutralModeValue.Brake);
 
     // UsbCamera camera = CameraServer.startAutomaticCapture();
     // camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 15);
