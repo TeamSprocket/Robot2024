@@ -90,7 +90,6 @@ public class Intake extends SubsystemBase {
         pivotIntakeConfig.withFeedback(
             new FeedbackConfigs()
                 .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
-                .withRotorToSensorRatio(Constants.Intake.kPivotIntakePositionRatio)
         );
 
         pivotIntakeConfig.withMotorOutput(
