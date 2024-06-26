@@ -230,7 +230,7 @@ public class Constants {
         
 
         public static final boolean kIsRollInverted = true;
-        public static final boolean kIsPivotInverted = false;
+        public static final boolean kIsPivotInverted = true;
 
         // public static final double kPivotMaxVelocity = 0.0;
         // public static final double kPivotMaxAccel = 0.0;

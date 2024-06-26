@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
@@ -72,19 +73,20 @@ public class Intake extends SubsystemBase {
         
         pivotIntakeConfig.withMotionMagic(
             new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(1)
-                .withMotionMagicAcceleration(0.5)
+                .withMotionMagicCruiseVelocity(3)
+                .withMotionMagicAcceleration(1.5)
         );
 
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKS(0.25)
-                .withKV(0.8)
-                .withKA(0.8)
-                .withKP(0.5)
+                .withKV(1.4)
+                .withKA(0.01)
+                .withKG(0.46)
+                .withKP(0.0)
                 .withKI(0)
-                .withKD(0.01)
+                .withKD(0.0)
         );
 
         pivotIntakeConfig.withFeedback(
@@ -95,17 +97,21 @@ public class Intake extends SubsystemBase {
         pivotIntakeConfig.withMotorOutput(
             new MotorOutputConfigs()
                 .withNeutralMode(NeutralModeValue.Brake)
+                .withInverted(InvertedValue.CounterClockwise_Positive)
         );
 
         pivotIntake.getConfigurator().apply(pivotIntakeConfig);
 
+        mmV.Slot = 0;
+
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
+        pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
         rollIntake.optimizeBusUtilization();
 
         rollIntake.setNeutralMode(NeutralModeValue.Coast);
         pivotIntake.setNeutralMode(NeutralModeValue.Brake);
 
-        pivotIntake.setPosition(0);
+        pivotIntake.setPosition(0.2222);
 
         selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
         selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
@@ -129,7 +135,7 @@ public class Intake extends SubsystemBase {
         pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
         switch (state) {
             case NONE:
-                pivotIntake.setControl(vO.withOutput(ShuffleboardIO.getDouble("Intake Pivot Voltage [IN]")));
+                pivotIntake.setControl(vO.withOutput(0));
                 rollIntake.set(0);
                 break;
 
@@ -138,11 +144,11 @@ public class Intake extends SubsystemBase {
                 //temporary positions, will create constants after testing
                 pivotIntake.setControl(mmV.withPosition(0));
 
-                rollIntake.set(0.0);
+                rollIntake.set(0.2222);
                 break;
 
             case INTAKE:
-                pivotIntake.setControl(mmV.withPosition(0.1));
+                pivotIntake.setControl(mmV.withPosition(0.05));
 
                 rollIntake.setControl(vO.withOutput(3.0));
                 break;
