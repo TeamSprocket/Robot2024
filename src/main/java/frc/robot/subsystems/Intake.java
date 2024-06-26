@@ -78,6 +78,7 @@ public class Intake extends SubsystemBase {
 
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKS(0.25)
                 .withKV(0.8)
                 .withKA(0.8)
@@ -89,6 +90,7 @@ public class Intake extends SubsystemBase {
         pivotIntakeConfig.withFeedback(
             new FeedbackConfigs()
                 .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
+                .withRotorToSensorRatio(Constants.Intake.kPivotIntakePositionRatio)
         );
 
         pivotIntakeConfig.withMotorOutput(
@@ -115,6 +117,7 @@ public class Intake extends SubsystemBase {
 
         ShuffleboardIO.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
         ShuffleboardIO.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
+        ShuffleboardIO.addSlider("Intake Pivot Voltage [IN]", 0.0, 1.5, 0);
     }
 
     @Override
@@ -127,7 +130,7 @@ public class Intake extends SubsystemBase {
         pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
         switch (state) {
             case NONE:
-                pivotIntake.set(0);
+                pivotIntake.setControl(vO.withOutput(ShuffleboardIO.getDouble("Intake Pivot Voltage [IN]")));
                 rollIntake.set(0);
                 break;
 
@@ -195,6 +198,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
+
         // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
 
         //debug
@@ -232,7 +236,8 @@ public class Intake extends SubsystemBase {
     }
 
     public double getPivotAngle() {
-        double deg = Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
+        double deg = -1 * Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
+        deg = deg + Constants.Intake.kPivotAngleOffsetHorizontal;
         deg %= 360;
         deg = (deg < 0) ? deg + 360 : deg; 
         deg = (deg > 270) ? 0 : deg;

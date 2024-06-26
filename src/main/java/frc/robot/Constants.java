@@ -219,6 +219,8 @@ public class Constants {
         public static final double kPivotAngleShootCrossfield = 30.0; // TODO: tune this
         public static final double kPivotAngleScoreAmp = 27.0;
         public static final double kPivotAngleClimb = 130.0;
+        
+        public static final double kPivotAngleOffsetHorizontal = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.4;
@@ -238,6 +240,7 @@ public class Constants {
         public static final double kFFtoPIDPivotTransitionTolerance = 20.0;
 
         public static final double kPivotIntakeGearRatio = 36.0;
+        public static final double kPivotIntakePositionRatio = 2 * Math.PI;
 
         public static final double kPPivot = 0.0058305929; // 1, 0.1
         public static final double kIPivot = 0.0;
