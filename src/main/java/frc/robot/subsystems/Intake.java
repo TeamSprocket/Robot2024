@@ -74,14 +74,17 @@ public class Intake extends SubsystemBase {
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
         rollIntake.optimizeBusUtilization();
 
+        //default state
+        //this allow motor to move and roll motor to move
         rollIntake.setNeutralMode(NeutralModeValue.Coast);
+        //this makes the pivot not move
         pivotIntake.setNeutralMode(NeutralModeValue.Brake);
 
-
+        //
         selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
         selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
         selectIntakeState.addOption("INTAKE", IntakeStates.INTAKE);
-        SmartDashboard.putData(selectIntakeState);
+//        SmartDashboard.putData(selectIntakeState);
 
         SmartDashboard.putData("STATES[IN]", selectIntakeState);
 
@@ -100,39 +103,40 @@ public class Intake extends SubsystemBase {
                 pivotIntake.set(0);
                 rollIntake.set(0);
                 break;
-
+            //all the way up
             case STOWED:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleStowed);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
-                break;
-
+                break;  
+            // position intake
             case INTAKE:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleIntake);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(Constants.Intake.kRollSpeedIntake);
                 break;
-
+            // indexing position stop roller 
             case INDEXING:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleIndexing);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
                 break;
+            //undo the intake 
             case INTAKE_ROLLBACK:
                 // Pivot maintains current position
                 rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
                 break;
-                
+            //
             case SCORE_SPEAKER_SUBWOOFER:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer);
                 pivotIntake.set(pivotSpeed);
 
                 rollIntake.set(0.0);
                 break;
-
+            // from anywhere
             case SCORE_SPEAKER:
                 pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreSpeaker);
                 pivotIntake.set(pivotSpeed);
@@ -205,11 +209,12 @@ public class Intake extends SubsystemBase {
 
         double pivotSpeed;
         double PIDOutput = pidController.calculate(currentAngle); 
-
+        // stops if PID too much 
         if (Math.abs(targetAngle - currentAngle) > Constants.Intake.kFFtoPIDPivotTransitionTolerance) {
             pivotSpeed = Constants.Intake.kFFPivot * Util.getSign(PIDOutput);
         } else {
             pivotSpeed = PIDOutput;
+            //if it is at the point
             if (pidController.atSetpoint()) {
                 pivotSpeed = 0;
             }
@@ -218,7 +223,10 @@ public class Intake extends SubsystemBase {
         pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
         return pivotSpeed;
     }
-
+    /**
+     * gets currrent pivot angle 
+     * @return
+     */
     public double getPivotAngle() {
         double deg = Conversions.falconToDegrees(pivotIntake.getRotorPosition().getValueAsDouble(), Constants.Intake.kPivotIntakeGearRatio);
         deg %= 360;
