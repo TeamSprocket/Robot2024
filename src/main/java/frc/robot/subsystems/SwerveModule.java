@@ -38,10 +38,10 @@ public class SwerveModule extends SubsystemBase {
     this.offset = offset;
     this.turnIsReversed = turnIsReversed;
     this.driveMotor.setInverted(driveIsReversed); 
+    this.turnMotor.setInverted(turnIsReversed);
 
     turnPIDController = new PIDController(kPTurnMotor, kITurnMotor, kDTurnMotor);
     turnPIDController.enableContinuousInput(-180, 180);
-    this.turnMotor.setInverted(turnIsReversed);
     
     configCancoders();
     configMotors();
@@ -84,13 +84,13 @@ public class SwerveModule extends SubsystemBase {
   }
 
   public SwerveModuleState optimizeState(SwerveModuleState swerveState) {
-    double currentRad = Math.toRadians(getTurnPosition());
-    currentRad %= (Math.PI * 2);
-    if (currentRad < 0) {
-      currentRad += (Math.PI * 2); 
-    }
+    // double currentRad = Math.toRadians(getTurnPosition());
+    // currentRad %= (Math.PI * 2);
+    // if (currentRad < 0) {
+    //   currentRad += (Math.PI * 2); 
+    // }
     
-    return SwerveModuleState.optimize(swerveState, new Rotation2d(currentRad));
+    return SwerveModuleState.optimize(swerveState, new Rotation2d(getTurnRad()));
   }
 
   //------Get Methods------
