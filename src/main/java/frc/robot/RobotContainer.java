@@ -61,24 +61,24 @@ public class RobotContainer {
   }
 
   public void initAutons() {
-    autonChooser.setDefaultOption("Do Nothing", new DoNothing());
+    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
 
-    autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
+    // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
 
-    autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
-    autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
+    // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
+    // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
 
     // path planner
 
-    autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
-    autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
+    // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
+    // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
 
     // by encoder ticks
 
-    autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
-    autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
+    // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
+    // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
 
     // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
 
@@ -138,7 +138,7 @@ public class RobotContainer {
     //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
 
     // --------------------=operator=--------------------
-    operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
+    // operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
     operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
     // operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
 
@@ -155,8 +155,8 @@ public class RobotContainer {
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new ShootCrossfieldSpinup(shooterPivot, shooter, intake)); // Menu button
 
-    operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbUp(elevator, shooter, shooterPivot, intake));
-    operator.getController().rightTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbDown(elevator, intake));
+    // operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbUp(elevator, shooter, shooterPivot, intake));
+    // operator.getController().rightTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbDown(elevator, intake));
 
 
     // operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
