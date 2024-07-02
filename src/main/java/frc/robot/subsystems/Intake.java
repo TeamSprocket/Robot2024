@@ -80,10 +80,10 @@ public class Intake extends SubsystemBase {
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKS(0.25)
-                .withKV(1.4)
-                .withKA(0.01)
-                .withKG(0.46)
+                .withKS(0.27)
+                .withKV(0.0) // 1.4
+                .withKA(0.0) // 0.01
+                .withKG(0)
                 .withKP(0.0)
                 .withKI(0)
                 .withKD(0.0)
@@ -135,20 +135,20 @@ public class Intake extends SubsystemBase {
         pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
         switch (state) {
             case NONE:
-                pivotIntake.setControl(vO.withOutput(0));
+                pivotIntake.set(0);
                 rollIntake.set(0);
                 break;
 
             case STOWED:
 
                 //temporary positions, will create constants after testing
-                pivotIntake.setControl(mmV.withPosition(0));
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleStowed));
 
-                rollIntake.set(0.2222);
+                rollIntake.setControl(vO.withOutput(0.0));
                 break;
 
             case INTAKE:
-                pivotIntake.setControl(mmV.withPosition(0.05));
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIntake));
 
                 rollIntake.setControl(vO.withOutput(3.0));
                 break;

@@ -49,8 +49,8 @@ public class IntakeNote  extends Command {
     hasNote = false;
 
     intake.setState(IntakeStates.INTAKE);
-    // shooter.setState(ShooterStates.INTAKE_ACCEL);
-    // shooterPivot.setState(ShooterPivotStates.INTAKE);
+    shooter.setState(ShooterStates.INTAKE_ACCEL);
+    shooterPivot.setState(ShooterPivotStates.INTAKE);
     
 
     timer.reset();
@@ -68,14 +68,14 @@ public class IntakeNote  extends Command {
     // swerveDrive.driveRobotRelative(new ChassisSpeeds(Constants.Drivetrain.kIntakeNoteSpeed, 0, 0));
     if (state == IntakeCommandStates.ACCEL && accelTimer.get() > 0.5) {
       state = IntakeCommandStates.INTAKE;
-      // shooter.setState(ShooterStates.INTAKE);
+      shooter.setState(ShooterStates.INTAKE);
     }
 
     if (state == IntakeCommandStates.INTAKE && shooter.beamBroken()) {
       state = IntakeCommandStates.ROLLFORWARD;
       intake.setState(IntakeStates.INDEXING);
-      // shooterPivot.setState(ShooterPivotStates.INDEXING);
-      // shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+      shooterPivot.setState(ShooterPivotStates.INDEXING);
+      shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
     }
 
     if (state == IntakeCommandStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
@@ -87,7 +87,7 @@ public class IntakeNote  extends Command {
       timer.stop();
       timer.reset();
       timer.start();
-      // shooter.setState(ShooterStates.HOLD_NOTE);
+      shooter.setState(ShooterStates.HOLD_NOTE);
     }
 
     if (state == IntakeCommandStates.WAIT && timer.get() > Constants.Superstructure.kRollForwardtoRollBackWaitTime) {
@@ -95,7 +95,7 @@ public class IntakeNote  extends Command {
       timer.reset();
       state = IntakeCommandStates.ROLLBACK;
       hasNote = false;
-      // shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
     }
 
     // if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackShooter()) {
@@ -117,17 +117,17 @@ public class IntakeNote  extends Command {
     
 
 
-    // if (state == IntakeCommandStates.ACCEL) {
-    //   shooter.setState(ShooterStates.INTAKE_ACCEL);
-    // } else if (state == IntakeCommandStates.INTAKE) {
-    //   shooter.setState(ShooterStates.INTAKE);
-    // } else if (state == IntakeCommandStates.ROLLFORWARD) {
-    //   shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
-    // } else if (state == IntakeCommandStates.WAIT) {
-    //   shooter.setState(ShooterStates.HOLD_NOTE);
-    // } else if (state == IntakeCommandStates.ROLLBACK) {
-    //   shooter.setState(ShooterStates.INTAKE_ROLLBACK);
-    // }
+    if (state == IntakeCommandStates.ACCEL) {
+      shooter.setState(ShooterStates.INTAKE_ACCEL);
+    } else if (state == IntakeCommandStates.INTAKE) {
+      shooter.setState(ShooterStates.INTAKE);
+    } else if (state == IntakeCommandStates.ROLLFORWARD) {
+      shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+    } else if (state == IntakeCommandStates.WAIT) {
+      shooter.setState(ShooterStates.HOLD_NOTE);
+    } else if (state == IntakeCommandStates.ROLLBACK) {
+      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+    }
 
     
     // if (shooter.beamBroken()) {
