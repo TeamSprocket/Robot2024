@@ -1,5 +1,7 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 // import com.pathplanner.lib.util.PIDConstants;
@@ -210,8 +212,8 @@ public class Constants {
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
-        public static final double kPivotAngleStowed = 0.1583; // 23.0
-        public static final double kPivotAngleIntake = 0;
+        public static final double kPivotAngleStowed = 0.19; // 23.0
+        public static final double kPivotAngleIntake = -0.0694;
         public static final double kPivotAngleEject = 0.1389; // 30.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
@@ -219,6 +221,16 @@ public class Constants {
         public static final double kPivotAngleShootCrossfield = 0.1389; // 30.0
         public static final double kPivotAngleScoreAmp = 0.1472; // 27.0
         public static final double kPivotAngleClimb = 0;
+
+        public static final double kPivotIntakeS = 0.27;
+        public static final double kPivotIntakeV = 1.4;
+        public static final double kPivotIntakeA = 0.01;
+        public static final double kPivotIntakeG = 0.29;
+        public static final double kPivotIntakeP = 20.0;
+        public static final double kPivotIntakeI = 0.0;
+        public static final double kPivotIntakeD = 1.5;
+        public static final double kPivotIntakeMMCruiseVelocity = 3.0;
+        public static final double kPivotIntakeMMCruiseAccel = 1.5;
         
         public static final double kPivotAngleOffsetHorizontal = 80.0;
 

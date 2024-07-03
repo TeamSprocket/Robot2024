@@ -48,6 +48,7 @@ public class Robot extends TimedRobot {
     Constants.robotState = RobotState.DISABLED;
     m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
     m_robotContainer.getShooterPivot().setNeutralMode(NeutralModeValue.Coast);
+    m_robotContainer.getIntake().setNeutralMode(NeutralModeValue.Coast);
 
     CommandScheduler.getInstance().cancelAll();
   }
@@ -87,6 +88,7 @@ public class Robot extends TimedRobot {
     Constants.robotState = RobotState.TELEOP;
     m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Coast);
     m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Brake);
+    m_robotContainer.getIntake().setNeutralMode(NeutralModeValue.Brake);
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

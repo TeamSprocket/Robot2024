@@ -74,10 +74,7 @@ public class Shooter extends SubsystemBase {
 
   // double dist = 0.0;
 
-  MotionMagicVoltage mmV = new MotionMagicVoltage(0); // remove
-
   public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier, Supplier<Translation3d> botTranslation3D) {
-    configMotors();
 
     shooterTop.setInverted(Constants.Shooter.kIsShooterTopInverted);
     // shooterFollowerMotor.setControl(new StrictFollower(shooterMotor.getDeviceID()));
@@ -250,7 +247,7 @@ public class Shooter extends SubsystemBase {
         // shooterInc += shooterPID.calculate(getShooterMPS(), Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer) * Constants.Shooter.kShooterIncramentMultiplier;
         // setShooterSpeed(shooterInc);
 
-        shooterTop.setControl(mmV.withPosition(1)); // remove
+        shooterTop.set(1); // remove
 
         SmartDashboard.putNumber("Shooter PercentOutput [ST]", shooterInc);
       break;
@@ -507,50 +504,6 @@ public class Shooter extends SubsystemBase {
     shooterTop.setPosition(0);
     shooterBottom.setPosition(0);
     indexerMotor.setPosition(0);
-  }
-
-  private void configMotors() {
-
-    // current configs
-
-    // CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
-    // currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);
-    // currentLimitsConfigsShooter.withSupplyCurrentLimitEnable(true);
-    // CurrentLimitsConfigs currentLimitsConfigsIndexer = new CurrentLimitsConfigs();
-    // currentLimitsConfigsIndexer.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitIndexer);
-    // currentLimitsConfigsIndexer.withSupplyCurrentLimitEnable(true);
-
-    TalonFXConfiguration motorConfigShooter = new TalonFXConfiguration();
-    TalonFXConfiguration motorConfigIndexer = new TalonFXConfiguration();
-
-    // current limiting
-    // motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
-    // motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
-        
-    // <-- remove -->
-    motorConfigShooter.withMotionMagic(
-        new MotionMagicConfigs()
-            .withMotionMagicCruiseVelocity(5)
-            .withMotionMagicAcceleration(5)
-    );
-
-    motorConfigShooter.withSlot0(
-        new Slot0Configs()
-            .withKS(0.25)
-            .withKV(0.1)
-            .withKA(0.01)
-            .withKP(Constants.Intake.kPPivot)
-            .withKI(Constants.Intake.kIPivot)
-            .withKD(Constants.Intake.kDPivot)
-    );
-
-    motorConfigShooter.withFeedback(
-        new FeedbackConfigs()
-            .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
-    );
-
-    shooterTop.getConfigurator().apply(motorConfigShooter);
-    indexerMotor.getConfigurator().apply(motorConfigIndexer);
   }
 
   public void postSmartDashboardDebug() {

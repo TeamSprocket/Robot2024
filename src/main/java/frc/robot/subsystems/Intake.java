@@ -65,28 +65,24 @@ public class Intake extends SubsystemBase {
     public Intake() {
         // configMotors();
 
-        // TrapezoidProfile.Constraints pivotProfileConstraints = new TrapezoidProfile.Constraints(Constants.Intake.kPivotMaxVelocity, Constants.Intake.kPivotMaxAccel);
-        // profiledPIDController = new ProfiledPIDController(Constants.Intake.kPPivot, Constants.Intake.kIPivot, Constants.Intake.kDPivot, pivotProfileConstraints);
-        pidController = new PIDController(Constants.Intake.kPPivot, 0, Constants.Intake.kDPivot);
-
         TalonFXConfiguration pivotIntakeConfig = new TalonFXConfiguration();
         
         pivotIntakeConfig.withMotionMagic(
             new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(3)
-                .withMotionMagicAcceleration(1.5)
+                .withMotionMagicCruiseVelocity(Constants.Intake.kPivotIntakeMMCruiseVelocity)
+                .withMotionMagicAcceleration(Constants.Intake.kPivotIntakeMMCruiseAccel)
         );
 
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKS(0.27)
-                .withKV(0.0) // 1.4
-                .withKA(0.0) // 0.01
-                .withKG(0)
-                .withKP(0.0)
-                .withKI(0)
-                .withKD(0.0)
+                .withKS(Constants.Intake.kPivotIntakeS) // 0.27
+                .withKV(Constants.Intake.kPivotIntakeV) // 1.4
+                .withKA(Constants.Intake.kPivotIntakeA) // 0.01
+                .withKG(Constants.Intake.kPivotIntakeG) // 0.20
+                .withKP(Constants.Intake.kPivotIntakeP) // 2
+                .withKI(Constants.Intake.kPivotIntakeI)
+                .withKD(Constants.Intake.kPivotIntakeD)
         );
 
         pivotIntakeConfig.withFeedback(
@@ -94,14 +90,14 @@ public class Intake extends SubsystemBase {
                 .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
         );
 
-        pivotIntakeConfig.withMotorOutput(
-            new MotorOutputConfigs()
-                .withNeutralMode(NeutralModeValue.Brake)
-                .withInverted(InvertedValue.CounterClockwise_Positive)
-        );
+        // pivotIntakeConfig.withMotorOutput(
+        //     new MotorOutputConfigs()
+        //         .withNeutralMode(NeutralModeValue.Brake)
+        //         .withInverted(InvertedValue.CounterClockwise_Positive)
+        // );
+        // PRETTY SURE THESE DON'T MATTER BUT REENABLE IN CASE SOMETHING WRONG
 
         pivotIntake.getConfigurator().apply(pivotIntakeConfig);
-
         mmV.Slot = 0;
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
@@ -113,16 +109,16 @@ public class Intake extends SubsystemBase {
 
         pivotIntake.setPosition(0.2222);
 
-        selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
-        selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
-        selectIntakeState.addOption("INTAKE", IntakeStates.INTAKE);
-        SmartDashboard.putData(selectIntakeState);
+        // selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
+        // selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
+        // selectIntakeState.addOption("INTAKE", IntakeStates.INTAKE);
+        // SmartDashboard.putData(selectIntakeState);
 
-        SmartDashboard.putData("STATES[IN]", selectIntakeState);
+        // SmartDashboard.putData("STATES[IN]", selectIntakeState);
 
-        ShuffleboardIO.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
-        ShuffleboardIO.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
-        ShuffleboardIO.addSlider("Intake Pivot Voltage [IN]", 0.0, 1.5, 0);
+        // ShuffleboardIO.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
+        // ShuffleboardIO.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
+        // ShuffleboardIO.addSlider("Intake Pivot Voltage [IN]", 0.0, 1.5, 0);
     }
 
     @Override
@@ -140,56 +136,42 @@ public class Intake extends SubsystemBase {
                 break;
 
             case STOWED:
-
-                //temporary positions, will create constants after testing
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleStowed));
-
                 rollIntake.setControl(vO.withOutput(0.0));
                 break;
 
             case INTAKE:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIntake));
-
                 rollIntake.setControl(vO.withOutput(3.0));
                 break;
 
             case INDEXING:
-                // pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleIndexing);
-                // pivotIntake.set(pivotSpeed);
-                pivotIntake.set(0.0);
-
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIndexing));
                 rollIntake.set(0.0);
                 break;
+
             case INTAKE_ROLLBACK:
                 // Pivot maintains current position
                 rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
                 break;
                 
             case SCORE_SPEAKER_SUBWOOFER:
-                // pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer);
-                // pivotIntake.set(pivotSpeed);
-                pivotIntake.set(0.0);
-
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer));
                 rollIntake.set(0.0);
                 break;
 
             case SCORE_SPEAKER:
-                pivotIntake.setControl(mmV.withPosition(0));
-
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeaker));
                 rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
                 break;
 
             case EJECT_NOTE:
-                pivotIntake.setControl(mmV.withPosition(0));
-
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleEject));
                 rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 break;
 
             case CLIMB:
-                // pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleClimb);
-                // pivotIntake.set(pivotSpeed);
-                pivotIntake.set(0.0);
-
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleClimb));
                 rollIntake.set(0.0);
                 break; 
         }
@@ -220,24 +202,8 @@ public class Intake extends SubsystemBase {
         return state;
     }
 
-    public double getPivotSpeed(double targetAngle) {
-        pidController.setSetpoint(targetAngle);
-        double currentAngle = getPivotAngle();
-
-        double pivotSpeed;
-        double PIDOutput = pidController.calculate(currentAngle); 
-
-        if (Math.abs(targetAngle - currentAngle) > Constants.Intake.kFFtoPIDPivotTransitionTolerance) {
-            pivotSpeed = Constants.Intake.kFFPivot * Util.getSign(PIDOutput);
-        } else {
-            pivotSpeed = PIDOutput;
-            if (pidController.atSetpoint()) {
-                pivotSpeed = 0;
-            }
-        }
-
-        pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.Intake.kMaxPivotOutput, Constants.Intake.kMaxPivotOutput);
-        return pivotSpeed;
+    public double getPivotSpeed() {
+        return pivotIntake.getVelocity().getValueAsDouble();
     }
 
     public double getPivotAngle() {
@@ -266,6 +232,10 @@ public class Intake extends SubsystemBase {
   public void clearStickyFaults() {
     pivotIntake.clearStickyFaults();
     rollIntake.clearStickyFaults();
+  }
+
+  public void setNeutralMode(NeutralModeValue neutralModeValue) {
+    pivotIntake.setNeutralMode(neutralModeValue);
   }
 
   private void configMotors() {
