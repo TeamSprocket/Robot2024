@@ -244,22 +244,9 @@ public class Constants {
         public static final boolean kIsRollInverted = true;
         public static final boolean kIsPivotInverted = true;
 
-        // public static final double kPivotMaxVelocity = 0.0;
-        // public static final double kPivotMaxAccel = 0.0;
-        public static final double kMaxPivotOutput = 0.18;
-
         public static final double kAtGoalTolerance = 0.5; 
-        public static final double kFFtoPIDPivotTransitionTolerance = 20.0;
 
         public static final double kPivotIntakeGearRatio = 36.0;
-        public static final double kPivotIntakePositionRatio = 2 * Math.PI;
-
-        public static final double kPPivot = 0.0058305929; // 1, 0.1
-        public static final double kIPivot = 0.0;
-        public static final double kDPivot = 0.0000748355;
-
-        public static final double kFFPivot = 0.15;
-
     }
 
     public static final class Vision {
