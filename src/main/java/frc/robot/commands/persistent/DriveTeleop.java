@@ -10,24 +10,24 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.OLDSwerveDrive;
 import frc.util.Util;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class DriveTeleop extends Command {
-  private final SwerveDrive swerveDrive;
+  private final OLDSwerveDrive swerveDrive;
   private final Supplier<Double> xSupplier, ySupplier, tSupplier;
   private final SlewRateLimiter xSlewLimit, ySlewLimit, tSlewLimit;
 
-  public DriveTeleop(SwerveDrive swerveDrive, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> tSupplier) {
+  public DriveTeleop(OLDSwerveDrive swerveDrive, Supplier<Double> xSupplier, Supplier<Double> ySupplier, Supplier<Double> tSupplier) {
     this.swerveDrive = swerveDrive;
     this.xSupplier = xSupplier; // PURPOSEFULLY SWITCHED 
     this.ySupplier = ySupplier; // PURPOSEFULLY SWITCHED
     this.tSupplier = tSupplier;
-    this.xSlewLimit = new SlewRateLimiter(Constants.Drivetrain.kMaxAccel);
-    this.ySlewLimit = new SlewRateLimiter(Constants.Drivetrain.kMaxAccel);
-    this.tSlewLimit = new SlewRateLimiter(Constants.Drivetrain.kMaxTurnAccel);
+    this.xSlewLimit = new SlewRateLimiter(Constants.OldDrivetrain.kMaxAccel);
+    this.ySlewLimit = new SlewRateLimiter(Constants.OldDrivetrain.kMaxAccel);
+    this.tSlewLimit = new SlewRateLimiter(Constants.OldDrivetrain.kMaxTurnAccel);
       
     addRequirements(swerveDrive);
   }
@@ -51,9 +51,9 @@ public class DriveTeleop extends Command {
 
     SmartDashboard.putNumber("Squared xSpeed [DTC]", xSpeed);
     
-    xSpeed = xSlewLimit.calculate(xSpeed) * Constants.Drivetrain.kMaxSpeed;
-    ySpeed = ySlewLimit.calculate(ySpeed) * Constants.Drivetrain.kMaxSpeed;
-    tSpeed = tSlewLimit.calculate(tSpeed) * Constants.Drivetrain.kMaxTurnSpeed;
+    xSpeed = xSlewLimit.calculate(xSpeed) * Constants.OldDrivetrain.kMaxSpeed;
+    ySpeed = ySlewLimit.calculate(ySpeed) * Constants.OldDrivetrain.kMaxSpeed;
+    tSpeed = tSlewLimit.calculate(tSpeed) * Constants.OldDrivetrain.kMaxTurnSpeed;
 
     swerveDrive.updateChassisSpeeds(xSpeed, ySpeed, tSpeed);
 

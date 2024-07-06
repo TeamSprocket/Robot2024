@@ -11,17 +11,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.OLDSwerveDrive;
 import frc.util.Util;
 
 public class Turn extends Command {
   /** Creates a new MidlineLeft. */
-  SwerveDrive swerveDrive;
+  OLDSwerveDrive swerveDrive;
   double desiredAngleRad;
 
   PIDController pidController = new PIDController(0, 0, 0);
 
-  public Turn(SwerveDrive swerveDrive, double desiredAngle) {
+  public Turn(OLDSwerveDrive swerveDrive, double desiredAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrive = swerveDrive;
     this.desiredAngleRad = Math.toRadians(desiredAngle);
@@ -40,8 +40,8 @@ public class Turn extends Command {
     double output = Util.minmax(pidController.calculate(swerveDrive.getHeading(), desiredAngleRad), -1, 1);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, output, new Rotation2d(swerveDrive.getHeading()));
-    SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Drivetrain.kMaxSpeed);
+    SwerveModuleState[] moduleStates = Constants.OldDrivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.OldDrivetrain.kMaxSpeed);
     swerveDrive.setModuleStates(moduleStates);
   }
 

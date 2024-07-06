@@ -5,11 +5,11 @@
 package frc.robot.commands.instant;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.OLDSwerveDrive;
 
 public class ZeroGyro extends InstantCommand {
-  SwerveDrive swerveDrive;
-  public ZeroGyro(SwerveDrive swerveDrive) {
+  OLDSwerveDrive swerveDrive;
+  public ZeroGyro(OLDSwerveDrive swerveDrive) {
     this.swerveDrive = swerveDrive;
   }
 

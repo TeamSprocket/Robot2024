@@ -1,13 +1,23 @@
 package frc.robot;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Pigeon2Configuration;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 // import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.math.util.Units;
 import frc.util.Conversions;
 import frc.util.PIDConst;
@@ -249,6 +259,8 @@ public class Constants {
 
     public static final class Vision {
 
+        public static final Matrix<N3, N1> kMultipleTagStdDevs = VecBuilder.fill(0.5, 0.5, 6.24);
+
         // measurements
         public static final Translation3d targetPointBlue = new Translation3d(0.0, 5.448, 0); // 5.548  // Moved towards right red alliance 0.1m
         public static final Translation3d targetPointRed = new Translation3d(0.0, 2.563, 0); //2.663
@@ -289,7 +301,7 @@ public class Constants {
 
     }
 
-    public static final class Drivetrain {
+    public static final class OldDrivetrain {
 
         public static final double kSupplyCurrentLimitDrive = 0.0;
         public static final double kSupplyCurrentLimitTurn = 0.0;
@@ -427,8 +439,117 @@ public class Constants {
 
     }
 
+    public static final class Drivetrain {
 
+        // ------ Module ------
+        // Front Left
+        public static final int kFrontLeftDriveMotorId = 21;
+        public static final int kFrontLeftSteerMotorId = 22;
+        public static final int kFrontLeftEncoderId = 31;
+        public static final double kFrontLeftEncoderOffset = -0.421875;
+        public static final boolean kFrontLeftSteerInvert = true;
 
+        public static final double kFrontLeftXPosInches = 13.125;
+        public static final double kFrontLeftYPosInches = 13.125;
+
+        // Front Right
+        public static final int kFrontRightDriveMotorId = 23;
+        public static final int kFrontRightSteerMotorId = 24;
+        public static final int kFrontRightEncoderId = 32;
+        public static final double kFrontRightEncoderOffset = 0.096435546875;
+        public static final boolean kFrontRightSteerInvert = true;
+
+        public static final double kFrontRightXPosInches = 13.125;
+        public static final double kFrontRightYPosInches = -13.125;
+
+        // Back Left
+        public static final int kBackLeftDriveMotorId = 25;
+        public static final int kBackLeftSteerMotorId = 26;
+        public static final int kBackLeftEncoderId = 33;
+        public static final double kBackLeftEncoderOffset = -0.139892578125;
+        public static final boolean kBackLeftSteerInvert = true;
+
+        public static final double kBackLeftXPosInches = -13.125;
+        public static final double kBackLeftYPosInches = 13.125;
+
+        // Back Right
+        public static final int kBackRightDriveMotorId = 27;
+        public static final int kBackRightSteerMotorId = 28;
+        public static final int kBackRightEncoderId = 34;
+        public static final double kBackRightEncoderOffset = 0.01611328125;
+        public static final boolean kBackRightSteerInvert = true;
+
+        public static final double kBackRightXPosInches = -13.125;
+        public static final double kBackRightYPosInches = -13.125;
+
+        // ------ Configs ------
+
+        // The steer motor uses any SwerveModule.SteerRequestType control request with the
+        // output type specified by SwerveModuleConstants.SteerMotorClosedLoopOutput
+        public static final Slot0Configs steerGains = new Slot0Configs()
+            .withKP(100).withKI(0).withKD(0.2)
+            .withKS(0).withKV(1.5).withKA(0); //1.5
+        // When using closed-loop control, the drive motor uses the control
+        // output type specified by SwerveModuleConstants.DriveMotorClosedLoopOutput
+        public static final Slot0Configs driveGains = new Slot0Configs()
+            .withKP(3).withKI(0).withKD(0)
+            .withKS(0).withKV(0).withKA(0);
+        // The closed-loop output type to use for the steer motors;
+        // This affects the PID/FF gains for the steer motors
+        public static final ClosedLoopOutputType steerClosedLoopOutput = ClosedLoopOutputType.Voltage;
+        // The closed-loop output type to use for the drive motors;
+        // This affects the PID/FF gains for the drive motors
+        public static final ClosedLoopOutputType driveClosedLoopOutput = ClosedLoopOutputType.Voltage; //test value
+
+        // The stator current at which the wheels start to slip;
+        // This needs to be tuned to your individual robot
+        public static final double kSlipCurrentA = 150.0;
+
+        // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
+        // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
+        public static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
+        public static final TalonFXConfiguration steerInitialConfigs = new TalonFXConfiguration()
+            .withCurrentLimits(
+                new CurrentLimitsConfigs()
+                    // Swerve azimuth does not require much torque output, so we can set a relatively low
+                    // stator current limit to help avoid brownouts without impacting performance.
+                    .withStatorCurrentLimit(60)
+                    .withStatorCurrentLimitEnable(true)
+            );
+        public static final CANcoderConfiguration cancoderInitialConfigs = new CANcoderConfiguration();
+        // Configs for the Pigeon 2; leave this null to skip applying Pigeon 2 configs
+        public static final Pigeon2Configuration pigeonConfigs = null;
+
+        // Theoretical free speed (m/s) at 12v applied output;
+        // This needs to be tuned to your individual robot
+        public static final double kSpeedAt12VoltsMps = 4.73; //4.73 TEST
+
+        // Every 1 rotation of the azimuth results in kCoupleRatio drive motor turns;
+        // This may need to be tuned to your individual robot
+        public static final double kCoupleRatio = 3.5714285714285716;
+
+        public static final double kDriveGearRatio = 6.746031746031747;
+        public static final double kSteerGearRatio = 21.428571428571427;
+        public static final double kWheelRadiusInches = 2;
+
+        public static final boolean kInvertLeftSide = true;
+        public static final boolean kInvertRightSide = false;
+
+        public static final String kCANbusName = "";
+        public static final int kPigeonId = 2;
+
+        // ------- Simulation -------
+        // These are only used for simulation
+        public static final double kSteerInertia = 0.00001;
+        public static final double kDriveInertia = 0.001;
+        // Simulated voltage necessary to overcome friction
+        public static final double kSteerFrictionVoltage = 0.25;
+        public static final double kDriveFrictionVoltage = 0.25;
+
+        // ------ Max -------
+        public static double MaxSpeed = kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
+        public static double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+    }
 
     public static final class Controller {
         public static final double kHasNoteRumbleTimeSec = 0.5;
@@ -436,5 +557,4 @@ public class Constants {
         
         public static final double kClimbTriggerAxisPercent = 0.1;
     }
-
 }

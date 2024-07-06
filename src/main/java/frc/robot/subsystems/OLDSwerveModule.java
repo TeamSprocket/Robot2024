@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.Drivetrain;
+import frc.robot.Constants.OldDrivetrain;
 import frc.util.Conversions;
 
 // import frc.util.ShuffleboardIO;
@@ -22,7 +22,7 @@ import frc.util.Conversions;
 // import com.ctre.phoenix.sensors.AbsoluteSensorRange;
 // import com.ctre.phoenix.sensors.CANCoderConfiguration;
 
-public class SwerveModule extends SubsystemBase {
+public class OLDSwerveModule extends SubsystemBase {
   
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
@@ -31,7 +31,7 @@ public class SwerveModule extends SubsystemBase {
   private double offset;
   private final boolean turnIsReversed;
 
-  public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, double offset, boolean driveIsReversed, boolean turnIsReversed, double kPTurnMotor, double kITurnMotor, double kDTurnMotor) {
+  public OLDSwerveModule(int driveMotorID, int turnMotorID, int cancoderID, double offset, boolean driveIsReversed, boolean turnIsReversed, double kPTurnMotor, double kITurnMotor, double kDTurnMotor) {
     this.driveMotor = new TalonFX(driveMotorID, "rio");
     this.turnMotor = new TalonFX(turnMotorID, "rio");
     this.cancoder = new CANcoder(cancoderID, "rio");
@@ -99,7 +99,7 @@ public class SwerveModule extends SubsystemBase {
    * @return Wheel pos in degrees (-180, 180)
    */
   public double getTurnPosition() {
-    double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio);
+    double deg = Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.OldDrivetrain.kTurningMotorGearRatio);
      deg %= 360;
       if (deg > 180) {
         deg -= (360); 
@@ -124,15 +124,15 @@ public class SwerveModule extends SubsystemBase {
    */
   public double getDrivePosMeters() {
     double motorTicks = driveMotor.getRotorPosition().getValueAsDouble();
-    double circum = Constants.Drivetrain.kWheelDiameterMeters * Math.PI;
-    double ratio = Constants.Drivetrain.kDriveMotorGearRatio;
+    double circum = Constants.OldDrivetrain.kWheelDiameterMeters * Math.PI;
+    double ratio = Constants.OldDrivetrain.kDriveMotorGearRatio;
     double pos = Conversions.falconToMeters(motorTicks, circum, ratio);
 
     return pos;
   }
 
   public SwerveModuleState getModuleState() {
-    double moduleSpdMPS = Conversions.falconToMPS(driveMotor.getRotorVelocity().getValueAsDouble(), (Constants.Drivetrain.kWheelDiameterMeters * Math.PI), Constants.Drivetrain.kDriveMotorGearRatio);
+    double moduleSpdMPS = Conversions.falconToMPS(driveMotor.getRotorVelocity().getValueAsDouble(), (Constants.OldDrivetrain.kWheelDiameterMeters * Math.PI), Constants.OldDrivetrain.kDriveMotorGearRatio);
     return new SwerveModuleState(moduleSpdMPS, new Rotation2d(Math.toRadians(getTurnPosition())));
   }
 
@@ -149,7 +149,7 @@ public class SwerveModule extends SubsystemBase {
   public void zeroTurnMotorABS() {
     //double ticks = Conversions.degreesToFalcon(getCANCoderDegrees(), Constants.Drivetrain.kTurningMotorGearRatio);
     Timer.delay(0.05);
-    turnMotor.setPosition((getCANCoderDegrees() / 360) * Drivetrain.kTurningMotorGearRatio);
+    turnMotor.setPosition((getCANCoderDegrees() / 360) * OldDrivetrain.kTurningMotorGearRatio);
   }
 
   public void zeroDriveMotor() {
@@ -209,11 +209,11 @@ public class SwerveModule extends SubsystemBase {
   }
 
   private void debug() {
-    SmartDashboard.putNumber("ResetTicks", Conversions.degreesToFalcon(cancoder.getAbsolutePosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
+    SmartDashboard.putNumber("ResetTicks", Conversions.degreesToFalcon(cancoder.getAbsolutePosition().getValueAsDouble(), Constants.OldDrivetrain.kTurningMotorGearRatio));
     SmartDashboard.putNumber("TurnPosDeg2", getTurnPosition());
     SmartDashboard.putNumber("ABSDeg", getCANCoderDegrees());
     SmartDashboard.putNumber("TurnTicks1", turnMotor.getRotorPosition().getValueAsDouble());
-    SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.Drivetrain.kTurningMotorGearRatio));
+    SmartDashboard.putNumber("initialDeg", Conversions.falconToDegrees(turnMotor.getRotorPosition().getValueAsDouble(), Constants.OldDrivetrain.kTurningMotorGearRatio));
     SmartDashboard.putNumber("Supply Current Drive [SM]", driveMotor.getSupplyCurrent().getValueAsDouble());
     SmartDashboard.putNumber("Supply Current Turn [SM]", turnMotor.getSupplyCurrent().getValueAsDouble());
   }

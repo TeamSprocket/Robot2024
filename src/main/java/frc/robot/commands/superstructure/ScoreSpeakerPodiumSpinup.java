@@ -8,14 +8,14 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
-import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.OLDSwerveDrive;
 
 public class ScoreSpeakerPodiumSpinup extends Command {
 
   Shooter shooter;
   ShooterPivot shooterPivot;
 
-  public ScoreSpeakerPodiumSpinup(ShooterPivot shooterPivot, Shooter shooter, SwerveDrive swerveDrive) {
+  public ScoreSpeakerPodiumSpinup(ShooterPivot shooterPivot, Shooter shooter, OLDSwerveDrive swerveDrive) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
   }

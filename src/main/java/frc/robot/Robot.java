@@ -27,11 +27,11 @@ public class Robot extends TimedRobot {
     m_robotContainer = new RobotContainer();
 
     Timer.delay(0.5);
-    m_robotContainer.getSwerveDrive().zeroHeading();
-    m_robotContainer.getSwerveDrive().zeroDriveMotors();
-    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
-    m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake);
-    m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast);
+    // m_robotContainer.getSwerveDrive().zeroHeading(); //
+    // m_robotContainer.getSwerveDrive().zeroDriveMotors(); //
+    // m_robotContainer.getSwerveDrive().resetModulesToAbsolute(); //
+    // m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Brake); //
+    // m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Coast); //
 
     // UsbCamera camera = CameraServer.startAutomaticCapture();
     // camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 15);
@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     Constants.robotState = RobotState.DISABLED;
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast);
+    // m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast); //
     m_robotContainer.getShooterPivot().setNeutralMode(NeutralModeValue.Coast);
 
     CommandScheduler.getInstance().cancelAll();
@@ -63,10 +63,10 @@ public class Robot extends TimedRobot {
   public void autonomousInit() {
     Constants.robotState = RobotState.AUTON;
     // m_robotContainer.zeroSuperstructurePositions();
-    m_robotContainer.getSwerveDrive().zeroDriveMotors();
+    // m_robotContainer.getSwerveDrive().zeroDriveMotors(); //
     // m_robotContainer.getSwerveDrive().zeroGyro();
-    m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake);
-    m_robotContainer.getSwerveDrive().resetModulesToAbsolute();
+    // m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Brake); //
+    // m_robotContainer.getSwerveDrive().resetModulesToAbsolute(); //
     Timer.delay(0.05);
 
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
@@ -84,8 +84,8 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Constants.robotState = RobotState.TELEOP;
-    m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Coast);
-    m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Brake);
+    // m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Coast); //
+    // m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Brake); //
 
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();

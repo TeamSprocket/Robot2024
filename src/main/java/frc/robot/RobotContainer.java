@@ -4,10 +4,16 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,22 +37,36 @@ import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.Telemetry;
 
 public class RobotContainer {
 
-  public final static Controller driver = new Controller(0);
+  // public final static Controller driver = new Controller(0);
   public final static Controller operator = new Controller(1);
 
   PowerDistribution pdh = new PowerDistribution();
 
-  Vision limelight = new Vision();
-  SwerveDrive swerveDrive = new SwerveDrive(limelight);
-  Elevator elevator = new Elevator(() -> operator.getController().getRightY());
-  ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
-  Intake intake = new Intake();
+  private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
+  private final Vision limelight = new Vision();
+  // SwerveDrive swerveDrive = new SwerveDrive(limelight);
+  private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
+  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> logger.getTranslation3d());
+  private final Shooter shooter = new Shooter(() -> logger.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> logger.getTranslation3d());
+  private final Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
+
+  // ------- Swerve Generated -------
+  private final Swerve swerveModulee = new Swerve();
+  private final CommandXboxController driver = new CommandXboxController(0); // My joystick
+  private final CommandSwerveDrivetrain drivetrain = swerveModulee.DriveTrain; // My drivetrain
+
+  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+      .withDeadband(Constants.Drivetrain.MaxSpeed * 0.1).withRotationalDeadband(Constants.Drivetrain.MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric driving in open loop
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -83,8 +103,8 @@ public class RobotContainer {
 
     // ------- by encoder ticks -------
 
-    autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
-    autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
+    // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
+    // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
     
     SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
@@ -107,15 +127,31 @@ public class RobotContainer {
   public void configureBindings() {
 
     // --------------------=Driver=--------------------
+    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+      drivetrain.applyRequest(() -> drive.withVelocityX(driver.getLeftY() * Constants.Drivetrain.MaxSpeed * 0.5) // Drive forward with negative Y (forward)
+        .withVelocityY(driver.getLeftX() * Constants.Drivetrain.MaxSpeed * 0.5) // Drive left with negative X (left) //test
+        .withRotationalRate(-driver.getRightX() * Constants.Drivetrain.MaxAngularRate) // Drive counterclockwise with negative X (left)
+      ));
 
-    swerveDrive.setDefaultCommand(new DriveTeleop(
-        swerveDrive,
-        () -> -driver.getController().getLeftX(),
-        () -> driver.getController().getLeftY(),
-        () -> -driver.getController().getRightX()));
-    driver.getController().rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
-    driver.getController().leftBumper().whileTrue(new LockHeadingToSpeaker(swerveDrive));
-    
+    driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    driver.b().whileTrue(drivetrain
+      .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
+
+    // reset the field-centric heading on left bumper press
+    driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
+    if (Utils.isSimulation()) {
+      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+    }
+    drivetrain.registerTelemetry(logger::telemeterize);
+
+    // swerveDrive.setDefaultCommand(new DriveTeleop(
+    //     swerveDrive,
+    //     () -> -driver.getController().getLeftX(),
+    //     () -> driver.getController().getLeftY(),
+    //     () -> -driver.getController().getRightX()));
+    // driver.getController().rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
+    // driver.getController().leftBumper().whileTrue(new LockHeadingToSpeaker(swerveDrive));
     
     // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
     // driver.button(RobotMap.Controller.Y)
@@ -131,7 +167,7 @@ public class RobotContainer {
 
     operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    operator.getController().y().whileTrue(new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, swerveDrive));
+    // operator.getController().y().whileTrue(new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, swerveDrive));
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
     operator.getController().b().onTrue(new CancelIntake(intake, shooter, shooterPivot));
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
@@ -152,22 +188,14 @@ public class RobotContainer {
 
   }
 
-  public void resetModulesToAbsolute() {
-    swerveDrive.resetModulesToAbsolute();
-  }
-
   public void updateNoteRumbleListener() {
-    driver.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
+    // driver.updateNoteRumbleListener(shooter::beamBroken, shooter::getState); // not gonna deal with this rn :|
     operator.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
   }
 
   public void stopNoteRumbleListener() {
-    driver.stopNoteRumbleListener();
+    // driver.stopNoteRumbleListener();
     operator.stopNoteRumbleListener();
-  }
-
-  public SwerveDrive getSwerveDrive() {
-    return swerveDrive;
   }
   
   public ShooterPivot getShooterPivot() {
