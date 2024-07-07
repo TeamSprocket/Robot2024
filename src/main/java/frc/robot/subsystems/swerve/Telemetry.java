@@ -108,12 +108,4 @@ public class Telemetry {
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
     }
-
-    public Translation3d getTranslation3d() {
-        return new Translation3d(getPose().getX(), getPose().getY(), 0.0);
-    }
-
-    public Pose2d getPose() {
-        return m_lastPose;
-    }
 }

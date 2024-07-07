@@ -43,24 +43,24 @@ import frc.robot.subsystems.swerve.Telemetry;
 public class RobotContainer {
 
   // public final static Controller driver = new Controller(0);
+  private final CommandXboxController driver = new CommandXboxController(0); // My joystick
   public final static Controller operator = new Controller(1);
 
   PowerDistribution pdh = new PowerDistribution();
 
+  private final TunerConstants tunerConst = new TunerConstants();
+  private final CommandSwerveDrivetrain drivetrain = tunerConst.DriveTrain; // My drivetrain
   private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
-  private final Vision limelight = new Vision();
+  
   // SwerveDrive swerveDrive = new SwerveDrive(limelight);
   private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
-  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> logger.getTranslation3d());
-  private final Shooter shooter = new Shooter(() -> logger.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> logger.getTranslation3d());
+  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> drivetrain.getTranslation3d());
+  private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
   private final Intake intake = new Intake();
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
   // ------- Swerve Generated -------
-  private final TunerConstants swerveModulee = new TunerConstants();
-  private final CommandXboxController driver = new CommandXboxController(0); // My joystick
-  private final CommandSwerveDrivetrain drivetrain = swerveModulee.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(Constants.Drivetrain.MaxSpeed * 0.1).withRotationalDeadband(Constants.Drivetrain.MaxAngularRate * 0.1) // Add a 10% deadband

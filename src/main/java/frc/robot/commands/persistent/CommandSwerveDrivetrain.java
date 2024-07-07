@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,6 +82,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public void configurePathPlanner(){}
+
+    public Pose2d getPose() {
+        return this.m_odometry.getEstimatedPosition();
+    }
+
+    public Translation3d getTranslation3d() {
+        return new Translation3d(getPose().getX(), getPose().getY(), 0.0);
+    }
 
     @Override
     public void periodic() {
