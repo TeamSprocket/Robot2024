@@ -5,17 +5,17 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterPivot;
-import frc.robot.subsystems.OLDSwerveDrive;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PreloadtoMidlineRed extends SequentialCommandGroup {
   /** Creates a new PreloadtoMidlineRed. */
-  public PreloadtoMidlineRed(OLDSwerveDrive swerveDrive, Intake intake, ShooterPivot shooterPivot, Shooter shooter) {
+  public PreloadtoMidlineRed(CommandSwerveDrivetrain swerveDrive, Intake intake, ShooterPivot shooterPivot, Shooter shooter) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(

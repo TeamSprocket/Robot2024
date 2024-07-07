@@ -13,8 +13,9 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.persistent.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Vision;
 
-public class Swerve extends SubsystemBase {
+public class TunerConstants extends SubsystemBase {
 
   public CommandSwerveDrivetrain DriveTrain;
 
@@ -26,7 +27,9 @@ public class Swerve extends SubsystemBase {
   private SwerveModuleConstants BackLeft;
   private SwerveModuleConstants BackRight;
 
-  public Swerve() {
+  private Vision limelight = new Vision();
+
+  public TunerConstants() {
     DrivetrainConstants = new SwerveDrivetrainConstants()
       .withCANbusName(Constants.Drivetrain.kCANbusName)
       .withPigeon2Id(Constants.Drivetrain.kPigeonId)
@@ -65,7 +68,7 @@ public class Swerve extends SubsystemBase {
       Constants.Drivetrain.kBackRightSteerMotorId, Constants.Drivetrain.kBackRightDriveMotorId, Constants.Drivetrain.kBackRightEncoderId, Constants.Drivetrain.kBackRightEncoderOffset, Units.inchesToMeters(Constants.Drivetrain.kBackRightXPosInches), Units.inchesToMeters(Constants.Drivetrain.kBackRightYPosInches), Constants.Drivetrain.kInvertRightSide)
       .withSteerMotorInverted(Constants.Drivetrain.kBackRightSteerInvert);
 
-    DriveTrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
+    DriveTrain = new CommandSwerveDrivetrain(limelight, DrivetrainConstants, FrontLeft,
       FrontRight, BackLeft, BackRight);
   }
 }

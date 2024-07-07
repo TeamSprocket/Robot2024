@@ -55,6 +55,10 @@ public class Vision extends SubsystemBase {
         }
     }
 
+    public PoseEstimate getPoseEstimate() { // !!
+        return LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+    }
+
     public Pose2d getPose2d() {
         LimelightHelper.PoseEstimate estimate;
 

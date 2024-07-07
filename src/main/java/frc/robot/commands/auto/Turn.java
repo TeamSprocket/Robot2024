@@ -4,6 +4,8 @@
 
 package frc.robot.commands.auto;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -11,17 +13,17 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
-import frc.robot.subsystems.OLDSwerveDrive;
+import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 import frc.util.Util;
 
 public class Turn extends Command {
   /** Creates a new MidlineLeft. */
-  OLDSwerveDrive swerveDrive;
+  CommandSwerveDrivetrain swerveDrive;
   double desiredAngleRad;
 
   PIDController pidController = new PIDController(0, 0, 0);
 
-  public Turn(OLDSwerveDrive swerveDrive, double desiredAngle) {
+  public Turn(CommandSwerveDrivetrain swerveDrive, double desiredAngle) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerveDrive = swerveDrive;
     this.desiredAngleRad = Math.toRadians(desiredAngle);
@@ -40,9 +42,7 @@ public class Turn extends Command {
     double output = Util.minmax(pidController.calculate(swerveDrive.getHeading(), desiredAngleRad), -1, 1);
 
     ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(0.0, 0.0, output, new Rotation2d(swerveDrive.getHeading()));
-    SwerveModuleState[] moduleStates = Constants.OldDrivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-    SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.OldDrivetrain.kMaxSpeed);
-    swerveDrive.setModuleStates(moduleStates);
+    swerveDrive.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(chassisSpeeds));
   }
 
   // Called once the command ends or is interrupted.

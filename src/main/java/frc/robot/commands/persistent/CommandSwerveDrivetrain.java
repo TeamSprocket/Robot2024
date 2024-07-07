@@ -9,6 +9,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 
 // import com.pathplanner.lib.auto.AutoBuilder;
@@ -19,16 +20,23 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
+import frc.robot.Constants.RobotState;
 import frc.robot.LimelightHelper.PoseEstimate;
 import frc.robot.subsystems.Vision;
+import frc.util.Util;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -47,14 +55,22 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedOperatorPerspective = false;
 
+    private Vision limelight;
+    private PIDController speakerLockPIDController;
+    private double headingLockLastOffset;
+
     // public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
     //     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     //     if (Utils.isSimulation()) {
     //         startSimThread();
     //     }
     // }
-    public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
+    public CommandSwerveDrivetrain(Vision limelight, SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) { // !!
         super(driveTrainConstants, modules);
+
+        this.limelight = limelight; // !!
+
+        speakerLockPIDController = new PIDController(Constants.Drivetrain.turnPID.kP, Constants.Drivetrain.turnPID.kI, Constants.Drivetrain.turnPID.kD);
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -81,6 +97,50 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public void configurePathPlanner(){}
 
+    public void updateOdometryWithVision() { // !!
+        PoseEstimate poseEstimate = limelight.getPoseEstimate();
+        if (limelight.hasTargets(poseEstimate.pose.getTranslation())) { // LL can see tags
+            this.m_odometry.addVisionMeasurement(poseEstimate.pose, poseEstimate.timestampSeconds);
+        }
+    }
+
+    public double getLockHeadingToSpeakerTSpeed() {
+        double PIDOutput = speakerLockPIDController.calculate(getHeading(), 210.0);
+        if (speakerLockPIDController.atSetpoint()) {
+        PIDOutput = 0.0;
+        }
+        double limitedOutput = Util.minmax(PIDOutput, -Constants.OldDrivetrain.kHeadingLockPIDMaxOutput, Constants.OldDrivetrain.kHeadingLockPIDMaxOutput);
+
+        SmartDashboard.putNumber("Speaker Lock Output [SD]", limitedOutput);
+
+        return limitedOutput;
+
+        // return new InstantCommand(() -> this.setControl(new SwerveRequest.ApplyChassisSpeeds().withSpeeds(new ChassisSpeeds())));
+    }
+
+    public void updateLastOffsets() {
+        headingLockLastOffset = Math.toRadians(limelight.getXOffset());
+    }
+
+    public double getHeading() {
+        double angle = this.m_pigeon2.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
+        angle *= -1.0;
+        return angle;
+    }
+
+    public double getTeleopTSpeed(Supplier<Double> tSupplier) {
+        double tSpeed = tSupplier.get();
+        
+        if (Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) { // override teleop turning to lock onto a speaker 
+            tSpeed = getLockHeadingToSpeakerTSpeed();
+        }
+        return tSpeed;
+    }
+
+    public Pose2d getPose() {
+        return this.m_odometry.getEstimatedPosition();
+    }
+
     @Override
     public void periodic() {
         /* Periodically try to apply the operator perspective */
@@ -95,6 +155,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                 : BlueAlliancePerspectiveRotation);
                 hasAppliedOperatorPerspective = true;
             });
+        }
+
+        if (Math.abs(this.m_pigeon2.getRate()) < 720 && limelight.hasTargets()) { // !!
+            updateOdometryWithVision();
         }
     }
 }

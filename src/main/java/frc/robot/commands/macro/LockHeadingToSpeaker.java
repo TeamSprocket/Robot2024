@@ -7,12 +7,12 @@ package frc.robot.commands.macro;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.RobotState;
-import frc.robot.subsystems.OLDSwerveDrive;
+import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 
 public class LockHeadingToSpeaker extends Command {
 
-  OLDSwerveDrive swerveDrive;
-  public LockHeadingToSpeaker(OLDSwerveDrive swerveDrive) {
+  CommandSwerveDrivetrain swerveDrive;
+  public LockHeadingToSpeaker(CommandSwerveDrivetrain swerveDrive) {
     this.swerveDrive = swerveDrive;
   }
 

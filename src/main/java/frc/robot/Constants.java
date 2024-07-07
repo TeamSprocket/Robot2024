@@ -482,6 +482,13 @@ public class Constants {
         public static final double kBackRightXPosInches = -13.125;
         public static final double kBackRightYPosInches = -13.125;
 
+        // ------ PID and FF ------
+
+        public static PIDConst turnPID = new PIDConst(100, 0, 0.2);
+        public static double turnkV = 1.5;
+
+        public static PIDConst drivePID = new PIDConst(3, 0, 0);
+
         // ------ Configs ------
 
         // The steer motor uses any SwerveModule.SteerRequestType control request with the
