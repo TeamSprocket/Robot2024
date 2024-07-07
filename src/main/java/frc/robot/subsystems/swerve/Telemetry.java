@@ -107,10 +107,6 @@ public class Telemetry {
 
             SmartDashboard.putData("Module " + i, m_moduleMechanisms[i]);
         }
-
-        SmartDashboard.putNumber("Pose X", pose.getX());
-        SmartDashboard.putNumber("Pose Y", pose.getY());
-        SmartDashboard.putNumber("Pose Rot", pose.getRotation().getDegrees()); // TODO: confirm these values
     }
 
     public Translation3d getTranslation3d() {

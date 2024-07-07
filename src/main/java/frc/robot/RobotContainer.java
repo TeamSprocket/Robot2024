@@ -37,7 +37,7 @@ import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.swerve.Swerve;
+import frc.robot.subsystems.swerve.TunerConstants;
 import frc.robot.subsystems.swerve.Telemetry;
 
 public class RobotContainer {
@@ -58,7 +58,7 @@ public class RobotContainer {
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
   // ------- Swerve Generated -------
-  private final Swerve swerveModulee = new Swerve();
+  private final TunerConstants swerveModulee = new TunerConstants();
   private final CommandXboxController driver = new CommandXboxController(0); // My joystick
   private final CommandSwerveDrivetrain drivetrain = swerveModulee.DriveTrain; // My drivetrain
 

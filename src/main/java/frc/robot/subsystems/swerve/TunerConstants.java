@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 
-public class Swerve extends SubsystemBase {
+public class TunerConstants extends SubsystemBase {
 
   public CommandSwerveDrivetrain DriveTrain;
 
@@ -26,7 +26,7 @@ public class Swerve extends SubsystemBase {
   private SwerveModuleConstants BackLeft;
   private SwerveModuleConstants BackRight;
 
-  public Swerve() {
+  public TunerConstants() {
     DrivetrainConstants = new SwerveDrivetrainConstants()
       .withCANbusName(Constants.Drivetrain.kCANbusName)
       .withPigeon2Id(Constants.Drivetrain.kPigeonId)
