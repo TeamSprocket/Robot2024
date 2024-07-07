@@ -20,6 +20,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -139,6 +140,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public Pose2d getPose() {
         return this.m_odometry.getEstimatedPosition();
+    }
+
+    public Translation3d getTranslation3d() {
+        return new Translation3d(getPose().getX(), getPose().getY(), 0.0);
     }
 
     @Override

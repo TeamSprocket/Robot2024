@@ -112,12 +112,4 @@ public class Telemetry {
         SmartDashboard.putNumber("Pose Y", pose.getY());
         SmartDashboard.putNumber("Pose Rot", pose.getRotation().getDegrees()); // TODO: confirm these values
     }
-
-    public Translation3d getTranslation3d() {
-        return new Translation3d(getPose().getX(), getPose().getY(), 0.0);
-    }
-
-    public Pose2d getPose() {
-        return m_lastPose;
-    }
 }

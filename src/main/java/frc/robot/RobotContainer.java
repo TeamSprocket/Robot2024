@@ -28,20 +28,21 @@ import frc.robot.subsystems.swerve.Telemetry;
 
 public class RobotContainer {
 
+  private final CommandXboxController driver = new CommandXboxController(0); // My joystick
   public final static Controller operator = new Controller(1);
 
   PowerDistribution pdh = new PowerDistribution();
 
+  private final TunerConstants tunerConstants = new TunerConstants();
+  private final CommandSwerveDrivetrain swerveDrive = tunerConstants.DriveTrain; // My drivetrain
+
   private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
   private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
-  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> logger.getTranslation3d());
-  private final Shooter shooter = new Shooter(() -> logger.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> logger.getTranslation3d());
+  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
+  private final Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   private final Intake intake = new Intake();
 
   // ------- Swerve Generated -------
-  private final TunerConstants tunerConstants = new TunerConstants();
-  private final CommandXboxController driver = new CommandXboxController(0); // My joystick
-  private final CommandSwerveDrivetrain swerveDrive = tunerConstants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
       .withDeadband(Constants.Drivetrain.MaxSpeed * 0.1).withRotationalDeadband(Constants.Drivetrain.MaxAngularRate * 0.1) // Add a 10% deadband
