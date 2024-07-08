@@ -23,16 +23,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.auto.DoNothing;
-import frc.robot.auto.OneNoteNoTaxi;
 import frc.robot.commands.EjectNote;
-import frc.robot.commands.auto.IntakeNoteManualTimed;
-import frc.robot.commands.auto.PreloadtoMidlineBlue;
-import frc.robot.commands.auto.PreloadtoMidlineRed;
-// import frc.robot.commands.auto.OneNoteAuton;
-import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
-import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
-import frc.robot.commands.macro.LockHeadingToSpeaker;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
@@ -72,51 +63,6 @@ public class RobotContainer {
 
   public RobotContainer() {
     configureBindings();
-    initNamedCommands();
-    initAutons();
-  }
-
-  public void initAutons() {
-
-    // ------ path planner ------
-
-    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-    // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
-    // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
-    // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
-    // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
-    // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
-    // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
-    // autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
-    // autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
-    // autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
-    // autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
-    // autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
-    // autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
-    // autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
-    // autonChooser.addOption("Middle 1 + 3", new PathPlannerAuto("Middle 1 + 3"));
-    // autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
-    // autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
-    // autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
-    // autonChooser = AutoBuilder.buildAutoChooser();
-
-    // ------- by encoder ticks -------
-
-    // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
-    // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
-    
-    SmartDashboard.putData("Auto Routine Selector", autonChooser);
-  }
-
-  public void initNamedCommands() {
-    NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
-    NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
-    NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
-    // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
-    // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
-    // NamedCommands.registerCommand("PrintHello", new PrintHello());
-
   }
 
   public Command getAutonomousCommand() {
@@ -145,57 +91,13 @@ public class RobotContainer {
     }
     drivetrain.registerTelemetry(logger::telemeterize);
 
-    // swerveDrive.setDefaultCommand(new DriveTeleop(
-    //     swerveDrive,
-    //     () -> -driver.getController().getLeftX(),
-    //     () -> driver.getController().getLeftY(),
-    //     () -> -driver.getController().getRightX()));
-    // driver.getController().rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
-    // driver.getController().leftBumper().whileTrue(new LockHeadingToSpeaker(swerveDrive));
-    
-    // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
-    // driver.button(RobotMap.Controller.Y)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
-    // driver.button(RobotMap.Controller.X)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
-    // driver.button(RobotMap.Controller.B)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
-    // driver.button(RobotMap.Controller.A)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
-
     // --------------------=operator=--------------------
 
     operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    // operator.getController().y().whileTrue(new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, swerveDrive));
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
-    operator.getController().b().onTrue(new CancelIntake(intake, shooter, shooterPivot));
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
     operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new ShootCrossfieldSpinup(shooterPivot, shooter, intake)); // Menu button
-
-    // ------ elevator -------
-    // operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
-    // operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot, intake));
-    // operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbUp(elevator, shooter, shooterPivot, intake));
-    // operator.getController().rightTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbDown(elevator, intake));
-    // elevator.setDefaultCommand(new ElevatorManual(elevator, () -> operator.getController().getLeftY()));
-    
-    // operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
-    // operator.getController().b().whileTrue(new ScoreSpeakerShoot(shooterPivot, shooter, swerveDrive));
-    // operator.getController().b().whileTrue(new ScoreSpeakerAmpZone(shooterPivot, shooter, swerveDrive));
-    // operator.getController().b().whileTrue(new ScoreSpeakerPodiumShoot(shooterPivot, shooter, swerveDrive));
-    // operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
-
-  }
-
-  public void updateNoteRumbleListener() {
-    // driver.updateNoteRumbleListener(shooter::beamBroken, shooter::getState); // not gonna deal with this rn :|
-    operator.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
-  }
-
-  public void stopNoteRumbleListener() {
-    // driver.stopNoteRumbleListener();
-    operator.stopNoteRumbleListener();
   }
   
   public ShooterPivot getShooterPivot() {
@@ -211,15 +113,5 @@ public class RobotContainer {
     intake.zeroPosition();
     shooterPivot.zeroPosition();
     elevator.zeroPosition();
-    
   }
-  
-
-  
-
-  
-
-
-  
-
 }

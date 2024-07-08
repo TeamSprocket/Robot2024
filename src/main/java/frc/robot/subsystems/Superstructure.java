@@ -18,25 +18,21 @@ public class Superstructure extends SubsystemBase {
     NONE,
     STOWED,
     INTAKE,
-    WAIT_SPEAKER_SUBWOOFER, WAIT_SPEAKER_PODIUM, WAIT_SPEAKER_AMP_ZONE,
-    /*WAIT_SPEAKER, WAIT_SPEAKER_HIGH,*/ WAIT_AMP,
-    SCORE_SPEAKER_SUBWOOFER, SCORE_SPEAKER_PODIUM, SCORE_SPEAKER_AMP_ZONE,
-    /*SCORE_SPEAKER, SCORE_SPEAKER_HIGH,*/ SCORE_AMP,
-    CLIMB
+    WAIT_SPEAKER_SUBWOOFER, WAIT_SPEAKER_PODIUM,
+    SCORE,
+    EJECT_NOTE
   }
   public SSStates state = SSStates.NONE;
   public SSStates lastState = SSStates.NONE;
 
   Timer timer = new Timer();
 
-  Elevator elevator;
   ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
   Supplier<Pose2d> botPose2dSupplier;
 
-  public Superstructure(Elevator elevator, ShooterPivot shooterPivot, Shooter shooter, Intake intake, Supplier<Pose2d> botPose2dSupplier) {
-    this.elevator = elevator;
+  public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake, Supplier<Pose2d> botPose2dSupplier) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
@@ -56,15 +52,11 @@ public class Superstructure extends SubsystemBase {
   public void periodic() {
     switch (state) {
       case NONE:
-        // elevator.setState(ElevatorStates.NONE); // TODO re-enable
-        // shooterPivot.setState(ShooterPivotStates.NONE);
-        // shooter.setState(ShooterStates.NONE);
-        // intake.setState(IntakeStates.NONE);
+
       break;
       
 
       case STOWED:
-        elevator.setState(ElevatorStates.STOWED);
         shooterPivot.setState(ShooterPivotStates.STOWED);
         shooter.setState(ShooterStates.STANDBY);
         intake.setState(IntakeStates.STOWED);
@@ -72,25 +64,7 @@ public class Superstructure extends SubsystemBase {
       
 
       case INTAKE:
-        // // Reset tolerance timer
-        // if (lastState != SSStates.INTAKE) {
-        //   timer.reset();
-        //   timer.stop();
-        // }
-        // // Start tolerance timer
-        // if (intake.hasDetectedNote()) {
-        //   timer.start();
-        // }
 
-        // if (shooter.beamBroken()) {
-        //   // Note in shooter 
-        //   timer.start();
-        // } else {
-        //   timer.reset();
-        //   timer.stop();
-        // }
-
-        elevator.setState(ElevatorStates.STOWED);
         shooterPivot.setState(ShooterPivotStates.STOWED);
         shooter.setState(ShooterStates.INTAKE);
         intake.setState(IntakeStates.INTAKE);
@@ -99,90 +73,6 @@ public class Superstructure extends SubsystemBase {
           setState(SSStates.STOWED);
         } 
       break;
-      
-
-      // // case WAIT_HANDOFF:
-      // // if (allElementsAtGoalNoShooter()) {
-      // //   timer.start(); 
-      // // } else {
-      // //   timer.reset();
-      // //   timer.stop();
-      // // }
-
-      // //   elevator.setState(ElevatorStates.HANDOFF);
-      // //   shooterPivot.setState(ShooterPivotStates.HANDOFF);
-      // //   shooter.setState(ShooterStates.HANDOFF);
-      // //   intake.setState(IntakeStates.WAIT_HANDOFF);
-
-      // //   if (timer.get() > Constants.Superstructure.kWaitHandoffTimeToleranceSec) {
-      // //     setState(SSStates.HANDOFF);
-      // //   }
-
-      // // break;
-
-
-      // case HANDOFF:
-      //   if (shooter.beamBroken()) {
-      //     // Note in shooter 
-      //     timer.start();
-      //     // roll intake and shooter
-      //   } else {
-      //     timer.reset();
-      //     timer.stop();
-      //   }
-
-      //   // elevator.setState(ElevatorStates.HANDOFF);
-      //   // shooterPivot.setState(ShooterPivotStates.HANDOFF);
-      //   // shooter.setState(ShooterStates.HANDOFF); // will intake note in resting position
-      //   // intake.setState(IntakeStates.HANDOFF); // outtakes note (but stays in normal position)
-
-      //   if (timer.get() >= Constants.Superstructure.kWaitBeambreakTimeToleranceSec) {
-      //     setState(SSStates.STOWED);
-      //   }
-        
-      // break;
-      
-
-      // case WAIT_SPEAKER:
-      //   if (shooterElementsAtGoal()) {
-      //     timer.start();
-      //   } else {
-      //     timer.reset();
-      //     timer.stop();
-      //   }
-
-      //   elevator.setState(ElevatorStates.SPEAKER);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER);
-      //   shooter.setState(ShooterStates.SPINUP);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   // Transitioner
-      //   if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      //     setState(SSStates.SCORE_SPEAKER);
-      //   }
-        
-      // break;
-      
-
-      // case WAIT_SPEAKER_HIGH:
-      // if (shooterElementsAtGoal()) {
-      //     timer.start();
-      //   } else {
-      //     timer.reset();
-      //     timer.stop();
-      //   }
-
-      //   elevator.setState(ElevatorStates.SPEAKER_HIGH);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_HIGH);
-      //   shooter.setState(ShooterStates.SPINUP);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   // Transitioner
-      //   if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      //     setState(SSStates.SCORE_SPEAKER_HIGH);
-      //   }
-      // break;
-
 
       case WAIT_SPEAKER_SUBWOOFER:
         if (shooterElementsAtGoal() && headingAtGoal()) {
@@ -199,35 +89,12 @@ public class Superstructure extends SubsystemBase {
 
         // Transitioner
         if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-          setState(SSStates.SCORE_SPEAKER_SUBWOOFER);
+          setState(SSStates.SCORE);
         }
         
       break;
       
-      
-
-      // case WAIT_SPEAKER_PODIUM:
-      //   if (shooterElementsAtGoal() && headingAtGoal()) {
-      //     timer.start();
-      //   } else {
-      //     timer.reset();
-      //     timer.stop();
-      //   }
-
-      //   // elevator.setState(ElevatorStates.SPEAKER);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
-      //   shooter.setState(ShooterStates.SPINUP_PODIUM);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   // Transitioner
-      //   if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-      //     setState(SSStates.SCORE_SPEAKER_PODIUM);
-      //   }
-      // break;
-      
-
-
-      case WAIT_SPEAKER_AMP_ZONE:
+      case WAIT_SPEAKER_PODIUM:
         if (shooterElementsAtGoal() && headingAtGoal()) {
           timer.start();
         } else {
@@ -236,73 +103,18 @@ public class Superstructure extends SubsystemBase {
         }
 
         // elevator.setState(ElevatorStates.SPEAKER);
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_AMP_ZONE);
-        shooter.setState(ShooterStates.SPINUP_AMP_ZONE);
+        shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
+        shooter.setState(ShooterStates.SPINUP_PODIUM);
         intake.setState(IntakeStates.STOWED);
 
         // Transitioner
         if (timer.get() > Constants.Superstructure.kWaitSpeakerTimeToleranceSec) {
-          setState(SSStates.SCORE_SPEAKER_AMP_ZONE);
+          setState(SSStates.SCORE);
         }
-        
       break;
       
-
-
-
-
-
-
-
-
-
-      
-
-      case WAIT_AMP:
-        elevator.setState(ElevatorStates.AMP);
-        shooterPivot.setState(ShooterPivotStates.AMP);
-        shooter.setState(ShooterStates.STANDBY);
-        intake.setState(IntakeStates.STOWED);
-      break;
-      
-
-      // case SCORE_SPEAKER:
-      //   if (lastState != SSStates.SCORE_SPEAKER) {
-      //     timer.reset();
-      //     timer.start();
-      //   }
-
-      //   elevator.setState(ElevatorStates.SPEAKER);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER);
-      //   shooter.setState(ShooterStates.SCORE_SPEAKER);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
-      //     setState(SSStates.STOWED);
-      //   }
-      // break;
-      
-
-      // case SCORE_SPEAKER_HIGH:
-
-      // if (lastState != SSStates.SCORE_SPEAKER) {
-      //     timer.reset();
-      //     timer.start();
-      //   }
-
-      //   elevator.setState(ElevatorStates.SPEAKER_HIGH);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_HIGH);
-      //   shooter.setState(ShooterStates.SCORE_SPEAKER_HIGH);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   if (timer.get() > Constants.Superstructure.kScoreSpeakerTimeToleranceSec) {
-      //     setState(SSStates.STOWED);
-      //   }
-      // break;
-      
-
-      case SCORE_SPEAKER_SUBWOOFER:
-        if (lastState != SSStates.SCORE_SPEAKER_SUBWOOFER) {
+      case SCORE:
+        if (lastState != SSStates.SCORE) {
           timer.reset();
           timer.start();
         }
@@ -317,58 +129,10 @@ public class Superstructure extends SubsystemBase {
         }
       break;
 
-      
-
-      // case SCORE_SPEAKER_PODIUM:
-      //   if (lastState != SSStates.SCORE_SPEAKER_PODIUM) {
-      //     timer.reset();
-      //     timer.start();
-      //   }
-
-      //   // elevator.setState(ElevatorStates.SPEAKER);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
-      //   shooter.setState(ShooterStates.SCORE_SPEAKER_PODIUM);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
-      //     setState(SSStates.STOWED);
-      //   }
-      // break;
-
-
-
-      // case SCORE_SPEAKER_AMP_ZONE:
-      //   if (lastState != SSStates.SCORE_SPEAKER_AMP_ZONE) {
-      //     timer.reset();
-      //     timer.start();
-      //   }
-
-      //   // elevator.setState(ElevatorStates.SPEAKER);
-      //   shooterPivot.setState(ShooterPivotStates.SPEAKER_TEST);
-      //   shooter.setState(ShooterStates.SCORE_SPEAKER_TEST);
-      //   intake.setState(IntakeStates.STOWED);
-
-      //   if (timer.get() > Constants.Superstructure.kScoreSpeakerShootTimeToleranceSec) {
-      //     setState(SSStates.STOWED);
-      //   }
-      // break;
-
-      case SCORE_AMP:
-        elevator.setState(ElevatorStates.AMP);
-        shooterPivot.setState(ShooterPivotStates.AMP);
-        shooter.setState(ShooterStates.SCORE_AMP);
-        intake.setState(IntakeStates.STOWED);
+      case EJECT_NOTE:
       break;
       
-
-      case CLIMB:
-        // elevator.setState(ElevatorStates.CLIMB);
-        shooterPivot.setState(ShooterPivotStates.CLIMB);
-        shooter.setState(ShooterStates.NONE);
-        intake.setState(IntakeStates.STOWED);
-      break;
-    }
-
+      }
 
     lastState = state;
   }

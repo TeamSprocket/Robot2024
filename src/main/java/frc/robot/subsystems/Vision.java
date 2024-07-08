@@ -35,26 +35,6 @@ public class Vision extends SubsystemBase {
         debug();
     }
 
-    /**
-     * @return {xCoord, yCoord, timestamp}
-     */
-    public Translation2d getTranslation2d() {
-        LimelightHelper.PoseEstimate estimate;
-
-        if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
-            return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
-        } else {
-            return new Translation2d(0.0, 0.0);
-        }
-    }
-
     public Pose2d getPose2d() {
         LimelightHelper.PoseEstimate estimate;
 
@@ -139,8 +119,6 @@ public class Vision extends SubsystemBase {
     // }
 
     private void debug() {
-        SmartDashboard.putNumber("Robot Pose X [VI]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
         // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
         // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
         // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
@@ -148,20 +126,4 @@ public class Vision extends SubsystemBase {
         // SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
         // SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
      }
-
-    // public Translation2d getTranslationRobotToGoal() {
-        // double x = 0.0;
-        // double y = 0.0;
-
-        // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-        //     x = Math.abs(Constants.Limelight.speakerBlue.getX() - getTranslation2d().getX()); 
-        //     y = Math.abs(Constants.Limelight.speakerBlue.getY() - getTranslation2d().getY());
-        // }
-        // else {
-        //     x = Math.abs(Constants.Limelight.speakerRed.getX() - getTranslation2d().getX());
-        //     y = Math.abs(Constants.Limelight.speakerRed.getY() - getTranslation2d().getY());
-        // }
-
-        // return Math.atan(y/x);
-    // }
 }
