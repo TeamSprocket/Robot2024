@@ -44,4 +44,24 @@ public class Vision extends SubsystemBase {
         } else return false;
     }
 
+    public boolean hasTargets(Translation2d translation) {
+        if (translation.getX() != 0.0 && translation.getY() != 0.0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public double getXOffset() {
+        if (LimelightHelper.getTV("limelight")) {
+            if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
+                return LimelightHelper.getTX("limelight"); 
+            }
+            else {
+                return 0.0;
+            }
+        } else {
+            return 0.0;
+        }
+    }
 }

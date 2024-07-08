@@ -37,9 +37,6 @@ public class Intake extends SubsystemBase {
 
     private double pivotSpeed = 0;
 
-    // ProfiledPIDController profiledPIDController;
-    PIDController pidController;
-
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
 
@@ -126,9 +123,6 @@ public class Intake extends SubsystemBase {
         // debug - state selector
 
         // setState(selectIntakeState.getSelected()); // COMMENT OUT PLZ
-
-        pidController.setP(ShuffleboardIO.getDouble("PIVOT KP [IN]"));
-        pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
         switch (state) {
             case NONE:
                 pivotIntake.set(0);
