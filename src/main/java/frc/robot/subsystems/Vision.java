@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper;
+import frc.robot.LimelightHelper.PoseEstimate;
 import frc.util.Util;
 
 public class Vision extends SubsystemBase {
@@ -23,139 +24,24 @@ public class Vision extends SubsystemBase {
 
     public Vision() {}
 
-    @Override
-    public void periodic() {
-        publisher.set(getPose2d());
-        debug();
-    }
-
-    /**
-     * @return {xCoord, yCoord, timestamp}
-     */
     public Translation2d getTranslation2d() {
-        LimelightHelper.PoseEstimate estimate;
-
+        // ask why poseestimate
+        PoseEstimate poseEstimate;
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
-            return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
+            // ask why we use MegaTag and how they work
+            poseEstimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+            return new Translation2d(poseEstimate.pose.getX(), poseEstimate.pose.getY());
         } else {
-            return new Translation2d(0.0, 0.0);
-        }
-    }
-
-    public Pose2d getPose2d() {
-        LimelightHelper.PoseEstimate estimate;
-
-        if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
-
-            return estimate.pose;
-        } else {
-            return new Pose2d();
+            return new Translation2d(0, 0);
         }
     }
 
     public boolean hasTargets() {
-        return LimelightHelper.getTV("limelight");
-    }
-
-    public boolean hasTargets(Translation2d translation) {
-        if (translation.getX() != 0.0 && translation.getY() != 0.0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @return Offset of limelight crosshair center to fiducials in DEGREES
-     */     
-    public double getXOffset() {
         if (LimelightHelper.getTV("limelight")) {
-            if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
-                return LimelightHelper.getTX("limelight"); 
-            }
-            else {
-                return 0.0;
-            }
-        } else {
-            return 0.0;
-        }
+            if (getTranslation2d().getX() != 0 && getTranslation2d().getY() != 0) return true;
+            else return false;
+        } else return false;
     }
 
-    // public double getSpeakerAngle() {
-    //     if (LimelightHelper.getTV("limelight")) {
-    //         Translation2d robotToSpeakerPose = targetSpeaker.minus(getTranslation2d());
-    //         return robotToSpeakerPose.getAngle().getDegrees();
-    //     } else {
-    //         return 0.0;
-    //     }
-    // }
-
-    // public void getTargetSpeaker() {
-
-    //     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-    //         this.targetSpeaker = new Translation2d(0.0, Constants.FieldConstants.kSpeakerY);
-    //     }
-    //     else {
-    //         this.targetSpeaker = new Translation2d(Constants.FieldConstants.kFieldLength, Constants.FieldConstants.kSpeakerY);
-    //     }
-    // }
-
-    // public double getDistanceToTarget(Translation2d robotTranslation) { // TODO: find distance offset + add filter if needed
-    //     getTargetSpeaker();
-    //     return targetSpeaker.getDistance(robotTranslation);
-    // }
-
-    // public double getDistToTarget() { // TODO: check which one is more accurate
-    //     return Math.hypot(getTranslationRobotToGoal().getX(), getTranslationRobotToGoal().getY());
-    // }
-
-    // private Translation2d getTranslationRobotToGoal() {
-    //     getTargetSpeaker();
-    //     Translation2d robotToGoal;
-
-    //     robotToGoal = targetSpeaker.minus(getTranslation2d());
-
-    //     return robotToGoal;
-    // }
-
-    private void debug() {
-        SmartDashboard.putNumber("Robot Pose X [VI]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
-        // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
-        // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
-        // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
-        // SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
-        // SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
-        // SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
-     }
-
-    // public Translation2d getTranslationRobotToGoal() {
-        // double x = 0.0;
-        // double y = 0.0;
-
-        // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-        //     x = Math.abs(Constants.Limelight.speakerBlue.getX() - getTranslation2d().getX()); 
-        //     y = Math.abs(Constants.Limelight.speakerBlue.getY() - getTranslation2d().getY());
-        // }
-        // else {
-        //     x = Math.abs(Constants.Limelight.speakerRed.getX() - getTranslation2d().getX());
-        //     y = Math.abs(Constants.Limelight.speakerRed.getY() - getTranslation2d().getY());
-        // }
-
-        // return Math.atan(y/x);
-    // }
 }
