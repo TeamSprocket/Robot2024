@@ -220,15 +220,27 @@ public class Constants {
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
-        public static final double kPivotAngleStowed = 23.0; // 20
-        public static final double kPivotAngleIntake = 130.0;
-        public static final double kPivotAngleEject = 30.0; // 55.0
+        public static final double kPivotAngleStowed = 0.19; // 23.0
+        public static final double kPivotAngleIntake = -0.0694;
+        public static final double kPivotAngleEject = 0.1389; // 30.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
-        public static final double kPivotAngleScoreSpeaker = 28.0; // 26.0;
-        public static final double kPivotAngleIndexing = 20.0;  // 10.0
-        public static final double kPivotAngleShootCrossfield = 30.0; // TODO: tune this
-        public static final double kPivotAngleScoreAmp = 27.0;
-        public static final double kPivotAngleClimb = 130.0;
+        public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
+        public static final double kPivotAngleIndexing = 0.1667;  // 20.0
+        public static final double kPivotAngleShootCrossfield = 0.1389; // 30.0
+        public static final double kPivotAngleScoreAmp = 0.1472; // 27.0
+        public static final double kPivotAngleClimb = 0;
+
+        public static final double kPivotIntakeS = 0.27;
+        public static final double kPivotIntakeV = 1.4;
+        public static final double kPivotIntakeA = 0.01;
+        public static final double kPivotIntakeG = 0.29;
+        public static final double kPivotIntakeP = 20.0;
+        public static final double kPivotIntakeI = 0.0;
+        public static final double kPivotIntakeD = 1.5;
+        public static final double kPivotIntakeMMCruiseVelocity = 3.0;
+        public static final double kPivotIntakeMMCruiseAccel = 1.5;
+        
+        public static final double kPivotAngleOffsetHorizontal = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 0.4;
@@ -238,25 +250,12 @@ public class Constants {
         
 
         public static final boolean kIsRollInverted = true;
-        public static final boolean kIsPivotInverted = false;
-
-        // public static final double kPivotMaxVelocity = 0.0;
-        // public static final double kPivotMaxAccel = 0.0;
-        public static final double kMaxPivotOutput = 0.18;
+        public static final boolean kIsPivotInverted = true;
 
         public static final double kAtGoalTolerance = 0.5; 
-        public static final double kFFtoPIDPivotTransitionTolerance = 20.0;
 
         public static final double kPivotIntakeGearRatio = 36.0;
-
-        public static final double kPPivot = 0.0058305929; // 1, 0.1
-        public static final double kIPivot = 0.0;
-        public static final double kDPivot = 0.0000748355;
-
-        public static final double kFFPivot = 0.15;
-
     }
-
     public static final class Vision {
 
         public static final Matrix<N3, N1> kMultipleTagStdDevs = VecBuilder.fill(0.5, 0.5, 6.24);
