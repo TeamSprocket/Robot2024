@@ -220,8 +220,8 @@ public class Constants {
         public static final double kSupplyCurrentLimitPivot = 0.0;
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
-        public static final double kPivotAngleStowed = 0.19; // 23.0
-        public static final double kPivotAngleIntake = -0.0694;
+        public static final double kPivotAngleStowed = 0.21; // 0.19; // 23.0
+        public static final double kPivotAngleIntake = -0.08; //0.0694;
         public static final double kPivotAngleEject = 0.1389; // 30.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
@@ -234,11 +234,11 @@ public class Constants {
         public static final double kPivotIntakeV = 1.4;
         public static final double kPivotIntakeA = 0.01;
         public static final double kPivotIntakeG = 0.29;
-        public static final double kPivotIntakeP = 20.0;
+        public static final double kPivotIntakeP = 40.0; //20.0
         public static final double kPivotIntakeI = 0.0;
-        public static final double kPivotIntakeD = 1.5;
-        public static final double kPivotIntakeMMCruiseVelocity = 3.0;
-        public static final double kPivotIntakeMMCruiseAccel = 1.5;
+        public static final double kPivotIntakeD = 1.5; // 1.5;
+        public static final double kPivotIntakeMMCruiseVelocity = 12.0; // 6.0; // 12.0;
+        public static final double kPivotIntakeMMCruiseAccel = 6; // 6.0;
         
         public static final double kPivotAngleOffsetHorizontal = 80.0;
 

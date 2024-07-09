@@ -28,6 +28,7 @@ import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.swerve.TunerConstants;
 import frc.robot.subsystems.swerve.Telemetry;
 
@@ -35,7 +36,8 @@ public class RobotContainer {
 
   // public final static Controller driver = new Controller(0);
   private final CommandXboxController driver = new CommandXboxController(0); // My joystick
-  public final static Controller operator = new Controller(1);
+  // public final static Controller operator = new Controller(1);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   PowerDistribution pdh = new PowerDistribution();
 
@@ -43,13 +45,11 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = tunerConst.DriveTrain; // My drivetrain
   private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
   
-  // SwerveDrive swerveDrive = new SwerveDrive(limelight);
-  private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
-  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> drivetrain.getTranslation3d());
-  private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
+  private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getLeftY(), () -> drivetrain.getTranslation3d());
+  private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getRightTriggerAxis(), () -> operator.getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
   private final Intake intake = new Intake();
 
-  // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
+  Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake);
 
   // ------- Swerve Generated -------
 
@@ -93,11 +93,31 @@ public class RobotContainer {
 
     // --------------------=operator=--------------------
 
-    operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
-    operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
-    operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
-    operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new ShootCrossfieldSpinup(shooterPivot, shooter, intake)); // Menu button
+    new Trigger(operator.rightBumper())
+      .whileTrue(superstructure.setState(SSStates.SCORE))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    new Trigger(operator.x())
+      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    new Trigger(operator.a())
+      .whileTrue(superstructure.setState(SSStates.INTAKE))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    new Trigger(operator.y())
+      .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    new Trigger(operator.b())
+      .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    // operator.rightBumper().whileTrue(superstructure.setState(SSStates.SCORE)); //
+    // operator.x().whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER));
+    // operator.a().whileTrue(superstructure.setState(SSStates.INTAKE));
+    // operator.button(RobotMap.Controller.MENU_BUTTON).whileTrue(superstructure.setState(SSStates.EJECT_NOTE)); // View button
+    // operator.button(RobotMap.Controller.VIEW_BUTTON).whileTrue(superstructure.setState(SSStates.CROSSFIELD)); // Menu button
   }
   
   public ShooterPivot getShooterPivot() {
@@ -112,6 +132,5 @@ public class RobotContainer {
     shooter.zeroPosition();
     intake.zeroPosition();
     shooterPivot.zeroPosition();
-    elevator.zeroPosition();
   }
 }

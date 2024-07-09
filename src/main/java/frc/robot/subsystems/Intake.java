@@ -53,10 +53,8 @@ public class Intake extends SubsystemBase {
         INDEXING,
         SCORE_SPEAKER_SUBWOOFER, 
         SCORE_SPEAKER,
-        AMP,
-        CROSSFIELD,
-        EJECT_NOTE,
-        CLIMB
+        // CROSSFIELD,
+        EJECT_NOTE
     }
 
     MotionMagicVoltage mmV = new MotionMagicVoltage(0);
@@ -123,8 +121,8 @@ public class Intake extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // debug - state selector
-
+        debug();
+        
         // setState(selectIntakeState.getSelected()); // COMMENT OUT PLZ
 
         // pidController.setP(ShuffleboardIO.getDouble("PIVOT KP [IN]"));
@@ -169,28 +167,9 @@ public class Intake extends SubsystemBase {
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleEject));
                 rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 break;
-
-            case CLIMB:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleClimb));
-                rollIntake.set(0.0);
-                break; 
         }
 
         lastState = state;
-
-        SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
-        SmartDashboard.putBoolean("At Goal [IN]", atGoal());
-        // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
-        SmartDashboard.putString("State Intake [IN]", state.toString());
-        SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
-        SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
-
-        // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
-
-        //debug
-        // SmartDashboard.putString("State[IN]", state.toString());
-        // SmartDashboard.putNumber("", pivotSpeed)
     }
 
     
@@ -253,5 +232,23 @@ public class Intake extends SubsystemBase {
 
     pivotIntake.getConfigurator().apply(motorConfigPivot);
     rollIntake.getConfigurator().apply(motorConfigRoll);
+  }
+
+  private void debug() {
+    SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
+    SmartDashboard.putBoolean("At Goal [IN]", atGoal());
+    // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
+    SmartDashboard.putString("State Intake [IN]", state.toString());
+    SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
+
+    // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
+
+    //debug
+    // SmartDashboard.putString("State[IN]", state.toString());
+    // SmartDashboard.putNumber("", pivotSpeed)
+
+    SmartDashboard.putNumber("Intake Speed [IN]", Math.abs(getPivotSpeed()));
   }
 }

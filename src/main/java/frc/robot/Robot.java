@@ -15,11 +15,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotState;
+import frc.robot.subsystems.Superstructure;
+import frc.robot.subsystems.Superstructure.SSStates;
 import frc.util.ShuffleboardIO;
 
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private Superstructure superstructure;
   private RobotContainer m_robotContainer;
 
   @Override
@@ -84,6 +86,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Constants.robotState = RobotState.TELEOP;
+    // superstructure.setState(SSStates.STOWED);
     // m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Coast); //
     // m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Brake); //
 
@@ -93,7 +96,8 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+}
 
   @Override
   public void teleopExit() {}
