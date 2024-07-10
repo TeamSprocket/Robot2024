@@ -7,6 +7,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
+import frc.robot.commands.superstructure.IntakeNote.IntakeCommandStates;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
@@ -28,6 +31,7 @@ public class Superstructure extends SubsystemBase {
   ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
+  private Timer timer = new Timer();
 
   public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
@@ -91,44 +95,105 @@ public class Superstructure extends SubsystemBase {
     intake.setState(IntakeStates.STOWED);
   }
 
-  private void intake() { //
+  private void intake() { // TEST NEW TIMER CODE
+
+    System.out.println("STARTING STARTING STARTING");
+    Timer timer = new Timer();
+    Timer accelTimer = new Timer();
+    IntakeCommandStates state = IntakeCommandStates.ACCEL;
     
+    // intake.setState(IntakeStates.INTAKE);
+    // shooter.setState(ShooterStates.INTAKE_ACCEL);
+    // shooterPivot.setState(ShooterPivotStates.INTAKE);
+
+    // if (shooter.getState() == ShooterStates.INTAKE_ACCEL && waitTimed(0.5)) {
+    //   shooter.setState(ShooterStates.INTAKE);
+
+    //   if (shooter.getState() == ShooterStates.INTAKE && shooter.beamBroken()) {
+    //     intake.setState(IntakeStates.INDEXING);
+    //     shooterPivot.setState(ShooterPivotStates.INDEXING);
+    //     shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+
+    //     if (shooter.getState() == ShooterStates.INTAKE_ROLLFORWARD && waitTimed(0.3)) {
+    //       shooter.setState(ShooterStates.HOLD_NOTE);
+          
+    //       if (shooter.getState() == ShooterStates.HOLD_NOTE && waitTimed(0.15)) {
+    //         shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+
+    //         if (shooter.getState() == ShooterStates.INTAKE_ROLLBACK && waitTimed(0.1) && shooter.hasNoteRollbackIndexer()) {
+    //           return;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
+
+    state = IntakeCommandStates.ACCEL;
+
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE_ACCEL);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
 
-    if (shooter.getState() == ShooterStates.INTAKE_ACCEL && waitTimed(0.5)) {
+    timer.reset();
+    timer.stop();
+
+    accelTimer.reset();
+    accelTimer.start();
+
+    if (state == IntakeCommandStates.ACCEL && accelTimer.get() > 0.5) {
+      System.out.println("INTAKING INTAKING INTAKING");
+      state = IntakeCommandStates.INTAKE;
       shooter.setState(ShooterStates.INTAKE);
+    }
 
-      if (shooter.getState() == ShooterStates.INTAKE && shooter.beamBroken()) {
-        intake.setState(IntakeStates.INDEXING);
-        shooterPivot.setState(ShooterPivotStates.INDEXING);
-        shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+    if (state == IntakeCommandStates.INTAKE && shooter.beamBroken()) {
+      System.out.println("FORWARD FORWARD FORWARD");
+      state = IntakeCommandStates.ROLLFORWARD;
+      intake.setState(IntakeStates.INDEXING);
+      // shooterPivot.setState(ShooterPivotStates.INDEXING);
+      shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+    }
 
-        if (shooter.getState() == ShooterStates.INTAKE_ROLLFORWARD && waitTimed(0.3)) {
-          shooter.setState(ShooterStates.HOLD_NOTE);
-          
-          if (shooter.getState() == ShooterStates.HOLD_NOTE && waitTimed(0.15)) {
-            shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+    if (state == IntakeCommandStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
+      timer.start();
+    }
 
-            if (shooter.getState() == ShooterStates.INTAKE_ROLLBACK && waitTimed(0.1) && shooter.hasNoteRollbackIndexer()) {
-              return;
-            }
-          }
-        }
-      }
+    if (state == IntakeCommandStates.ROLLFORWARD && timer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSec) {
+      state = IntakeCommandStates.WAIT;
+      timer.stop();
+      timer.reset();
+      timer.start();
+      shooter.setState(ShooterStates.HOLD_NOTE);
+    }
+
+    if (state == IntakeCommandStates.WAIT && timer.get() > Constants.Superstructure.kRollForwardtoRollBackWaitTime) {
+      timer.stop();
+      timer.reset();
+      state = IntakeCommandStates.ROLLBACK;
+      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+    }
+
+    if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackIndexer()) {
+      timer.start();
+    }
+    
+    if (state == IntakeCommandStates.ROLLBACK && timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec) {
+      state = IntakeCommandStates.DONE;
     }
   }
 
   private void spinupSub() { //
+    timer.start();
+
     shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
     shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
-    intake.setState(IntakeStates.STOWED);
+    intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
 
-    if (shooter.atGoalShooter() && waitTimed(0.3)) {
+    if (shooter.atGoalShooter() && timer.hasElapsed(0.4)) {
+      System.out.println("RUN RUN RUN RUN RUN RUN");
       shooter.setIndexerSpeedScoreSpeaker();
 
-      if (waitTimed(0.5)) { //
+      if (timer.hasElapsed(0.5)) {
         return;
       }
     }
@@ -191,6 +256,7 @@ public class Superstructure extends SubsystemBase {
 
   public boolean waitTimed(double duration) {
     Timer timer = new Timer();
+    System.out.println("WAITTIMERWAITTIMER/nWAITTIMERWAITTIMER/nWAITTIMERWAITTIMER/nWAITTIMERWAITTIMER/nWAITTIMERWAITTIMER/n");
     return timer.get() > duration;
   }
 

@@ -20,7 +20,9 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.commands.EjectNote;
@@ -93,12 +95,16 @@ public class RobotContainer {
 
     // --------------------=operator=--------------------
 
-    new Trigger(operator.rightBumper())
+    new Trigger(operator.rightBumper()) // TEST
       .whileTrue(superstructure.setState(SSStates.SCORE))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.x())
-      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
+      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER)) // skipped this step and went straight to running indexer
+      // .whileTrue(new ConditionalCommand(superstructure.setState(SSStates.SCORE), superstructure.setState(SSStates.STOWED), () -> shooter.atGoalShooter()))
+      // .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER)
+      //   .alongWith(new WaitCommand(0.3))
+      //   .andThen(new ConditionalCommand(superstructure.setState(SSStates.SCORE), superstructure.setState(SSStates.STOWED), () -> shooter.atGoalShooter())))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.a())
@@ -122,6 +128,10 @@ public class RobotContainer {
   
   public ShooterPivot getShooterPivot() {
     return shooterPivot;
+  }
+
+  public Superstructure getSuperstructure() {
+    return superstructure;
   }
 
   public void clearPDHStickyFaults() {

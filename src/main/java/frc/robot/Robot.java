@@ -5,10 +5,6 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.cscore.UsbCamera;
-import edu.wpi.first.util.PixelFormat;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -86,7 +82,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     Constants.robotState = RobotState.TELEOP;
-    // superstructure.setState(SSStates.STOWED);
+    m_robotContainer.getSuperstructure().setState(SSStates.STOWED);
     // m_robotContainer.getSwerveDrive().setNeutralModeDrive(NeutralModeValue.Coast); //
     // m_robotContainer.getSwerveDrive().setNeutralModeTurn(NeutralModeValue.Brake); //
 
