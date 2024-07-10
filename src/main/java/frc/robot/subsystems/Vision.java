@@ -19,6 +19,7 @@ public class Vision extends SubsystemBase {
     // Translation2d targetSpeaker = new Translation2d(0.0, 0.0);
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
+    Translation2d pastT2d = new Translation2d();
 
     // int[] validIDs = {4, 7};
 
@@ -30,10 +31,18 @@ public class Vision extends SubsystemBase {
         if (LimelightHelper.getTV("limelight")) {
             // ask why we use MegaTag and how they work
             poseEstimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-
-            return new Translation2d(poseEstimate.pose.getX(), poseEstimate.pose.getY());
+            pastT2d = new Translation2d(poseEstimate.pose.getX(), poseEstimate.pose.getY());
+            return pastT2d;
         } else {
-            return new Translation2d(0, 0);
+            return pastT2d;
+        }
+    }
+
+    public Pose2d getPose2d() {
+        PoseEstimate poseEstimate;
+        if (LimelightHelper.getTV("limelight")) {
+            poseEstimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            
         }
     }
 
@@ -63,5 +72,13 @@ public class Vision extends SubsystemBase {
         } else {
             return 0.0;
         }
+    }
+
+    public double getYOffset() {
+        if (LimelightHelper.getTV("limelight")) {
+            if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
+                return LimelightHelper.getTY("limelight");
+            } else return 0;
+        } else return 0;
     }
 }
