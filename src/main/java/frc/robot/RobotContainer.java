@@ -100,8 +100,8 @@ public class RobotContainer {
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.a())
-      .whileTrue(superstructure.setState(SSStates.INTAKE))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+      .onTrue(superstructure.setState(SSStates.INTAKE));
+      // .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
