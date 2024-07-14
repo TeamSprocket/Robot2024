@@ -91,6 +91,12 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return new Translation3d(getPose().getX(), getPose().getY(), 0.0);
     }
 
+    public double getHeading() {
+        double angle = this.m_pigeon2.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
+        angle *= -1.0;
+        return angle;
+    }
+
     @Override
     public void periodic() {
         debug();
