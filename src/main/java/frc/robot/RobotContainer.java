@@ -5,34 +5,30 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+
+import java.sql.Driver;
+import java.util.function.Supplier;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.commands.EjectNote;
-import frc.robot.commands.persistent.*;
-import frc.robot.commands.superstructure.*;
-import frc.robot.controls.Controller;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.swerve.TunerConstants;
-import frc.robot.subsystems.swerve.Telemetry;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
+// import frc.robot.subsystems.swerve.Telemetry;
 
 public class RobotContainer {
 
@@ -45,7 +41,7 @@ public class RobotContainer {
 
   private final TunerConstants tunerConst = new TunerConstants();
   private final CommandSwerveDrivetrain drivetrain = tunerConst.DriveTrain; // My drivetrain
-  private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
+  // private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
   
   private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getLeftY(), () -> drivetrain.getTranslation3d());
   private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getRightTriggerAxis(), () -> operator.getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
@@ -91,7 +87,7 @@ public class RobotContainer {
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
-    drivetrain.registerTelemetry(logger::telemeterize);
+    // drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------
 
@@ -100,11 +96,7 @@ public class RobotContainer {
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.x())
-      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER)) // skipped this step and went straight to running indexer
-      // .whileTrue(new ConditionalCommand(superstructure.setState(SSStates.SCORE), superstructure.setState(SSStates.STOWED), () -> shooter.atGoalShooter()))
-      // .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER)
-      //   .alongWith(new WaitCommand(0.3))
-      //   .andThen(new ConditionalCommand(superstructure.setState(SSStates.SCORE), superstructure.setState(SSStates.STOWED), () -> shooter.atGoalShooter())))
+      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.a())
@@ -143,4 +135,24 @@ public class RobotContainer {
     intake.zeroPosition();
     shooterPivot.zeroPosition();
   }
+
+  // public Command Command_RumbleControllers()
+  //  {
+  //      return Commands.runOnce(() ->
+  //          CommandScheduler.getInstance().schedule(
+  //              Commands.sequence(
+  //                  Commands.waitSeconds(0.5),
+  //                  Commands.runOnce(() -> {
+  //                      operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+  //                      driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+  //                  }),
+  //                  Commands.waitSeconds(0.5),
+  //                  Commands.runOnce(() -> {
+  //                      operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+  //                      driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+  //                  })
+  //              )
+  //          )
+  //      );
+  //  }
 }

@@ -52,8 +52,8 @@ public class Intake extends SubsystemBase {
         INTAKE_ROLLBACK,
         INDEXING,
         SCORE_SPEAKER_SUBWOOFER, 
-        SCORE_SPEAKER,
-        // CROSSFIELD,
+        SCORE_SPEAKER_PODIUM,
+        CROSSFIELD,
         EJECT_NOTE
     }
 
@@ -158,13 +158,18 @@ public class Intake extends SubsystemBase {
                 rollIntake.set(0.0);
                 break;
 
-            case SCORE_SPEAKER:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeaker));
+            case SCORE_SPEAKER_PODIUM:
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerPodium));
                 rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
                 break;
 
             case EJECT_NOTE:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleEject));
+                rollIntake.set(Constants.Intake.kEjectNoteSpeed);
+                break;
+
+            case CROSSFIELD:
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleShootCrossfield));
                 rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 break;
         }

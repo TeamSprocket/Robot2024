@@ -29,7 +29,7 @@ public class ShootCrossfieldSpinup extends Command {
 
   @Override
   public void initialize() {
-    intake.setState(IntakeStates.SCORE_SPEAKER);
+    intake.setState(IntakeStates.CROSSFIELD);
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
 
     timer.reset();

@@ -27,7 +27,7 @@ public class ShootNote extends Command {
 
   @Override
   public void initialize() {
-    intake.setState(IntakeStates.SCORE_SPEAKER);
+    // intake.setState(IntakeStates.SCORE_SPEAKER);
 
     waitTimer.reset();
     waitTimer.stop();

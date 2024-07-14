@@ -221,12 +221,12 @@ public class Constants {
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
         public static final double kPivotAngleStowed = 0.21; // 0.19; // 23.0
-        public static final double kPivotAngleIntake = -0.09; // -0.08; //0.0694;
+        public static final double kPivotAngleIntake = -0.1; // -0.08; //0.0694;
         public static final double kPivotAngleEject = 0.1389; // 30.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = 0.15;
-        public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
+        public static final double kPivotAngleScoreSpeakerPodium = 0.15; // TUNE
         public static final double kPivotAngleIndexing = 0.1667;  // 20.0
-        public static final double kPivotAngleShootCrossfield = 0.1389; // 30.0
+        public static final double kPivotAngleShootCrossfield = 0.1389; // TUNE
         public static final double kPivotAngleScoreAmp = 0.1472; // 27.0
         public static final double kPivotAngleClimb = 0;
 

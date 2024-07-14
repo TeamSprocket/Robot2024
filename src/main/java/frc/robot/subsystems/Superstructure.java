@@ -95,12 +95,7 @@ public class Superstructure extends SubsystemBase {
     intake.setState(IntakeStates.STOWED);
   }
 
-  private void intake() { // TEST NEW TIMER CODE
-
-    System.out.println("STARTING STARTING STARTING");
-    Timer timer = new Timer();
-    Timer accelTimer = new Timer();
-    IntakeCommandStates state = IntakeCommandStates.ACCEL;
+  private void intake() { // RECODE
     
     // intake.setState(IntakeStates.INTAKE);
     // shooter.setState(ShooterStates.INTAKE_ACCEL);
@@ -128,57 +123,32 @@ public class Superstructure extends SubsystemBase {
     //   }
     // }
 
-    state = IntakeCommandStates.ACCEL;
-
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE_ACCEL);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
 
-    timer.reset();
-    timer.stop();
-
-    accelTimer.reset();
-    accelTimer.start();
-
-    if (state == IntakeCommandStates.ACCEL && accelTimer.get() > 0.5) {
+    if (timer.hasElapsed(0.5)) {
       System.out.println("INTAKING INTAKING INTAKING");
-      state = IntakeCommandStates.INTAKE;
       shooter.setState(ShooterStates.INTAKE);
-    }
+      
+      if (shooter.getState() == ShooterStates.INTAKE && shooter.beamBroken()) {
+        System.out.println("FORWARD FORWARD FORWARD");
+        intake.setState(IntakeStates.INDEXING);
+        // shooterPivot.setState(ShooterPivotStates.INDEXING);
+        shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
 
-    if (state == IntakeCommandStates.INTAKE && shooter.beamBroken()) {
-      System.out.println("FORWARD FORWARD FORWARD");
-      state = IntakeCommandStates.ROLLFORWARD;
-      intake.setState(IntakeStates.INDEXING);
-      // shooterPivot.setState(ShooterPivotStates.INDEXING);
-      shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
-    }
+        if (shooter.getState() == ShooterStates.INTAKE_ROLLFORWARD && shooter.hasDetectedNoteShooter() && timer.hasElapsed(0.3)) {
+          shooter.setState(ShooterStates.HOLD_NOTE);
 
-    if (state == IntakeCommandStates.ROLLFORWARD && shooter.hasDetectedNoteShooter()) {
-      timer.start();
-    }
+          if (shooter.getState() == ShooterStates.HOLD_NOTE && timer.hasElapsed(0.15)) {
+            shooter.setState(ShooterStates.INTAKE_ROLLBACK);
 
-    if (state == IntakeCommandStates.ROLLFORWARD && timer.get() > Constants.Superstructure.kIndexerIntakeRollForwardTimeSec) {
-      state = IntakeCommandStates.WAIT;
-      timer.stop();
-      timer.reset();
-      timer.start();
-      shooter.setState(ShooterStates.HOLD_NOTE);
-    }
-
-    if (state == IntakeCommandStates.WAIT && timer.get() > Constants.Superstructure.kRollForwardtoRollBackWaitTime) {
-      timer.stop();
-      timer.reset();
-      state = IntakeCommandStates.ROLLBACK;
-      shooter.setState(ShooterStates.INTAKE_ROLLBACK);
-    }
-
-    if (state == IntakeCommandStates.ROLLBACK && shooter.hasNoteRollbackIndexer()) {
-      timer.start();
-    }
-    
-    if (state == IntakeCommandStates.ROLLBACK && timer.get() > Constants.Superstructure.kIndexerIntakeRollBackTimeSec) {
-      state = IntakeCommandStates.DONE;
+            if (shooter.getState() == ShooterStates.INTAKE_ROLLBACK && shooter.hasNoteRollbackIndexer() && timer.hasElapsed(0.1)) {
+              return;
+            }
+          }
+        }
+      }
     }
   }
 
@@ -189,8 +159,7 @@ public class Superstructure extends SubsystemBase {
     shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
     intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
 
-    if (shooter.atGoalShooter() && timer.hasElapsed(0.4)) {
-      System.out.println("RUN RUN RUN RUN RUN RUN");
+    if (shooter.atGoalShooter() && timer.hasElapsed(0.5)) {
       shooter.setIndexerSpeedScoreSpeaker();
 
       if (timer.hasElapsed(0.5)) {
@@ -204,7 +173,7 @@ public class Superstructure extends SubsystemBase {
     shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
     intake.setState(IntakeStates.STOWED);
 
-    if (shooter.atGoalShooter() && waitTimed(0.3)) {
+    if (shooter.atGoalShooter() && timer.hasElapsed(0.3)) {
       shooter.setIndexerSpeedScoreSpeaker();
 
       if (waitTimed(0.5)) {
@@ -225,19 +194,20 @@ public class Superstructure extends SubsystemBase {
 
   private void ejectNote() { //
     intake.setState(IntakeStates.EJECT_NOTE);
-    if (waitTimed(0.5)) {
+    if (timer.hasElapsed(0.5)) {
       shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
-    }
-    if (waitTimed(1)){
-      shooter.setState(ShooterStates.EJECT_NOTE);
+
+      if (timer.hasElapsed(1)){
+        shooter.setState(ShooterStates.EJECT_NOTE);
+      }
     }
   }
 
   private void crossfield() {
-    intake.setState(IntakeStates.SCORE_SPEAKER);
+    intake.setState(IntakeStates.CROSSFIELD);
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
 
-    if (waitTimed(0.2)) { // delay for intake move out
+    if (timer.hasElapsed(0.2)) { // delay for intake move out
       shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
     }
   }
