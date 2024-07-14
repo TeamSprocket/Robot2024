@@ -20,6 +20,7 @@ public class Vision extends SubsystemBase {
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
     Translation2d pastT2d = new Translation2d();
+    Pose2d pastP2d = new Pose2d();
 
     // int[] validIDs = {4, 7};
 
@@ -42,7 +43,10 @@ public class Vision extends SubsystemBase {
         PoseEstimate poseEstimate;
         if (LimelightHelper.getTV("limelight")) {
             poseEstimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            
+            pastP2d = poseEstimate.pose;
+            return pastP2d;
+        } else {
+            return pastP2d;
         }
     }
 

@@ -9,6 +9,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -46,6 +47,8 @@ public class RobotContainer {
   ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
   Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
   Intake intake = new Intake();
+
+  Pose2d robotPose = new Pose2d();
 
   
 
@@ -203,7 +206,16 @@ public class RobotContainer {
     
   }
   
-
+  public Pose2d getPose2d() {
+    if (limelight.hasTargets()) {
+      robotPose = limelight.getPose2d();
+    }
+    else {
+      swerveDrive.resetPose(robotPose);
+      robotPose = swerveDrive.odometry.getPoseMeters();
+    }
+    return robotPose;
+  }
   
 
   

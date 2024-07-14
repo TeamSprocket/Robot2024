@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import org.littletonrobotics.junction.Logger;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -100,7 +102,7 @@ public class SwerveDrive extends SubsystemBase {
         Constants.Drivetrain.kDTurnMotorBR
   );
 
-  private SwerveDriveOdometry odometry = new SwerveDriveOdometry( // used to track position of robot on field
+  public SwerveDriveOdometry odometry = new SwerveDriveOdometry( // used to track position of robot on field
     Constants.Drivetrain.kDriveKinematics,
     new Rotation2d(getHeading()),
     getModulePositions()
@@ -185,6 +187,8 @@ public class SwerveDrive extends SubsystemBase {
       this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
     }
     // gyro.clearStickyFaults();
+
+    Logger.recordOutput("Swerve Pose", odometry.getPoseMeters());
   }
 
   //------Get Methods------
@@ -266,7 +270,7 @@ public class SwerveDrive extends SubsystemBase {
   public void updateOdometryWithVision() {
     Translation2d pos = limelight.getTranslation2d();
     if (limelight.hasTargets(pos)) { // LL can see tags
-      resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+      odometry.resetPosition(new Rotation2d(getHeading()), getModulePositions(), new Pose2d(pos, new Rotation2d(getHeading())));
     }
   }
 
@@ -372,8 +376,8 @@ public class SwerveDrive extends SubsystemBase {
     // backLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID BL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BL kD [SD]"));
     // backRight.updatePIDConstants(ShuffleboardIO.getDouble("PID BR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BR kD [SD]"));
 
-    speakerLockPIDController.setP(ShuffleboardIO.getDouble("PID Turn Vision kP [SD]"));
-    speakerLockPIDController.setD(ShuffleboardIO.getDouble("PID Turn Vision kD [SD]"));
+    // speakerLockPIDController.setP(ShuffleboardIO.getDouble("PID Turn Vision kP [SD]"));
+    // speakerLockPIDController.setD(ShuffleboardIO.getDouble("PID Turn Vision kD [SD]"));
   }
 
   private void debug() {
