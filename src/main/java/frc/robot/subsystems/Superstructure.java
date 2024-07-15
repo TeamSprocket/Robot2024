@@ -1,10 +1,15 @@
 package frc.robot.subsystems;
 
+import org.ejml.dense.row.decompose.hessenberg.HessenbergSimilarDecomposition_CDRM;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.Constants;
+import frc.robot.commands.superstructure.IntakeNote.IntakeCommandStates;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
@@ -26,16 +31,12 @@ public class Superstructure extends SubsystemBase {
   ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
-  private Timer spinupTimer = new Timer();
-  private Timer intakeTimer = new Timer();
+  private Timer timer = new Timer();
 
   public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
-
-    spinupTimer.reset();
-    intakeTimer.reset();
   }
 
   @Override
@@ -94,31 +95,55 @@ public class Superstructure extends SubsystemBase {
     intake.setState(IntakeStates.STOWED);
   }
 
-  private void intake() { // TODO: RECODE
-    intakeTimer.restart(); // TODO: check if this works
+  private void intake() { // RECODE
+    
+    // intake.setState(IntakeStates.INTAKE);
+    // shooter.setState(ShooterStates.INTAKE_ACCEL);
+    // shooterPivot.setState(ShooterPivotStates.INTAKE);
+
+    // if (shooter.getState() == ShooterStates.INTAKE_ACCEL && waitTimed(0.5)) {
+    //   shooter.setState(ShooterStates.INTAKE);
+
+    //   if (shooter.getState() == ShooterStates.INTAKE && shooter.beamBroken()) {
+    //     intake.setState(IntakeStates.INDEXING);
+    //     shooterPivot.setState(ShooterPivotStates.INDEXING);
+    //     shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
+
+    //     if (shooter.getState() == ShooterStates.INTAKE_ROLLFORWARD && waitTimed(0.3)) {
+    //       shooter.setState(ShooterStates.HOLD_NOTE);
+          
+    //       if (shooter.getState() == ShooterStates.HOLD_NOTE && waitTimed(0.15)) {
+    //         shooter.setState(ShooterStates.INTAKE_ROLLBACK);
+
+    //         if (shooter.getState() == ShooterStates.INTAKE_ROLLBACK && waitTimed(0.1) && shooter.hasNoteRollbackIndexer()) {
+    //           return;
+    //         }
+    //       }
+    //     }
+    //   }
+    // }
 
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE_ACCEL);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
 
-    if (intakeTimer.hasElapsed(0.5)) {
+    if (timer.hasElapsed(0.5)) {
       System.out.println("INTAKING INTAKING INTAKING");
       shooter.setState(ShooterStates.INTAKE);
       
       if (shooter.getState() == ShooterStates.INTAKE && shooter.beamBroken()) {
         System.out.println("FORWARD FORWARD FORWARD");
-
         intake.setState(IntakeStates.INDEXING);
         // shooterPivot.setState(ShooterPivotStates.INDEXING);
         shooter.setState(ShooterStates.INTAKE_ROLLFORWARD);
 
-        if (shooter.getState() == ShooterStates.INTAKE_ROLLFORWARD && shooter.hasDetectedNoteShooter() && intakeTimer.hasElapsed(0.3)) {
+        if (shooter.getState() == ShooterStates.INTAKE_ROLLFORWARD && shooter.hasDetectedNoteShooter() && timer.hasElapsed(0.3)) {
           shooter.setState(ShooterStates.HOLD_NOTE);
 
-          if (shooter.getState() == ShooterStates.HOLD_NOTE && intakeTimer.hasElapsed(0.15)) {
+          if (shooter.getState() == ShooterStates.HOLD_NOTE && timer.hasElapsed(0.15)) {
             shooter.setState(ShooterStates.INTAKE_ROLLBACK);
 
-            if (shooter.getState() == ShooterStates.INTAKE_ROLLBACK && shooter.hasNoteRollbackIndexer() && intakeTimer.hasElapsed(0.1)) {
+            if (shooter.getState() == ShooterStates.INTAKE_ROLLBACK && shooter.hasNoteRollbackIndexer() && timer.hasElapsed(0.1)) {
               return;
             }
           }
@@ -128,32 +153,30 @@ public class Superstructure extends SubsystemBase {
   }
 
   private void spinupSub() { //
-    spinupTimer.restart();
+    timer.start();
 
     shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
     shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
     intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
 
-    if (shooter.atGoalShooter() && spinupTimer.hasElapsed(0.5)) {
+    if (shooter.atGoalShooter() && timer.hasElapsed(0.5)) {
       shooter.setIndexerSpeedScoreSpeaker();
 
-      if (spinupTimer.hasElapsed(0.5)) {
+      if (timer.hasElapsed(0.5)) {
         return;
       }
     }
   }
 
   private void spinupPod() { //
-    spinupTimer.restart();
-    
     shooter.setState(ShooterStates.SPINUP_PODIUM);
     shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
     intake.setState(IntakeStates.STOWED);
 
-    if (shooter.atGoalShooter() && spinupTimer.hasElapsed(0.3) && shooterPivot.atGoal()) { // TODO: read values to check speed
+    if (shooter.atGoalShooter() && timer.hasElapsed(0.3)) {
       shooter.setIndexerSpeedScoreSpeaker();
 
-      if (spinupTimer.hasElapsed(0.5)) {
+      if (waitTimed(0.5)) {
         return;
       }
     }
@@ -161,7 +184,7 @@ public class Superstructure extends SubsystemBase {
 
   private void score() { // make sure pivot stays in correct position
 
-    if (shooter.atGoalShooter() && spinupTimer.hasElapsed(0.3)) {
+    if (shooter.atGoalShooter() && waitTimed(0.3)) {
       shooter.setIndexerSpeedScoreSpeaker();
     }
     // shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
@@ -171,27 +194,21 @@ public class Superstructure extends SubsystemBase {
 
   private void ejectNote() { //
     intake.setState(IntakeStates.EJECT_NOTE);
-    if (spinupTimer.hasElapsed(0.5)) {
+    if (timer.hasElapsed(0.5)) {
       shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
 
-      if (spinupTimer.hasElapsed(1)){
+      if (timer.hasElapsed(1)){
         shooter.setState(ShooterStates.EJECT_NOTE);
       }
     }
   }
 
   private void crossfield() {
-    spinupTimer.restart();
-
     intake.setState(IntakeStates.CROSSFIELD);
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
 
-    if (spinupTimer.hasElapsed(0.2)) { // delay for intake move out
+    if (timer.hasElapsed(0.2)) { // delay for intake move out
       shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
-
-      if (shooter.atGoalShooter() && spinupTimer.hasElapsed(0.3) && shooterPivot.atGoal()) {
-        shooter.setIndexerSpeedScoreSpeaker();
-      }
     }
   }
 
