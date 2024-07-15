@@ -87,6 +87,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return this.m_odometry.getEstimatedPosition();
     }
 
+    public void updateOdometry(Pose2d pose, double time) {
+        this.m_odometry.addVisionMeasurement(pose, time);
+    }
+
     public Translation3d getTranslation3d() {
         return new Translation3d(getPose().getX(), getPose().getY(), 0.0);
     }

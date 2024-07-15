@@ -17,7 +17,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper;
 import frc.robot.LimelightHelper.PoseEstimate;
+import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 import frc.util.Util;
+import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
 
@@ -26,13 +28,23 @@ public class Vision extends SubsystemBase {
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
 
     // int[] validIDs = {4, 7};
+    Pose2d lastPose = new Pose2d();
+    Pose2d robotPose = new Pose2d();
+    double timestamp;
 
-    public Vision() {}
+    CommandSwerveDrivetrain swerve;
+
+    public Vision(CommandSwerveDrivetrain swerve) {
+        this.swerve = swerve;
+        timestamp = 0;
+    }
 
     @Override
     public void periodic() {
         publisher.set(getPose2d());
         debug();
+
+        logPose();
     }
 
     /**
@@ -42,16 +54,13 @@ public class Vision extends SubsystemBase {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            timestamp = estimate.timestampSeconds;
+            lastPose = estimate.pose;
+            
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
         } else {
-            return new Translation2d(0.0, 0.0);
+            return new Translation2d(lastPose.getX(), lastPose.getY());
         }
     }
 
@@ -59,18 +68,24 @@ public class Vision extends SubsystemBase {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            timestamp = estimate.timestampSeconds;
+            lastPose = estimate.pose;
 
             return estimate.pose;
         } else {
-            return new Pose2d();
+            return lastPose;
         }
+    }
+
+    public void logPose() {
+        if (hasTargets()) {
+            robotPose = getPose2d();
+            swerve.updateOdometry(robotPose, timestamp);
+        } else {
+            robotPose = swerve.getPose();
+        }
+        Logger.recordOutput("Robot Pose", robotPose);
     }
 
     public boolean hasTargets() {
