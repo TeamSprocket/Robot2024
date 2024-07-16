@@ -57,6 +57,7 @@ public class RobotContainer {
   private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> drivetrain.getTranslation3d());
   private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
   private final Intake intake = new Intake();
+  private final Vision limelight = new Vision(drivetrain);
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
@@ -167,7 +168,7 @@ public class RobotContainer {
 
     operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    // operator.getController().y().whileTrue(new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, swerveDrive));
+    operator.getController().y().whileTrue(new ScoreSpeakerVision(intake, shooter, shooterPivot, limelight));
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
     operator.getController().b().onTrue(new CancelIntake(intake, shooter, shooterPivot));
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button

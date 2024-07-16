@@ -40,6 +40,8 @@ public class ShooterPivot extends SubsystemBase {
 
   double motorspeed = 0.0;
 
+  double targetPivotAngle = 0.0;
+
   // ProfiledpidController profiledpidController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
   PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
@@ -182,43 +184,10 @@ public class ShooterPivot extends SubsystemBase {
         break;
 
       case SPEAKER:
-        Translation3d botPose = botPoseSupplier.get();
-        System.out.println(botPose.getX() + botPose.getY() + botPose.getZ());
-        if (botPose.getX() + botPose.getY() + botPose.getZ() != 0.0) {
+        motorspeed = getPivotSpeed(targetPivotAngle);
 
-          // set angle for pivot target
-          // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
-          double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
-          double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
-
-          if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed || angleTargetAdjusted > Constants.ShooterPivot.kTargetAngleAmp) {
-            angleTargetAdjusted = Constants.ShooterPivot.kTargetAngleStowed;
-          }
-
-          motorspeed = getPivotSpeed(angleTargetAdjusted);
-          motor.set(motorspeed);
-
-
-          // if (angleTargetAdjusted > Constants.ShooterPivot.kMaxAngle) {
-          //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kMaxAngle);
-          // } else if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed) {
-          //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
-          // } else {
-          //   motorspeed = getPivotSpeed(angleTargetAdjusted);
-          // }
-
-          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
-          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
-        } else {
-          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", -1.0);
-          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", -1.0);
-          motor.set(0.0);
-        }
-        // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
+        motor.set(motorspeed);
         
-        
-        
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case SPEAKER_SUBWOOFER:
@@ -363,6 +332,10 @@ public class ShooterPivot extends SubsystemBase {
   
   public void clearStickyFaults() {
     motor.clearStickyFaults();
+  }
+
+  public void setTargetPivotAngle(double target) {
+    targetPivotAngle = target;
   }
 
   //Configurate the motors.
