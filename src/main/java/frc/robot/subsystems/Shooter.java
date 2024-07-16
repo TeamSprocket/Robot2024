@@ -71,7 +71,7 @@ public class Shooter extends SubsystemBase {
 
   // double dist = 0.0;
 
-  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier, Supplier<Translation3d> botTranslation3D) {
+  public Shooter(Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier) {
     configMotors();
 
     shooterTop.setInverted(Constants.Shooter.kIsShooterTopInverted);

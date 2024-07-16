@@ -85,7 +85,7 @@ public class ShooterPivot extends SubsystemBase {
    * @param joystickSupplier
    * @param botPoseSupplier
    */
-  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
+  public ShooterPivot(Supplier<Double> joystickSupplier) {
     configMotors();
 
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
@@ -124,7 +124,7 @@ public class ShooterPivot extends SubsystemBase {
 
   @Override
   public void periodic() {
-    debug();
+    // debug();
 
     // Constants.ShooterPivot.kTargetAngleAmp = ShuffleboardIO.getDouble("kTargetAngleAmp [SP]");
 
@@ -341,11 +341,11 @@ public class ShooterPivot extends SubsystemBase {
   //   return targetDeg;
   // }
 
-  public void debug() {
-    SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
-    SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
-    SmartDashboard.putString("State [SP]", state.toString());
-  }
+  // public void debug() {
+  //   SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
+  //   SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
+  //   SmartDashboard.putString("State [SP]", state.toString());
+  // }
 
   /**
    * 
