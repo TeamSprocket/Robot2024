@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.*;
@@ -100,9 +101,28 @@ public class RobotContainer {
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.a())
-      .whileTrue(superstructure.setState(SSStates.INTAKE))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+      // .whileTrue(
+      //   new SequentialCommandGroup(
+      //     superstructure.setState(SSStates.INTAKE)),
+      //     new WaitCommand(0.5),
+      //     superstructure.setState(SSStates.STOWED));
 
+      .whileTrue(superstructure.setState(SSStates.INTAKE)
+        .andThen(new WaitCommand(2))
+        .until(() -> shooter.beamBroken())
+        .andThen(superstructure.setState(SSStates.INTAKE_BACK)) // DONT WORK
+        .andThen(new WaitCommand(1))
+        .until(() -> shooter.hasNoteRollbackIndexer())
+        // .andThen(superstructure.setState(SSStates.INTAKE_BACK))
+        // .andThen(new WaitCommand(0.8))
+        // .until(() -> shooter.hasNoteRollbackIndexer())
+        .andThen(superstructure.setState(SSStates.STOWED))
+      );
+
+    new Trigger(operator.a())
+      .onFalse(superstructure.setState(SSStates.STOWED));
+      // .whileFalse(superstructure.setState(SSStates.STOWED));
+      
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
       .whileFalse(superstructure.setState(SSStates.STOWED));

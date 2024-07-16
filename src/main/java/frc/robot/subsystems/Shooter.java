@@ -274,6 +274,10 @@ public class Shooter extends SubsystemBase {
     indexerMotor.set(Constants.Shooter.kIndexerSpeedScoreSpeaker);
   }
 
+  public void setIndexerRollBack() {
+    indexerMotor.set(Constants.Shooter.kIndexerSpeedRollback);
+  }
+
   public double getShooterMPS() {
     double rps = shooterTop.getRotorVelocity().getValueAsDouble();
     double mps = rps * (Constants.Shooter.kShooterWheelDiameter * Math.PI) / Constants.Shooter.kShooterGearRatio;
@@ -306,16 +310,16 @@ public class Shooter extends SubsystemBase {
     return Math.abs(shooterTop.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kHasNoteCurrentThresholdShooter;
   }
 
+  public boolean beamBroken() {
+    return !beamBreak.get();
+  }
+
   public boolean hasNoteRollbackIndexer() {
-    return Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kIntakeRollbackCurrentThresholdIndexer;
+    return (Math.abs(indexerMotor.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kIntakeRollbackCurrentThresholdIndexer) && beamBroken();
   }
 
   public boolean hasNoteRollbackShooter() {
     return Math.abs(shooterTop.getStatorCurrent().getValueAsDouble()) > Constants.Shooter.kIntakeRollbackCurrentThresholdShooter;
-  }
-
-  public boolean beamBroken() {
-    return !beamBreak.get();
   }
 
   public void setShooterSpeed(double speed) {
@@ -374,5 +378,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Shooter Current Supply [ST]", shooterTop.getSupplyCurrent().getValueAsDouble());
 
     SmartDashboard.putBoolean("Has Detected Note [ST]", beamBroken());
+    SmartDashboard.putBoolean("Has Detected Note Rollback [ST]", hasNoteRollbackIndexer());
   }
 }
