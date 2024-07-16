@@ -8,6 +8,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
@@ -15,6 +17,7 @@ import com.ctre.phoenix6.configs.TalonFXConfigurator;
 //import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 // import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 // import edu.wpi.first.math.controller.pidController;
@@ -86,7 +89,17 @@ public class ShooterPivot extends SubsystemBase {
    * @param botPoseSupplier
    */
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
-    configMotors();
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+    motorConfig.withMotionMagic(new MotionMagicConfigs().withMotionMagicCruiseVelocity(Constants.ShooterPivot.KMotionMagicCruiseVelocity).withMotionMagicAcceleration(Constants.ShooterPivot.KMotionMagicAcceleration));
+    motorConfig.withSlot0(new Slot0Configs().withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKS(Constants.ShooterPivot.KShooterPivotKS) // 0.27
+                .withKV(Constants.ShooterPivot.KShooterPivotKV) // 1.4
+                .withKA(Constants.ShooterPivot.KShooterPivotKA) // 0.01
+                .withKG(Constants.ShooterPivot.KShooterPivotKG) // 0.20
+                .withKP(Constants.ShooterPivot.KShooterPivotKP) // 2
+                .withKI(Constants.ShooterPivot.KShooterPivotKI)
+                .withKD(Constants.ShooterPivot.KShooterPivotKD));
+    motor.getConfigurator().apply(motorConfig);
 
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
@@ -96,8 +109,7 @@ public class ShooterPivot extends SubsystemBase {
     //configures the motors
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
-    motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
-    motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(30)); // test values later
+    
     
     pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
 
