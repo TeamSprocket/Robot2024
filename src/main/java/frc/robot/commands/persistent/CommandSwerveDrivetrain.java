@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper.PoseEstimate;
 import frc.robot.subsystems.Vision;
+import org.littletonrobotics.junction.Logger;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -60,6 +61,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
+        m_odometry.resetPosition(new Rotation2d(m_yawGetter.getValueAsDouble()), m_modulePositions, new Pose2d(new Translation2d(0, 7), new Rotation2d(m_yawGetter.getValueAsDouble())));
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -87,6 +89,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return this.m_odometry.getEstimatedPosition();
     }
 
+    public Rotation2d getYaw() {
+        return new Rotation2d(m_yawGetter.getValueAsDouble());
+    }
+
     public void updateOdometry(Pose2d pose, double time) {
         this.m_odometry.addVisionMeasurement(pose, time);
     }
@@ -111,6 +117,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 hasAppliedOperatorPerspective = true;
             });
         }
+        Logger.recordOutput("Gyro Yaw", m_yawGetter.getValueAsDouble());
     }
 
     private void debug() {

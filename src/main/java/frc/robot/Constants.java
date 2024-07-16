@@ -69,6 +69,7 @@ public class Constants {
         public static final double kSpeakerY = 5.55;
         public static final double kSpeakerTargetHeightMeters = 2.032;
         public static final double kSpeakerAprilTagHeightMeters = 1.451;
+        public static final Translation2d kSpeakerBlueTranslation = new Translation2d(0, 5.5);
     }
 
     public static final class Elevator {

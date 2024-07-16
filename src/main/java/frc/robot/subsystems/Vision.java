@@ -30,6 +30,7 @@ public class Vision extends SubsystemBase {
     // int[] validIDs = {4, 7};
     Pose2d lastPose = new Pose2d();
     Pose2d robotPose = new Pose2d();
+    Pose2d trueRobotPose = new Pose2d();
     double timestamp;
 
     CommandSwerveDrivetrain swerve;
@@ -44,7 +45,9 @@ public class Vision extends SubsystemBase {
         publisher.set(getPose2d());
         debug();
 
-        logPose();
+        trueRobotPose = logPose();
+        Logger.recordOutput("Vision Pose", getPose2d());
+        Logger.recordOutput("Robot Pose", trueRobotPose);
     }
 
     /**
@@ -78,14 +81,26 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public void logPose() {
+    public Pose2d logPose() {
         if (hasTargets()) {
             robotPose = getPose2d();
             swerve.updateOdometry(robotPose, timestamp);
         } else {
             robotPose = swerve.getPose();
         }
-        Logger.recordOutput("Robot Pose", robotPose);
+        Pose2d pose = new Pose2d(robotPose.getTranslation(), swerve.getYaw());
+        
+        return pose;
+    }
+
+    public double shooterPivotAngle() {
+        Pose2d pose = trueRobotPose;
+        double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
+        double distanceToSpeaker = Math.sqrt(Math.pow(pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
+        distanceToSpeaker = distanceToSpeaker - 0.155;
+        double angle = Math.atan(speakerY / distanceToSpeaker);
+        angle = -1 * angle;
+        return angle;
     }
 
     public boolean hasTargets() {
