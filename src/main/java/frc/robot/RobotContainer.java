@@ -12,6 +12,9 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -70,8 +73,15 @@ public class RobotContainer {
 
     // --------------------=operator=--------------------
 
+    // ----- rumble controllers -----
+    new Trigger(() -> shooter.beamBroken())
+      .onTrue(rumbleControllers());
+
     new Trigger(operator.rightBumper())
-      .whileTrue(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker()));
+      .whileTrue(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())
+        .andThen(new WaitCommand(0.2))
+        .andThen(superstructure.setState(SSStates.STOWED))
+      );
     new Trigger(operator.x())
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
@@ -85,8 +95,7 @@ public class RobotContainer {
     new Trigger(operator.a())
       .whileTrue(superstructure.setState(SSStates.INTAKE)
         .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
-        .andThen(superstructure.setState(SSStates.STOWED))
-      );
+        .andThen(superstructure.setState(SSStates.STOWED)));
     new Trigger(operator.a())
       .onFalse(superstructure.setState(SSStates.INTAKE_BACK)
         .andThen(new WaitCommand(0.1))
@@ -108,23 +117,24 @@ public class RobotContainer {
     intake.zeroPosition();
     shooterPivot.zeroPosition();
   }
-  // public Command Command_RumbleControllers()
-  //  {
-  //      return Commands.runOnce(() ->
-  //          CommandScheduler.getInstance().schedule(
-  //              Commands.sequence(
-  //                  Commands.waitSeconds(0.5),
-  //                  Commands.runOnce(() -> {
-  //                      operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-  //                      driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-  //                  }),
-  //                  Commands.waitSeconds(0.5),
-  //                  Commands.runOnce(() -> {
-  //                      operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-  //                      driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-  //                  })
-  //              )
-  //          )
-  //      );
-  //  }
+
+  public Command rumbleControllers()
+   {
+       return Commands.runOnce(() ->
+           CommandScheduler.getInstance().schedule(
+               Commands.sequence(
+                   Commands.waitSeconds(0.5),
+                   Commands.runOnce(() -> {
+                       operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+                       driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+                   }),
+                   Commands.waitSeconds(0.5),
+                   Commands.runOnce(() -> {
+                       operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+                       driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+                   })
+               )
+           )
+       );
+   }
   }
