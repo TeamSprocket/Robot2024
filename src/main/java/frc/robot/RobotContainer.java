@@ -38,6 +38,7 @@ import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.swerve.TunerConstants;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.robot.subsystems.swerve.Telemetry;
 
 public class RobotContainer {
@@ -53,7 +54,7 @@ public class RobotContainer {
   private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
   
   // SwerveDrive swerveDrive = new SwerveDrive(limelight);
-  private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
+  // private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
   private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> drivetrain.getTranslation3d());
   private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
   private final Intake intake = new Intake();
@@ -140,6 +141,7 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    driver.y().whileTrue(new LockHeadingToSpeaker(drivetrain, limelight));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -211,7 +213,7 @@ public class RobotContainer {
     shooter.zeroPosition();
     intake.zeroPosition();
     shooterPivot.zeroPosition();
-    elevator.zeroPosition();
+    // elevator.zeroPosition();
     
   }
   

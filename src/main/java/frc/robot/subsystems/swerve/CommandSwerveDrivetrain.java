@@ -1,4 +1,4 @@
-package frc.robot.commands.persistent;
+package frc.robot.subsystems.swerve;
 
 import java.util.function.Supplier;
 
@@ -61,7 +61,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        m_odometry.resetPosition(new Rotation2d(m_yawGetter.getValueAsDouble()), m_modulePositions, new Pose2d(new Translation2d(0, 7), new Rotation2d(m_yawGetter.getValueAsDouble())));
+        m_odometry.resetPosition(new Rotation2d(m_yawGetter.getValueAsDouble()), m_modulePositions, new Pose2d(new Translation2d(16, 7.2), new Rotation2d(m_yawGetter.getValueAsDouble())));
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -93,8 +93,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return new Rotation2d(m_yawGetter.getValueAsDouble());
     }
 
-    public void updateOdometry(Pose2d pose, double time) {
-        this.m_odometry.addVisionMeasurement(pose, time);
+    public void updateOdometry(Pose2d pose) {
+        this.m_odometry.resetPosition(new Rotation2d(m_yawGetter.getValueAsDouble()), m_modulePositions, pose);
     }
 
     public Translation3d getTranslation3d() {

@@ -12,8 +12,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.Constants.RobotState;
-import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 
 public class LockHeadingToSpeaker extends Command {
 

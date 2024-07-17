@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper;
 import frc.robot.LimelightHelper.PoseEstimate;
-import frc.robot.commands.persistent.CommandSwerveDrivetrain;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.util.Util;
 import org.littletonrobotics.junction.Logger;
 
@@ -72,7 +72,6 @@ public class Vision extends SubsystemBase {
 
         if (LimelightHelper.getTV("limelight")) {
             estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            timestamp = estimate.timestampSeconds;
             lastPose = estimate.pose;
 
             return estimate.pose;
@@ -84,7 +83,7 @@ public class Vision extends SubsystemBase {
     public Pose2d logPose() {
         if (hasTargets()) {
             robotPose = getPose2d();
-            swerve.updateOdometry(robotPose, timestamp);
+            swerve.updateOdometry(robotPose);
         } else {
             robotPose = swerve.getPose();
         }
@@ -96,10 +95,11 @@ public class Vision extends SubsystemBase {
     public double shooterPivotAngle() {
         Pose2d pose = trueRobotPose;
         double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
-        double distanceToSpeaker = Math.sqrt(Math.pow(pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
+        double distanceToSpeaker = Math.sqrt(Math.pow(16 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
         distanceToSpeaker = distanceToSpeaker - 0.155;
         double angle = Math.atan(speakerY / distanceToSpeaker);
         angle = -1 * angle;
+        angle = 60 + angle;
         return angle;
     }
 
