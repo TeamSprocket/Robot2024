@@ -60,7 +60,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        m_odometry.resetPosition(new Rotation2d(m_yawGetter.getValueAsDouble()), m_modulePositions, new Pose2d(new Translation2d(16, 7.2), new Rotation2d(m_yawGetter.getValueAsDouble())));
+        m_odometry.resetPosition(new Rotation2d(Math.toRadians(m_yawGetter.getValueAsDouble())), m_modulePositions, new Pose2d(new Translation2d(16, 7.2), new Rotation2d(Math.toRadians(m_yawGetter.getValueAsDouble()))));
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -89,11 +89,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     }
 
     public Rotation2d getYaw() {
-        return new Rotation2d(m_yawGetter.getValueAsDouble());
+        return new Rotation2d(Math.toRadians(getPigeon2().getAngle()));
     }
 
     public void updateOdometry(Pose2d pose) {
-        this.m_odometry.resetPosition(new Rotation2d(m_yawGetter.getValueAsDouble()), m_modulePositions, pose);
+        this.m_odometry.resetPosition(getYaw(), m_modulePositions, pose);
     }
 
     public Translation3d getTranslation3d() {

@@ -54,7 +54,6 @@ public class Vision extends SubsystemBase {
 
         if (LimelightHelper.getTV("limelight")) {
             estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            timestamp = estimate.timestampSeconds;
             lastPose = estimate.pose;
             
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());

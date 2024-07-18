@@ -5,15 +5,18 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
@@ -32,7 +35,6 @@ import frc.robot.commands.auto.PreloadtoMidlineRed;
 // import frc.robot.commands.auto.OneNoteAuton;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
 import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
-import frc.robot.commands.macro.LockHeadingToSpeaker;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
@@ -60,6 +62,8 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Vision limelight = new Vision(drivetrain);
 
+  private PIDController pidHeadingLock = new PIDController(0.2, 0, 0);
+
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
   // ------- Swerve Generated -------
@@ -69,6 +73,8 @@ public class RobotContainer {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  private SwerveRequest.ApplyChassisSpeeds headingLock = new SwerveRequest.ApplyChassisSpeeds()
+    .withSteerRequestType(SteerRequestType.MotionMagic);
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -141,7 +147,7 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-    driver.y().whileTrue(new LockHeadingToSpeaker(drivetrain, limelight));
+    // driver.y().whileTrue(drivetrain.applyRequest(() -> headingLock.withSpeeds(new ChassisSpeeds(0, 0, pidHeadingLock.calculate(0, limelight.getXOffset())))));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
