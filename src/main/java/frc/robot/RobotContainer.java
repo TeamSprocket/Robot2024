@@ -62,8 +62,6 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Vision limelight = new Vision(drivetrain);
 
-  private PIDController pidHeadingLock = new PIDController(0.2, 0, 0);
-
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
   // ------- Swerve Generated -------
@@ -147,7 +145,7 @@ public class RobotContainer {
 
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
-    // driver.y().whileTrue(drivetrain.applyRequest(() -> headingLock.withSpeeds(new ChassisSpeeds(0, 0, pidHeadingLock.calculate(0, limelight.getXOffset())))));
+    driver.y().whileTrue(drivetrain.applyRequest(() -> headingLock.withSpeeds(limelight.getHeadingLockSpeed())));
 
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
