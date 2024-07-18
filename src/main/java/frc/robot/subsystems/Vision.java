@@ -19,7 +19,6 @@ import frc.robot.LimelightHelper;
 import frc.robot.LimelightHelper.PoseEstimate;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.util.Util;
-import org.littletonrobotics.junction.Logger;
 
 public class Vision extends SubsystemBase {
 
@@ -42,12 +41,9 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        publisher.set(getPose2d());
-        debug();
-
         trueRobotPose = logPose();
-        Logger.recordOutput("Vision Pose", getPose2d());
-        Logger.recordOutput("Robot Pose", trueRobotPose);
+        publisher.set(trueRobotPose);
+        debug();
     }
 
     /**

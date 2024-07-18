@@ -31,7 +31,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper.PoseEstimate;
 import frc.robot.subsystems.Vision;
-import org.littletonrobotics.junction.Logger;
 
 /**
  * Class that extends the Phoenix SwerveDrivetrain class and implements
@@ -117,7 +116,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 hasAppliedOperatorPerspective = true;
             });
         }
-        Logger.recordOutput("Gyro Yaw", m_yawGetter.getValueAsDouble());
     }
 
     private void debug() {
