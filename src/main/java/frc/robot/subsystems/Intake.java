@@ -106,27 +106,12 @@ public class Intake extends SubsystemBase {
         pivotIntake.setNeutralMode(NeutralModeValue.Brake);
 
         pivotIntake.setPosition(0.2222);
-
-        // selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
-        // selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
-        // selectIntakeState.addOption("INTAKE", IntakeStates.INTAKE);
-        // SmartDashboard.putData(selectIntakeState);
-
-        // SmartDashboard.putData("STATES[IN]", selectIntakeState);
-
-        // ShuffleboardIO.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
-        // ShuffleboardIO.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
-        // ShuffleboardIO.addSlider("Intake Pivot Voltage [IN]", 0.0, 1.5, 0);
     }
 
     @Override
     public void periodic() {
         debug();
-        
-        // setState(selectIntakeState.getSelected()); // COMMENT OUT PLZ
 
-        // pidController.setP(ShuffleboardIO.getDouble("PIVOT KP [IN]"));
-        // pidController.setD(ShuffleboardIO.getDouble("PIVOT KD [IN]"));
         switch (state) {
             case NONE:
                 pivotIntake.set(0);
@@ -149,7 +134,6 @@ public class Intake extends SubsystemBase {
                 break;
 
             case INTAKE_ROLLBACK:
-                // Pivot maintains current position
                 rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
                 break;
                 
@@ -176,7 +160,6 @@ public class Intake extends SubsystemBase {
 
         lastState = state;
     }
-
     
     public void setState(IntakeStates state) {
         this.state = state;
@@ -223,17 +206,9 @@ public class Intake extends SubsystemBase {
   }
 
   private void configMotors() {
-    // CurrentLimitsConfigs currentLimitsConfigsPivot = new CurrentLimitsConfigs();
-    // currentLimitsConfigsPivot.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitPivot);
-    // currentLimitsConfigsPivot.withSupplyCurrentLimitEnable(true);
-    // CurrentLimitsConfigs currentLimitsConfigsRoll = new CurrentLimitsConfigs();
-    // currentLimitsConfigsRoll.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitRoll);
-    // currentLimitsConfigsRoll.withSupplyCurrentLimitEnable(true);
 
     TalonFXConfiguration motorConfigPivot = new TalonFXConfiguration();
-    // motorConfigPivot.withCurrentLimits(currentLimitsConfigsPivot);
     TalonFXConfiguration motorConfigRoll = new TalonFXConfiguration();
-    // motorConfigRoll.withCurrentLimits(currentLimitsConfigsRoll);
 
     pivotIntake.getConfigurator().apply(motorConfigPivot);
     rollIntake.getConfigurator().apply(motorConfigRoll);
@@ -242,18 +217,10 @@ public class Intake extends SubsystemBase {
   private void debug() {
     SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
     SmartDashboard.putBoolean("At Goal [IN]", atGoal());
-    // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
     SmartDashboard.putString("State Intake [IN]", state.toString());
     SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
-
-    // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
-
-    //debug
-    // SmartDashboard.putString("State[IN]", state.toString());
-    // SmartDashboard.putNumber("", pivotSpeed)
-
     SmartDashboard.putNumber("Intake Speed [IN]", Math.abs(getPivotSpeed()));
   }
 }

@@ -1,18 +1,16 @@
 package frc.robot.subsystems;
-import org.ejml.dense.row.decompose.hessenberg.HessenbergSimilarDecomposition_CDRM;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants;
-import frc.robot.commands.superstructure.IntakeNote.IntakeCommandStates;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
+
 public class Superstructure extends SubsystemBase {
+
   public static enum SSStates {
     NONE,
     STOWED,
@@ -25,25 +23,31 @@ public class Superstructure extends SubsystemBase {
   public SSStates currentState = SSStates.NONE;
   public SSStates lastState = SSStates.NONE;
   public SSStates wantedState = SSStates.NONE;
+
   ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
   private Timer timer = new Timer();
+
   public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
   }
+  
   @Override
   public void periodic() {
     SmartDashboard.putString("Superstructure State [SSS]", currentState.toString());
     handleStateChange();
   }
+
   // Methods
   public void handleStateChange() {
     lastState = currentState;
     currentState = wantedState;
+
     switch (currentState) {
+      
       case NONE:
       break;
       
@@ -71,6 +75,7 @@ public class Superstructure extends SubsystemBase {
       case EJECT_NOTE:
         ejectNote();
       break;
+
       case CROSSFIELD:
         crossfield();
       break;
@@ -92,16 +97,9 @@ public class Superstructure extends SubsystemBase {
     shooter.setIndexerRollBack();
   }
   private void spinupSub() { //
-    // System.out.println("SUROIAHFOADHOFAHEUOIFAHFUIJ");
     shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
     shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
     intake.setState(IntakeStates.SCORE_SPEAKER_SUBWOOFER);
-    // if (shooter.atGoalShooter() && timer.hasElapsed(0.5)) {
-    //   shooter.setIndexerSpeedScoreSpeaker();
-    //   if (timer.hasElapsed(0.5)) {
-    //     return;
-    //   }
-    // }
   }
 
   private void spinupPod() { //
@@ -121,6 +119,7 @@ public class Superstructure extends SubsystemBase {
       }
     }
   }
+
   private void crossfield() {
     intake.setState(IntakeStates.CROSSFIELD);
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);

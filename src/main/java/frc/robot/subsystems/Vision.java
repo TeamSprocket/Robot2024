@@ -15,38 +15,27 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.LimelightHelper;
-import frc.robot.LimelightHelper.PoseEstimate;
+import frc.util.LimelightHelper;
 import frc.util.Util;
+import frc.util.LimelightHelper.PoseEstimate;
 
 public class Vision extends SubsystemBase {
 
-    // Translation2d targetSpeaker = new Translation2d(0.0, 0.0);
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
-
-    // int[] validIDs = {4, 7};
 
     public Vision() {}
 
     @Override
     public void periodic() {
         publisher.set(getPose2d());
-        debug();
     }
 
     public Pose2d getPose2d() {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                 estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
-
             return estimate.pose;
         } else {
             return new Pose2d();
@@ -80,50 +69,4 @@ public class Vision extends SubsystemBase {
             return 0.0;
         }
     }
-
-    // public double getSpeakerAngle() {
-    //     if (LimelightHelper.getTV("limelight")) {
-    //         Translation2d robotToSpeakerPose = targetSpeaker.minus(getTranslation2d());
-    //         return robotToSpeakerPose.getAngle().getDegrees();
-    //     } else {
-    //         return 0.0;
-    //     }
-    // }
-
-    // public void getTargetSpeaker() {
-
-    //     if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-    //         this.targetSpeaker = new Translation2d(0.0, Constants.FieldConstants.kSpeakerY);
-    //     }
-    //     else {
-    //         this.targetSpeaker = new Translation2d(Constants.FieldConstants.kFieldLength, Constants.FieldConstants.kSpeakerY);
-    //     }
-    // }
-
-    // public double getDistanceToTarget(Translation2d robotTranslation) { // TODO: find distance offset + add filter if needed
-    //     getTargetSpeaker();
-    //     return targetSpeaker.getDistance(robotTranslation);
-    // }
-
-    // public double getDistToTarget() { // TODO: check which one is more accurate
-    //     return Math.hypot(getTranslationRobotToGoal().getX(), getTranslationRobotToGoal().getY());
-    // }
-
-    // private Translation2d getTranslationRobotToGoal() {
-    //     getTargetSpeaker();
-    //     Translation2d robotToGoal;
-
-    //     robotToGoal = targetSpeaker.minus(getTranslation2d());
-
-    //     return robotToGoal;
-    // }
-
-    private void debug() {
-        // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
-        // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
-        // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
-        // SmartDashboard.putNumber("Target X [LL]", targetSpeaker.getX());
-        // SmartDashboard.putNumber("Target Y [LL]", targetSpeaker.getY());
-        // SmartDashboard.putNumber("Dist [LL]", getDistToTarget());
-     }
 }

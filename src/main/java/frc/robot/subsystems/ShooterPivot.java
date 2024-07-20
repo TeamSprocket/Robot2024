@@ -9,16 +9,13 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-// import edu.wpi.first.math.controller.pidController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-// import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
-// import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
 import frc.util.ShuffleboardIO;
 import frc.util.Util;
@@ -29,8 +26,6 @@ public class ShooterPivot extends SubsystemBase {
 
   double motorspeed = 0.0;
 
-  // ProfiledpidController profiledpidController;
-  // TrapezoidProfile.State goal = new TrapezoidProfile.State();
   PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
 
   Supplier<Double> joystickSupplier;
@@ -62,10 +57,9 @@ public class ShooterPivot extends SubsystemBase {
    * @param botPoseSupplier
    */
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
+
     configMotors();
 
-    // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
-    // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
     this.botPoseSupplier = botPoseSupplier;
 
@@ -81,17 +75,12 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
     selectShooterPivotState.addOption("INTAKE", ShooterPivotStates.INTAKE);
-    // selectShooterPivotState.addOption("SPEAKER_HIGH", ShooterPivotStates.SPEAKER_HIGH);
     selectShooterPivotState.addOption("SPEAKER PODIUM", ShooterPivotStates.SPEAKER_PODIUM);
-    // selectShooterPivotState.addOption("SPEAKER SUBWOOFER", ShooterPivotStates.SPEAKER_SUBWOOFER);
     SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
 
     ShuffleboardIO.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
     ShuffleboardIO.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
     ShuffleboardIO.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
-
-    // ShuffleboardIO.addSlider("kStartingOffsetAngleDeg [SP]", -5.0, 5, 0.0);
-    ShuffleboardIO.addSlider("kTargetAngleAmp [SP]", 60.0, 120, Constants.ShooterPivot.kTargetAngleAmp);
   }
 
   @Override
@@ -244,16 +233,8 @@ public class ShooterPivot extends SubsystemBase {
 
   //Configurate the motors.
   private void configMotors() {
-    // current limiting configs
-
-    // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    // currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
-    // currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
-
-    // motorConfig.withCurrentLimits(currentLimitsConfigs);
+    
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-
     motor.getConfigurator().apply(motorConfig);
   }
 }

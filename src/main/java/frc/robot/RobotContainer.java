@@ -82,12 +82,15 @@ public class RobotContainer {
         .andThen(new WaitCommand(0.2))
         .andThen(superstructure.setState(SSStates.STOWED))
       );
+      
     new Trigger(operator.x())
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
+
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
       .whileFalse(superstructure.setState(SSStates.STOWED));
+
     new Trigger(operator.b())
       .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
       .whileFalse(superstructure.setState(SSStates.STOWED));
