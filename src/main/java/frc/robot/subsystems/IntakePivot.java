@@ -180,10 +180,8 @@ public class IntakePivot extends SubsystemBase {
                 break;
 
             case AMP:
-                pivotSpeed = getPivotSpeed(Constants.Intake.kPivotAngleScoreAmp);
-                pivotIntake.set(pivotSpeed);
-
-                rollIntake.set(0.0);
+                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAnglesScoreAmp));
+                rollIntake.set(pivotSpeed);
                 break;
             
 
