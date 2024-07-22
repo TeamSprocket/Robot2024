@@ -143,7 +143,7 @@ public class ShooterPivot extends SubsystemBase {
   @Override
   public void periodic() {
     debug();
-
+    motionmagicPeriodic();
     // Constants.ShooterPivot.kTargetAngleAmp = ShuffleboardIO.getDouble("kTargetAngleAmp [SP]");
 
     // pidController.setP(ShuffleboardIO.getDouble("shooterPivot kP"));
@@ -160,145 +160,145 @@ public class ShooterPivot extends SubsystemBase {
     // setState(selectShooterPivotState.getSelected());
 
     //switches the state
-    switch(state) {
+    // switch(state) {
 
-      case NONE:
-        motor.set(0);
-        break;
+    //   case NONE:
+    //     motor.set(0);
+    //     break;
 
-      case STOWED:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
+    //   case STOWED:
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
 
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     break;
 
-      case EJECT_NOTE:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleEject);
+    //   case EJECT_NOTE:
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleEject);
 
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     break;
 
 
-      case INTAKE:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIntake);
+    //   case INTAKE:
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIntake);
 
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     break;
 
-      case INDEXING:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIndexing);
+    //   case INDEXING:
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIndexing);
 
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     break;
 
-      case SPEAKER:
-        Translation3d botPose = botPoseSupplier.get();
-        System.out.println(botPose.getX() + botPose.getY() + botPose.getZ());
-        if (botPose.getX() + botPose.getY() + botPose.getZ() != 0.0) {
+    //   case SPEAKER:
+    //     Translation3d botPose = botPoseSupplier.get();
+    //     System.out.println(botPose.getX() + botPose.getY() + botPose.getZ());
+    //     if (botPose.getX() + botPose.getY() + botPose.getZ() != 0.0) {
 
-          // set angle for pivot target
-          // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
-          double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
-          double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
+    //       // set angle for pivot target
+    //       // double angleTarget = shooterPivotTable.get(dist); // linear interpolation
+    //       double angleTarget = Util.getTargetShotAngleDeg(botPose, Util.getSpeakerTargetBasedOnAllianceColor());
+    //       double angleTargetAdjusted = Constants.ShooterPivot.kHorizontalAngle - angleTarget;
 
-          if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed || angleTargetAdjusted > Constants.ShooterPivot.kTargetAngleAmp) {
-            angleTargetAdjusted = Constants.ShooterPivot.kTargetAngleStowed;
-          }
+    //       if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed || angleTargetAdjusted > Constants.ShooterPivot.kTargetAngleAmp) {
+    //         angleTargetAdjusted = Constants.ShooterPivot.kTargetAngleStowed;
+    //       }
 
-          motorspeed = getPivotSpeed(angleTargetAdjusted);
-          motor.set(motorspeed);
+    //       motorspeed = getPivotSpeed(angleTargetAdjusted);
+    //       motor.set(motorspeed);
 
 
-          // if (angleTargetAdjusted > Constants.ShooterPivot.kMaxAngle) {
-          //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kMaxAngle);
-          // } else if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed) {
-          //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
-          // } else {
-          //   motorspeed = getPivotSpeed(angleTargetAdjusted);
-          // }
+    //       // if (angleTargetAdjusted > Constants.ShooterPivot.kMaxAngle) {
+    //       //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kMaxAngle);
+    //       // } else if (angleTargetAdjusted < Constants.ShooterPivot.kTargetAngleStowed) {
+    //       //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
+    //       // } else {
+    //       //   motorspeed = getPivotSpeed(angleTargetAdjusted);
+    //       // }
 
-          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
-          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
-        } else {
-          SmartDashboard.putNumber("Target Angle MECHANISM [SP]", -1.0);
-          SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", -1.0);
-          motor.set(0.0);
-        }
-        // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
+    //       SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
+    //       SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
+    //     } else {
+    //       SmartDashboard.putNumber("Target Angle MECHANISM [SP]", -1.0);
+    //       SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", -1.0);
+    //       motor.set(0.0);
+    //     }
+    //     // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
         
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     break;
 
-      case SPEAKER_SUBWOOFER:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
+    //   case SPEAKER_SUBWOOFER:
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
 
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-      break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //   break;
 
-      case SPEAKER_AMP_ZONE:
+    //   case SPEAKER_AMP_ZONE:
 
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone); 
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone); 
 
-        motor.set(motorspeed);
-        break;
+    //     motor.set(motorspeed);
+    //     break;
 
-      case SPEAKER_PODIUM:
+    //   case SPEAKER_PODIUM:
 
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAnglePodium);
-        motor.set(motorspeed);
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAnglePodium);
+    //     motor.set(motorspeed);
 
-        break;
+    //     break;
  
-      case CROSSFIELD:
+    //   case CROSSFIELD:
 
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleCrossfield); 
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleCrossfield); 
 
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
 
-        break;
+    //     break;
         
-      case AMP:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleAmp);
+    //   case AMP:
+    //     motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleAmp);
 
         
-        motor.set(motorspeed);
+    //     motor.set(motorspeed);
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+    //     SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+    //     break;
 
-      case CLIMB: // TODO: add limit
-        double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
-        motorspeed = getPivotSpeed(pidController.getSetpoint() + (speed));
+    //   case CLIMB: // TODO: add limit
+    //     double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
+    //     motorspeed = getPivotSpeed(pidController.getSetpoint() + (speed));
 
-        motor.set(motorspeed);
-        break;
-    }
+    //     motor.set(motorspeed);
+    //     break;
+    // }
 
-    // clearStickyFaults();
-    lastState = state;
+    // // clearStickyFaults();
+    // lastState = state;
 
 
-    // case SPEAKER_SUBWOOFER:
-      //   pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
-      //   motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
+    // // case SPEAKER_SUBWOOFER:
+    //   //   pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
+    //   //   motorspeed = pidController.calculate(getShooterPivotAngle()) + Constants.ShooterPivot.kPID.kFF;
 
-      //   motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
-      //   motor.set(motorspeed);
-      //   break;
+    //   //   motorspeed = Util.minmax(motorspeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
+    //   //   motor.set(motorspeed);
+    //   //   break;
   }
 
   /**
