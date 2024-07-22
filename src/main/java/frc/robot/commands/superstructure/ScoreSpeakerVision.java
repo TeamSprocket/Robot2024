@@ -36,16 +36,14 @@ public class ScoreSpeakerVision extends Command {
     double angle = 10;
     shooterPivot.setTargetPivotAngle(angle);
 
-    intake.setState(IntakeStates.SCORE_SPEAKER);
-    shooterPivot.setState(ShooterPivotStates.SPEAKER);
-    shooter.setState(ShooterStates.SPINUP);
-
+    timer.reset();
     timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    intake.setState(IntakeStates.SCORE_SPEAKER);
     shooter.setState(ShooterStates.SPINUP);
     shooterPivot.setState(ShooterPivotStates.SPEAKER);
 
@@ -60,6 +58,8 @@ public class ScoreSpeakerVision extends Command {
     intake.setState(IntakeStates.STOWED);
     shooterPivot.setState(ShooterPivotStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
