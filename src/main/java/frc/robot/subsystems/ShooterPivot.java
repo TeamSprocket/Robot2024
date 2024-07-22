@@ -132,8 +132,8 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("CLIMB", ShooterPivotStates.CLIMB);
     SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
 
-    ShuffleboardIO.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
-    ShuffleboardIO.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
+    // ShuffleboardIO.addSlider("shooterPivot kP", 0.0, 0.01, Constants.ShooterPivot.kPID.kP);
+    // ShuffleboardIO.addSlider("shooterPivot kD", 0.0, 0.001, 0.0);
     ShuffleboardIO.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
 
     // ShuffleboardIO.addSlider("kStartingOffsetAngleDeg [SP]", -5.0, 5, 0.0);
