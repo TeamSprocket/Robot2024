@@ -175,7 +175,7 @@ public class RobotContainer {
 
     operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
     operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    operator.getController().y().whileTrue(new ScoreSpeakerVision(intake, shooter, shooterPivot, limelight));
+    operator.getController().y().whileTrue(new ScoreSpeakerVision(intake, shooter, shooterPivot));
     operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
     operator.getController().b().onTrue(new CancelIntake(intake, shooter, shooterPivot));
     operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button

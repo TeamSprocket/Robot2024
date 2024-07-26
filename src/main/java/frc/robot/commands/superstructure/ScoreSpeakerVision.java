@@ -18,24 +18,20 @@ public class ScoreSpeakerVision extends Command {
   Intake intake;
   Shooter shooter;
   ShooterPivot shooterPivot;
-  Vision vision;
   Timer timer;
 
   /** Creates a new ScoreSpeakerVision. */
-  public ScoreSpeakerVision(Intake intake, Shooter shooter, ShooterPivot shooterPivot, Vision vision) {
+  public ScoreSpeakerVision(Intake intake, Shooter shooter, ShooterPivot shooterPivot) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.shooter = shooter;
     this.shooterPivot = shooterPivot;
-    this.vision = vision;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    double angle = 10;
-    shooterPivot.setTargetPivotAngle(angle);
-
+    shooterPivot.setTargetPivotAngle(shooterPivot.shooterPivotAngleVision());
     timer.reset();
     timer.start();
   }
