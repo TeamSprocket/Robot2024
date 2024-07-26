@@ -19,6 +19,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 
 // import edu.wpi.first.math.controller.pidController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -47,7 +48,7 @@ public class ShooterPivot extends SubsystemBase {
   PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
 
   Supplier<Double> joystickSupplier;
-  Supplier<Translation3d> botPoseSupplier;
+  Supplier<Pose2d> robotPose;
 
 
   SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
@@ -87,13 +88,13 @@ public class ShooterPivot extends SubsystemBase {
    * @param joystickSupplier
    * @param botPoseSupplier
    */
-  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
+  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Pose2d> robotPose) {
     configMotors();
 
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
     this.joystickSupplier = joystickSupplier;
-    this.botPoseSupplier = botPoseSupplier;
+    this.robotPose = robotPose;
 
     //configures the motors
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
@@ -267,6 +268,17 @@ public class ShooterPivot extends SubsystemBase {
     return deg;
   }
 
+  public double shooterPivotAngleVision() {
+    Pose2d pose = robotPose.get();
+    double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
+    double distanceToSpeaker = Math.sqrt(Math.pow(16 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
+    distanceToSpeaker = distanceToSpeaker - 0.155;
+    double angle = Math.atan(speakerY / distanceToSpeaker);
+    angle = -1 * angle;
+    angle = 60 + angle;
+    return angle;
+}
+
   /**
    * Gets the pivot speed
    * @param targetAngle Uses the targetAngle to get a set pivot speed.
@@ -312,7 +324,7 @@ public class ShooterPivot extends SubsystemBase {
 
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
-    SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
+    // SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
     SmartDashboard.putString("State [SP]", state.toString());
   }
 

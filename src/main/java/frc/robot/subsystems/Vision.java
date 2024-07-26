@@ -69,7 +69,7 @@ public class Vision extends SubsystemBase {
         }
     }
 
-    public Pose2d getPose2d() {
+    private Pose2d getPose2d() {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
@@ -94,17 +94,9 @@ public class Vision extends SubsystemBase {
         return pose;
     }
 
-    public double shooterPivotAngle() {
-        Pose2d pose = trueRobotPose;
-        double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
-        double distanceToSpeaker = Math.sqrt(Math.pow(16 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
-        distanceToSpeaker = distanceToSpeaker - 0.155;
-        double angle = Math.atan(speakerY / distanceToSpeaker);
-        angle = -1 * angle;
-        angle = 60 + angle;
-        return angle;
+    public Pose2d getRobotPose() {
+        return trueRobotPose;
     }
-
     
     public ChassisSpeeds getHeadingLockSpeed() {
         return new ChassisSpeeds(0, 0, chassisRotationSpeeds);
