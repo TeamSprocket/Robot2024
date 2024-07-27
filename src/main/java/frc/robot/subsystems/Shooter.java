@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
+
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.TorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -58,14 +60,6 @@ public class Shooter extends SubsystemBase {
 
   public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier, Supplier<Translation3d> botTranslation3D) {
     configMotors();
-
-    shooterTop.setInverted(Constants.Shooter.kIsShooterTopInverted);
-    shooterBottom.setInverted(Constants.Shooter.kIsShooterBottomInverted);
-    indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
-    
-    shooterTop.setNeutralMode(NeutralModeValue.Coast);
-    shooterBottom.setNeutralMode(NeutralModeValue.Coast);
-    indexerMotor.setNeutralMode(NeutralModeValue.Brake);
 
     this.botPoseSupplier = botPoseSupplier;
     this.botTranslation3D = botTranslation3D;
@@ -271,22 +265,30 @@ public class Shooter extends SubsystemBase {
 
     // current configs
 
-    // CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
-    // currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);
-    // currentLimitsConfigsShooter.withSupplyCurrentLimitEnable(true);
-    // CurrentLimitsConfigs currentLimitsConfigsIndexer = new CurrentLimitsConfigs();
-    // currentLimitsConfigsIndexer.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitIndexer);
-    // currentLimitsConfigsIndexer.withSupplyCurrentLimitEnable(true);
+    CurrentLimitsConfigs currentLimitsConfigsShooter = new CurrentLimitsConfigs();
+    currentLimitsConfigsShooter.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitShooter);
+    currentLimitsConfigsShooter.withSupplyCurrentLimitEnable(true);
+    CurrentLimitsConfigs currentLimitsConfigsIndexer = new CurrentLimitsConfigs();
+    currentLimitsConfigsIndexer.withSupplyCurrentLimit(Constants.Shooter.kSupplyCurrentLimitIndexer);
+    currentLimitsConfigsIndexer.withSupplyCurrentLimitEnable(true);
 
     TalonFXConfiguration motorConfigShooter = new TalonFXConfiguration();
     TalonFXConfiguration motorConfigIndexer = new TalonFXConfiguration();
 
     // current limiting
-    // motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
-    // motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
+    motorConfigShooter.withCurrentLimits(currentLimitsConfigsShooter);
+    motorConfigIndexer.withCurrentLimits(currentLimitsConfigsIndexer);
 
     shooterTop.getConfigurator().apply(motorConfigShooter);
     indexerMotor.getConfigurator().apply(motorConfigIndexer);
+
+    shooterTop.setInverted(Constants.Shooter.kIsShooterTopInverted);
+    shooterBottom.setInverted(Constants.Shooter.kIsShooterBottomInverted);
+    indexerMotor.setInverted(Constants.Shooter.kIsIndexerInverted);
+    
+    shooterTop.setNeutralMode(NeutralModeValue.Coast);
+    shooterBottom.setNeutralMode(NeutralModeValue.Coast);
+    indexerMotor.setNeutralMode(NeutralModeValue.Brake);
   }
 
   public void postSmartDashboardDebug() {

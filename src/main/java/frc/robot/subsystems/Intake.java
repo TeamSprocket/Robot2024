@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
+import frc.util.Alert;
 import frc.util.Conversions;
 import frc.util.ShuffleboardIO;
 import frc.util.Util;
@@ -60,52 +61,11 @@ public class Intake extends SubsystemBase {
     MotionMagicVoltage mmV = new MotionMagicVoltage(0);
     VoltageOut vO = new VoltageOut(0);
 
+    private Alert rollIntakeDisconnectedAlert;
+
     public Intake() {
-        // configMotors();
-
-        TalonFXConfiguration pivotIntakeConfig = new TalonFXConfiguration();
-        
-        pivotIntakeConfig.withMotionMagic(
-            new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(Constants.Intake.kPivotIntakeMMCruiseVelocity)
-                .withMotionMagicAcceleration(Constants.Intake.kPivotIntakeMMCruiseAccel)
-        );
-
-        pivotIntakeConfig.withSlot0(
-            new Slot0Configs()
-                .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKS(Constants.Intake.kPivotIntakeS) // 0.27
-                .withKV(Constants.Intake.kPivotIntakeV) // 1.4
-                .withKA(Constants.Intake.kPivotIntakeA) // 0.01
-                .withKG(Constants.Intake.kPivotIntakeG) // 0.20
-                .withKP(Constants.Intake.kPivotIntakeP) // 2
-                .withKI(Constants.Intake.kPivotIntakeI)
-                .withKD(Constants.Intake.kPivotIntakeD)
-        );
-
-        pivotIntakeConfig.withFeedback(
-            new FeedbackConfigs()
-                .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
-        );
-
-        // pivotIntakeConfig.withMotorOutput(
-        //     new MotorOutputConfigs()
-        //         .withNeutralMode(NeutralModeValue.Brake)
-        //         .withInverted(InvertedValue.CounterClockwise_Positive)
-        // );
-        // PRETTY SURE THESE DON'T MATTER BUT REENABLE IN CASE SOMETHING WRONG
-
-        pivotIntake.getConfigurator().apply(pivotIntakeConfig);
-        mmV.Slot = 0;
-
-        rollIntake.setInverted(Constants.Intake.kIsRollInverted);
-        pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
-        rollIntake.optimizeBusUtilization();
-
-        rollIntake.setNeutralMode(NeutralModeValue.Coast);
-        pivotIntake.setNeutralMode(NeutralModeValue.Brake);
-
-        pivotIntake.setPosition(0.2222);
+        configMotors();
+        rollIntakeDisconnectedAlert = new Alert("Roll Intake Motor Disconnected!!", Alert.AlertType.ERROR);
     }
 
     @Override
@@ -206,12 +166,53 @@ public class Intake extends SubsystemBase {
   }
 
   private void configMotors() {
+    TalonFXConfiguration pivotIntakeConfig = new TalonFXConfiguration();
+        
+        pivotIntakeConfig.withMotionMagic(
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(Constants.Intake.kPivotIntakeMMCruiseVelocity)
+                .withMotionMagicAcceleration(Constants.Intake.kPivotIntakeMMCruiseAccel)
+        );
 
-    TalonFXConfiguration motorConfigPivot = new TalonFXConfiguration();
-    TalonFXConfiguration motorConfigRoll = new TalonFXConfiguration();
+        pivotIntakeConfig.withSlot0(
+            new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKS(Constants.Intake.kPivotIntakeS) // 0.27
+                .withKV(Constants.Intake.kPivotIntakeV) // 1.4
+                .withKA(Constants.Intake.kPivotIntakeA) // 0.01
+                .withKG(Constants.Intake.kPivotIntakeG) // 0.20
+                .withKP(Constants.Intake.kPivotIntakeP) // 2
+                .withKI(Constants.Intake.kPivotIntakeI)
+                .withKD(Constants.Intake.kPivotIntakeD)
+        );
 
-    pivotIntake.getConfigurator().apply(motorConfigPivot);
-    rollIntake.getConfigurator().apply(motorConfigRoll);
+        pivotIntakeConfig.withFeedback(
+            new FeedbackConfigs()
+                .withSensorToMechanismRatio(Constants.Intake.kPivotIntakeGearRatio)
+        );
+
+        // pivotIntakeConfig.withMotorOutput(
+        //     new MotorOutputConfigs()
+        //         .withNeutralMode(NeutralModeValue.Brake)
+        //         .withInverted(InvertedValue.CounterClockwise_Positive)
+        // );
+        // PRETTY SURE THESE DON'T MATTER BUT REENABLE IN CASE SOMETHING WRONG
+
+        pivotIntake.getConfigurator().apply(pivotIntakeConfig);
+        mmV.Slot = 0;
+
+        TalonFXConfiguration motorConfigRoll = new TalonFXConfiguration();
+        rollIntake.getConfigurator().apply(motorConfigRoll);
+
+        rollIntake.setInverted(Constants.Intake.kIsRollInverted);
+        pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
+        
+        rollIntake.optimizeBusUtilization();
+
+        rollIntake.setNeutralMode(NeutralModeValue.Coast);
+        pivotIntake.setNeutralMode(NeutralModeValue.Brake);
+
+        pivotIntake.setPosition(0.2222);
   }
 
   private void debug() {
