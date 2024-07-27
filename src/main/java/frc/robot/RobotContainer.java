@@ -4,6 +4,7 @@
 package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,6 +36,7 @@ public class RobotContainer {
   private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getLeftY(), () -> drivetrain.getTranslation3d());
   private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getRightTriggerAxis(), () -> operator.getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
   private final Intake intake = new Intake();
+  private final Vision vision = new Vision(drivetrain);
   Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake);
 
   // ------- Swerve Generated -------
@@ -44,6 +46,9 @@ public class RobotContainer {
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  private SwerveRequest.ApplyChassisSpeeds headingLock = new SwerveRequest.ApplyChassisSpeeds()
+    .withSteerRequestType(SteerRequestType.MotionMagic);
+
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
@@ -67,6 +72,7 @@ public class RobotContainer {
       .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    driver.y().whileTrue(alignSwerveCommand());
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
@@ -86,6 +92,11 @@ public class RobotContainer {
     new Trigger(operator.x())
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    new Trigger(operator.x()) // change button
+      .whileTrue(alignSwerveCommand()
+        .andThen(new WaitUntilCommand(() -> vision.isAligned()))
+        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
 
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
@@ -121,23 +132,26 @@ public class RobotContainer {
     shooterPivot.zeroPosition();
   }
 
-  public Command rumbleControllers()
-   {
-       return Commands.runOnce(() ->
-           CommandScheduler.getInstance().schedule(
-               Commands.sequence(
-                   Commands.waitSeconds(0.5),
-                   Commands.runOnce(() -> {
-                       operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-                       driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
-                   }),
-                   Commands.waitSeconds(0.5),
-                   Commands.runOnce(() -> {
-                       operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-                       driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
-                   })
-               )
-           )
-       );
-   }
+  public Command rumbleControllers() {
+    return Commands.runOnce(() ->
+      CommandScheduler.getInstance().schedule(
+        Commands.sequence(
+          Commands.waitSeconds(0.5),
+          Commands.runOnce(() -> {
+              operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+              driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 1);
+          }),
+          Commands.waitSeconds(0.5),
+          Commands.runOnce(() -> {
+              operator.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+              driver.getHID().setRumble(GenericHID.RumbleType.kBothRumble, 0);
+          })
+        )
+      )
+    );
   }
+
+  public Command alignSwerveCommand() {
+    return drivetrain.applyRequest(() -> headingLock.withSpeeds(vision.getHeadingLockSpeed()));
+  }
+}

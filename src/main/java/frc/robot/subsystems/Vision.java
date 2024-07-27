@@ -1,26 +1,15 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.LimelightHelper;
-import frc.robot.LimelightHelper.PoseEstimate;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
-import frc.util.Util;
+import frc.util.LimelightHelper;
 
 public class Vision extends SubsystemBase {
 
@@ -47,10 +36,12 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        trueRobotPose = logPose();
-        publisher.set(trueRobotPose);
         chassisRotationSpeeds = pidHeadingLock.calculate(getXOffset(), 0);
         debug();
+    }
+
+    public boolean isAligned() {
+        return pidHeadingLock.atSetpoint();
     }
 
     /**
@@ -80,18 +71,6 @@ public class Vision extends SubsystemBase {
         } else {
             return lastPose;
         }
-    }
-
-    public Pose2d logPose() {
-        if (hasTargets()) {
-            robotPose = getPose2d();
-            swerve.updateOdometry(robotPose);
-        } else {
-            robotPose = swerve.getPose();
-        }
-        Pose2d pose = new Pose2d(robotPose.getTranslation(), swerve.getYaw());
-        
-        return pose;
     }
 
     public Pose2d getRobotPose() {
