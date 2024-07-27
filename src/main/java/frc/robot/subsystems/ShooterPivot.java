@@ -215,6 +215,7 @@ public class ShooterPivot extends SubsystemBase {
     //init default to put in dashboard
     switch (state) {
       case NONE:
+      motor.set(0);
         break;
     
        case STOWED:
@@ -280,6 +281,7 @@ public class ShooterPivot extends SubsystemBase {
         } else {
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", -1.0);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", -1.0);
+          motor.set(0);
         }
         // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
