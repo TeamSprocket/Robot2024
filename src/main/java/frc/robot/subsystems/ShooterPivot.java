@@ -170,25 +170,6 @@ public class ShooterPivot extends SubsystemBase {
    * @param targetAngle Uses the targetAngle to get a set pivot speed.
    * @return
    */
-  public double getPivotSpeed(double targetAngle) {
-    double pivotSpeed;
-    pidController.setSetpoint(targetAngle);
-    double currentAngle = getShooterPivotAngle();
-    double PIDoutput = pidController.calculate(currentAngle);
-    double signedKFF = Constants.ShooterPivot.kPID.kFF * Util.getSign(PIDoutput);
-
-    if(Math.abs(targetAngle - currentAngle) > Constants.ShooterPivot.kFFtoPIDTransitionTolerance) {
-      pivotSpeed = Constants.ShooterPivot.kFFPivot * Util.getSign(PIDoutput);
-    } else {
-      pivotSpeed = PIDoutput + signedKFF;
-      if (pidController.atSetpoint()) {
-        pivotSpeed = 0;
-      }
-    }
-
-    pivotSpeed = Util.minmax(pivotSpeed, -1 * Constants.ShooterPivot.kMaxShooterPivotOutput, Constants.ShooterPivot.kMaxShooterPivotOutput);
-    return pivotSpeed;
-  }
 
   public void setState(ShooterPivotStates state) {
     this.state = state;
@@ -230,20 +211,7 @@ public class ShooterPivot extends SubsystemBase {
     motor.clearStickyFaults();
   }
 
-  //Configurate the motors.
-  private void configMotors() {
-    // current limiting configs
 
-    // CurrentLimitsConfigs currentLimitsConfigs = new CurrentLimitsConfigs();
-    // currentLimitsConfigs.withSupplyCurrentLimit(Constants.ShooterPivot.kSupplyCurrentLimit);
-    // currentLimitsConfigs.withSupplyCurrentLimitEnable(true);
-
-    // motorConfig.withCurrentLimits(currentLimitsConfigs);
-    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-
-    motor.getConfigurator().apply(motorConfig);
-  }
   /**call this function to run periodic with motion magic */
   private void motionmagicPeriodic() {
     //init default to put in dashboard
