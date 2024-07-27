@@ -119,7 +119,7 @@ public class Constants {
     public static final class ShooterPivot {
         public static double kStartingOffsetAngleDeg = 0.0;
 
-        public static final double kSupplyCurrentLimit = 0.0;
+        public static final double kStatorCurrentLimit = 0;
 
         public static final boolean kIsShooterPivotInverted = false;
 
