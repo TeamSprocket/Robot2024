@@ -78,7 +78,6 @@ public class ShooterPivot extends SubsystemBase {
   ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
   private MotionMagicVoltage motorMotionMagicController;
-  private VoltageOut customVoltage;
   private MotionMagicVoltage motionMagicVolt;
 
   // //  Shooter table key: 
@@ -111,7 +110,6 @@ public class ShooterPivot extends SubsystemBase {
 
     //init global variable 
     motorMotionMagicController = new MotionMagicVoltage(0);
-    customVoltage = new VoltageOut(0);
     motionMagicVolt = new MotionMagicVoltage(0);
 
     this.joystickSupplier = joystickSupplier;
@@ -282,7 +280,6 @@ public class ShooterPivot extends SubsystemBase {
         } else {
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", -1.0);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", -1.0);
-          motor.setControl(customVoltage.withOutput(0));
         }
         // SmartDashboard.putNumber("Pivot Distance [SP]", dist);
         
