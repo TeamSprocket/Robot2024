@@ -15,6 +15,7 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -59,6 +60,7 @@ public class Intake extends SubsystemBase {
     }
 
     MotionMagicVoltage mmV = new MotionMagicVoltage(0);
+    VelocityVoltage velocityVoltage = new VelocityVoltage(0);
     VoltageOut vO = new VoltageOut(0);
 
     public Intake() {
