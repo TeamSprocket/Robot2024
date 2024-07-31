@@ -84,7 +84,6 @@ public class Intake extends SubsystemBase {
 
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
-                .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKS(Constants.Intake.kPivotIntakeS) // 0.27
                 .withKV(Constants.Intake.kPivotIntakeV) // 1.4
                 .withKA(Constants.Intake.kPivotIntakeA) // 0.01
