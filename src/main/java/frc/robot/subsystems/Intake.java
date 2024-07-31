@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 //phoenix imports for pivot intake
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
@@ -61,7 +62,7 @@ public class Intake extends SubsystemBase {
 
     MotionMagicVoltage mmV = new MotionMagicVoltage(0);
     VelocityVoltage velocityVoltage = new VelocityVoltage(0);
-    VoltageOut vO = new VoltageOut(0);
+    // VoltageOut vO = new VoltageOut(0);
 
     public Intake() {
         // configMotors();
@@ -122,6 +123,8 @@ public class Intake extends SubsystemBase {
         // ShuffleboardIO.addSlider("Intake Pivot Voltage [IN]", 0.0, 1.5, 0);
     }
 
+
+
     @Override
     public void periodic() {
         // debug - state selector
@@ -136,42 +139,48 @@ public class Intake extends SubsystemBase {
 
             case STOWED:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleStowed));
-                rollIntake.setControl(vO.withOutput(0.0));
+                //rollIntake.setControl(vO.withOutput(0.0));
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedStowed));
                 break;
 
             case INTAKE:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIntake));
-                rollIntake.setControl(vO.withOutput(3.0));
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
                 break;
 
             case INDEXING:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIndexing));
                 rollIntake.set(0.0);
+                 rollIntake.setControl(velocityVoltage.withVelocity(0));
                 break;
 
             case INTAKE_ROLLBACK:
                 // Pivot maintains current position
                 rollIntake.set(-1.0 * Constants.Intake.kRollSpeedIntakeRollback);
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
                 break;
                 
             case SCORE_SPEAKER_SUBWOOFER:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer));
-                rollIntake.set(0.0);
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedScoreSpeaker));
                 break;
 
             case SCORE_SPEAKER:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeaker));
-                rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                // rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedScoreSpeaker));
                 break;
 
             case EJECT_NOTE:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleEject));
-                rollIntake.set(Constants.Intake.kEjectNoteSpeed);
+                // rollIntake.set(Constants.Intake.kEjectNoteSpeed);
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kEjectNoteSpeed));
                 break;
 
             case CLIMB:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleClimb));
-                rollIntake.set(0.0);
+                // rollIntake.set(0.0);
+                rollIntake.setControl(velocityVoltage.withVelocity(0));
                 break; 
         }
 
