@@ -38,6 +38,7 @@ public class Intake extends SubsystemBase {
     private final TalonFX pivotIntake = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
     private double pivotSpeed = 0;
+    private double intakeSpeed = 0;
 
     // ProfiledPIDController profiledPIDController;
 
@@ -74,6 +75,12 @@ public class Intake extends SubsystemBase {
                 .withMotionMagicCruiseVelocity(Constants.Intake.kPivotIntakeMMCruiseVelocity)
                 .withMotionMagicAcceleration(Constants.Intake.kPivotIntakeMMCruiseAccel)
         );
+        rollIntakeConfig.withMotionMagic(
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(Constants.Intake.kRollSpeedIntakeMMCruiseVelocity)
+                .withMotionMagicAcceleration(Constants.Intake.kRollIntakeMM)
+
+        )
 
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
@@ -101,6 +108,20 @@ public class Intake extends SubsystemBase {
 
         pivotIntake.getConfigurator().apply(pivotIntakeConfig);
         mmV.Slot = 0;
+
+        TalonFXConfiguration rollIntakeConfig = new TalonFXConfiguration();
+
+        rollIntakeConfig.withSlot0(
+            new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKS(Constants.Intake.kRollIntakeS) 
+                .withKV(Constants.Intake.kRollIntakeV)
+                .withKP(Constants.Intake.kRollIntakeP)
+                .withKI(Constants.Intake.kRollIntakeI)
+                .withKD(Constants.Intake.kRollIntakeD)
+        );
+
+        
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
