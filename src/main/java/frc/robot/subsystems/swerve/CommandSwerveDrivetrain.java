@@ -19,6 +19,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -117,6 +118,18 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                                             new ReplanningConfig()), 
             () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red, 
             this);
+    }
+
+    public Pose2d getPose() {
+        return this.m_odometry.getEstimatedPosition();
+    }
+
+    public Rotation2d getYaw() {
+        return new Rotation2d(Math.toRadians(getPigeon2().getAngle()));
+    }
+
+    public void updateOdometry(Pose2d pose) {
+        this.m_odometry.resetPosition(getYaw(), m_modulePositions, pose);
     }
 
     @Override
