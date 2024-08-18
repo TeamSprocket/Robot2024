@@ -12,7 +12,6 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstantsFactory;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 
 public class TunerConstants extends SubsystemBase {
 

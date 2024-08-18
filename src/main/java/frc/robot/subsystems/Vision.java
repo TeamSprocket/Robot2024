@@ -2,10 +2,12 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -17,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper;
 import frc.robot.LimelightHelper.PoseEstimate;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.util.Util;
 
 public class Vision extends SubsystemBase {
@@ -26,12 +29,27 @@ public class Vision extends SubsystemBase {
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
 
     // int[] validIDs = {4, 7};
+    Pose2d lastPose = new Pose2d();
+    Pose2d robotPose = new Pose2d();
+    Pose2d trueRobotPose = new Pose2d();
+    double timestamp;
+    double chassisRotationSpeeds;
+    double lastXOffset;
 
-    public Vision() {}
+    private PIDController pidHeadingLock = new PIDController(0.1, 0, 0.005);
+
+    CommandSwerveDrivetrain swerve;
+
+    public Vision(CommandSwerveDrivetrain swerve) {
+        this.swerve = swerve;
+        timestamp = 0;
+    }
 
     @Override
     public void periodic() {
-        publisher.set(getPose2d());
+        trueRobotPose = logPose();
+        publisher.set(trueRobotPose);
+        chassisRotationSpeeds = pidHeadingLock.calculate(getXOffset(), 0);
         debug();
     }
 
@@ -42,35 +60,46 @@ public class Vision extends SubsystemBase {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            lastPose = estimate.pose;
+            
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
         } else {
-            return new Translation2d(0.0, 0.0);
+            return new Translation2d(lastPose.getX(), lastPose.getY());
         }
     }
 
-    public Pose2d getPose2d() {
+    private Pose2d getPose2d() {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
-            // if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            // }
-            // else {
-            //     estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("limelight");
-            // }
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            lastPose = estimate.pose;
 
             return estimate.pose;
         } else {
-            return new Pose2d();
+            return lastPose;
         }
+    }
+
+    public Pose2d logPose() {
+        if (hasTargets()) {
+            robotPose = getPose2d();
+            swerve.updateOdometry(robotPose);
+        } else {
+            robotPose = swerve.getPose();
+        }
+        Pose2d pose = new Pose2d(robotPose.getTranslation(), swerve.getYaw());
+        
+        return pose;
+    }
+
+    public Pose2d getRobotPose() {
+        return trueRobotPose;
+    }
+    
+    public ChassisSpeeds getHeadingLockSpeed() {
+        return new ChassisSpeeds(0, 0, chassisRotationSpeeds);
     }
 
     public boolean hasTargets() {
@@ -91,13 +120,14 @@ public class Vision extends SubsystemBase {
     public double getXOffset() {
         if (LimelightHelper.getTV("limelight")) {
             if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
-                return LimelightHelper.getTX("limelight"); 
+                lastXOffset = LimelightHelper.getTX("limelight");
+                return lastXOffset;
             }
             else {
-                return 0.0;
+                return lastXOffset;
             }
         } else {
-            return 0.0;
+            return lastXOffset;
         }
     }
 
@@ -141,6 +171,8 @@ public class Vision extends SubsystemBase {
     private void debug() {
         SmartDashboard.putNumber("Robot Pose X [VI]", getTranslation2d().getX());
         SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
+        SmartDashboard.putNumber("PID Heading Lock Output [VI]", chassisRotationSpeeds);
+        SmartDashboard.putNumber("X Offset [VI]", getXOffset());
         // SmartDashboard.putBoolean("Has Targets [LL]", hasTargets(getTranslation2d()));
         // SmartDashboard.putNumber("Translation X Robot To Target [LL]", getTranslationRobotToGoal().getX());
         // SmartDashboard.putNumber("Translation Y Robot To Target [LL]", getTranslationRobotToGoal().getY());
