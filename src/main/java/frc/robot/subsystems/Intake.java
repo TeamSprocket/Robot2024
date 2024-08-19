@@ -80,7 +80,7 @@ public class Intake extends SubsystemBase {
                 .withMotionMagicCruiseVelocity(Constants.Intake.kRollSpeedIntakeMMCruiseVelocity)
                 .withMotionMagicAcceleration(Constants.Intake.kRollIntakeMM)
 
-        )
+        );
 
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
