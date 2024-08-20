@@ -43,6 +43,10 @@ public class ShooterPivot extends SubsystemBase {
 
   double targetPivotAngle = 0.0;
 
+  double distTestXSpeaker = 0.0;
+  double distTestYSpeaker = 0.0;
+  double visionAngle = 0.0;
+
   // ProfiledpidController profiledpidController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
   PIDController pidController = new PIDController(Constants.ShooterPivot.kPID.kP, Constants.ShooterPivot.kPID.kI, Constants.ShooterPivot.kPID.kD);
@@ -244,6 +248,7 @@ public class ShooterPivot extends SubsystemBase {
     lastState = state;
     SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
     SmartDashboard.putBoolean("Shooter Pivot atGoal [SP]", atGoal());
+    SmartDashboard.putNumber("ShooterPivot TargetVision [SP]", shooterPivotAngleVision());
 
     // case SPEAKER_SUBWOOFER:
       //   pidController.setSetpoint(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
@@ -273,9 +278,17 @@ public class ShooterPivot extends SubsystemBase {
     double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
     double distanceToSpeaker = Math.sqrt(Math.pow(16 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
     distanceToSpeaker = distanceToSpeaker - 0.155;
+
+    distTestXSpeaker = distanceToSpeaker;
+    distTestYSpeaker = speakerY;
+
     double angle = Math.atan(speakerY / distanceToSpeaker);
+    angle = Math.toDegrees(angle);
+    visionAngle = angle;
+
     angle = -1 * angle;
-    angle = 60 + angle;
+    angle = 47.5 + angle;
+    if (angle < 0) angle = 0;
     return angle;
 }
 

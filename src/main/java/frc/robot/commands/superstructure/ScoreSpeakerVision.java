@@ -26,6 +26,7 @@ public class ScoreSpeakerVision extends Command {
     this.intake = intake;
     this.shooter = shooter;
     this.shooterPivot = shooterPivot;
+    timer = new Timer();
   }
 
   // Called when the command is initially scheduled.
@@ -43,7 +44,7 @@ public class ScoreSpeakerVision extends Command {
     shooter.setState(ShooterStates.SPINUP);
     shooterPivot.setState(ShooterPivotStates.SPEAKER);
 
-    if (timer.get() > 0.5) {
+    if (timer.get() > 2.0) {
       shooter.setIndexerSpeedScoreSpeaker();
     }
   }
