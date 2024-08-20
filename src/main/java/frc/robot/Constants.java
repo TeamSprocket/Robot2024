@@ -247,6 +247,13 @@ public class Constants {
         public static final double kRollSpeedIntakeRollback = 0.05;
         public static final double kRollSpeedScoreSpeaker = 0.3;
         public static final double kEjectNoteSpeed = -0.6;
+
+        public static final double kRollIntakeS = 0.3;
+        public static final double kRollIntakeV = 0;
+        public static final double kRollIntakeP = 0;
+        public static final double kRollIntakeI = 0;
+        public static final double kRollIntakeD = 0;
+
         
 
         public static final boolean kIsRollInverted = true;

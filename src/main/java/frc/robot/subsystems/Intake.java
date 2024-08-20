@@ -61,8 +61,9 @@ public class Intake extends SubsystemBase {
         CLIMB
     }
 
-    MotionMagicVoltage mmV = new MotionMagicVoltage(0);
     VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+    final VoltageOut m_request = new VoltageOut(0);
+    
     // VoltageOut vO = new VoltageOut(0);
 
     public Intake() {
@@ -70,18 +71,6 @@ public class Intake extends SubsystemBase {
 
         TalonFXConfiguration pivotIntakeConfig = new TalonFXConfiguration();
         
-        pivotIntakeConfig.withMotionMagic(
-            new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(Constants.Intake.kPivotIntakeMMCruiseVelocity)
-                .withMotionMagicAcceleration(Constants.Intake.kPivotIntakeMMCruiseAccel)
-        );
-        rollIntakeConfig.withMotionMagic(
-            new MotionMagicConfigs()
-                .withMotionMagicCruiseVelocity(Constants.Intake.kRollSpeedIntakeMMCruiseVelocity)
-                .withMotionMagicAcceleration(Constants.Intake.kRollIntakeMM)
-
-        );
-
         pivotIntakeConfig.withSlot0(
             new Slot0Configs()
                 .withKS(Constants.Intake.kPivotIntakeS) // 0.27
@@ -106,18 +95,17 @@ public class Intake extends SubsystemBase {
         // PRETTY SURE THESE DON'T MATTER BUT REENABLE IN CASE SOMETHING WRONG
 
         pivotIntake.getConfigurator().apply(pivotIntakeConfig);
-        mmV.Slot = 0;
 
         TalonFXConfiguration rollIntakeConfig = new TalonFXConfiguration();
 
         rollIntakeConfig.withSlot0(
             new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKS(Constants.Intake.kRollIntakeS) 
-                .withKV(Constants.Intake.kRollIntakeV)
-                .withKP(Constants.Intake.kRollIntakeP)
-                .withKI(Constants.Intake.kRollIntakeI)
-                .withKD(Constants.Intake.kRollIntakeD)
+                .withKS(Constants.Intake.kRollIntakeS) // voltage value: overcome static friction
+                .withKV(Constants.Intake.kRollIntakeV) // voltage to maintain motor's velocity at 1 rmps
+                .withKP(Constants.Intake.kRollIntakeP) // value to start oscillating
+                .withKI(Constants.Intake.kRollIntakeI) 
+                .withKD(Constants.Intake.kRollIntakeD) // value to stop oscillating
         );
 
         
@@ -158,18 +146,16 @@ public class Intake extends SubsystemBase {
                 break;
 
             case STOWED:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleStowed));
                 //rollIntake.setControl(vO.withOutput(0.0));
                 rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedStowed));
                 break;
 
             case INTAKE:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIntake));
-                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
+                // rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
+                rollIntake.setControl(m_request.withOutput(1.0));
                 break;
 
             case INDEXING:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIndexing));
                 rollIntake.set(0.0);
                  rollIntake.setControl(velocityVoltage.withVelocity(0));
                 break;
@@ -181,24 +167,20 @@ public class Intake extends SubsystemBase {
                 break;
                 
             case SCORE_SPEAKER_SUBWOOFER:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer));
                 rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedScoreSpeaker));
                 break;
 
             case SCORE_SPEAKER:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeaker));
                 // rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
                 rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedScoreSpeaker));
                 break;
 
             case EJECT_NOTE:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleEject));
                 // rollIntake.set(Constants.Intake.kEjectNoteSpeed);
                 rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kEjectNoteSpeed));
                 break;
 
             case CLIMB:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleClimb));
                 // rollIntake.set(0.0);
                 rollIntake.setControl(velocityVoltage.withVelocity(0));
                 break; 
@@ -207,12 +189,13 @@ public class Intake extends SubsystemBase {
         lastState = state;
 
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
-        SmartDashboard.putBoolean("At Goal [IN]", atGoal());
+        // SmartDashboard.putBoolean("At Goal [IN]", atGoal());
         // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
         SmartDashboard.putString("State Intake [IN]", state.toString());
-        SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
+        // SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
+        SmartDashboard.putNumber("Roll Intake Velocity [IN]", rollIntake.getRotorVelocity().getValueAsDouble());
 
         // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
 
@@ -243,10 +226,9 @@ public class Intake extends SubsystemBase {
         return deg;
     }
 
-  public boolean atGoal() {
-    double goal = mmV.Position;
-    return Util.inRange(getPivotAngle(), (goal - Constants.Intake.kAtGoalTolerance), (goal + Constants.Intake.kAtGoalTolerance));
-  }
+//   public boolean atGoal() {
+//     return Util.inRange(getPivotAngle(), (goal - Constants.Intake.kAtGoalTolerance), (goal + Constants.Intake.kAtGoalTolerance));
+//   }
 
   public void zeroPosition() {
     pivotIntake.setPosition(0);
