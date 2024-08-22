@@ -102,8 +102,6 @@ public class Intake extends SubsystemBase {
         rollIntakeConfig.withSlot0(
             new Slot0Configs()
                 .withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKS(Constants.Intake.kRollIntakeS) // voltage value: overcome static friction
-                .withKV(Constants.Intake.kRollIntakeV) // voltage to maintain motor's velocity at 1 rmps
                 .withKP(Constants.Intake.kRollIntakeP) // value to start oscillating
                 .withKI(Constants.Intake.kRollIntakeI) 
                 .withKD(Constants.Intake.kRollIntakeD) // value to stop oscillating
@@ -152,8 +150,7 @@ public class Intake extends SubsystemBase {
 
             case INTAKE:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIntake));
-                // rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
-                rollIntake.setControl(vO.withOutput(1));
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
                 break;
 
             case INDEXING:
@@ -196,7 +193,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Roll Intake Velocity", rollIntake.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Roll Intake Velocity", rollIntake.getRotorVelocity().getValueAsDouble());
 
         // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
 

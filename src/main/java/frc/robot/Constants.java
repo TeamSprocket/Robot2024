@@ -250,7 +250,7 @@ public class Constants {
 
         public static final double kRollIntakeS = 0.3;
         public static final double kRollIntakeV = 0;
-        public static final double kRollIntakeP = 0;
+        public static final double kRollIntakeP = 60;
         public static final double kRollIntakeI = 0;
         public static final double kRollIntakeD = 0;
 
