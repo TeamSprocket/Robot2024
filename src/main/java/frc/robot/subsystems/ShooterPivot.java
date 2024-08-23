@@ -95,6 +95,7 @@ public class ShooterPivot extends SubsystemBase {
    */
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
     motorConfig.withMotionMagic(new MotionMagicConfigs().withMotionMagicCruiseVelocity(Constants.ShooterPivot.KMotionMagicCruiseVelocity).withMotionMagicAcceleration(Constants.ShooterPivot.KMotionMagicAcceleration));
     motorConfig.withSlot0(new Slot0Configs().withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKS(Constants.ShooterPivot.KShooterPivotKS) 
@@ -104,9 +105,9 @@ public class ShooterPivot extends SubsystemBase {
                 .withKP(Constants.ShooterPivot.KShooterPivotKP)
                 .withKI(Constants.ShooterPivot.KShooterPivotKI)
                 .withKD(Constants.ShooterPivot.KShooterPivotKD));
+
     motor.getConfigurator().apply(motorConfig);
     motorConfig.withCurrentLimits(new CurrentLimitsConfigs().withStatorCurrentLimit(Constants.ShooterPivot.kStatorCurrentLimit).withStatorCurrentLimitEnable(true)); //TODO: need motor stator limit
-    
 
     //init global variable 
     motorMotionMagicController = new MotionMagicVoltage(0);
@@ -118,7 +119,6 @@ public class ShooterPivot extends SubsystemBase {
     //configures the motors
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
-    
     
     pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
 
