@@ -237,21 +237,21 @@ public class Constants {
         public static final double kPivotIntakeP = 40.0;
         public static final double kPivotIntakeI = 0.0;
         public static final double kPivotIntakeD = 1.5;
-        public static final double kPivotIntakeMMCruiseVelocity = 12.0;
+        public static final double kPivotIntakeMMCruiseVelocity = 12.0; 
         public static final double kPivotIntakeMMCruiseAccel = 6;
         
         public static final double kPivotAngleOffsetHorizontal = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
-        public static final double kRollSpeedIntake = 0.4;
-        public static final double kRollSpeedIntakeRollback = 0.05;
-        public static final double kRollSpeedScoreSpeaker = 0.3;
-        public static final double kEjectNoteSpeed = -0.6;
+        public static final double kRollSpeedIntake = 46; //0.4;
+        public static final double kRollSpeedIntakeRollback = 5; //0.05;
+        public static final double kRollSpeedScoreSpeaker = 36; // 0.3;
+        public static final double kEjectNoteSpeed = 70; // -0.6;
 
         public static final double kRollIntakeS = 0.3;
         public static final double kRollIntakeV = 0;
-        public static final double kRollIntakeP = 60;
-        public static final double kRollIntakeI = 0;
+        public static final double kRollIntakeP = 0.42;
+        public static final double kRollIntakeI = 0;    
         public static final double kRollIntakeD = 0;
 
         

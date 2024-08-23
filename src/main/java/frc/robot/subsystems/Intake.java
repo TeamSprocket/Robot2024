@@ -36,8 +36,6 @@ public class Intake extends SubsystemBase {
     private final TalonFX rollIntake = new TalonFX(RobotMap.Intake.ROLL_INTAKE);
     private final TalonFX pivotIntake = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
 
-    private double pivotSpeed = 0;
-
     // ProfiledPIDController profiledPIDController;
 
     private IntakeStates state = IntakeStates.NONE;
@@ -60,7 +58,6 @@ public class Intake extends SubsystemBase {
     }
 
     MotionMagicVoltage mmV = new MotionMagicVoltage(0);
-    VoltageOut vO = new VoltageOut(0);
     VelocityVoltage velocityVoltage = new VelocityVoltage(0);
 
     public Intake() {
@@ -101,17 +98,20 @@ public class Intake extends SubsystemBase {
 
         rollIntakeConfig.withSlot0(
             new Slot0Configs()
-                .withGravityType(GravityTypeValue.Arm_Cosine)
                 .withKP(Constants.Intake.kRollIntakeP) // value to start oscillating
                 .withKI(Constants.Intake.kRollIntakeI) 
                 .withKD(Constants.Intake.kRollIntakeD) // value to stop oscillating
         );
 
         pivotIntake.getConfigurator().apply(pivotIntakeConfig);
+        rollIntake.getConfigurator().apply(rollIntakeConfig);
+
         mmV.Slot = 0;
+        velocityVoltage.Slot = 0;
 
         rollIntake.setInverted(Constants.Intake.kIsRollInverted);
         pivotIntake.setInverted(Constants.Intake.kIsPivotInverted);
+
         rollIntake.optimizeBusUtilization();
 
         rollIntake.setNeutralMode(NeutralModeValue.Coast);
@@ -145,7 +145,7 @@ public class Intake extends SubsystemBase {
 
             case STOWED:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleStowed));
-                rollIntake.setControl(velocityVoltage.withVelocity(0.0));
+                rollIntake.set(0);
                 break;
 
             case INTAKE:
@@ -155,7 +155,7 @@ public class Intake extends SubsystemBase {
 
             case INDEXING:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIndexing));
-                rollIntake.setControl(velocityVoltage.withVelocity(0.0));
+                rollIntake.set(0);
                 break;
 
             case INTAKE_ROLLBACK:
@@ -165,7 +165,7 @@ public class Intake extends SubsystemBase {
                 
             case SCORE_SPEAKER_SUBWOOFER:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer));
-                rollIntake.setControl(velocityVoltage.withVelocity(0.0));
+                rollIntake.set(0);
                 break;
 
             case SCORE_SPEAKER:
@@ -180,7 +180,7 @@ public class Intake extends SubsystemBase {
 
             case CLIMB:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleClimb));
-                rollIntake.setControl(velocityVoltage.withVelocity(0.0));
+                rollIntake.set(0);
                 break; 
         }
 
@@ -193,7 +193,7 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
-        SmartDashboard.putNumber("Roll Intake Velocity", rollIntake.getRotorVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Roll Intake Velocity", rollIntake.getVelocity().getValueAsDouble());
 
         // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
 
