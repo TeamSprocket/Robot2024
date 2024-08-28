@@ -4,7 +4,9 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -30,8 +32,7 @@ import frc.robot.commands.auto.IntakeNoteManualTimed;
 import frc.robot.commands.auto.PreloadtoMidlineBlue;
 import frc.robot.commands.auto.PreloadtoMidlineRed;
 // import frc.robot.commands.auto.OneNoteAuton;
-import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
-import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
+import frc.robot.commands.auto.*;
 import frc.robot.commands.macro.LockHeadingToSpeaker;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
@@ -53,7 +54,15 @@ public class RobotContainer {
   private final CommandSwerveDrivetrain drivetrain = tunerConst.DriveTrain; // My drivetrain
   private final Telemetry logger = new Telemetry(Constants.Drivetrain.MaxSpeed);
   
-  // SwerveDrive swerveDrive = new SwerveDrive(limelight);
+  private SwerveModuleConstants FrontLeft;
+  private SwerveModuleConstants FrontRight;
+  private SwerveModuleConstants BackLeft;
+  private SwerveModuleConstants BackRight;
+  private SwerveDrivetrainConstants DrivetrainConstants;
+
+
+  private final CommandSwerveDrivetrain CommandSwerveDrivetrain = new CommandSwerveDrivetrain(DrivetrainConstants, FrontLeft,
+      FrontRight, BackLeft, BackRight);
   private final Elevator elevator = new Elevator(() -> operator.getController().getRightY());
   private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY());
   private final Shooter shooter = new Shooter(() -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis());
@@ -71,6 +80,8 @@ public class RobotContainer {
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
+
+  
   public RobotContainer() {
     configureBindings();
     initNamedCommands();
@@ -81,32 +92,33 @@ public class RobotContainer {
 
     // ------ path planner ------
 
-    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
+    autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-    // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
-    // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
-    // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
-    // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
-    // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
-    // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
-    // autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
-    // autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
-    // autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
-    // autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
-    // autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
-    // autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
-    // autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
-    // autonChooser.addOption("Middle 1 + 3", new PathPlannerAuto("Middle 1 + 3"));
-    // autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
-    // autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
-    // autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
-    // autonChooser = AutoBuilder.buildAutoChooser();
+    autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
+    autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
+    autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
+    autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
+    autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
+    autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
+    autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
+    autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
+    autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
+    autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
+    autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
+    autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
+    autonChooser.addOption("Middle 1 + 3", new PathPlannerAuto("Middle 1 + 3"));
+    autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
+    autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
+    autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
+    
 
     // ------- by encoder ticks -------
 
     // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
     // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
     
+    autonChooser = AutoBuilder.buildAutoChooser();
+
     SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
 
@@ -114,9 +126,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
     NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
     NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
-    // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
-    // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
-    // NamedCommands.registerCommand("PrintHello", new PrintHello());
+    NamedCommands.registerCommand("ScoreSpeakerPodiumSpinup", new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, CommandSwerveDrivetrain));
+    NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShootTimed(shooter, intake, shooterPivot));
+    // NamedCommands.registerCommand("PrintHello", new PrintHello());dadad
 
   }
 
