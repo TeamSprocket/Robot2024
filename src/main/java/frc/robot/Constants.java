@@ -221,7 +221,7 @@ public class Constants {
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
         public static final double kPivotAngleStowed = 0.21; // 0.19; // 23.0
-        public static final double kPivotAngleIntake = -0.14; // -0.08; //0.0694;
+        public static final double kPivotAngleIntake = -0.10; // -0.08; //0.0694;
         public static final double kPivotAngleEject = 0.1389; // 30.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = 0.15;
         public static final double kPivotAngleScoreSpeakerPodium = 0.15; // TUNE
@@ -293,11 +293,8 @@ public class Constants {
         //     return retArr;
         // }
 
-        
-
         // VALS HERE
         // distance in meters of april tag, angle from 0-90 (0 is horiz), shooter mps
-
     }
 
     public static final class OldDrivetrain {

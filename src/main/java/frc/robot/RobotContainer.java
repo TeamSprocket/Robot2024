@@ -93,10 +93,10 @@ public class RobotContainer {
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.x()) // change button
-      .whileTrue(alignSwerveCommand()
-        .andThen(new WaitUntilCommand(() -> vision.isAligned()))
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
+    // new Trigger(operator.x()) // change button
+    //   .whileTrue(alignSwerveCommand()
+    //     .andThen(new WaitUntilCommand(() -> vision.isAligned()))
+    //     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
 
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
