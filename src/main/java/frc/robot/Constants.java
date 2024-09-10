@@ -152,8 +152,8 @@ public class Constants {
         public static final double kTargetAngleSpeakerFromSubwoofer = -0.144;//5.0; 
         public static double kTargetAngleAmp = 83.43575; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
         public static final double kTargetAngleCrossfield = 7.0;
-        public static final double kTargetAnglePodium = 28.0; // TODO:tune
-        public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed; // TODO: tune
+        public static final double kTargetAnglePodium = 28.0;
+        public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed;
 
 
 
