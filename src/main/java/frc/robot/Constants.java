@@ -164,7 +164,7 @@ public class Constants {
         public static final double KShooterPivotKV = 0.14;
         public static final double KShooterPivotKA = 0.01;
         public static final double KShooterPivotKG = 0.2;
-        public static final double KShooterPivotKP = 0;
+        public static final double KShooterPivotKP = 20;
         public static final double KShooterPivotKI = 0;
         public static final double KShooterPivotKD = 0;
     }
