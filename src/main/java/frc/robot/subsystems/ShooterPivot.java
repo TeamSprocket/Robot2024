@@ -122,6 +122,8 @@ public class ShooterPivot extends SubsystemBase {
     
     pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
 
+    motor.setPosition(-0.145);
+
     //Adds options for the selection thing
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);
@@ -150,7 +152,7 @@ public class ShooterPivot extends SubsystemBase {
   }
 
   /**
-   * @return Angle of the shooterPivot in degrees, CW+, CCW-
+   * @return Angle of the shooterPivot in radians, CW+, CCW-
    */
 
   public double getShooterPivotAngle() {
@@ -160,6 +162,7 @@ public class ShooterPivot extends SubsystemBase {
     if (deg > 180) {
       deg -= (360); 
     }
+
     return deg;
   }
 
@@ -183,9 +186,11 @@ public class ShooterPivot extends SubsystemBase {
 
 
   public void debug() {
-    SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
+    SmartDashboard.putNumber("Angle in Degrees [SP]", getShooterPivotAngle());
     SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
+    SmartDashboard.putNumber("Position [SP]", getShooterPivotAngle() / 360);
     SmartDashboard.putString("State [SP]", state.toString());
+
 
     //     SmartDashboard.putNumber("ShooterPivot Angle [SP]", getShooterPivotAngle());
     // SmartDashboard.putBoolean("Shooter Pivot atGoal [SP]", atGoal());
