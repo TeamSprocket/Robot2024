@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.LimelightHelper;
 import frc.robot.LimelightHelper.PoseEstimate;
+import frc.robot.commands.persistent.CommandSwerveDrivetrain;
 import frc.util.Util;
 
 public class Vision extends SubsystemBase {
@@ -26,12 +28,24 @@ public class Vision extends SubsystemBase {
     .getStructTopic("Robot Pose", Pose2d.struct).publish();
 
     // int[] validIDs = {4, 7};
+    Pose2d lastPose = new Pose2d();
+    Pose2d robotPose = new Pose2d();
+    Pose2d trueRobotPose = new Pose2d();
+    double timestamp;
+    double chassisRotationSpeeds;
+    double lastXOffset;
 
-    public Vision() {}
+    CommandSwerveDrivetrain swerve;
+
+    public Vision(CommandSwerveDrivetrain swerve) {
+        this.swerve = swerve;
+        timestamp = 0;
+    }
 
     @Override
     public void periodic() {
-        publisher.set(getPose2d());
+        trueRobotPose = logPose();
+        publisher.set(trueRobotPose);
         debug();
     }
 
@@ -99,6 +113,18 @@ public class Vision extends SubsystemBase {
         } else {
             return 0.0;
         }
+    }
+
+    public Pose2d logPose() {
+        if (hasTargets()) {
+            robotPose = getPose2d();
+            swerve.updateOdometry(robotPose);
+        } else {
+            robotPose = swerve.getPose();
+        }
+        Pose2d pose = new Pose2d(robotPose.getTranslation(), swerve.getYaw());
+        
+        return pose;
     }
 
     // public double getSpeakerAngle() {

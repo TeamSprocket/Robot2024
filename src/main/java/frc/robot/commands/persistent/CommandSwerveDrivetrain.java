@@ -7,6 +7,11 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -20,6 +25,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +44,9 @@ import frc.robot.subsystems.Vision;
  */
 public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsystem {
 
+    PIDConstants PP_PID_Translation = new PIDConstants(0.25, 0, 0); //0.25, 0, 0
+    PIDConstants PP_PID_Rotation = new PIDConstants(1.85, 0, 0.65); //1.85, 0, 0.65
+
     private static final double kSimLoopPeriod = 0.005; // 5 ms
     private Notifier m_simNotifier = null;
     private double m_lastSimTime;
@@ -49,6 +58,8 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     /* Keep track if we've ever applied the operator perspective before or not */
     private boolean hasAppliedOperatorPerspective = false;
 
+    private final SwerveRequest.ApplyChassisSpeeds AutoRequest = new SwerveRequest.ApplyChassisSpeeds();
+
     // public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency, SwerveModuleConstants... modules) {
     //     super(driveTrainConstants, OdometryUpdateFrequency, modules);
     //     if (Utils.isSimulation()) {
@@ -57,6 +68,7 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
     // }
     public CommandSwerveDrivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
+        configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -64,6 +76,14 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
         return run(() -> this.setControl(requestSupplier.get()));
+    }
+
+    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
+        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    public Command getAutoPath(String pathName) {
+        return new PathPlannerAuto(pathName);
     }
 
     private void startSimThread() {
@@ -81,10 +101,38 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         m_simNotifier.startPeriodic(kSimLoopPeriod);
     }
 
-    public void configurePathPlanner(){}
+    public void configurePathPlanner(){
+        double driveBaseRadius = 0; //meters is 0.3334, 13.125
+        for (var moduleLocation : m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
+        
+
+        AutoBuilder.configureHolonomic(
+            () -> this.getState().Pose, 
+            this::seedFieldRelative, 
+            this::getCurrentRobotChassisSpeeds, 
+            (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)), 
+            new HolonomicPathFollowerConfig(PP_PID_Translation, //Tune 
+                                            PP_PID_Rotation, 
+                                            Constants.Drivetrain.kSpeedAt12VoltsMps, 
+                                            driveBaseRadius, 
+                                            new ReplanningConfig()), 
+            () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red, 
+            this);
+    }
 
     public Pose2d getPose() {
         return this.m_odometry.getEstimatedPosition();
+    }
+
+    public Rotation2d getYaw() {
+        return new Rotation2d(Math.toRadians(getPigeon2().getAngle()));
+    }
+
+    public void updateOdometry(Pose2d pose) {
+        this.m_odometry.resetPosition(getYaw(), m_modulePositions, pose);
     }
 
     public Translation3d getTranslation3d() {
