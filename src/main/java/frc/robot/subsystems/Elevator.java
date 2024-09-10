@@ -1,19 +1,22 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import java.util.function.Supplier;
+
+import com.ctre.phoenix6.signals.NeutralModeValue;
+// import com.ctre.phoenix6.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -96,13 +99,13 @@ public class Elevator extends SubsystemBase {
     mmV.Slot = 0;
     velocityVoltage.Slot = 0;
 
-    motorLeft.setNeutralMode(NeutralMode.Brake);
-    motorRight.setNeutralMode(NeutralMode.Brake);
+    motorLeft.setNeutralMode(NeutralModeValue.Brake);
+    motorRight.setNeutralMode(NeutralModeValue.Brake);
 
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
     motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
-    motorRight.follow(motorLeft);
+    motorRight.setControl(new StrictFollower(motorLeft.getDeviceID()));
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
@@ -133,33 +136,27 @@ public class Elevator extends SubsystemBase {
         break;
         
       case STOWED:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightStowed);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
+        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightStowed));
         break;
 
       case HANDOFF:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightHandoff);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
+        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightHandoff));
         break;
 
       case SPEAKER:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeaker);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
+        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeaker));
         break;  
         
       case SPEAKER_HIGH:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightSpeakerHigh);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
+        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeakerHigh));
         break;
         
       case AMP:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightAmp);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
+        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightAmp));
         break; 
 
       case TRAP:
-        profiledPIDController.setGoal(Constants.Elevator.kElevatorHeightTrap);
-        motorLeft.set(profiledPIDController.calculate(getHeight()));
+        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightTrap));
         
       case CLIMB:
         manual();
@@ -187,12 +184,16 @@ public class Elevator extends SubsystemBase {
     speed *= Constants.Elevator.kManualMultiplier;
     Util.deadband(speed, -0.1, 0.1);
 
-    profiledPIDController.setGoal(motorLeft.getSelectedSensorPosition() + speed);
+    var elevatorRotorSignal = motorLeft.getRotorPosition();
+
+    profiledPIDController.setGoal(elevatorRotorSignal.getValue() + speed);
     motorLeft.set(profiledPIDController.calculate(getHeight()));
   }
 
   public double getHeight() {
-    return Conversions.falconToMeters(motorLeft.getSelectedSensorPosition(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+    var elevatorRotorSignal = motorLeft.getRotorPosition();
+
+    return Conversions.falconToMeters(elevatorRotorSignal.getValue(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
 
@@ -205,13 +206,6 @@ public class Elevator extends SubsystemBase {
     motorLeft.clearStickyFaults();
     motorRight.clearStickyFaults();
   }
-
-
-
-
-
-
-
   
 }
 
