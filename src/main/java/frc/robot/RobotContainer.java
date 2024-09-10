@@ -126,7 +126,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
     NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
     NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
-    NamedCommands.registerCommand("ScoreSpeakerPodiumSpinup", new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, CommandSwerveDrivetrain));
+    // NamedCommands.registerCommand("ScoreSpeakerPodiumSpinup", new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, CommandSwerveDrivetrain));
     NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShootTimed(shooter, intake, shooterPivot));
     // NamedCommands.registerCommand("PrintHello", new PrintHello());dadad
 
