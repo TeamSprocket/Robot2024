@@ -2,9 +2,19 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import java.util.function.Supplier;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -40,8 +50,8 @@ public class Elevator extends SubsystemBase {
 
   private ElevatorStates state = ElevatorStates.NONE;
 
-  private WPI_TalonFX motorLeft = new WPI_TalonFX(RobotMap.Elevator.Left);
-  private WPI_TalonFX motorRight = new WPI_TalonFX(RobotMap.Elevator.Right);
+  private final TalonFX motorLeft = new TalonFX(RobotMap.Elevator.Left);
+  private final TalonFX motorRight = new TalonFX(RobotMap.Elevator.Right);
 
   ProfiledPIDController profiledPIDController;
 
@@ -50,9 +60,42 @@ public class Elevator extends SubsystemBase {
   Supplier<Double> leftBumperSupplier;
   Supplier<Double> rightBumperSupplier;
 
-
+  MotionMagicVoltage mmV = new MotionMagicVoltage(0);
+  VelocityVoltage velocityVoltage = new VelocityVoltage(0);
 
   public Elevator(Supplier<Double> leftBumperSupplier, Supplier<Double> rightBumperSupplier) {
+    
+    TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
+
+    elevatorConfig.withMotionMagic(
+            new MotionMagicConfigs()
+                .withMotionMagicCruiseVelocity(Constants.Elevator.kElevatorMMCruiseVelocity)
+                .withMotionMagicAcceleration(Constants.Elevator.kElevatorMMCruiseAccel)
+        );
+    
+    elevatorConfig.withSlot0(
+            new Slot0Configs()
+                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKS(Constants.Elevator.kElevatorS) 
+                .withKV(Constants.Elevator.kElevatorV)
+                .withKA(Constants.Elevator.kElevatorA) 
+                .withKG(Constants.Elevator.kElevatorG)
+                .withKP(Constants.Elevator.kElevatorP) 
+                .withKI(Constants.Elevator.kElevatorI)
+                .withKD(Constants.Elevator.kElevatorD)
+        );
+    
+    elevatorConfig.withFeedback(
+      new FeedbackConfigs()
+          .withSensorToMechanismRatio(Constants.Elevator.kElevatorGearRatio)
+    );
+
+    motorLeft.getConfigurator().apply(elevatorConfig);
+    motorRight.getConfigurator().apply(elevatorConfig);
+
+    mmV.Slot = 0;
+    velocityVoltage.Slot = 0;
+
     motorLeft.setNeutralMode(NeutralMode.Brake);
     motorRight.setNeutralMode(NeutralMode.Brake);
 
@@ -82,7 +125,7 @@ public class Elevator extends SubsystemBase {
 
   @Override
   public void periodic() {
-    setState(selectElevatorState.getSelected());
+    // setState(selectElevatorState.getSelected());
     switch (state) {
         
       case NONE:
