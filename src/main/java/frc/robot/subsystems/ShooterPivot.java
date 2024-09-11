@@ -55,7 +55,6 @@ public class ShooterPivot extends SubsystemBase {
   ShooterPivotStates state = ShooterPivotStates.NONE;
   ShooterPivotStates lastState = ShooterPivotStates.NONE;
 
-  private MotionMagicVoltage motorMotionMagicController;
   private MotionMagicVoltage motionMagicVolt;
 
   /**
@@ -151,7 +150,7 @@ public class ShooterPivot extends SubsystemBase {
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees [SP]", getShooterPivotAngle());
     SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
-    SmartDashboard.putNumber("Position [SP]", getShooterPivotAngle() / 360);
+    SmartDashboard.putNumber("Position [SP]", motor.getPosition().getValueAsDouble());
     SmartDashboard.putString("State [SP]", state.toString());
   }
 
@@ -173,34 +172,29 @@ public class ShooterPivot extends SubsystemBase {
         break;
     
        case STOWED:
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleStowed);
 
-        motor.setControl(motionMagicVolt);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleStowed));
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case EJECT_NOTE:
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleEject);
 
-        motor.setControl(motionMagicVolt);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleEject));
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
 
       case INTAKE:
-         motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleIntake);
-
-        motor.setControl(motionMagicVolt);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleIntake));
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case INDEXING:
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleIndexing);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleIndexing));    
 
-        motor.setControl(motionMagicVolt);        
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
     
@@ -217,8 +211,7 @@ public class ShooterPivot extends SubsystemBase {
             angleTargetAdjusted = Constants.ShooterPivot.kTargetAngleStowed;
           }
 
-          motionMagicVolt = motorMotionMagicController.withPosition(angleTargetAdjusted);
-          motor.setControl(motionMagicVolt);  
+          motor.setControl(motionMagicVolt.withPosition(angleTargetAdjusted));  
 
           SmartDashboard.putNumber("Target Angle MECHANISM [SP]", angleTarget);
           SmartDashboard.putNumber("Target Angle ADJUSTED [SP]", angleTargetAdjusted);
@@ -232,40 +225,31 @@ public class ShooterPivot extends SubsystemBase {
         break;
 
       case SPEAKER_SUBWOOFER:
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
 
-        motor.setControl(motionMagicVolt);        
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer));        
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
       break;
 
-      case SPEAKER_AMP_ZONE:
-
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone); 
-
-        motor.setControl(motionMagicVolt);        
+      case SPEAKER_AMP_ZONE: 
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone));        
         break;
 
       case SPEAKER_PODIUM:
-
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAnglePodium);
-        motor.setControl(motionMagicVolt);        
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAnglePodium));        
 
         break;
  
       case CROSSFIELD:
 
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleCrossfield); 
-
-        motor.setControl(motionMagicVolt);        
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleCrossfield));        
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
 
         break;
         
       case AMP:
-        motionMagicVolt = motorMotionMagicController.withPosition(Constants.ShooterPivot.kTargetAngleAmp);
         
-        motor.setControl(motionMagicVolt);        
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleAmp));        
         
         break;
 

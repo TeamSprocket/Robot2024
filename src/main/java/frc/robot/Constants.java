@@ -145,27 +145,27 @@ public class Constants {
         // public static final double kMaxAccelerationDeg = 0.0;
 
         public static final double kTargetAngleStowed = -0.132;//6.0
-        public static final double kTargetAngleIntake = 13.5;
-        public static final double kTargetAngleIndexing = 6.0;
-        public static final double kTargetAngleEject = 60.0;
+        public static final double kTargetAngleIntake = -0.1075;
+        public static final double kTargetAngleIndexing = -0.132;
+        public static final double kTargetAngleEject = 0.166;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = -0.144;//5.0; 
-        public static double kTargetAngleAmp = 83.43575; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
-        public static final double kTargetAngleCrossfield = 7.0;
-        public static final double kTargetAnglePodium = 28.0;
+        public static double kTargetAngleAmp = 0.08677; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
+        public static final double kTargetAngleCrossfield = -0.1256;
+        public static final double kTargetAnglePodium = -0.06722;
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed;
 
 
 
-        public static final double KMotionMagicAcceleration = 0;
-        public static final double KMotionMagicCruiseVelocity = 0; 
+        public static final double KMotionMagicAcceleration = 50;
+        public static final double KMotionMagicCruiseVelocity = 60; 
 
         public static final double KShooterPivotKS = 0.25;
         public static final double KShooterPivotKV = 0.14;
         public static final double KShooterPivotKA = 0.01;
         public static final double KShooterPivotKG = 0.2;
-        public static final double KShooterPivotKP = 20;
-        public static final double KShooterPivotKI = 0;
+        public static final double KShooterPivotKP = 40;
+        public static final double KShooterPivotKI = 0;  
         public static final double KShooterPivotKD = 0;
     }
 
