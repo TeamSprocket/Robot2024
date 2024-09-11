@@ -157,8 +157,8 @@ public class Constants {
 
 
 
-        public static final double KMotionMagicAcceleration = 50;
-        public static final double KMotionMagicCruiseVelocity = 60; 
+        public static final double KMotionMagicAcceleration = 3;
+        public static final double KMotionMagicCruiseVelocity = 6; 
 
         public static final double KShooterPivotKS = 0.25;
         public static final double KShooterPivotKV = 0.14;

@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import java.util.function.Supplier;
+
+import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -75,6 +77,11 @@ public class ShooterPivot extends SubsystemBase {
                 .withKP(Constants.ShooterPivot.KShooterPivotKP)
                 .withKI(Constants.ShooterPivot.KShooterPivotKI)
                 .withKD(Constants.ShooterPivot.KShooterPivotKD));
+
+    motorConfig.withFeedback(
+            new FeedbackConfigs()
+                .withSensorToMechanismRatio(Constants.ShooterPivot.kShooterPivotGearRatio)
+        );
 
     motor.getConfigurator().apply(motorConfig);
     // motorConfig.withCurrentLimits(new CurrentLimitsConfigs().withStatorCurrentLimit(Constants.ShooterPivot.kStatorCurrentLimit).withStatorCurrentLimitEnable(true));
