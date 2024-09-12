@@ -8,13 +8,18 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.FeedbackConfigs;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfigurator;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 // import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 // import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 //import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 // import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 // import edu.wpi.first.math.controller.pidController;
@@ -46,6 +51,8 @@ public class ShooterPivot extends SubsystemBase {
   double distTestXSpeaker = 0.0;
   double distTestYSpeaker = 0.0;
   double visionAngle = 0.0;
+
+  MotionMagicVoltage motionMagicVolt;
 
   // ProfiledpidController profiledpidController;
   // TrapezoidProfile.State goal = new TrapezoidProfile.State();
@@ -93,7 +100,6 @@ public class ShooterPivot extends SubsystemBase {
    * @param botPoseSupplier
    */
   public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Pose2d> robotPose) {
-    configMotors();
 
     // TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.ShooterPivot.kMaxVelocityDeg, Constants.ShooterPivot.kMaxAccelerationDeg);
     // profiledpidController = new ProfiledpidController(Constants.ShooterPivot.kPshooterPivot, Constants.ShooterPivot.kIshooterPivot, Constants.ShooterPivot.kDshooterPivot, trapezoidProfileConstraints);
@@ -101,10 +107,38 @@ public class ShooterPivot extends SubsystemBase {
     this.robotPose = robotPose;
 
     //configures the motors
+    TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
+    motorConfig.withMotionMagic(new MotionMagicConfigs().withMotionMagicCruiseVelocity(Constants.ShooterPivot.KMotionMagicCruiseVelocity).withMotionMagicAcceleration(Constants.ShooterPivot.KMotionMagicAcceleration)); // TODO: tune velocity and acceleration for motion magic
+    motorConfig.withSlot0(new Slot0Configs().withGravityType(GravityTypeValue.Arm_Cosine)
+                .withKS(Constants.ShooterPivot.KShooterPivotKS) 
+                .withKV(Constants.ShooterPivot.KShooterPivotKV) 
+                .withKA(Constants.ShooterPivot.KShooterPivotKA) 
+                .withKG(Constants.ShooterPivot.KShooterPivotKG) 
+                .withKP(Constants.ShooterPivot.KShooterPivotKP)
+                .withKI(Constants.ShooterPivot.KShooterPivotKI)
+                .withKD(Constants.ShooterPivot.KShooterPivotKD));
+
+    motorConfig.withFeedback(
+            new FeedbackConfigs()
+                .withSensorToMechanismRatio(Constants.ShooterPivot.kShooterPivotGearRatio)
+        );
+
+    motor.getConfigurator().apply(motorConfig);
+    // motorConfig.withCurrentLimits(new CurrentLimitsConfigs().withStatorCurrentLimit(Constants.ShooterPivot.kStatorCurrentLimit).withStatorCurrentLimitEnable(true));
+
+    //init global variable 
+    motionMagicVolt = new MotionMagicVoltage(0);
+
+    this.joystickSupplier = joystickSupplier;
+    // this.botPoseSupplier = botPoseSupplier;
+
+    //configures the motors
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
     motor.setNeutralMode(NeutralModeValue.Brake);
-    motor.getConfigurator().apply(new CurrentLimitsConfigs().withSupplyCurrentLimit(30));
-    motor.getConfigurator().apply(new CurrentLimitsConfigs().withStatorCurrentLimit(30)); // test values later
+    
+    motor.setPosition(-0.145);
+
     
     pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
 
@@ -151,97 +185,168 @@ public class ShooterPivot extends SubsystemBase {
     //switches the state
     switch(state) {
 
+      // case NONE:
+      //   motor.set(0);
+      //   break;
+
+      // case STOWED:
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
+
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      //   break;
+
+      // case EJECT_NOTE:
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleEject);
+
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      //   break;
+
+
+      // case INTAKE:
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIntake);
+
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      //   break;
+
+      // case INDEXING:
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIndexing);
+
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      //   break;
+
+      // case SPEAKER:
+      //   motorspeed = getPivotSpeed(targetPivotAngle);
+
+      //   motor.set(motorspeed);
+        
+      //   break;
+
+      // case SPEAKER_SUBWOOFER:
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
+
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      // break;
+
+      // case SPEAKER_AMP_ZONE:
+
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone); 
+
+      //   motor.set(motorspeed);
+      //   break;
+
+      // case SPEAKER_PODIUM:
+
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAnglePodium);
+      //   motor.set(motorspeed);
+
+      //   break;
+ 
+      // case CROSSFIELD:
+
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleCrossfield); 
+
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+
+      //   break;
+        
+      // case AMP:
+      //   motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleAmp);
+
+        
+      //   motor.set(motorspeed);
+        
+      //   SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      //   break;
+
+      // case CLIMB: // TODO: add limit
+      //   double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
+      //   motorspeed = getPivotSpeed(pidController.getSetpoint() + (speed));
+
+      //   motor.set(motorspeed);
+      //   break;
       case NONE:
-        motor.set(0);
+      motor.set(0);
         break;
+    
+        case STOWED:
 
-      case STOWED:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleStowed);
-
-        motor.set(motorspeed);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleStowed));
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case EJECT_NOTE:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleEject);
 
-        motor.set(motorspeed);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleEject));
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
 
       case INTAKE:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIntake);
-
-        motor.set(motorspeed);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleIntake));
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
       case INDEXING:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleIndexing);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleIndexing));    
 
-        motor.set(motorspeed);
-        
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
-
+    
+      //may not work
       case SPEAKER:
-        motorspeed = getPivotSpeed(targetPivotAngle);
-
-        motor.set(motorspeed);
-        
+        motor.setControl(motionMagicVolt.withPosition(targetPivotAngle));
         break;
 
       case SPEAKER_SUBWOOFER:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer);
 
-        motor.set(motorspeed);
-        
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer));        
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
       break;
 
-      case SPEAKER_AMP_ZONE:
-
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone); 
-
-        motor.set(motorspeed);
+      case SPEAKER_AMP_ZONE: 
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromAmpZone));        
         break;
 
       case SPEAKER_PODIUM:
-
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAnglePodium);
-        motor.set(motorspeed);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAnglePodium));        
 
         break;
- 
+  
       case CROSSFIELD:
 
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleCrossfield); 
-
-        motor.set(motorspeed);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleCrossfield));        
         
         SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
 
         break;
         
       case AMP:
-        motorspeed = getPivotSpeed(Constants.ShooterPivot.kTargetAngleAmp);
-
         
-        motor.set(motorspeed);
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleAmp));        
         
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
         break;
 
-      case CLIMB: // TODO: add limit
-        double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
-        motorspeed = getPivotSpeed(pidController.getSetpoint() + (speed));
+      case CLIMB: // TODO: FIX LOL
+      //   double speed = joystickSupplier.get() * Constants.ShooterPivot.kManualMultiplier;
+      //   motionMagicVolt = motorMotionMagicController.withPosition( + (speed));
 
-        motor.set(motorspeed);
-        break;
+      // motor.setControl(motionMagicVolt);  
+        break;    
     }
 
     // clearStickyFaults();
@@ -287,8 +392,7 @@ public class ShooterPivot extends SubsystemBase {
     visionAngle = angle;
 
     angle = -1 * angle;
-    angle = 47.5 + angle;
-    if (angle < 0) angle = 0;
+    angle = angle / 360;
     return angle;
 }
 
