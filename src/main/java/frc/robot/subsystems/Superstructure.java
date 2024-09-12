@@ -106,9 +106,7 @@ public class Superstructure extends SubsystemBase {
   private void spinupPod() { //
     shooter.setState(ShooterStates.SPINUP_PODIUM);
     intake.setState(IntakeStates.SCORE_SPEAKER_PODIUM);
-    if (timer.hasElapsed(1)) {
-        shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
-    }
+    shooterPivot.setState(ShooterPivotStates.SPEAKER_PODIUM);
   }
 
   private void ejectNote() { //
@@ -125,9 +123,7 @@ public class Superstructure extends SubsystemBase {
   private void crossfield() {
     intake.setState(IntakeStates.CROSSFIELD);
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
-    if (timer.hasElapsed(1)) { // delay for intake move out
-      shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
-    }
+    shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
   }
   // ------ commands -------
   /**

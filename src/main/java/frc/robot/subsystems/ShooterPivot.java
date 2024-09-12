@@ -71,6 +71,8 @@ public class ShooterPivot extends SubsystemBase {
     
     pidController.setTolerance(Constants.ShooterPivot.kAtGoalTolerance);
 
+    motor.setPosition(0.0);
+
     //Adds options for the selection thing
     selectShooterPivotState.setDefaultOption("NONE", ShooterPivotStates.NONE);
     selectShooterPivotState.addOption("STOWED", ShooterPivotStates.STOWED);

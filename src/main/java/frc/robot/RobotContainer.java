@@ -94,9 +94,11 @@ public class RobotContainer {
     //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.x()) // change button
-      .whileTrue(alignSwerveCommand()
-        .andThen(new WaitUntilCommand(() -> vision.isAligned())) // TODO: check bool value
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))); // TODO: remove align and test podium first
+      .whileTrue(alignSwerveCommand());
+        // .andThen(new WaitUntilCommand(() -> vision.isAligned())) // TODO: check bool value
+      //   .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))); // TODO: remove align and test podium first
+      // .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM));
+
     new Trigger(operator.x())
       .whileFalse(superstructure.setState(SSStates.STOWED));
 

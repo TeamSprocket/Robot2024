@@ -41,7 +41,11 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean isAligned() {
-        return pidHeadingLock.atSetpoint();
+        if (chassisRotationSpeeds > -0.01 && chassisRotationSpeeds < 0.01) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
