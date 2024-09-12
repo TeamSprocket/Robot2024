@@ -147,7 +147,7 @@ public class Constants {
         public static final double kTargetAngleStowed = -0.132;//6.0
         public static final double kTargetAngleIntake = -0.1075;
         public static final double kTargetAngleIndexing = -0.132;
-        public static final double kTargetAngleEject = 0.166;
+        public static final double kTargetAngleEject = 0.12;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
         public static final double kTargetAngleSpeakerFromSubwoofer = -0.144;//5.0; 
         public static double kTargetAngleAmp = 0.08677; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
