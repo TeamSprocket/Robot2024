@@ -96,6 +96,7 @@ public class Superstructure extends SubsystemBase {
   private void intakeBack() {
     shooter.setIndexerRollBack();
   }
+
   private void spinupSub() { //
     shooter.setState(ShooterStates.SPINUP_SUBWOOFER);
     shooterPivot.setState(ShooterPivotStates.SPEAKER_SUBWOOFER);
@@ -111,12 +112,13 @@ public class Superstructure extends SubsystemBase {
   }
 
   private void ejectNote() { //
+    timer.restart();
+
     intake.setState(IntakeStates.EJECT_NOTE);
-    if (timer.hasElapsed(0.5)) {
-      shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
-      if (timer.hasElapsed(1)){
-        shooter.setState(ShooterStates.EJECT_NOTE);
-      }
+    shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
+    if (timer.hasElapsed(1)){
+      System.out.println("MOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
+      shooter.setState(ShooterStates.EJECT_NOTE);
     }
   }
 
