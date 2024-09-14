@@ -80,7 +80,7 @@ public class RobotContainer {
 
     // ------ path planner ------
 
-    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
+    autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
     // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
     // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
@@ -99,7 +99,7 @@ public class RobotContainer {
     // autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
     // autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
     // autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
-    // autonChooser = AutoBuilder.buildAutoChooser();
+    autonChooser = AutoBuilder.buildAutoChooser();
 
     // ------- by encoder ticks -------
 
@@ -110,9 +110,9 @@ public class RobotContainer {
   }
 
   public void initNamedCommands() {
-    NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
-    NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
-    NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
+    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
+    // NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
+    // NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
     // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
     // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
     // NamedCommands.registerCommand("PrintHello", new PrintHello());
