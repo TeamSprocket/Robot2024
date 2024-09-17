@@ -2,19 +2,7 @@
   "robotWidth": 0.75,
   "robotLength": 0.75,
   "holonomicMode": true,
-  "pathFolders": [
-    "Center 1 + 0 to Midline",
-    "Disrupt Left",
-    "Disrupt Right",
-    "Left 1 + 0 to Midline",
-    "Left 1 + 1 to Midline",
-    "Left 1 + 2 to Midline",
-    "Middle 1 + 3",
-    "Left 1 to Midline",
-    "Right 1 + 0 to Midline",
-    "Right 1 + 1 to Midline",
-    "Right 1 + 2 to Midline"
-  ],
+  "pathFolders": [],
   "autoFolders": [
     "New Folder"
   ],

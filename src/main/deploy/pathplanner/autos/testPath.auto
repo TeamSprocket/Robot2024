@@ -2,25 +2,19 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.75,
-      "y": 6.7
+      "x": 1.8878506230663918,
+      "y": 7.014791090923124
     },
-    "rotation": -120.0
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "ShootSubwoofer"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "Copy of Left to Midline Left"
+            "pathName": "disruptLeft"
           }
         }
       ]

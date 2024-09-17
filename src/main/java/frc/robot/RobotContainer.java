@@ -8,7 +8,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
+// import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -24,15 +24,15 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.auto.DoNothing;
-import frc.robot.auto.OneNoteNoTaxi;
+// import frc.robot.auto.OneNoteNoTaxi;
 import frc.robot.commands.EjectNote;
-import frc.robot.commands.auto.IntakeNoteManualTimed;
-import frc.robot.commands.auto.PreloadtoMidlineBlue;
-import frc.robot.commands.auto.PreloadtoMidlineRed;
-// import frc.robot.commands.auto.OneNoteAuton;
-import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
-import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
-import frc.robot.commands.macro.LockHeadingToSpeaker;
+// import frc.robot.commands.auto.IntakeNoteManualTimed;
+// import frc.robot.commands.auto.PreloadtoMidlineBlue;
+// import frc.robot.commands.auto.PreloadtoMidlineRed;
+// // import frc.robot.commands.auto.OneNoteAuton;
+// import frc.robot.commands.auto.ScoreSpeakerSubwooferShootTimed;
+// import frc.robot.commands.auto.ScoreSpeakerSubwooferSpinupTimed;
+// import frc.robot.commands.macro.LockHeadingToSpeaker;
 import frc.robot.commands.persistent.*;
 import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
@@ -69,29 +69,31 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
+  
 
   public RobotContainer() {
     configureBindings();
-    initNamedCommands();
+    // initNamedCommands();
     initAutons();
   }
 
   public void initAutons() {
+    
 
     // ------ path planner ------
 
-    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
+    autonChooser.setDefaultOption("Do Nothing", new DoNothing());
+    autonChooser.addOption("test path", new PathPlannerAuto("testPath"));
     // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
     // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
     // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
     // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
     // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
-    // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
     // autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
     // autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
     // autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
     // autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
+    // autonChooser.addOption("Test", new PathPlannerAuto("Test Auto"));
     // autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
     // autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
     // autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
@@ -99,23 +101,23 @@ public class RobotContainer {
     // autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
     // autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
     // autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
-    // autonChooser = AutoBuilder.buildAutoChooser();
 
     // ------- by encoder ticks -------
 
     // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
     // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
     
+    autonChooser = AutoBuilder.buildAutoChooser();
+
     SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
 
   public void initNamedCommands() {
-    NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
-    NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
-    NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
-    // NamedCommands.registerCommand("ScoreSpeaker", new ScoreSpeaker(superstructure, swerveDrive));
-    // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShoot(shooter, intake));
-    // NamedCommands.registerCommand("PrintHello", new PrintHello());
+    // NamedCommands.registerCommand("IntakeNote", new IntakeNote(intake, shooter, shooterPivot));
+    // NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
+    // NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
+    // // NamedCommands.registerCommand("ScoreSpeakerPodiumSpinup", new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, driveTrain));
+    // NamedCommands.registerCommand("ScoreSpeakerSubwooferShoot", new ScoreSpeakerSubwooferShootTimed(shooter, intake, shooterPivot));
 
   }
 
