@@ -32,6 +32,7 @@ public class Vision extends SubsystemBase {
     public Vision(CommandSwerveDrivetrain swerve) {
         this.swerve = swerve;
         timestamp = 0;
+        pidHeadingLock.setTolerance(0.01);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class Vision extends SubsystemBase {
     }
 
     public boolean isAligned() {
-        if (chassisRotationSpeeds > -0.01 && chassisRotationSpeeds < 0.01) {
+        if (pidHeadingLock.atSetpoint()) {
             return true;
         } else {
             return false;

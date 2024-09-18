@@ -114,10 +114,8 @@ public class Superstructure extends SubsystemBase {
 
     intake.setState(IntakeStates.EJECT_NOTE);
     shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
-    if (timer.hasElapsed(1)){
-      System.out.println("MOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
-      shooter.setState(ShooterStates.EJECT_NOTE);
-    }
+    while (!timer.hasElapsed(1)){}
+    shooter.setState(ShooterStates.EJECT_NOTE);
   }
 
   private void crossfield() {
@@ -125,6 +123,7 @@ public class Superstructure extends SubsystemBase {
     shooter.setState(ShooterStates.SPINUP_CROSSFIELD);
     shooterPivot.setState(ShooterPivotStates.CROSSFIELD);
   }
+
   // ------ commands -------
   /**
    * Sets the superstructure target state
