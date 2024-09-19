@@ -381,7 +381,7 @@ public class ShooterPivot extends SubsystemBase {
   public double shooterPivotAngleVision() {
     Pose2d pose = robotPose.get();
     double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
-    double distanceToSpeaker = Math.sqrt(Math.pow(17 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
+    double distanceToSpeaker = Math.sqrt(Math.pow(16.75 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
     distanceToSpeaker = distanceToSpeaker - 0.155;
 
     distTestXSpeaker = distanceToSpeaker;

@@ -176,19 +176,19 @@ public class Constants {
         public static final boolean kIsShooterBottomInverted = false;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 100; // 17.0
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 150; // 17.0
         public static final double kShooterSpeedScoreAmp = 30; // -0.25
         public static final double kShooterEjectNoteSpeed = -20;
         public static final double kShooterIntakeNoteSpeed = 0.0;
         public static final double kShooterSpeedRollforward = 25;
         public static final double kShooterSpeedRollbackPercent = -10;
-        public static final double kShooterSpeedCrossField = 125; 
+        public static final double kShooterSpeedCrossField = 150; 
         public static final double kShooterSpeedScoreSpeakerPodium = 125;
-        public static final double kShooterSpeedSpinUp = 0.0;
+        public static final double kShooterSpeedSpinUp = 150;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
-        public static final double kIndexerSpeedIntake = 4.5; // 0.2 
-        public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
+        public static final double kIndexerSpeedIntake = 8; // 0.2 
+        public static final double kIndexerSpeedScoreSpeaker = 10; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.5; // -0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 3.0;
@@ -234,7 +234,7 @@ public class Constants {
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
         public static final double kPivotAngleStowed = 0.18; // 23.0
-        public static final double kPivotAngleIntake = -0.0751;
+        public static final double kPivotAngleIntake = -0.0761;
         public static final double kPivotAngleEject = 0.1389; // 30.0
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
@@ -246,10 +246,10 @@ public class Constants {
         public static final double kPivotIntakeS = 0.27;
         public static final double kPivotIntakeV = 1.4;
         public static final double kPivotIntakeA = 0.01;
-        public static final double kPivotIntakeG = 0.29;
+        public static final double kPivotIntakeG = 0.25;
         public static final double kPivotIntakeP = 20.0;
         public static final double kPivotIntakeI = 0.0;
-        public static final double kPivotIntakeD = 1.5;
+        public static final double kPivotIntakeD = 5.0;
         public static final double kPivotIntakeMMCruiseVelocity = 20;
         public static final double kPivotIntakeMMCruiseAccel = 10;
         
