@@ -176,14 +176,15 @@ public class Constants {
         public static final boolean kIsShooterBottomInverted = false;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 18.0; // 17.0
-        public static double kShooterSpeedScoreAmp = 0.293; // -0.25
-        public static final double kShooterEjectNoteSpeed = -0.25;
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 100; // 17.0
+        public static final double kShooterSpeedScoreAmp = 30; // -0.25
+        public static final double kShooterEjectNoteSpeed = -20;
         public static final double kShooterIntakeNoteSpeed = 0.0;
-        public static final double kShooterSpeedRollforward = 0.25;
-        public static final double kShooterSpeedRollbackPercent = -0.1;
-        public static final double kShooterSpeedCrossField = 20.0; 
-        public static final double kShooterSpeedScoreSpeakerPodium = 22.0;
+        public static final double kShooterSpeedRollforward = 25;
+        public static final double kShooterSpeedRollbackPercent = -10;
+        public static final double kShooterSpeedCrossField = 125; 
+        public static final double kShooterSpeedScoreSpeakerPodium = 125;
+        public static final double kShooterSpeedSpinUp = 0.0;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
         public static final double kIndexerSpeedIntake = 4.5; // 0.2 
