@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -93,18 +94,26 @@ public class RobotContainer {
     //   .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
     //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.x()) // change button
-      .whileTrue(alignSwerveCommand()
-        .andThen(new WaitUntilCommand(() -> vision.isAligned())) // TODO: check bool value
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))); // TODO: remove align and test podium first
+    new Trigger(operator.x())
+      .whileTrue(alignSwerveCommand().withTimeout(2)
+        .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
       // .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM));
 
     new Trigger(operator.x())
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
+    // new Trigger(operator.y())
+    //   .onTrue(superstructure.setState(SSStates.EJECT_NOTE));
+    // new Trigger(operator.y())
+    //   .onFalse(superstructure.setState(SSStates.STOWED));
+
     new Trigger(operator.y())
-      .whileTrue(superstructure.setState(SSStates.EJECT_NOTE))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+      .whileTrue(new SequentialCommandGroup(superstructure.setState(SSStates.EJECT_NOTE),
+      new WaitCommand(3),
+      superstructure.setState(SSStates.STOWED)));
+
+      // .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.b())
       .whileTrue(superstructure.setState(SSStates.CROSSFIELD))

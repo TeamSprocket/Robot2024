@@ -20,24 +20,48 @@ public class Superstructure extends SubsystemBase {
     EJECT_NOTE,
     CROSSFIELD
   }
+
+  public static enum StowState {
+    START,
+    WAIT_FOR_INTAKE,
+    DONE
+  }
+
+  public static enum EjectNoteStates {
+    START,
+    EXTEND_INTAKE,
+    WAIT_FOR_INTAKE,
+    PIVOT_SHOOTER,
+    DONE
+  }
+
   public SSStates currentState = SSStates.NONE;
   public SSStates lastState = SSStates.NONE;
   public SSStates wantedState = SSStates.NONE;
 
+  public StowState stowState = StowState.START;
+  public EjectNoteStates ejectNoteState = EjectNoteStates.START;
+
   ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
+
   private Timer timer = new Timer();
+  private Timer stowTimer = new Timer();
+  private Timer ejectTimer = new Timer();
 
   public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
+
+    timer.restart();
   }
   
   @Override
   public void periodic() {
     SmartDashboard.putString("Superstructure State [SSS]", currentState.toString());
+    SmartDashboard.putString("Last state [SSS]", lastState.toString());
     handleStateChange();
   }
 
@@ -82,13 +106,45 @@ public class Superstructure extends SubsystemBase {
     }
   }
   // ------ states ------
-  private void stowed() { //
-    shooterPivot.setState(ShooterPivotStates.STOWED);
-    shooter.setState(ShooterStates.STANDBY);
-    intake.setState(IntakeStates.STOWED);
-  }
-  private void intake() {
+  // private void stowed() { //
 
+  //   // if (lastState == SSStates.EJECT_NOTE) {
+  //     shooter.setState(ShooterStates.STANDBY);
+  //     shooterPivot.setState(ShooterPivotStates.STOWED);
+  //     while (!timer.hasElapsed(0.5)){}
+  //     intake.setState(IntakeStates.STOWED);
+  //   // } else {
+  //   //   shooterPivot.setState(ShooterPivotStates.STOWED);
+  //   //   shooter.setState(ShooterStates.STANDBY);
+  //   //   intake.setState(IntakeStates.STOWED);
+  //   // }
+  // }
+
+  private void stowed() {
+    switch (stowState) {
+      case START:
+        shooterPivot.setState(ShooterPivotStates.STOWED);
+        stowTimer.restart();
+        stowState = StowState.WAIT_FOR_INTAKE;
+        break;
+
+      case WAIT_FOR_INTAKE:
+        if (stowTimer.hasElapsed(0.5)) {
+          System.out.println("WAITING WAITING WAITING WAITING"); // debug :D
+          intake.setState(IntakeStates.STOWED);
+          shooter.setState(ShooterStates.STANDBY);
+          stowState = StowState.DONE;
+        }
+        break;
+
+      case DONE:
+        stowTimer.stop();
+        stowState = StowState.START;
+        break;
+    }
+  }
+
+  private void intake() {
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
@@ -111,12 +167,41 @@ public class Superstructure extends SubsystemBase {
 
   private void ejectNote() { //
     timer.restart();
-
     intake.setState(IntakeStates.EJECT_NOTE);
     shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
-    while (!timer.hasElapsed(1)){}
+    while (!timer.hasElapsed(0.6)){} // change later
     shooter.setState(ShooterStates.EJECT_NOTE);
   }
+
+  // private void ejectNote() {
+  //   switch (ejectNoteState) {
+  //     case START:
+  //         // Start by extending the intake
+  //         intake.setState(IntakeStates.EJECT_NOTE);
+  //         ejectTimer.restart();
+  //         ejectNoteState = EjectNoteStates.EXTEND_INTAKE;
+  //         break;
+
+  //     case EXTEND_INTAKE:
+  //         // Wait until 0.6 seconds have passed for the intake to extend
+  //         if (ejectTimer.hasElapsed(0.6)) {
+  //             ejectNoteState = EjectNoteStates.PIVOT_SHOOTER;
+  //         }
+  //         break;
+
+  //     case PIVOT_SHOOTER:
+  //         // Move the shooter pivot and shooter to the eject note position
+  //         shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
+  //         shooter.setState(ShooterStates.EJECT_NOTE);
+  //         ejectNoteState = EjectNoteStates.DONE;
+  //         break;
+
+  //     case DONE:
+  //         stowTimer.stop();
+  //         ejectNoteState = EjectNoteStates.START;
+  //         break;
+  //     }
+  // }
 
   private void crossfield() {
     intake.setState(IntakeStates.CROSSFIELD);
