@@ -175,18 +175,19 @@ public class Constants {
         public static final boolean kIsShooterBottomInverted = false;
         public static final boolean kIsIndexerInverted = false;
 
-        public static final double kShooterSpeedScoreSpeakerSubwoofer = 18.0; // 17.0
-        public static double kShooterSpeedScoreAmp = 0.293; // -0.25
-        public static final double kShooterEjectNoteSpeed = -0.25;
+        public static final double kShooterSpeedScoreSpeakerSubwoofer = 150; // 17.0
+        public static final double kShooterSpeedScoreAmp = 30; // -0.25
+        public static final double kShooterEjectNoteSpeed = -20;
         public static final double kShooterIntakeNoteSpeed = 0.0;
-        public static final double kShooterSpeedRollforward = 0.25;
-        public static final double kShooterSpeedRollbackPercent = -0.1;
-        public static final double kShooterSpeedCrossField = 20.0; 
-        public static final double kShooterSpeedScoreSpeakerPodium = 22.0;
+        public static final double kShooterSpeedRollforward = 25;
+        public static final double kShooterSpeedRollbackPercent = -10;
+        public static final double kShooterSpeedCrossField = 150; 
+        public static final double kShooterSpeedScoreSpeakerPodium = 125;
+        public static final double kShooterSpeedSpinUp = 150;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
-        public static final double kIndexerSpeedIntake = 4.5; // 0.2 
-        public static final double kIndexerSpeedScoreSpeaker = 6.5; // 0.9
+        public static final double kIndexerSpeedIntake = 8; // 0.2 
+        public static final double kIndexerSpeedScoreSpeaker = 10; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.5; // -0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 3.0;
@@ -237,7 +238,7 @@ public class Constants {
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
         public static final double kPivotAngleIndexing = 0.1667;  // 20.0
-        public static final double kPivotAngleScoreSpeakerPodium = 0.15;
+        public static final double kPivotAngleScoreSpeakerPodium = 0.0;
         public static final double kPivotAngleShootCrossfield = 0.1389; // 30.0
         public static final double kPivotAngleScoreAmp = 0.1472; // 27.0
         public static final double kPivotAngleClimb = 0;

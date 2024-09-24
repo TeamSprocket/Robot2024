@@ -95,7 +95,7 @@ public class RobotContainer {
     //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.x())
-      .whileTrue(alignSwerveCommand().withTimeout(2)
+      .whileTrue(alignSwerveCommand().withTimeout(1)
         .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
         .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
       // .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM));
