@@ -99,7 +99,6 @@ public class Shooter extends SubsystemBase {
 
     shooterTop.getConfigurator().apply(shooterConfig);
     shooterBottom.getConfigurator().apply(shooterConfig);
-    shooterBottom.setControl(new StrictFollower(17));
 
     // initialize torque current FOC request with 0 amps, mutate request with output of 10 amps and max duty cycle 0.5
     this.indexerMotorRequest = new TorqueCurrentFOC(0);
@@ -163,7 +162,9 @@ public class Shooter extends SubsystemBase {
     switch (state) {
 
       case NONE:
-        shooterTop.setControl(sVV.withVelocity(0));
+        sVV = sVV.withVelocity(0);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
         indexerMotor.set(0);
       break;
 
@@ -176,7 +177,9 @@ public class Shooter extends SubsystemBase {
         indexerMotor.set(0);
         indexerInc = 0.0;
 
-        shooterTop.setControl(sVV.withVelocity(0));
+        sVV = sVV.withVelocity(0);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
         break;
 
       case INTAKE:
@@ -187,7 +190,9 @@ public class Shooter extends SubsystemBase {
         indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedIntake) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
-        shooterTop.setControl(sVV.withVelocity(0));
+        sVV = sVV.withVelocity(0);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
 
         break;
 
@@ -199,7 +204,9 @@ public class Shooter extends SubsystemBase {
         indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedIntake * 0.75) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
-        shooterTop.setControl(sVV.withVelocity(0));
+        sVV = sVV.withVelocity(0);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
 
       break;
 
@@ -212,8 +219,9 @@ public class Shooter extends SubsystemBase {
         indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedRollforward) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
-
-        shooterTop.setControl(sVV.withVelocity(Constants.Shooter.kShooterSpeedRollforward));
+        sVV = sVV.withVelocity(Constants.Shooter.kShooterSpeedRollforward);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
       break;
 
       case INTAKE_ROLLBACK:
@@ -225,7 +233,9 @@ public class Shooter extends SubsystemBase {
         indexerInc += indexerPID.calculate(getIndexerMPS(), Constants.Shooter.kIndexerSpeedRollback) * Constants.Shooter.kShooterkIndexerIncramentMultiplier;
         indexerMotor.set(Util.minmax(indexerInc, -1 * Constants.Shooter.kMaxIndexerOutput, Constants.Shooter.kMaxIndexerOutput)); // TODO: remove pid from intake
 
-        shooterTop.setControl(sVV.withVelocity(Constants.Shooter.kShooterSpeedRollbackPercent));
+        sVV = sVV.withVelocity(Constants.Shooter.kShooterSpeedRollbackPercent);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
       break;
 
       case SPINUP:
@@ -238,7 +248,9 @@ public class Shooter extends SubsystemBase {
         // indexerInc = 0.0;
         // if (dist != 0.0) {
           // shooterInc += shooterPID.calculate(getShooterMPS(), Constants.ShootingSetpoints.getValues(dist)[1]) * Constants.Shooter.kShooterIncramentMultiplier;
-        shooterTop.setControl(sVV.withVelocity(Constants.Shooter.kShooterSpeedSpinUp));
+        sVV = sVV.withVelocity(Constants.Shooter.kShooterSpeedSpinUp);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
       break;
 
       case SPINUP_SUBWOOFER: 
@@ -248,8 +260,9 @@ public class Shooter extends SubsystemBase {
         // }
         // indexerMotor.set(0);
         // indexerInc = 0.0;
-
-        shooterTop.setControl(sVV.withVelocity(Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer));
+        sVV = sVV.withVelocity(Constants.Shooter.kShooterSpeedScoreSpeakerSubwoofer);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
 
         SmartDashboard.putNumber("Shooter PercentOutput [ST]", shooterInc);
       break;
@@ -270,7 +283,9 @@ public class Shooter extends SubsystemBase {
         // } 
 
         // for OC
-        shooterTop.setControl(sVV.withVelocity(Constants.Shooter.kShooterSpeedScoreSpeakerPodium));
+        sVV = sVV.withVelocity(Constants.Shooter.kShooterSpeedScoreSpeakerPodium);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
       break;
 
       case SPINUP_AMP_ZONE:
@@ -304,7 +319,9 @@ public class Shooter extends SubsystemBase {
 
       case EJECT_NOTE:
         indexerMotor.set(Constants.Shooter.kIndexerEjectNoteSpeed);
-        shooterTop.setControl(sVV.withVelocity(Constants.Shooter.kShooterEjectNoteSpeed));
+        sVV = sVV.withVelocity(Constants.Shooter.kShooterEjectNoteSpeed);
+        shooterTop.setControl(sVV);
+        shooterBottom.setControl(sVV);
       break;
 
       case HOLD_NOTE:
@@ -439,6 +456,9 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Shooter MPS [ST]", getShooterMPS());
     SmartDashboard.putNumber("Indexer MPS [ST]", getIndexerMPS());
+
+    SmartDashboard.putNumber("Shooter Top MPS [ST]", shooterTop.get());
+    SmartDashboard.putNumber("Shooter Bottom MPS [ST]", shooterBottom.get());
 
     SmartDashboard.putNumber("Shooter Target MPS [ST]", shooterPID.getSetpoint());
     SmartDashboard.putNumber("Indexer Target MPS [ST]", indexerPID.getSetpoint());

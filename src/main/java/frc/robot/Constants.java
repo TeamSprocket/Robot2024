@@ -156,16 +156,16 @@ public class Constants {
         public static final double kTargetAnglePodium = -0.06722;
         public static final double kTargetAngleSpeakerFromAmpZone = kTargetAngleStowed;
 
-        public static final double KMotionMagicAcceleration = 3;
+        public static final double KMotionMagicAcceleration = 10;
         public static final double KMotionMagicCruiseVelocity = 6; 
 
         public static final double KShooterPivotKS = 0.25;
         public static final double KShooterPivotKV = 0.14;
         public static final double KShooterPivotKA = 0.01;
         public static final double KShooterPivotKG = 0.2;
-        public static final double KShooterPivotKP = 40;
+        public static final double KShooterPivotKP = 60;
         public static final double KShooterPivotKI = 0;  
-        public static final double KShooterPivotKD = 0;
+        public static final double KShooterPivotKD = 5.0;
     }
 
     public static final class Shooter {

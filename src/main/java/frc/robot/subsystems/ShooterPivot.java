@@ -109,15 +109,18 @@ public class ShooterPivot extends SubsystemBase {
     //configures the motors
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
-    motorConfig.withMotionMagic(new MotionMagicConfigs().withMotionMagicCruiseVelocity(Constants.ShooterPivot.KMotionMagicCruiseVelocity).withMotionMagicAcceleration(Constants.ShooterPivot.KMotionMagicAcceleration)); // TODO: tune velocity and acceleration for motion magic
+    motorConfig.withMotionMagic(new MotionMagicConfigs()
+        .withMotionMagicCruiseVelocity(Constants.ShooterPivot.KMotionMagicCruiseVelocity)
+        .withMotionMagicAcceleration(Constants.ShooterPivot.KMotionMagicAcceleration)); 
+        // TODO: tune velocity and acceleration for motion magic
     motorConfig.withSlot0(new Slot0Configs().withGravityType(GravityTypeValue.Arm_Cosine)
-                .withKS(Constants.ShooterPivot.KShooterPivotKS) 
-                .withKV(Constants.ShooterPivot.KShooterPivotKV) 
-                .withKA(Constants.ShooterPivot.KShooterPivotKA) 
-                .withKG(Constants.ShooterPivot.KShooterPivotKG) 
-                .withKP(Constants.ShooterPivot.KShooterPivotKP)
-                .withKI(Constants.ShooterPivot.KShooterPivotKI)
-                .withKD(Constants.ShooterPivot.KShooterPivotKD));
+        .withKS(Constants.ShooterPivot.KShooterPivotKS) 
+        .withKV(Constants.ShooterPivot.KShooterPivotKV) 
+        .withKA(Constants.ShooterPivot.KShooterPivotKA) 
+        .withKG(Constants.ShooterPivot.KShooterPivotKG) 
+        .withKP(Constants.ShooterPivot.KShooterPivotKP)
+        .withKI(Constants.ShooterPivot.KShooterPivotKI)
+        .withKD(Constants.ShooterPivot.KShooterPivotKD));
 
     motorConfig.withFeedback(
             new FeedbackConfigs()
@@ -381,7 +384,7 @@ public class ShooterPivot extends SubsystemBase {
   public double shooterPivotAngleVision() {
     Pose2d pose = robotPose.get();
     double speakerY = Constants.FieldConstants.kSpeakerTargetHeightMeters - 0.64;
-    double distanceToSpeaker = Math.sqrt(Math.pow(16.75 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
+    double distanceToSpeaker = Math.sqrt(Math.pow(16.7 - pose.getX(), 2) + Math.pow(5.5 - pose.getY(), 2));
     distanceToSpeaker = distanceToSpeaker - 0.155;
 
     distTestXSpeaker = distanceToSpeaker;
@@ -441,6 +444,8 @@ public class ShooterPivot extends SubsystemBase {
 
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees", getShooterPivotAngle());
+    SmartDashboard.putNumber("Shooter Pivot Position [SP]", motor.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Target Angle [SP]", targetPivotAngle);
     // SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
     SmartDashboard.putString("State [SP]", state.toString());
   }
