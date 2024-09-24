@@ -44,8 +44,6 @@ public class Intake extends SubsystemBase {
         NONE,
         STOWED,
         INTAKE,
-        INTAKE_ROLLBACK,
-        INDEXING,
         SCORE_SPEAKER_SUBWOOFER, 
         SCORE_SPEAKER_PODIUM,
         CROSSFIELD,
@@ -148,16 +146,6 @@ public class Intake extends SubsystemBase {
                 rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedIntake));
                 break;
 
-            case INDEXING:
-                pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleIndexing));
-                rollIntake.set(0);
-                break;
-
-            case INTAKE_ROLLBACK:
-                // Pivot maintains current position
-                rollIntake.setControl(velocityVoltage.withVelocity(-1.0 * Constants.Intake.kRollSpeedIntakeRollback));
-                break;
-                
             case SCORE_SPEAKER_SUBWOOFER:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerSubwoofer));
                 rollIntake.set(0);

@@ -238,7 +238,7 @@ public class Constants {
         public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
         public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
         public static final double kPivotAngleIndexing = 0.1667;  // 20.0
-        public static final double kPivotAngleScoreSpeakerPodium = 0.0;
+        public static final double kPivotAngleScoreSpeakerPodium = 0.15;
         public static final double kPivotAngleShootCrossfield = 0.1389; // 30.0
         public static final double kPivotAngleScoreAmp = 0.1472; // 27.0
         public static final double kPivotAngleClimb = 0;
@@ -256,10 +256,10 @@ public class Constants {
         public static final double kPivotAngleOffsetHorizontal = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
-        public static final double kRollSpeedIntake = 46; //0.4;
+        public static final double kRollSpeedIntake = 4.5; //46; //0.4;
         public static final double kRollSpeedIntakeRollback = 5; //0.05;
-        public static final double kRollSpeedScoreSpeaker = 36; // 0.3;
-        public static final double kEjectNoteSpeed = 70; // -0.6;
+        public static final double kRollSpeedScoreSpeaker = 0.0; // 0.3;
+        public static final double kEjectNoteSpeed = 35; // 70; // -0.6;
 
         public static final double kRollIntakeS = 0.3;
         public static final double kRollIntakeV = 0;

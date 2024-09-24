@@ -81,11 +81,12 @@ public class RobotContainer {
     // --------------------=operator=--------------------
 
     // ----- rumble controllers -----
-    new Trigger(() -> shooter.beamBroken()) // TODO: test if controller rumble works
+    new Trigger(() -> shooter.beamBroken()) // TODO: controllers are rumbling too much (might add something to make it stop)
       .onTrue(rumbleControllers());
 
     new Trigger(operator.rightBumper())
-      .whileTrue(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())
+      .whileTrue(new WaitCommand(0.5) // wait for intake to move in
+        .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())) // spit out note for 0.2
         .andThen(new WaitCommand(0.2))
         .andThen(superstructure.setState(SSStates.STOWED))
       );
@@ -94,11 +95,9 @@ public class RobotContainer {
     //   .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
     //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.x())
-      .whileTrue(alignSwerveCommand().withTimeout(1)
-        .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
-      // .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM));
+    new Trigger(operator.button(8))
+      .whileTrue(alignSwerveCommand().withTimeout(1) // align the swerve for one second
+        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))); // setup for podium
 
     new Trigger(operator.x())
       .whileFalse(superstructure.setState(SSStates.STOWED));
@@ -123,6 +122,7 @@ public class RobotContainer {
       .whileTrue(superstructure.setState(SSStates.INTAKE)
         .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
         .andThen(superstructure.setState(SSStates.STOWED)));
+
     new Trigger(operator.a())
       .onFalse(superstructure.setState(SSStates.INTAKE_BACK)
         .andThen(new WaitCommand(0.1))
