@@ -121,27 +121,30 @@ public class Superstructure extends SubsystemBase {
   // }
 
   private void stowed() {
-    switch (stowState) {
-      case START:
-        shooterPivot.setState(ShooterPivotStates.STOWED);
-        stowTimer.restart();
-        stowState = StowState.WAIT_FOR_INTAKE;
-        break;
+    // switch (stowState) {
+    //   case START:
+    //     shooterPivot.setState(ShooterPivotStates.STOWED);
+    //     stowTimer.restart();
+    //     stowState = StowState.WAIT_FOR_INTAKE;
+    //     break;
 
-      case WAIT_FOR_INTAKE:
-        if (stowTimer.hasElapsed(0.5)) {
-          System.out.println("WAITING WAITING WAITING WAITING"); // debug :D
-          intake.setState(IntakeStates.STOWED);
-          shooter.setState(ShooterStates.STANDBY);
-          stowState = StowState.DONE;
-        }
-        break;
+    //   case WAIT_FOR_INTAKE:
+    //     if (stowTimer.hasElapsed(0.5)) {
+    //       intake.setState(IntakeStates.STOWED);
+    //       shooter.setState(ShooterStates.STANDBY);
+    //       stowState = StowState.DONE;
+    //     }
+    //     break;
 
-      case DONE:
-        stowTimer.stop();
-        stowState = StowState.START;
-        break;
-    }
+    //   case DONE:
+    //     stowTimer.stop();
+    //     stowState = StowState.START;
+    //     break;
+    // }
+    
+    intake.setState(IntakeStates.STOWED);
+    shooterPivot.setState(ShooterPivotStates.STOWED);
+    shooter.setState(ShooterStates.STANDBY);
   }
 
   private void intake() {

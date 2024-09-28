@@ -91,16 +91,14 @@ public class RobotContainer {
         .andThen(superstructure.setState(SSStates.STOWED))
       );
       
-    // new Trigger(operator.x())
-    //   .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
-    //   .whileFalse(superstructure.setState(SSStates.STOWED));
+    new Trigger(operator.x())
+      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.button(8))
       .whileTrue(alignSwerveCommand().withTimeout(1) // align the swerve for one second
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))); // setup for podium
-
-    new Trigger(operator.x())
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))) // setup for podium
+      .whileFalse(superstructure.setState(SSStates.STOWED)); // is it repeating align and getting stuck?
 
     // new Trigger(operator.y())
     //   .onTrue(superstructure.setState(SSStates.EJECT_NOTE));
@@ -111,8 +109,6 @@ public class RobotContainer {
       .whileTrue(new SequentialCommandGroup(superstructure.setState(SSStates.EJECT_NOTE),
       new WaitCommand(3),
       superstructure.setState(SSStates.STOWED)));
-
-      // .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.b())
       .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
