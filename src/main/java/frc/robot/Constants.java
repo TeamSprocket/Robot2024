@@ -147,9 +147,9 @@ public class Constants {
         public static final double kTargetAngleStowed = -0.132;//6.0
         public static final double kTargetAngleIntake = -0.1075;
         public static final double kTargetAngleIndexing = -0.132;
-        public static final double kTargetAngleEject = 0.12;
+        public static final double kTargetAngleEject = 0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromSubwoofer = -0.144;//5.0; 
+        public static final double kTargetAngleSpeakerFromSubwoofer = -0.03;// -0.144;//5.0; 
         public static double kTargetAngleAmp = 0.08677; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
         public static final double kTargetAngleCrossfield = -0.1256;
         public static final double kTargetAnglePodium = -0.06722;
@@ -187,11 +187,11 @@ public class Constants {
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
 
         public static final double kIndexerSpeedIntake = 8; // 0.2 
-        public static final double kIndexerSpeedScoreSpeaker = 10; // 0.9
+        public static final double kIndexerSpeedScoreSpeaker = 16; // 12; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.5; // -0.25
         public static final double kIndexerEjectNoteSpeed = -0.25;
         public static final double kIndexerSpeedRollforward = 3.0;
-        public static final double kIndexerSpeedRollback = -2.5;
+        public static final double kIndexerSpeedRollback = -0.2;
         public static final double kIndexerSpeedCrossField = 6.5;
 
         public static final double kShooterBottomSpeedMultiplier = 0.98;
@@ -233,9 +233,9 @@ public class Constants {
         public static final double kSupplyCurrentLimitRoll = 0.0;
 
         public static final double kPivotAngleStowed = 0.19; // 23.0
-        public static final double kPivotAngleIntake = -0.09; // -0.0694;
-        public static final double kPivotAngleEject = 0.1389; // 30.0
-        public static final double kPivotAngleScoreSpeakerSubwoofer = kPivotAngleStowed;
+        public static final double kPivotAngleIntake = -0.101; // -0.0694;
+        public static final double kPivotAngleEject = 0.13; // 30.0
+        public static final double kPivotAngleScoreSpeakerSubwoofer = 0;
         public static final double kPivotAngleScoreSpeaker = 0.1444; // 28.0;
         public static final double kPivotAngleIndexing = 0.1667;  // 20.0
         public static final double kPivotAngleScoreSpeakerPodium = 0.15;
@@ -244,22 +244,22 @@ public class Constants {
         public static final double kPivotAngleClimb = 0;
 
         public static final double kPivotIntakeS = 0.27;
-        public static final double kPivotIntakeV = 1.4;
+        public static final double kPivotIntakeV = 1.4  ;
         public static final double kPivotIntakeA = 0.01;
         public static final double kPivotIntakeG = 0.29;
         public static final double kPivotIntakeP = 40.0;
         public static final double kPivotIntakeI = 0.0;
         public static final double kPivotIntakeD = 1.5;
-        public static final double kPivotIntakeMMCruiseVelocity = 12.0; 
+        public static final double kPivotIntakeMMCruiseVelocity = 11.0; 
         public static final double kPivotIntakeMMCruiseAccel = 6;
         
         public static final double kPivotAngleOffsetHorizontal = 80.0;
 
         public static final double kRollSpeedStowed = 0.0;
-        public static final double kRollSpeedIntake = 4.5; //46; //0.4;
-        public static final double kRollSpeedIntakeRollback = 5; //0.05;
+        public static final double kRollSpeedIntake = 17; // 16; // 4.5; //46; //0.4;
+        public static final double kRollSpeedIntakeRollback = 0.5; // 1.5; // 5; //0.05;
         public static final double kRollSpeedScoreSpeaker = 0.0; // 0.3;
-        public static final double kEjectNoteSpeed = 35; // 70; // -0.6;
+        public static final double kEjectNoteSpeed = 12; // 70; // -0.6;
 
         public static final double kRollIntakeS = 0.3;
         public static final double kRollIntakeV = 0;

@@ -96,19 +96,17 @@ public class RobotContainer {
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.button(8))
-      .whileTrue(alignSwerveCommand().withTimeout(1) // align the swerve for one second
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))) // setup for podium
-      .whileFalse(superstructure.setState(SSStates.STOWED)); // is it repeating align and getting stuck?
-
-    // new Trigger(operator.y())
-    //   .onTrue(superstructure.setState(SSStates.EJECT_NOTE));
-    // new Trigger(operator.y())
-    //   .onFalse(superstructure.setState(SSStates.STOWED));
+      .whileTrue(alignSwerveCommand().withTimeout(1)
+        .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
+    new Trigger(operator.button(8))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.y())
-      .whileTrue(new SequentialCommandGroup(superstructure.setState(SSStates.EJECT_NOTE),
-      new WaitCommand(3),
-      superstructure.setState(SSStates.STOWED)));
+      .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
+      // .andThen(superstructure.setState(SSStates.STOWED)));
+    new Trigger(operator.y())
+      .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.b())
       .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
