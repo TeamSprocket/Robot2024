@@ -101,6 +101,36 @@ public class Constants {
         public static final double kElevatorWinchDiameterM = Conversions.inchesToMeters(1.5);
         public static final double kElevatorWinchCircumM = kElevatorWinchDiameterM * Math.PI;
 
+    
+        public static final double kElevatorS = 0;
+        public static final double kElevatorV = 0;
+        public static final double kElevatorA = 0;
+        public static final double kElevatorG = 0;
+        public static final double kElevatorP = 0;
+        public static final double kElevatorI = 0;
+        public static final double kElevatorD = 0;
+
+        public static final double kElevatorMMCruiseVelocity= 0;
+        public static final double kElevatorMMCruiseAccel = 0;
+
+        public static final double kIsInvertedLeft = 0;
+        public static final double kIsInvertedRight = 0;
+
+        public static final double kElevatorHeightHandoff = 0;
+        public static final double kElevatorHeightSpeaker = 0;
+        public static final double kElevatorHeightSpeakerHigh = 0;
+        public static final double kElevatorHeightTrap = 0;
+
+        public static final double kElevatorGearCircumM = 0;
+
+        public static final double kPElevator= 0;
+        public static final double kIElevator = 0;
+        public static final double kDElevator = 0;
+
+        public static final boolean setInverted = true;
+
+
+
         public static final boolean kLeftMotorIsInverted = true; // true
         public static final boolean kRightMotorIsInverted = false; // false
 
