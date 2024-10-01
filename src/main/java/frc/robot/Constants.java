@@ -113,8 +113,8 @@ public class Constants {
         public static final double kElevatorMMCruiseVelocity= 0;
         public static final double kElevatorMMCruiseAccel = 0;
 
-        public static final double kIsInvertedLeft = 0;
-        public static final double kIsInvertedRight = 0;
+        public static final boolean kIsInvertedLeft = true;
+        public static final boolean kIsInvertedRight = true;
 
         public static final double kElevatorHeightHandoff = 0;
         public static final double kElevatorHeightSpeaker = 0;
