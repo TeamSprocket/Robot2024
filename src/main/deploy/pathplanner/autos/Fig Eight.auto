@@ -16,6 +16,12 @@
           "data": {
             "pathName": " Fig Eight"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeNote"
+          }
         }
       ]
     }
