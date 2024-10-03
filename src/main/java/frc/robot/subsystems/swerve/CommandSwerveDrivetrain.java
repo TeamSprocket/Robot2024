@@ -105,8 +105,6 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
             driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
         }
 
-        
-
         AutoBuilder.configureHolonomic(
             () -> this.getState().Pose, 
             this::seedFieldRelative, 
@@ -152,6 +150,5 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 hasAppliedOperatorPerspective = true;
             });
         }
-        
     }
 }

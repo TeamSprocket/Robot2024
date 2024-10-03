@@ -67,25 +67,8 @@ public class RobotContainer {
 
     // ------ path planner ------
 
-    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-    autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
-    // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
-    // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
-    // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
-    // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
-    // autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
-    // autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
-    // autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
-    autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
-    // autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
-    // autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
-    // autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
-    // autonChooser.addOption("Middle 1 + 3", new PathPlannerAuto("Middle 1 + 3"));
-    // autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
-    // autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
-    // autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
-    
+    // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
+    autonChooser.setDefaultOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
 
     // ------- by encoder ticks -------
 
@@ -102,26 +85,26 @@ public class RobotContainer {
   }
 
    public void initNamedCommands() {
-    NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(new WaitCommand(0.2)
-                                                                                .andThen(superstructure.setState(SSStates.INTAKE))
+    NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(superstructure.setState(SSStates.INTAKE)
                                                                                 .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
                                                                                 .andThen(superstructure.setState(SSStates.STOWED))));
-    NamedCommands.registerCommand("SpinupSubwoofer", new SequentialCommandGroup(new WaitCommand(0.2)
-                                                                                     .andThen(alignSwerveCommand().withTimeout(1))
-                                                                                     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
-                                                                                     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))));
+
+    // NamedCommands.registerCommand("SpinupSubwoofer", new SequentialCommandGroup(new WaitCommand(0.2)
+                                                                                    //  .andThen(alignSwerveCommand().withTimeout(1))
+                                                                                    //  .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+                                                                                    //  .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))));
     
-    //NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
-    NamedCommands.registerCommand("ShootNote", new SequentialCommandGroup(new WaitCommand(0.5) // wait for intake to move in
-                                                                               .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())) // spit out note for 0.2
-                                                                               .andThen(new WaitCommand(0.2))
-                                                                               .andThen(superstructure.setState(SSStates.STOWED))));
+    // NamedCommands.registerCommand("SpinupSubwoofer", new ScoreSpeakerSubwooferSpinupTimed(shooter, shooterPivot, 3.0));
+    // NamedCommands.registerCommand("ShootNote", new SequentialCommandGroup(new WaitCommand(0.5) // wait for intake to move in
+    //                                                                            .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())) // spit out note for 0.2
+    //                                                                            .andThen(new WaitCommand(0.2))
+    //                                                                            .andThen(superstructure.setState(SSStates.STOWED))));
 
-    NamedCommands.registerCommand("SetStowed", superstructure.setState(SSStates.STOWED));
+    // NamedCommands.registerCommand("SetStowed", superstructure.setState(SSStates.STOWED));
 
-    NamedCommands.registerCommand("ShootCrossfield", superstructure.setState(SSStates.CROSSFIELD));
+    // NamedCommands.registerCommand("ShootCrossfield", superstructure.setState(SSStates.CROSSFIELD));
 
-    NamedCommands.registerCommand("EjectNote", superstructure.setState(SSStates.EJECT_NOTE));
+    // NamedCommands.registerCommand("EjectNote", superstructure.setState(SSStates.EJECT_NOTE));
 
     // NamedCommands.registerCommand("ShootNote", new ShootNote(shooterPivot, shooter, intake));
     // NamedCommands.registerCommand("ScoreSpeakerPodiumSpinup", new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, CommandSwerveDrivetrain));
