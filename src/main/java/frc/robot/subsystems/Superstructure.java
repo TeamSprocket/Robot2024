@@ -169,10 +169,8 @@ public class Superstructure extends SubsystemBase {
   }
 
   private void ejectNote() { //
-    timer.restart();
     intake.setState(IntakeStates.EJECT_NOTE);
     shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
-    while (!timer.hasElapsed(0.6)){} // change later
     shooter.setState(ShooterStates.EJECT_NOTE);
   }
 
