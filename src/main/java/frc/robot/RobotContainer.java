@@ -85,9 +85,9 @@ public class RobotContainer {
   }
 
    public void initNamedCommands() {
-    NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(superstructure.setState(SSStates.INTAKE)
-                                                                                .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
-                                                                                .andThen(superstructure.setState(SSStates.STOWED))));
+    // NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(superstructure.setState(SSStates.INTAKE)
+    //                                                                             .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
+    //                                                                             .andThen(superstructure.setState(SSStates.STOWED))));
 
     // NamedCommands.registerCommand("SpinupSubwoofer", new SequentialCommandGroup(new WaitCommand(0.2)
                                                                                     //  .andThen(alignSwerveCommand().withTimeout(1))
