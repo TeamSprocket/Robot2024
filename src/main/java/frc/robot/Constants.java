@@ -179,7 +179,7 @@ public class Constants {
         public static final double kTargetAngleIndexing = -0.132;
         public static final double kTargetAngleEject = 0;
         // public static final double kTargetAngleSpeakerHigh = 0.0;
-        public static final double kTargetAngleSpeakerFromSubwoofer = -0.03;// -0.144;//5.0; 
+        public static final double kTargetAngleSpeakerFromSubwoofer = -0.144; //5.0; 
         public static double kTargetAngleAmp = 0.08677; // 98; // 95; // 98 // 102; //32; // 35.6 // 109.0 // 98
         public static final double kTargetAngleCrossfield = -0.1256;
         public static final double kTargetAnglePodium = -0.06722;
@@ -215,7 +215,6 @@ public class Constants {
         public static final double kShooterSpeedScoreSpeakerPodium = 125;
         public static final double kShooterSpeedSpinUp = 150;
         public static final double kShooterSpeedScoreSpeakerAmpZone = kShooterSpeedScoreSpeakerSubwoofer;
-
         public static final double kIndexerSpeedIntake = 8; // 0.2 
         public static final double kIndexerSpeedScoreSpeaker = 16; // 12; // 0.9
         public static final double kIndexerSpeedScoreAmp = 0.5; // -0.25
@@ -287,7 +286,7 @@ public class Constants {
 
         public static final double kRollSpeedStowed = 0.0;
         public static final double kRollSpeedIntake = 17; // 16; // 4.5; //46; //0.4;
-        public static final double kRollSpeedIntakeRollback = 0.5; // 1.5; // 5; //0.05;
+        public static final double kRollSpeedIntakeRollback = 0.3; // 1.5; // 5; //0.05;
         public static final double kRollSpeedScoreSpeaker = 0.0; // 0.3;
         public static final double kEjectNoteSpeed = 12; // 70; // -0.6;
 
