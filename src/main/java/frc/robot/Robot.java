@@ -5,6 +5,8 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -33,6 +35,8 @@ public class Robot extends TimedRobot {
 
     // UsbCamera camera = CameraServer.startAutomaticCapture();
     // camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 15);
+    DataLogManager.start();
+    DataLogManager.logNetworkTables(true);
   }
 
   @Override
