@@ -17,6 +17,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.Constants.RobotState;
 import frc.util.ShuffleboardIO;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.util.datalog.StringLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
+
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
@@ -35,6 +41,8 @@ public class Robot extends TimedRobot {
 
     // UsbCamera camera = CameraServer.startAutomaticCapture();
     // camera.setVideoMode(PixelFormat.kMJPEG, 320, 240, 15);
+    DataLogManager.start();
+    DataLogManager.logNetworkTables(true);
   }
 
   @Override
