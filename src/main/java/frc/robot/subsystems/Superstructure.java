@@ -4,7 +4,10 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
@@ -134,6 +137,29 @@ public class Superstructure extends SubsystemBase {
    */
   public Command setState(SSStates wantedState) {
       return new InstantCommand(() -> this.wantedState = wantedState);
+  }
+
+  public Command spinupSubCmd() {
+    return setState(SSStates.WAIT_SPEAKER_SUBWOOFER);
+  }
+
+  public Command spinupPodCmd() {
+    return setState(SSStates.WAIT_SPEAKER_PODIUM);
+  }
+  
+  public Command ejectNoteCmd() {
+    return setState(SSStates.EJECT_NOTE);
+  }
+
+  public Command intakeCmd() {
+    return new SequentialCommandGroup(
+      setState(SSStates.INTAKE),
+      new WaitUntilCommand(() -> shooter.beamBroken()),
+      setState(SSStates.STOWED),
+      new WaitCommand(0.5),
+      setState(SSStates.INTAKE_BACK),
+      setState(SSStates.STOWED)
+    );
   }
   // ------ methods ------
 
