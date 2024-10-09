@@ -7,12 +7,10 @@ package frc.robot.subsystems;
 //phoenix imports for pivot intake
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
-import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -24,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.Conversions;
-import frc.util.ShuffleboardIO;
 import frc.util.Util;
 
 /** Add your docs here. */
@@ -32,8 +29,6 @@ public class Intake extends SubsystemBase {
 
     private final TalonFX rollIntake = new TalonFX(RobotMap.Intake.ROLL_INTAKE);
     private final TalonFX pivotIntake = new TalonFX(RobotMap.Intake.PIVOT_INTAKE);
-
-    // ProfiledPIDController profiledPIDController;
 
     private IntakeStates state = IntakeStates.NONE;
     private IntakeStates lastState = IntakeStates.NONE;
@@ -111,24 +106,10 @@ public class Intake extends SubsystemBase {
         pivotIntake.setNeutralMode(NeutralModeValue.Brake);
 
         pivotIntake.setPosition(0.2222);
-
-        // selectIntakeState.setDefaultOption("NONE", IntakeStates.NONE);
-        // selectIntakeState.addOption("STOWED", IntakeStates.STOWED);
-        // selectIntakeState.addOption("INTAKE", IntakeStates.INTAKE);
-        // SmartDashboard.putData(selectIntakeState);
-
-        // SmartDashboard.putData("STATES[IN]", selectIntakeState);
-
-        // ShuffleboardIO.addSlider("PIVOT KP [IN]", 0.0, 0.01, Constants.Intake.kPPivot);
-        // ShuffleboardIO.addSlider("PIVOT KD [IN]", 0.0, 0.001, Constants.Intake.kDPivot);
-        // ShuffleboardIO.addSlider("Intake Pivot Voltage [IN]", 0.0, 1.5, 0);
     }
 
     @Override
     public void periodic() {
-        // debug - state selector
-
-        // setState(selectIntakeState.getSelected()); // COMMENT OUT PLZ
 
         switch (state) {
             case NONE:
@@ -166,18 +147,11 @@ public class Intake extends SubsystemBase {
 
         SmartDashboard.putNumber("Pivot Angle [IN]", getPivotAngle());
         SmartDashboard.putBoolean("At Goal [IN]", atGoal());
-        // SmartDashboard.putNumber("Pivot Angle Target [IN]", pidController.getSetpoint());
         SmartDashboard.putString("State Intake [IN]", state.toString());
         SmartDashboard.putNumber("Motion Magic Output [IN]", pivotIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Roll Intake Output [IN]", rollIntake.getMotorVoltage().getValueAsDouble());
         SmartDashboard.putNumber("Intake Position [IN]", pivotIntake.getPosition().getValueAsDouble());
         SmartDashboard.putNumber("Roll Intake Velocity", rollIntake.getVelocity().getValueAsDouble());
-
-        // SmartDashboard.putString("Neutral Mode Value PivotIntake [IN]", );
-
-        //debug
-        // SmartDashboard.putString("State[IN]", state.toString());
-        // SmartDashboard.putNumber("", pivotSpeed)
     }
 
     
@@ -223,22 +197,5 @@ public class Intake extends SubsystemBase {
 
   public void setNeutralMode(NeutralModeValue neutralModeValue) {
     pivotIntake.setNeutralMode(neutralModeValue);
-  }
-
-  private void configMotors() {
-    // CurrentLimitsConfigs currentLimitsConfigsPivot = new CurrentLimitsConfigs();
-    // currentLimitsConfigsPivot.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitPivot);
-    // currentLimitsConfigsPivot.withSupplyCurrentLimitEnable(true);
-    // CurrentLimitsConfigs currentLimitsConfigsRoll = new CurrentLimitsConfigs();
-    // currentLimitsConfigsRoll.withSupplyCurrentLimit(Constants.Intake.kSupplyCurrentLimitRoll);
-    // currentLimitsConfigsRoll.withSupplyCurrentLimitEnable(true);
-
-    TalonFXConfiguration motorConfigPivot = new TalonFXConfiguration();
-    // motorConfigPivot.withCurrentLimits(currentLimitsConfigsPivot);
-    TalonFXConfiguration motorConfigRoll = new TalonFXConfiguration();
-    // motorConfigRoll.withCurrentLimits(currentLimitsConfigsRoll);
-
-    pivotIntake.getConfigurator().apply(motorConfigPivot);
-    rollIntake.getConfigurator().apply(motorConfigRoll);
   }
 }
