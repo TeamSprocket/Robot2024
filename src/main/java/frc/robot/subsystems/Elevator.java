@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -40,17 +41,16 @@ public class Elevator extends SubsystemBase {
   private final TalonFX motorLeft = new TalonFX(RobotMap.Elevator.ELEVATOR_LEFT);
   private final TalonFX motorRight = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
 
+  public final VoltageOut voltout = new VoltageOut(0);
+
   ProfiledPIDController profiledPIDController;
 
   SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
-  
-  Supplier<Double> leftBumperSupplier;
-  Supplier<Double> rightBumperSupplier;
 
   MotionMagicVoltage mmV = new MotionMagicVoltage(0);
   VelocityVoltage velocityVoltage = new VelocityVoltage(0);
 
-  public Elevator(Supplier<Double> leftBumperSupplier, Supplier<Double> rightBumperSupplier) {
+  public Elevator() {
     
     TalonFXConfiguration elevatorConfig = new TalonFXConfiguration();
 
@@ -62,7 +62,7 @@ public class Elevator extends SubsystemBase {
     
     elevatorConfig.withSlot0(
             new Slot0Configs()
-                .withGravityType(GravityTypeValue.Arm_Cosine)
+                .withGravityType(GravityTypeValue.Elevator_Static)
                 .withKS(Constants.Elevator.kElevatorS) 
                 .withKV(Constants.Elevator.kElevatorV)
                 .withKA(Constants.Elevator.kElevatorA) 
@@ -89,13 +89,10 @@ public class Elevator extends SubsystemBase {
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
     motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
-    motorRight.setControl(new StrictFollower(motorLeft.getDeviceID()));
+    motorLeft.setControl(new StrictFollower(motorRight.getDeviceID()));
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
     profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
-
-    this.leftBumperSupplier = leftBumperSupplier;
-    this.rightBumperSupplier = rightBumperSupplier;
 
       selectElevatorState.setDefaultOption("NONE", ElevatorStates.NONE);
       selectElevatorState.addOption("STOWED", ElevatorStates.NONE);
@@ -115,40 +112,39 @@ public class Elevator extends SubsystemBase {
     switch (state) {
         
       case NONE:
-        motorLeft.set(0);
+        //motorLeft.set(0);
         motorRight.set(0);
         break;
         
       case STOWED:
-        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightStowed));
+        //motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightStowed));
         motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightStowed));
         break;
 
       case HANDOFF:
-        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightHandoff));
+        motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightHandoff));
         break;
 
       case SPEAKER:
-        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeaker));
+        motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeaker));
         break;  
         
       case SPEAKER_HIGH:
-        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeakerHigh));
+        motorRight.setVoltage(1.5);
         break;
         
       case AMP:
-        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightAmp));
+        //motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightAmp));
+        motorRight.setVoltage(0.22); //G+S=0.36 G-S=.22
         break; 
 
       case TRAP:
-        motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightTrap));
-        
-      case CLIMB:
-        manual();
-        break;
+        motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightTrap));
     }
    
-    clearStickyFaults();
+    
+
+    // clearStickyFaults();   
   }
 
 
@@ -156,21 +152,12 @@ public class Elevator extends SubsystemBase {
     this.state = state;
   }
 
-  public ElevatorStates getState() {
-      return state;
+  public void setNeutralMode(NeutralModeValue neutralModeValue) {
+    motorRight.setNeutralMode(neutralModeValue);
   }
 
-  public void manual() { // TODO: find deadband + correct speed
-    double speedL = -1.0 * leftBumperSupplier.get();
-    double speedR = rightBumperSupplier.get();
-    double speed = speedL + speedR;
-    speed *= Constants.Elevator.kManualMultiplier;
-    Util.deadband(speed, -0.1, 0.1);
-
-    var elevatorRotorSignal = motorLeft.getRotorPosition();
-
-    profiledPIDController.setGoal(elevatorRotorSignal.getValue() + speed);
-    motorLeft.set(profiledPIDController.calculate(getHeight()));
+  public ElevatorStates getState() {
+      return state;
   }
 
   public double getHeight() {

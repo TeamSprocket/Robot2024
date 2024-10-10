@@ -41,8 +41,10 @@ public class RobotContainer {
   private final ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getLeftY(), () -> drivetrain.getTranslation3d());
   private final Shooter shooter = new Shooter(() -> drivetrain.getPose().getTranslation(), () -> operator.getRightTriggerAxis(), () -> operator.getLeftTriggerAxis(), () -> drivetrain.getTranslation3d());
   private final Intake intake = new Intake();
+  private final Elevator elevator = new Elevator();
+
   private final Vision vision = new Vision(drivetrain);
-  Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake);
+  Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake, elevator);
 
   // ------- Swerve Generated -------
 
@@ -141,14 +143,19 @@ public class RobotContainer {
     new Trigger(operator.button(8))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
+    // new Trigger(operator.y())
+    //   .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
+    // new Trigger(operator.y())
+    //   .whileFalse(superstructure.setState(SSStates.STOWED));
+
     new Trigger(operator.y())
-      .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
-    new Trigger(operator.y())
+      .whileTrue(superstructure.setState(SSStates.ELEVATORUP))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.b())
-      .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+      // .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
+      // .whileFalse(superstructure.setState(SSStates.STOWED));
+      .whileTrue(superstructure.setState(SSStates.ELEVATORTEST));
 
     new Trigger(operator.a())
       .whileTrue(superstructure.setState(SSStates.INTAKE)
@@ -167,6 +174,10 @@ public class RobotContainer {
   public Superstructure getSuperstructure() {
     return superstructure;
   }
+  public Elevator getElevator() {
+    return elevator;
+  }
+  
   public void clearPDHStickyFaults() {
     pdh.clearStickyFaults();
   }

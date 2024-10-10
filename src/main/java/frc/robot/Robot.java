@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     m_robotContainer.getShooterPivot().setNeutralMode(NeutralModeValue.Coast);
+    m_robotContainer.getElevator().setNeutralMode(NeutralModeValue.Coast);
 
     CommandScheduler.getInstance().cancelAll();
   }

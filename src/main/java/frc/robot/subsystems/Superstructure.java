@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.Elevator.ElevatorStates;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.robot.subsystems.Shooter.ShooterStates;
 import frc.robot.subsystems.ShooterPivot.ShooterPivotStates;
@@ -18,7 +19,9 @@ public class Superstructure extends SubsystemBase {
     INTAKE_BACK,
     WAIT_SPEAKER_SUBWOOFER, WAIT_SPEAKER_PODIUM,
     EJECT_NOTE,
-    CROSSFIELD
+    CROSSFIELD,
+    ELEVATORTEST,
+    ELEVATORUP
   }
 
   public SSStates currentState = SSStates.NONE;
@@ -28,13 +31,15 @@ public class Superstructure extends SubsystemBase {
   ShooterPivot shooterPivot;
   Shooter shooter;
   Intake intake;
+  Elevator elevator;
 
   private Timer timer = new Timer();
 
-  public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake) {
+  public Superstructure(ShooterPivot shooterPivot, Shooter shooter, Intake intake, Elevator elevator) {
     this.shooterPivot = shooterPivot;
     this.shooter = shooter;
     this.intake = intake;
+    this.elevator = elevator;
 
     timer.restart();
   }
@@ -84,6 +89,14 @@ public class Superstructure extends SubsystemBase {
       case CROSSFIELD:
         crossfield();
       break;
+
+      case ELEVATORTEST:
+        testelevator();
+      break;
+
+      case ELEVATORUP:
+        elevatorup();
+      break;
     }
   }
   // ------ states ------
@@ -92,12 +105,14 @@ public class Superstructure extends SubsystemBase {
     intake.setState(IntakeStates.STOWED);
     shooterPivot.setState(ShooterPivotStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
+    elevator.setState(ElevatorStates.AMP);
   }
 
   private void intake() {
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
+    elevator.setState(ElevatorStates.STOWED);
   }
   private void intakeBack() {
     shooter.setIndexerRollBack();
@@ -120,6 +135,44 @@ public class Superstructure extends SubsystemBase {
     shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
     shooter.setState(ShooterStates.EJECT_NOTE);
   }
+
+  private void testelevator() {
+    elevator.setState(ElevatorStates.AMP);
+  }
+
+  private void elevatorup() {
+    elevator.setState(ElevatorStates.SPEAKER_HIGH);
+  }
+
+  // private void ejectNote() {
+  //   switch (ejectNoteState) {
+  //     case START:
+  //         // Start by extending the intake
+  //         intake.setState(IntakeStates.EJECT_NOTE);
+  //         ejectTimer.restart();
+  //         ejectNoteState = EjectNoteStates.EXTEND_INTAKE;
+  //         break;
+
+  //     case EXTEND_INTAKE:
+  //         // Wait until 0.6 seconds have passed for the intake to extend
+  //         if (ejectTimer.hasElapsed(0.6)) {
+  //             ejectNoteState = EjectNoteStates.PIVOT_SHOOTER;
+  //         }
+  //         break;
+
+  //     case PIVOT_SHOOTER:
+  //         // Move the shooter pivot and shooter to the eject note position
+  //         shooterPivot.setState(ShooterPivotStates.EJECT_NOTE);
+  //         shooter.setState(ShooterStates.EJECT_NOTE);
+  //         ejectNoteState = EjectNoteStates.DONE;
+  //         break;
+
+  //     case DONE:
+  //         stowTimer.stop();
+  //         ejectNoteState = EjectNoteStates.START;
+  //         break;
+  //     }
+  // }
 
   private void crossfield() {
     intake.setState(IntakeStates.CROSSFIELD);

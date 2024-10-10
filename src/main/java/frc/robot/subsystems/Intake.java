@@ -14,6 +14,8 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
+
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -47,6 +49,7 @@ public class Intake extends SubsystemBase {
 
     MotionMagicVoltage mmV = new MotionMagicVoltage(0);
     VelocityVoltage velocityVoltage = new VelocityVoltage(0);
+
 
     public Intake() {
         // configMotors();

@@ -75,8 +75,8 @@ public class Constants {
         public static final double kSupplyCurrentLimit = 0.0;
         
         public static final double kElevatorHeightStowed = 0.005;
-        public static double kElevatorHeightAmp = 0.13422; // 0.14 // 0.22; // 0.21; // 0.13
-        public static double kElevatorHeightClimbUp = 0.28; // TODO: tune
+        public static double kElevatorHeightAmp = 0.0134; // 0.14 // 0.22; // 0.21; // 0.13
+        public static double kElevatorHeightClimbUp = 0.28; //
         public static double kElevatorHeightClimbDown = 0.01; // 0.11;
 
 
@@ -102,19 +102,19 @@ public class Constants {
         public static final double kElevatorWinchCircumM = kElevatorWinchDiameterM * Math.PI;
 
     
-        public static final double kElevatorS = 0;
+        public static final double kElevatorS = 0.07;
         public static final double kElevatorV = 0;
         public static final double kElevatorA = 0;
-        public static final double kElevatorG = 0;
+        public static final double kElevatorG = 0.29;
         public static final double kElevatorP = 0;
         public static final double kElevatorI = 0;
         public static final double kElevatorD = 0;
 
-        public static final double kElevatorMMCruiseVelocity= 0;
-        public static final double kElevatorMMCruiseAccel = 0;
+        public static final double kElevatorMMCruiseVelocity= 4;
+        public static final double kElevatorMMCruiseAccel = 2;
 
         public static final boolean kIsInvertedLeft = true;
-        public static final boolean kIsInvertedRight = true;
+        public static final boolean kIsInvertedRight = false;
 
         public static final double kElevatorHeightHandoff = 0;
         public static final double kElevatorHeightSpeaker = 0;
@@ -126,6 +126,7 @@ public class Constants {
         public static final double kPElevator= 0;
         public static final double kIElevator = 0;
         public static final double kDElevator = 0;
+
 
         public static final boolean setInverted = true;
 
