@@ -89,6 +89,9 @@ public class Elevator extends SubsystemBase {
     motorLeft.setInverted(Constants.Elevator.kIsInvertedLeft);
     motorRight.setInverted(Constants.Elevator.kIsInvertedRight);
 
+    motorRight.setPosition(-0.001);
+    motorLeft.setPosition(-0.001);
+
     motorLeft.setControl(new StrictFollower(motorRight.getDeviceID()));
 
     TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
@@ -130,12 +133,15 @@ public class Elevator extends SubsystemBase {
         break;  
         
       case SPEAKER_HIGH:
-        motorRight.setVoltage(1.5);
+        //motorRight.setVoltage(3);
+        //motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeakerHigh));
+        motorRight.setControl(mmV.withPosition(0.76));
+        //motorRight.setVoltage(2);
         break;
         
       case AMP:
         //motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightAmp));
-        motorRight.setVoltage(0.22); //G+S=0.36 G-S=.22
+        motorRight.setVoltage(0); //G+S=0.36 G-S=.22
         break; 
 
       case TRAP:
