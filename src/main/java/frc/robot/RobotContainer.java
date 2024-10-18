@@ -136,26 +136,26 @@ public class RobotContainer {
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.button(8))
-      .whileTrue(alignSwerveCommand().withTimeout(1)
-        .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
-    new Trigger(operator.button(8))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
-
-    // new Trigger(operator.y())
-    //   .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
-    // new Trigger(operator.y())
+    // new Trigger(operator.button(8))
+    //   .whileTrue(alignSwerveCommand().withTimeout(1)
+    //     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+    //     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
+    // new Trigger(operator.button(8))
     //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.y())
-      .whileTrue(superstructure.setState(SSStates.ELEVATORUP))
+      .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
+    new Trigger(operator.y())
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.b())
+    // new Trigger(operator.y())
+    //   .whileTrue(superstructure.setState(SSStates.ELEVATORUP))
+    //   .whileFalse(superstructure.setState(SSStates.STOWED));
+
+    // new Trigger(operator.b())
       // .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
       // .whileFalse(superstructure.setState(SSStates.STOWED));
-      .whileTrue(superstructure.setState(SSStates.ELEVATORTEST));
+      // .whileTrue(superstructure.setState(SSStates.ELEVATORTEST));
 
     new Trigger(operator.a())
       .whileTrue(superstructure.setState(SSStates.INTAKE)
