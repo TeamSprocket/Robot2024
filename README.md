@@ -26,4 +26,5 @@ Special Thanks to
 - Setpoint based speaker and amp shooting
 - State based superstructure control 
 
-![image]([https://user-images.githubusercontent.com/73210729/221700679-1922a6bf-168d-486f-8770-905bf5ddac0f.png](https://i.imgur.com/E9Lj9Ll.jpeg))
+![image](https://github.com/user-attachments/assets/37dda8be-c328-4f46-838e-e0fa65840e3b)
+
