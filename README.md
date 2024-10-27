@@ -24,6 +24,9 @@ Special Thanks to
 - Field Oriented Swerve Drive
 - Vision + Odometry Pathplanner Autons
 - Setpoint based speaker and amp shooting
+- Limelight speaker alignment
+- Note pass/ferrying and ejection
+- Semi-autonomous climb sequence
 - State based superstructure control 
 
 ![image](https://github.com/user-attachments/assets/37dda8be-c328-4f46-838e-e0fa65840e3b)
