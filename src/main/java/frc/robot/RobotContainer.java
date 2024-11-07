@@ -5,11 +5,19 @@ package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
+
+import java.nio.file.Path;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+<<<<<<< Updated upstream
+=======
+import com.pathplanner.lib.path.PathPlannerPath;
+
+>>>>>>> Stashed changes
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -66,12 +74,18 @@ public class RobotContainer {
   
  public void initAutons() {
 
+<<<<<<< Updated upstream
     // ------ path planner ------
 
     // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
 
+=======
+    PathPlannerPath testPath = PathPlannerPath.fromChoreoTrajectory("testPath");
+>>>>>>> Stashed changes
     autonChooser = AutoBuilder.buildAutoChooser();
+    autonChooser.setDefaultOption("test", AutoBuilder.followPath(testPath));
+    // autonChooser.addOption("test", AutoBuilder.followPath(testPath));
 
     SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
