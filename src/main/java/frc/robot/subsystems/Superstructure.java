@@ -105,14 +105,14 @@ public class Superstructure extends SubsystemBase {
     intake.setState(IntakeStates.STOWED);
     shooterPivot.setState(ShooterPivotStates.STOWED);
     shooter.setState(ShooterStates.STANDBY);
-    elevator.setState(ElevatorStates.AMP);
+    // elevator.setState(ElevatorStates.AMP);
   }
 
   private void intake() {
     intake.setState(IntakeStates.INTAKE);
     shooter.setState(ShooterStates.INTAKE);
     shooterPivot.setState(ShooterPivotStates.INTAKE);
-    elevator.setState(ElevatorStates.STOWED);
+    // elevator.setState(ElevatorStates.STOWED);
   }
   private void intakeBack() {
     shooter.setIndexerRollBack();

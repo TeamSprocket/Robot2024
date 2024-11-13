@@ -5,35 +5,33 @@ package frc.robot;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.SteerRequestType;
-
-import java.nio.file.Path;
-
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-<<<<<<< Updated upstream
-=======
 import com.pathplanner.lib.path.PathPlannerPath;
 
->>>>>>> Stashed changes
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.GenericHID;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.swerve.TunerConstants;
@@ -74,15 +72,12 @@ public class RobotContainer {
   
  public void initAutons() {
 
-<<<<<<< Updated upstream
     // ------ path planner ------
 
     // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
     autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
-
-=======
     PathPlannerPath testPath = PathPlannerPath.fromChoreoTrajectory("testPath");
->>>>>>> Stashed changes
+
     autonChooser = AutoBuilder.buildAutoChooser();
     autonChooser.setDefaultOption("test", AutoBuilder.followPath(testPath));
     // autonChooser.addOption("test", AutoBuilder.followPath(testPath));
@@ -140,8 +135,8 @@ public class RobotContainer {
       .onTrue(rumbleControllers());
 
     new Trigger(operator.rightBumper())
-      .whileTrue(new WaitCommand(0.5) // wait for intake to move in
-        .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())) // spit out note for 0.2
+      .whileTrue(new WaitCommand(0.5)
+        .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker()))
         .andThen(new WaitCommand(0.2))
         .andThen(superstructure.setState(SSStates.STOWED))
       );
@@ -150,12 +145,12 @@ public class RobotContainer {
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    // new Trigger(operator.button(8))
-    //   .whileTrue(alignSwerveCommand().withTimeout(1)
-    //     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
-    //     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
-    // new Trigger(operator.button(8))
-    //   .whileFalse(superstructure.setState(SSStates.STOWED));
+    new Trigger(operator.button(8))
+      .whileTrue(alignSwerveCommand().withTimeout(1)
+        .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
+    new Trigger(operator.button(8))
+      .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));

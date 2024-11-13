@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
 import frc.util.Conversions;
-import frc.util.ShuffleboardIO;
 import frc.util.Util;
 
 public class ShooterPivot extends SubsystemBase {
@@ -78,7 +77,6 @@ public class ShooterPivot extends SubsystemBase {
         );
 
     motor.getConfigurator().apply(motorConfig);
-    // motorConfig.withCurrentLimits(new CurrentLimitsConfigs().withStatorCurrentLimit(Constants.ShooterPivot.kStatorCurrentLimit).withStatorCurrentLimitEnable(true));
 
     //init global variable 
     motionMagicVolt = new MotionMagicVoltage(0);
@@ -100,9 +98,6 @@ public class ShooterPivot extends SubsystemBase {
     selectShooterPivotState.addOption("AMP", ShooterPivotStates.AMP);
 
     SmartDashboard.putData("State Selector [SP]", selectShooterPivotState);
-
-    ShuffleboardIO.addSlider("kHorizontalAngle ShooterPivot [SP]", 5.0, 90.0, Constants.ShooterPivot.kTargetAngleStowed);
-    ShuffleboardIO.addSlider("kTargetAngleAmp [SP]", 60.0, 120, Constants.ShooterPivot.kTargetAngleAmp);
   }
 
   @Override
@@ -111,55 +106,36 @@ public class ShooterPivot extends SubsystemBase {
     
     switch (state) {
       case NONE:
-      motor.set(0);
-        break;
-    
-        case STOWED:
-
+        motor.set(0);
+      break;
+      
+      case STOWED:
         motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleStowed));
-        
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+      break;
 
       case EJECT_NOTE:
-
-        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleEject));
-        
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
-
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleEject));        
+      break;
 
       case INTAKE:
-        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleIntake));
-        
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
-        break;
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleIntake));        
+      break;
 
       case SPEAKER_SUBWOOFER:
-
         motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleSpeakerFromSubwoofer));        
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
       break;
 
       case SPEAKER_PODIUM:
         motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAnglePodium));        
-
-        break;
+      break;
 
       case CROSSFIELD:
-
         motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleCrossfield));        
-        
-        SmartDashboard.putNumber("Shooter Pivot Motor Output [SP]", motorspeed);
+      break;
 
-        break;
-        
       case AMP:
-        
-        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleAmp));        
-        
-        break;
-
+        motor.setControl(motionMagicVolt.withPosition(Constants.ShooterPivot.kTargetAngleAmp));          
+      break;
       }
   }
 

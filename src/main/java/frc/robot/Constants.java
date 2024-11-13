@@ -8,7 +8,6 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
-// import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.Matrix;
@@ -34,33 +33,7 @@ public class Constants {
     // Global
     public static RobotState robotState = RobotState.DISABLED;
 
-    public static final class Superstructure {
-        // Delay between note detected and retract intake
-        public static final double kIntakeTimeToStowToleranceSec = 0.25;
-
-        // Elapsed time beam break detecting note before stow
-        public static final double kIndexerIntakeRollBackTimeSec = 0.10; // 0.2 // 0.15
-
-        public static final double kIndexerIntakeRollForwardTimeSec = 0.3; // 0.3
-        public static final double kIndexerIntakeRollForwardTimeSecPodium = 0.15;
-
-        public static final double kRollForwardtoRollBackWaitTime = 0.15; // 0.4
-
-        // Elapsed time after shooter hits speaker speed before score speaker
-        public static final double kWaitSpeakerTimeToleranceSec = 0.3; 
-
-        // Elapsed time shooting into speaker before stow
-        public static final double kScoreSpeakerShootDurationSec = 1.5; // intake fallback = 0.5s,\1.0
-
-        public static final double kScoreSpeakerPivotTimeToleranceSec = 0.3;
-
-        public static final double kScoreAmpDuration = 1.5;
-
-        public static final double kRumbleHasNoteTime = 0.5;
-
-        //
-        public static final double kScoreSpeakerHeadingTolerance = 0.25;
-    }
+    public static final class Superstructure {}
 
     public static final class FieldConstants {
 
@@ -71,37 +44,24 @@ public class Constants {
         public static final double kSpeakerAprilTagHeightMeters = 1.451;
     }
 
-    public static final class Elevator {
-        public static final double kSupplyCurrentLimit = 0.0;
-        
+    public static final class Elevator {        
+
         public static final double kElevatorHeightStowed = 0.005;
-        public static double kElevatorHeightAmp = 0.0134; // 0.14 // 0.22; // 0.21; // 0.13
-        public static double kElevatorHeightClimbUp = 0.28; //
-        public static double kElevatorHeightClimbDown = 0.01; // 0.11;
+        public static double kElevatorHeightAmp = 0.0134;
+        public static double kElevatorHeightClimbUp = 0.28;
+        public static double kElevatorHeightClimbDown = 0.01;
+        public static final double kElevatorHeightHandoff = 0;
+        public static final double kElevatorHeightSpeaker = 0;
+        public static final double kElevatorHeightSpeakerHigh = 0;
+        public static final double kElevatorHeightTrap = 0;
 
-
-        // public static final double kElevatorHeightTrap = 0.0; 
-
-        public static final PIDConst kPIDElevator = new PIDConst(2.15, 0.0, 0.0, 0.025);
         public static final double kElevatorVelocity = 0.35; // 0.25
-        public static final double kElevatorMotorMaxOutput = 0.4;
-        public static double kElevatorMotorMaxOutputClimb = 0.45; // 0.2;
-
-        public static final double kFFScaleWithHeight = 0.55;
-        public static final double kFFBaseWithHeight = 0.015;
-        
-        
-        public static final double kFFtoPIDTransitionToleranceM = 0.01;
-
-        public static final double kManualMultiplier = 0.1;
-
         public static final double kAtGoalTolerance = 0.01;
 
         public static final double kElevatorGearRatio = 18.89;
         public static final double kElevatorWinchDiameterM = Conversions.inchesToMeters(1.5);
         public static final double kElevatorWinchCircumM = kElevatorWinchDiameterM * Math.PI;
 
-    
         public static final double kElevatorS = 0.07;
         public static final double kElevatorV = 2.71;
         public static final double kElevatorA = 0.01;
@@ -116,21 +76,9 @@ public class Constants {
         public static final boolean kIsInvertedLeft = true;
         public static final boolean kIsInvertedRight = false;
 
-        public static final double kElevatorHeightHandoff = 0;
-        public static final double kElevatorHeightSpeaker = 0;
-        public static final double kElevatorHeightSpeakerHigh = 0;
-        public static final double kElevatorHeightTrap = 0;
-
         public static final double kElevatorGearCircumM = 0;
 
-        public static final double kPElevator= 0;
-        public static final double kIElevator = 0;
-        public static final double kDElevator = 0;
-
-
         public static final boolean setInverted = true;
-
-
 
         public static final boolean kLeftMotorIsInverted = true; // true
         public static final boolean kRightMotorIsInverted = false; // false

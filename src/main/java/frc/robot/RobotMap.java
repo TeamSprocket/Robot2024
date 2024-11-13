@@ -7,8 +7,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.I2C;
-
 /**
  * The RobotMap is a mapping from the ports sensors and actuators are wired into
  * to a variable name. This provides flexibility changing wiring, makes checking
@@ -84,41 +82,6 @@ public final class RobotMap {
     public static final int RIGHT_STICK_BUTTON = 10;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// -=All=-
-// DEPORT = RIGHT JOYSTICK
-// HOME = X
-// RESET = Funny Button
-
-// -=CONES=-
-// HIGH = Y
-// MID = A
-// LOW = LEFT JOYSTICK
-// FLOOR = RIGHT BUMPER
-
-// -=CUBES=-
-// HIGH = B
-// MID = Chair
-// LOW = LEFT BUMPER
-
-
-
 
 
 

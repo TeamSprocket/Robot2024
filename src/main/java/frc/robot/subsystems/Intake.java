@@ -14,7 +14,6 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,8 +51,6 @@ public class Intake extends SubsystemBase {
 
 
     public Intake() {
-        // configMotors();
-
         TalonFXConfiguration pivotIntakeConfig = new TalonFXConfiguration();
         TalonFXConfiguration rollIntakeConfig = new TalonFXConfiguration();
         
@@ -137,13 +134,16 @@ public class Intake extends SubsystemBase {
 
             case SCORE_SPEAKER_PODIUM:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleScoreSpeakerPodium));
-                rollIntake.set(Constants.Intake.kRollSpeedScoreSpeaker);
+                rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kRollSpeedScoreSpeaker));
                 break;
 
             case EJECT_NOTE:
                 pivotIntake.setControl(mmV.withPosition(Constants.Intake.kPivotAngleEject));
                 rollIntake.setControl(velocityVoltage.withVelocity(Constants.Intake.kEjectNoteSpeed));
                 break;
+            
+            case CROSSFIELD:
+                
         }
 
         lastState = state;

@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import java.util.function.Supplier;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -12,7 +11,6 @@ import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.GravityTypeValue;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -21,7 +19,6 @@ import frc.robot.RobotMap;
 import frc.robot.subsystems.Intake.IntakeStates;
 import frc.util.Conversions;
 import frc.util.Util;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 
 public class Elevator extends SubsystemBase {
   SendableChooser<ElevatorStates> selectElevatorState = new SendableChooser<ElevatorStates>();
@@ -42,8 +39,6 @@ public class Elevator extends SubsystemBase {
   private final TalonFX motorRight = new TalonFX(RobotMap.Elevator.ELEVATOR_RIGHT);
 
   public final VoltageOut voltout = new VoltageOut(0);
-
-  ProfiledPIDController profiledPIDController;
 
   SendableChooser<IntakeStates> selectIntakeState = new SendableChooser<IntakeStates>();
 
@@ -94,9 +89,6 @@ public class Elevator extends SubsystemBase {
 
     motorLeft.setControl(new StrictFollower(motorRight.getDeviceID()));
 
-    TrapezoidProfile.Constraints trapezoidProfileConstraints = new TrapezoidProfile.Constraints(Constants.Elevator.kMaxVelocity, Constants.Elevator.kMaxAccel);
-    profiledPIDController = new ProfiledPIDController(Constants.Elevator.kPElevator, Constants.Elevator.kIElevator, Constants.Elevator.kDElevator, trapezoidProfileConstraints);
-
       selectElevatorState.setDefaultOption("NONE", ElevatorStates.NONE);
       selectElevatorState.addOption("STOWED", ElevatorStates.NONE);
       selectElevatorState.addOption("HANDOFF", ElevatorStates.HANDOFF);
@@ -108,19 +100,15 @@ public class Elevator extends SubsystemBase {
        SmartDashboard.putData(selectElevatorState);
     }
 
-
-
   @Override
   public void periodic() {
     switch (state) {
         
       case NONE:
-        //motorLeft.set(0);
         motorRight.set(0);
         break;
         
       case STOWED:
-        //motorLeft.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightStowed));
         motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightStowed));
         break;
 
@@ -133,26 +121,19 @@ public class Elevator extends SubsystemBase {
         break;  
         
       case SPEAKER_HIGH:
-        //motorRight.setVoltage(3);
-        //motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightSpeakerHigh));
         motorRight.setControl(mmV.withPosition(0.76));
-        //motorRight.setVoltage(2);
         break;
         
       case AMP:
-        //motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightAmp));
-        motorRight.setVoltage(0); //G+S=0.36 G-S=.22
+        motorRight.setVoltage(0);
         break; 
 
       case TRAP:
         motorRight.setControl(mmV.withPosition(Constants.Elevator.kElevatorHeightTrap));
-    }
-   
-    
 
-    // clearStickyFaults();   
+      case CLIMB:
+    }   
   }
-
 
   public void setState(ElevatorStates state) {
     this.state = state;
@@ -172,9 +153,8 @@ public class Elevator extends SubsystemBase {
     return Conversions.falconToMeters(elevatorRotorSignal.getValue(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
-
   public boolean atGoal() {
-    double goal = profiledPIDController.getGoal().position;
+    double goal = mmV.Position;
     return Util.inRange(getHeight(), (goal - Constants.Elevator.kAtGoalTolerance), (goal + Constants.Elevator.kAtGoalTolerance));
   }
 
