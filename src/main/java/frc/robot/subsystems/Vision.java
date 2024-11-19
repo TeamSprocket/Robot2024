@@ -105,6 +105,7 @@ public class Vision extends SubsystemBase {
         SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
         SmartDashboard.putNumber("PID Heading Lock Output [VI]", chassisRotationSpeeds);
         SmartDashboard.putNumber("X Offset [VI]", getXOffset());
+
         SmartDashboard.putBoolean("Swerve Align", isAligned());
     }
 }

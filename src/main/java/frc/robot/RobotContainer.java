@@ -75,12 +75,12 @@ public class RobotContainer {
     // ------ path planner ------
 
     // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
+    // autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
     PathPlannerPath testPath = PathPlannerPath.fromChoreoTrajectory("testPath");
 
     autonChooser = AutoBuilder.buildAutoChooser();
-    autonChooser.setDefaultOption("test", AutoBuilder.followPath(testPath));
-    // autonChooser.addOption("test", AutoBuilder.followPath(testPath));
+    // autonChooser.setDefaultOption("test", AutoBuilder.followPath(testPath));
+    autonChooser.addOption("test", AutoBuilder.followPath(testPath));
 
     SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
@@ -123,6 +123,7 @@ public class RobotContainer {
       .applyRequest(() -> point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))));
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.resetGyro()));
     driver.y().whileTrue(alignSwerveCommand());
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -145,12 +146,12 @@ public class RobotContainer {
       .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
       .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.button(8))
-      .whileTrue(alignSwerveCommand().withTimeout(1)
-        .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
-        .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
-    new Trigger(operator.button(8))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+    // new Trigger(operator.button(8))
+    //   .whileTrue(alignSwerveCommand().withTimeout(1)
+    //     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+    //     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
+    // new Trigger(operator.button(8))
+    //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
     new Trigger(operator.y())
       .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));

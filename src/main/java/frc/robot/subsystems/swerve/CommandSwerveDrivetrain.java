@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.Constants;
@@ -119,6 +120,10 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
         return new Rotation2d(Math.toRadians(getPigeon2().getAngle()));
     }
 
+    public void resetGyro() {
+        getPigeon2().setYaw(0);
+    }
+
     public void updateOdometry(Pose2d pose) {
         this.m_odometry.resetPosition(getYaw(), m_modulePositions, pose);
     }
@@ -142,5 +147,11 @@ public class CommandSwerveDrivetrain extends SwerveDrivetrain implements Subsyst
                 hasAppliedOperatorPerspective = true;
             });
         }
+        debug();
+    }
+
+    public void debug() {
+        
+        SmartDashboard.putNumber("Gyro Reading", getPigeon2().getAngle());
     }
 }
