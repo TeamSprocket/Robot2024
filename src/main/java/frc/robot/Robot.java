@@ -54,7 +54,6 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     Constants.robotState = RobotState.DISABLED;
     // m_robotContainer.getSwerveDrive().setNeutralMode(NeutralModeValue.Coast); //
-    m_robotContainer.getShooterPivot().setNeutralMode(NeutralModeValue.Coast);
 
     CommandScheduler.getInstance().cancelAll();
   }
@@ -77,10 +76,10 @@ public class Robot extends TimedRobot {
     // m_robotContainer.getSwerveDrive().resetModulesToAbsolute(); //
     Timer.delay(0.05);
 
-    m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
+    // m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    // if (m_autonomousCommand != null) {
+    //   m_autonomousCommand.schedule();
+    // }
   }
 
   @Override
@@ -102,7 +101,7 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    m_robotContainer.updateNoteRumbleListener();
+  
   }
 
   @Override

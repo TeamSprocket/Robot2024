@@ -2,7 +2,7 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -32,9 +32,8 @@ import frc.util.Util;
 // import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 // import edu.wpi.first.math.VecBuilder;
 
-public class OLDSwerveDrive extends SubsystemBase {
+public class SwerveDrive extends SubsystemBase {
 
-  Vision limelight;
   private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
   SwerveDriveKinematics m_kinematics;
 
@@ -55,107 +54,107 @@ public class OLDSwerveDrive extends SubsystemBase {
   } 
 
   // initialize swervemodules
-  private final OLDSwerveModule frontLeft = new OLDSwerveModule(
+  private final SwerveModule frontLeft = new SwerveModule(
         RobotMap.Drivetrain.FRONT_LEFT_TALON_D,
         RobotMap.Drivetrain.FRONT_LEFT_TALON_T,
         RobotMap.Drivetrain.FRONT_LEFT_ABS_ENCODER_ID,
-        Constants.OldDrivetrain.kCANCoderOffsetFrontLeft,
-        Constants.OldDrivetrain.FRONT_LEFT_D_IS_REVERSED,
-        Constants.OldDrivetrain.FRONT_LEFT_T_IS_REVERSED,
-        Constants.OldDrivetrain.kPTurnMotorFL,
-        Constants.OldDrivetrain.kITurnMotorFL,
-        Constants.OldDrivetrain.kDTurnMotorFL
+        Constants.Drivetrain.kCANCoderOffsetFrontLeft,
+        Constants.Drivetrain.FRONT_LEFT_D_IS_REVERSED,
+        Constants.Drivetrain.FRONT_LEFT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorFL,
+        Constants.Drivetrain.kITurnMotorFL,
+        Constants.Drivetrain.kDTurnMotorFL
   );
-  private final OLDSwerveModule frontRight = new OLDSwerveModule(
+  private final SwerveModule frontRight = new SwerveModule(
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_D,
         RobotMap.Drivetrain.FRONT_RIGHT_TALON_T,
         RobotMap.Drivetrain.FRONT_RIGHT_ABS_ENCODER_ID,
-        Constants.OldDrivetrain.kCANCoderOffsetFrontRight,
-        Constants.OldDrivetrain.FRONT_RIGHT_D_IS_REVERSED,
-        Constants.OldDrivetrain.FRONT_RIGHT_T_IS_REVERSED,
-        Constants.OldDrivetrain.kPTurnMotorFR,
-        Constants.OldDrivetrain.kITurnMotorFR,
-        Constants.OldDrivetrain.kDTurnMotorFR
+        Constants.Drivetrain.kCANCoderOffsetFrontRight,
+        Constants.Drivetrain.FRONT_RIGHT_D_IS_REVERSED,
+        Constants.Drivetrain.FRONT_RIGHT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorFR,
+        Constants.Drivetrain.kITurnMotorFR,
+        Constants.Drivetrain.kDTurnMotorFR
   );
-  private final OLDSwerveModule backLeft = new OLDSwerveModule(
+  private final SwerveModule backLeft = new SwerveModule(
         RobotMap.Drivetrain.BACK_LEFT_TALON_D,
         RobotMap.Drivetrain.BACK_LEFT_TALON_T,
         RobotMap.Drivetrain.BACK_LEFT_ABS_ENCODER_ID,
-        Constants.OldDrivetrain.kCANCoderOffsetBackLeft,
-        Constants.OldDrivetrain.BACK_LEFT_D_IS_REVERSED,
-        Constants.OldDrivetrain.BACK_LEFT_T_IS_REVERSED,
-        Constants.OldDrivetrain.kPTurnMotorBL,
-        Constants.OldDrivetrain.kITurnMotorBL,
-        Constants.OldDrivetrain.kDTurnMotorBL
+        Constants.Drivetrain.kCANCoderOffsetBackLeft,
+        Constants.Drivetrain.BACK_LEFT_D_IS_REVERSED,
+        Constants.Drivetrain.BACK_LEFT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorBL,
+        Constants.Drivetrain.kITurnMotorBL,
+        Constants.Drivetrain.kDTurnMotorBL
   );
-  private final OLDSwerveModule backRight = new OLDSwerveModule(
+  private final SwerveModule backRight = new SwerveModule(
         RobotMap.Drivetrain.BACK_RIGHT_TALON_D,
         RobotMap.Drivetrain.BACK_RIGHT_TALON_T,
         RobotMap.Drivetrain.BACK_RIGHT_ABS_ENCODER_ID,
-        Constants.OldDrivetrain.kCANCoderOffsetBackRight,
-        Constants.OldDrivetrain.BACK_RIGHT_D_IS_REVERSED,
-        Constants.OldDrivetrain.BACK_RIGHT_T_IS_REVERSED,
-        Constants.OldDrivetrain.kPTurnMotorBR,
-        Constants.OldDrivetrain.kITurnMotorBR,
-        Constants.OldDrivetrain.kDTurnMotorBR
+        Constants.Drivetrain.kCANCoderOffsetBackRight,
+        Constants.Drivetrain.BACK_RIGHT_D_IS_REVERSED,
+        Constants.Drivetrain.BACK_RIGHT_T_IS_REVERSED,
+        Constants.Drivetrain.kPTurnMotorBR,
+        Constants.Drivetrain.kITurnMotorBR,
+        Constants.Drivetrain.kDTurnMotorBR
   );
 
   private SwerveDriveOdometry odometry = new SwerveDriveOdometry( // used to track position of robot on field
-    Constants.OldDrivetrain.kDriveKinematics,
+    Constants.Drivetrain.kDriveKinematics,
     new Rotation2d(getHeading()),
     getModulePositions()
     );
 
-  public OLDSwerveDrive(Vision limelight) {
-    this.limelight = limelight;
+  // public SwerveDrive(Vision limelight) {
+  //   this.limelight = limelight;
 
-    // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-    // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
+  //   // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
+  //   // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
     
-    this.speakerLockPIDController = new PIDController(Constants.OldDrivetrain.kPIDSpeakerHeadingLock.kP, Constants.OldDrivetrain.kPIDSpeakerHeadingLock.kI, Constants.OldDrivetrain.kPIDSpeakerHeadingLock.kD);
-    this.speakerLockPIDController.enableContinuousInput(0, (2.0 * Math.PI));
-    this.speakerLockPIDController.setSetpoint(0.0);
-    this.speakerLockPIDController.setTolerance(2.0);
+  //   this.speakerLockPIDController = new PIDController(Constants.Drivetrain.kPIDSpeakerHeadingLock.kP, Constants.Drivetrain.kPIDSpeakerHeadingLock.kI, Constants.Drivetrain.kPIDSpeakerHeadingLock.kD);
+  //   this.speakerLockPIDController.enableContinuousInput(0, (2.0 * Math.PI));
+  //   this.speakerLockPIDController.setSetpoint(0.0);
+  //   this.speakerLockPIDController.setTolerance(2.0);
     
-    // Config Pathplanner
-    AutoBuilder.configureHolonomic(
-      this::getPose,
-      this::resetPose,
-      this::getChassisSpeeds,
-      this::driveRobotRelative,
-      Constants.OldDrivetrain.kPathFollowerConfig,
-      () -> {
-        // Boolean supplier for whether field is mirrored (mirrored = red)
-        var alliance = DriverStation.getAlliance();
-        if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-        }
-        return false;
-    },
-    this
-    );
+  //   // Config Pathplanner
+  //   // AutoBuilder.configureHolonomic(
+  //   //   this::getPose,
+  //   //   this::resetPose,
+  //   //   this::getChassisSpeeds,
+  //   //   this::driveRobotRelative,
+  //   //   Constants.Drivetrain.kPathFollowerConfig,
+  //   //   () -> {
+  //   //     // Boolean supplier for whether field is mirrored (mirrored = red)
+  //   //     var alliance = DriverStation.getAlliance();
+  //   //     if (alliance.isPresent()) {
+  //   //         return alliance.get() == DriverStation.Alliance.Red;
+  //   //     }
+  //   //     return false;
+  //   // },
+  //   // this
+  //   // );
 
-    // PID tuners for individual swerve module
-    ShuffleboardIO.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.OldDrivetrain.kPTurnMotorFL);
-    ShuffleboardIO.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.OldDrivetrain.kPTurnMotorFR);
-    ShuffleboardIO.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.OldDrivetrain.kPTurnMotorBL);
-    ShuffleboardIO.addSlider("PID BR kP [SD]", 0.0, 0.01, Constants.OldDrivetrain.kPTurnMotorBR);
+  //   // PID tuners for individual swerve module
+  //   ShuffleboardIO.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
+  //   ShuffleboardIO.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
+  //   ShuffleboardIO.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBL);
+  //   ShuffleboardIO.addSlider("PID BR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBR);
     
-    ShuffleboardIO.addSlider("PID FL kD [SD]", 0.0, 0.001, Constants.OldDrivetrain.kDTurnMotorFL);
-    ShuffleboardIO.addSlider("PID FR kD [SD]", 0.0, 0.001, Constants.OldDrivetrain.kDTurnMotorFR);
-    ShuffleboardIO.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.OldDrivetrain.kDTurnMotorBL);
-    ShuffleboardIO.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.OldDrivetrain.kDTurnMotorBR);
+  //   ShuffleboardIO.addSlider("PID FL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFL);
+  //   ShuffleboardIO.addSlider("PID FR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFR);
+  //   ShuffleboardIO.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
+  //   ShuffleboardIO.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
 
-    ShuffleboardIO.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.OldDrivetrain.kPIDSpeakerHeadingLock.getP());
-    ShuffleboardIO.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.OldDrivetrain.kPIDSpeakerHeadingLock.getD());
+  //   ShuffleboardIO.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPIDSpeakerHeadingLock.getP());
+  //   ShuffleboardIO.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.Drivetrain.kPIDSpeakerHeadingLock.getD());
 
-    // ShuffleboardIO.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
-    // ShuffleboardIO.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-    // ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
+  //   // ShuffleboardIO.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
+  //   // ShuffleboardIO.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
+  //   // ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
 
-    // ShuffleboardIO.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
-    // ShuffleboardIO.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
-  }
+  //   // ShuffleboardIO.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
+  //   // ShuffleboardIO.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
+  // }
 
   @Override
   public void periodic() {
@@ -171,19 +170,19 @@ public class OLDSwerveDrive extends SubsystemBase {
 
       // set module states
       ChassisSpeeds chassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(ySpeed, xSpeed, tSpeed, new Rotation2d(getHeading()));
-      SwerveModuleState[] moduleStates = Constants.OldDrivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
-      SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.OldDrivetrain.kMaxSpeed);
+      SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+      SwerveDriveKinematics.desaturateWheelSpeeds(moduleStates, Constants.Drivetrain.kMaxSpeed);
       setModuleStates(moduleStates);
     } 
 
     // update odometry with vision if we have targets + gyro is not shaky
-    if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) {
-    // if (Constants.robotState != RobotState.AUTON) {
-      updateOdometryWithVision();
-    }
-    else { // otherwise, update with gyro
-      this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
-    }
+    // if (Math.abs(gyro.getRate()) < 720 && limelight.hasTargets()) {
+    // // if (Constants.robotState != RobotState.AUTON) {
+    //   updateOdometryWithVision();
+    // }
+    // else { // otherwise, update with gyro
+    //   this.odometry.update(new Rotation2d(getHeading()), getModulePositions());
+    // }
     // gyro.clearStickyFaults();
   }
 
@@ -259,16 +258,16 @@ public class OLDSwerveDrive extends SubsystemBase {
 
   // <-- limelight --> //
 
-  public void updateLastOffsets() {
-    headingLockLastOffset = Math.toRadians(limelight.getXOffset());
-  }
+  // public void updateLastOffsets() {
+  //   headingLockLastOffset = Math.toRadians(limelight.getXOffset());
+  // }
 
-  public void updateOdometryWithVision() {
-    Translation2d pos = limelight.getTranslation2d();
-    if (limelight.hasTargets(pos)) { // LL can see tags
-      resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
-    }
-  }
+  // public void updateOdometryWithVision() {
+  //   Translation2d pos = limelight.getTranslation2d();
+  //   if (limelight.hasTargets(pos)) { // LL can see tags
+  //     resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
+  //   }
+  // }
 
   // Requires that Constants.RobotState is TELEOP_DISABLE_TURN
   public double getLockHeadingToSpeakerTSpeed() {
@@ -282,7 +281,7 @@ public class OLDSwerveDrive extends SubsystemBase {
     if (speakerLockPIDController.atSetpoint()) {
       PIDOutput = 0.0;
     }
-    double limitedOutput = Util.minmax(PIDOutput, -Constants.OldDrivetrain.kHeadingLockPIDMaxOutput, Constants.OldDrivetrain.kHeadingLockPIDMaxOutput);
+    double limitedOutput = Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
 
     SmartDashboard.putNumber("Speaker Lock Output [SD]", limitedOutput);
 
@@ -313,12 +312,12 @@ public class OLDSwerveDrive extends SubsystemBase {
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
     ChassisSpeeds chassisSpeeds = robotRelativeSpeeds; 
     chassisSpeeds.omegaRadiansPerSecond = -chassisSpeeds.omegaRadiansPerSecond * 0.25;
-    SwerveModuleState[] moduleStates = Constants.OldDrivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
+    SwerveModuleState[] moduleStates = Constants.Drivetrain.kDriveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-    moduleStates[0].speedMetersPerSecond = moduleStates[0].speedMetersPerSecond * Constants.OldDrivetrain.kTranslationMultPP;
-    moduleStates[1].speedMetersPerSecond = moduleStates[1].speedMetersPerSecond * Constants.OldDrivetrain.kTranslationMultPP;
-    moduleStates[2].speedMetersPerSecond = moduleStates[2].speedMetersPerSecond * Constants.OldDrivetrain.kTranslationMultPP;
-    moduleStates[3].speedMetersPerSecond = moduleStates[3].speedMetersPerSecond * Constants.OldDrivetrain.kTranslationMultPP;
+    moduleStates[0].speedMetersPerSecond = moduleStates[0].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
+    moduleStates[1].speedMetersPerSecond = moduleStates[1].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
+    moduleStates[2].speedMetersPerSecond = moduleStates[2].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
+    moduleStates[3].speedMetersPerSecond = moduleStates[3].speedMetersPerSecond * Constants.Drivetrain.kTranslationMultPP;
     // this.targetHeadingRad = getHeading();
 
     setModuleStates(moduleStates);
@@ -352,7 +351,7 @@ public class OLDSwerveDrive extends SubsystemBase {
       backLeft.getModuleState(),
       backRight.getModuleState()
     };
-    return Constants.OldDrivetrain.kDriveKinematics.toChassisSpeeds(moduleStates);
+    return Constants.Drivetrain.kDriveKinematics.toChassisSpeeds(moduleStates);
   }
 
   public void resetPose(Pose2d pose) {
@@ -372,8 +371,8 @@ public class OLDSwerveDrive extends SubsystemBase {
     // backLeft.updatePIDConstants(ShuffleboardIO.getDouble("PID BL kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BL kD [SD]"));
     // backRight.updatePIDConstants(ShuffleboardIO.getDouble("PID BR kP [SD]"), 0.0, ShuffleboardIO.getDouble("PID BR kD [SD]"));
 
-    speakerLockPIDController.setP(ShuffleboardIO.getDouble("PID Turn Vision kP [SD]"));
-    speakerLockPIDController.setD(ShuffleboardIO.getDouble("PID Turn Vision kD [SD]"));
+    // speakerLockPIDController.setP(ShuffleboardIO.getDouble("PID Turn Vision kP [SD]"));
+    // speakerLockPIDController.setD(ShuffleboardIO.getDouble("PID Turn Vision kD [SD]"));
   }
 
   private void debug() {
