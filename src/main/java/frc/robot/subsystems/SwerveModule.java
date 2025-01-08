@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-// import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.controller.PIDController;
@@ -17,37 +17,36 @@ import frc.robot.Constants;
 import frc.robot.Constants.Drivetrain;
 import frc.util.Conversions;
 
-// import frc.util.ShuffleboardIO;
-// import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-// import com.ctre.phoenix.sensors.AbsoluteSensorRange;
-// import com.ctre.phoenix.sensors.CANCoderConfiguration;
-
 public class SwerveModule extends SubsystemBase {
   
   private final TalonFX driveMotor;
   private final TalonFX turnMotor;
   private final PIDController turnPIDController; 
   private final CANcoder cancoder;
-  private double offset;
-  private final boolean turnIsReversed;
 
-  public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, double offset, boolean driveIsReversed, boolean turnIsReversed, double kPTurnMotor, double kITurnMotor, double kDTurnMotor) {
+  public SwerveModule(int driveMotorID, int turnMotorID, int cancoderID, double offset, InvertedValue driveIsReversed, InvertedValue turnIsReversed, double kPTurnMotor, double kITurnMotor, double kDTurnMotor) {
     this.driveMotor = new TalonFX(driveMotorID, "rio");
     this.turnMotor = new TalonFX(turnMotorID, "rio");
     this.cancoder = new CANcoder(cancoderID, "rio");
-    this.offset = offset;
-    this.turnIsReversed = turnIsReversed;
-    this.driveMotor.setInverted(driveIsReversed); 
-    this.turnMotor.setInverted(turnIsReversed);
 
     turnPIDController = new PIDController(kPTurnMotor, kITurnMotor, kDTurnMotor);
     turnPIDController.enableContinuousInput(-180, 180);
     
-    configCancoders();
-    configMotors();
+    //config cancoders
+    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+    cancoderConfig.MagnetSensor.MagnetOffset = offset; // configure offset of encoder - read absolute position of encoders without offset and make negative
+    cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // make sure it matches turn degrees of motors
+    
+    cancoder.getConfigurator().apply(cancoderConfig);
 
-    // ShuffleboardIO.addSlider("Swerve PID kP [SD]", 0.0, 0.1, 0);
-    // ShuffleboardIO.addSlider("Swerve PID kD [SD]", 0.0, 0.01, 0);
+    //config motors
+    TalonFXConfiguration motorConfigDrive = new TalonFXConfiguration();
+    TalonFXConfiguration motorConfigTurn = new TalonFXConfiguration();
+    motorConfigDrive.MotorOutput.Inverted = driveIsReversed;
+    motorConfigTurn.MotorOutput.Inverted = turnIsReversed;
+
+    driveMotor.getConfigurator().apply(motorConfigDrive);
+    turnMotor.getConfigurator().apply(motorConfigTurn);
   }
 
   @Override
@@ -190,22 +189,6 @@ public class SwerveModule extends SubsystemBase {
   public void clearStickyFaults() {
     driveMotor.clearStickyFaults();
     turnMotor.clearStickyFaults();
-  }
-
-  private void configMotors() {
-    TalonFXConfiguration motorConfigDrive = new TalonFXConfiguration();
-    TalonFXConfiguration motorConfigTurn = new TalonFXConfiguration();
-
-    driveMotor.getConfigurator().apply(motorConfigDrive);
-    turnMotor.getConfigurator().apply(motorConfigTurn);
-  }
-
-  private void configCancoders() {
-    CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-    // cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; // makes range of abs sensor to [-0.5, 0.5)
-    cancoderConfig.MagnetSensor.MagnetOffset = offset; // configure offset of encoder - read absolute position of encoders without offset and make negative
-    cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // make sure it matches turn degrees of motors
-    cancoder.getConfigurator().apply(cancoderConfig);
   }
 
   private void debug() {
