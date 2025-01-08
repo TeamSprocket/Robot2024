@@ -4,7 +4,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+// import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.controller.PIDController;
@@ -202,7 +202,7 @@ public class SwerveModule extends SubsystemBase {
 
   private void configCancoders() {
     CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
-    cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; // makes range of abs sensor to [-0.5, 0.5)
+    // cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf; // makes range of abs sensor to [-0.5, 0.5)
     cancoderConfig.MagnetSensor.MagnetOffset = offset; // configure offset of encoder - read absolute position of encoders without offset and make negative
     cancoderConfig.MagnetSensor.SensorDirection = SensorDirectionValue.Clockwise_Positive; // make sure it matches turn degrees of motors
     cancoder.getConfigurator().apply(cancoderConfig);
