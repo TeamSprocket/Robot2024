@@ -30,9 +30,7 @@ public class Vision extends SubsystemBase {
      */
     public Translation2d getTranslation2d() {
         LimelightHelper.PoseEstimate estimate;
-
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
             if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                 estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
             }
@@ -49,7 +47,6 @@ public class Vision extends SubsystemBase {
         LimelightHelper.PoseEstimate estimate;
 
         if (LimelightHelper.getTV("limelight")) {
-            // get pose estimate using megatag2 localization
             if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
                 estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
             }
@@ -67,31 +64,14 @@ public class Vision extends SubsystemBase {
         return LimelightHelper.getTV("limelight");
     }
 
-    public boolean hasTargets(Translation2d translation) {
-        if (translation.getX() != 0.0 && translation.getY() != 0.0) {
-            return true;
+    public double getXOffset() {
+        if (hasTargets()){
+            return LimelightHelper.getTX("limelight");
         } else {
-            return false;
+            return 0.0;
         }
+
     }
-
-    // /**
-    //  * @return Offset of limelight crosshair center to fiducials in DEGREES
-    //  */     
-    // public double getXOffset() {
-    //     if (LimelightHelper.getTV("limelight")) {
-    //         if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
-    //             return LimelightHelper.getTX("limelight"); 
-    //         }
-    //         else {
-    //             return 0.0;
-    //         }
-    //     } else {
-    //         return 0.0;
-    //     }
-    // }
-
-
 
 
     private void debug() {

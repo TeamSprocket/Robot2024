@@ -14,10 +14,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-import frc.robot.commands.EjectNote;
-import frc.robot.commands.instant.*;
+import frc.robot.commands.macro.FollowAprilTag;
 import frc.robot.commands.persistent.*;
-import frc.robot.commands.superstructure.*;
 import frc.robot.controls.Controller;
 // import frc.robot.commands.macro.*;
 import frc.robot.subsystems.*;
@@ -29,13 +27,10 @@ public class RobotContainer {
 
   PowerDistribution pdh = new PowerDistribution();
 
-  SwerveDrive swerveDrive = new SwerveDrive();
-  Elevator elevator = new Elevator(() -> operator.getController().getRightY());
-  ShooterPivot shooterPivot = new ShooterPivot(() -> operator.getController().getLeftY(), () -> swerveDrive.getTranslation3d());
-  Shooter shooter = new Shooter(() -> swerveDrive.getPose().getTranslation(), () -> operator.getController().getRightTriggerAxis(), () -> operator.getController().getLeftTriggerAxis(), () -> swerveDrive.getTranslation3d());
-  Intake intake = new Intake();
+  Vision limelight;
 
-  
+  SwerveDrive swerveDrive = new SwerveDrive(limelight);
+
 
   // Superstructure superstructure = new Superstructure(elevator, shooterPivot, shooter, intake);
 
@@ -48,41 +43,6 @@ public class RobotContainer {
   }
 
   public void initAutons() {
-    // autonChooser.setDefaultOption("Do Nothing", new DoNothing());
-    
-    // autonChooser.addOption("Figure Eight Test", new PathPlannerAuto("FigEightTestAuton"));
-
-    // autonChooser.addOption("ANY Taxi", new PathPlannerAuto("ANY Taxi"));
-
-    // autonChooser.addOption("Preload Early", new PathPlannerAuto("Preload Early"));
-    // autonChooser.addOption("Preload Late", new PathPlannerAuto("Preload Late"));
-
-    // path planner
-
-    // autonChooser.addOption("Preload + go to midline BLUE", new PathPlannerAuto("Preload + Midline BLUE")); // test if this works with alliance switching
-    // autonChooser.addOption("Preload + go to midline RED", new PathPlannerAuto("Preload + Midline RED"));
-
-    // by encoder ticks
-
-    // autonChooser.addOption("PreloadMidlineBlue", new PreloadtoMidlineBlue(swerveDrive, intake, shooterPivot, shooter));
-    // autonChooser.addOption("PreloadMidlineRed", new PreloadtoMidlineRed(swerveDrive, intake, shooterPivot, shooter));
-
-    // autonChooser.addOption("B2 2Note", new PathPlannerAuto("B2 2Note"));
-
-    // autonChooser.addOption("", getAutonomousCommand());
-    // autonChooser.addOption("Center 1 + 0 to Midline", new PathPlannerAuto("Center 1 + 0 to Midline"));
-    // autonChooser.addOption("Disrupt Left", new PathPlannerAuto("Disrupt Left"));
-    // autonChooser.addOption("Disrupt Right", new PathPlannerAuto("Disrupt Right"));
-    // autonChooser.addOption("Fig Eight Test", new PathPlannerAuto("Fig Eight"));
-    // autonChooser.addOption("Left 1 + 0 to Midline", new PathPlannerAuto("Left 1 + 0 to Midline"));
-    // autonChooser.addOption("Left 1 + 1 to Midline", new PathPlannerAuto("Left 1 + 1 to Midline"));
-    // autonChooser.addOption("Left 1 + 2 to Midline", new PathPlannerAuto("Left 1 + 2 to Midline"));
-    // autonChooser.addOption("Middle 1 + 3", new PathPlannerAuto("Middle 1 + 3"));
-    // autonChooser.addOption("Right 1 + 0 to Midline", new PathPlannerAuto("Right 1 + 0 to Midline"));
-    // autonChooser.addOption("Right 1 + 1 to Midline", new PathPlannerAuto("Right 1 + 1 to Midline"));
-    // autonChooser.addOption("Right 1 + 2 to Midline", new PathPlannerAuto("Right 1 + 2 to Midline"));
-
-    // autonChooser = AutoBuilder.buildAutoChooser();
     
     SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
@@ -107,44 +67,9 @@ public class RobotContainer {
         () -> -driver.getController().getLeftX(),
         () -> driver.getController().getLeftY(),
         () -> -driver.getController().getRightX()));
-    // driver.rightBumper().onTrue(new ZeroGyro(swerveDrive));
-    driver.getController().rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading)); // hehe it's faster :3
     
     
-    // driver.leftBumper().onTrue(new AlignWithAprilTag(swerveDrive));
-    // driver.button(RobotMap.Controller.Y)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.FORWARD));
-    // driver.button(RobotMap.Controller.X)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.LEFT));
-    // driver.button(RobotMap.Controller.B)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.RIGHT));
-    // driver.button(RobotMap.Controller.A)
-    //     .onTrue(new SwitchTargetHeadingDirection(swerveDrive, SwerveDrive.Directions.BACK));
-
-    // --------------------=operator=--------------------
-    // operator.getController().leftBumper().whileTrue(new ScoreAmp(elevator, shooterPivot, shooter, intake));
-    // operator.getController().rightBumper().whileTrue(new ShootNote(shooterPivot, shooter, intake));
-    // operator.getController().rightBumper().whileTrue(new ScoreSpeaker(shooterPivot, shooter, intake));
-
-    // operator.getController().y().whileTrue(new WaitAmp(elevator, shooterPivot, intake));
-    // operator.getController().x().whileTrue(new ScoreSpeakerSubwooferSpinup(shooter, shooterPivot));
-    // operator.getController().y().whileTrue(new ScoreSpeakerPodiumSpinup(shooterPivot, shooter, swerveDrive));
-    // operator.getController().a().whileTrue(new IntakeNote(intake, shooter, shooterPivot));
-    // operator.getController().b().whileTrue(new ScoreSpeakerShoot(shooterPivot, shooter, swerveDrive));
-    // operator.getController().b().whileTrue(new ScoreSpeakerAmpZone(shooterPivot, shooter, swerveDrive));
-    // operator.getController().b().whileTrue(new ScoreSpeakerPodiumShoot(shooterPivot, shooter, swerveDrive));
-    // operator.getController().b().onTrue(new CancelIntake(intake, shooter, shooterPivot));
-
-    // operator.getController().button(RobotMap.Controller.MENU_BUTTON).whileTrue(new EjectNote(intake, shooter, shooterPivot)); // View button
-    // operator.getController().button(RobotMap.Controller.VIEW_BUTTON).whileTrue(new ShootCrossfieldSpinup(shooterPivot, shooter, intake)); // Menu button
-
-    // operator.getController().leftTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbUp(elevator, shooter, shooterPivot, intake));
-    // operator.getController().rightTrigger(Constants.Controller.kClimbTriggerAxisPercent).onTrue(new ClimbDown(elevator, intake));
-
-
-    // operator.getController().button(RobotMap.Controller.LEFT_STICK_BUTTON).onTrue(new ReIndexNote(shooter, shooterPivot));
-
-    // elevator.setDefaultCommand(new ElevatorManual(elevator, () -> operator.getController().getLeftY()));
+    driver.getController().leftBumper().onTrue(new FollowAprilTag(swerveDrive));
 
   }
 
@@ -153,21 +78,12 @@ public class RobotContainer {
   }
 
   public void updateNoteRumbleListener() {
-    driver.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
-    operator.updateNoteRumbleListener(shooter::beamBroken, shooter::getState);
   }
 
-  public void stopNoteRumbleListener() {
-    driver.stopNoteRumbleListener();
-    operator.stopNoteRumbleListener();
-  }
+
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
-  }
-  
-  public ShooterPivot getShooterPivot() {
-    return shooterPivot;
   }
 
   public void clearPDHStickyFaults() {
@@ -175,19 +91,7 @@ public class RobotContainer {
   }
 
   public void zeroSuperstructurePositions() {
-    shooter.zeroPosition();
-    intake.zeroPosition();
-    shooterPivot.zeroPosition();
-    elevator.zeroPosition();
     
   }
-  
-
-  
-
-  
-
-
-  
 
 }

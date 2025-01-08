@@ -28,7 +28,7 @@ public class Constants {
         AUTON,
         DISABLED,
         TELEOP_DISABLE_SWERVE,
-        TELEOP_LOCK_TURN_TO_SPEAKER
+        LOCK_TURN_TO_APRIL_TAG
     }
 
     // Global

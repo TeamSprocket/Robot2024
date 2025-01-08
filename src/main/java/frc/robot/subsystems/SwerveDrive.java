@@ -34,6 +34,8 @@ import frc.util.Util;
 
 public class SwerveDrive extends SubsystemBase {
 
+  Vision limelight;
+
   private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
   SwerveDriveKinematics m_kinematics;
 
@@ -41,10 +43,10 @@ public class SwerveDrive extends SubsystemBase {
 
   double xSpeed, ySpeed, tSpeed;
   double targetHeadingRad = Math.PI;
-  double headingLockLastOffset;
+  double headingLockOffset;
 
   // PIDController headingController;
-  PIDController speakerLockPIDController;
+  PIDController followAprilTagPIDController;
 
   public static enum Directions {
     FORWARD,
@@ -105,56 +107,14 @@ public class SwerveDrive extends SubsystemBase {
     getModulePositions()
     );
 
-  // public SwerveDrive(Vision limelight) {
-  //   this.limelight = limelight;
+  public SwerveDrive(Vision limelight) {
+    this.limelight = limelight;
+    this.followAprilTagPIDController = new PIDController(2, 0, 0);
+    this.followAprilTagPIDController.enableContinuousInput(0, (Math.PI*2));
+    this.followAprilTagPIDController.setSetpoint(0.0);
+    this.followAprilTagPIDController.setTolerance(0.5);
+  }
 
-  //   // this.headingController = new PIDController(Constants.Drivetrain.kPHeading, Constants.Drivetrain.kIHeading, Constants.Drivetrain.kDHeading);
-  //   // this.headingController.enableContinuousInput(0, (2.0 * Math.PI));
-    
-  //   this.speakerLockPIDController = new PIDController(Constants.Drivetrain.kPIDSpeakerHeadingLock.kP, Constants.Drivetrain.kPIDSpeakerHeadingLock.kI, Constants.Drivetrain.kPIDSpeakerHeadingLock.kD);
-  //   this.speakerLockPIDController.enableContinuousInput(0, (2.0 * Math.PI));
-  //   this.speakerLockPIDController.setSetpoint(0.0);
-  //   this.speakerLockPIDController.setTolerance(2.0);
-    
-  //   // Config Pathplanner
-  //   // AutoBuilder.configureHolonomic(
-  //   //   this::getPose,
-  //   //   this::resetPose,
-  //   //   this::getChassisSpeeds,
-  //   //   this::driveRobotRelative,
-  //   //   Constants.Drivetrain.kPathFollowerConfig,
-  //   //   () -> {
-  //   //     // Boolean supplier for whether field is mirrored (mirrored = red)
-  //   //     var alliance = DriverStation.getAlliance();
-  //   //     if (alliance.isPresent()) {
-  //   //         return alliance.get() == DriverStation.Alliance.Red;
-  //   //     }
-  //   //     return false;
-  //   // },
-  //   // this
-  //   // );
-
-  //   // PID tuners for individual swerve module
-  //   ShuffleboardIO.addSlider("PID FL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFL);
-  //   ShuffleboardIO.addSlider("PID FR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorFR);
-  //   ShuffleboardIO.addSlider("PID BL kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBL);
-  //   ShuffleboardIO.addSlider("PID BR kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPTurnMotorBR);
-    
-  //   ShuffleboardIO.addSlider("PID FL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFL);
-  //   ShuffleboardIO.addSlider("PID FR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorFR);
-  //   ShuffleboardIO.addSlider("PID BL kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBL);
-  //   ShuffleboardIO.addSlider("PID BR kD [SD]", 0.0, 0.001, Constants.Drivetrain.kDTurnMotorBR);
-
-  //   ShuffleboardIO.addSlider("PID Turn Vision kP [SD]", 0.0, 0.01, Constants.Drivetrain.kPIDSpeakerHeadingLock.getP());
-  //   ShuffleboardIO.addSlider("PID Turn Vision kD [SD]", 0.0, 0.001, Constants.Drivetrain.kPIDSpeakerHeadingLock.getD());
-
-  //   // ShuffleboardIO.addSlider("kPSwerveDriveHeading", 0, 3, Constants.Drivetrain.kPHeading);
-  //   // ShuffleboardIO.addSlider("kISwerveDriveHeading", 0, 0.05, Constants.Drivetrain.kIHeading);
-  //   // ShuffleboardIO.addSlider("kDSwerveDriveHeading", 0, 0.5, Constants.Drivetrain.kDHeading);
-
-  //   // ShuffleboardIO.addSlider("PP kP [SD]", 0.0, 10.0, 0.0);
-  //   // ShuffleboardIO.addSlider("PP kD [SD]", 0.0, 1.0, 0.0);
-  // }
 
   @Override
   public void periodic() {
@@ -162,10 +122,10 @@ public class SwerveDrive extends SubsystemBase {
 
     debug();
 
-    if (Constants.robotState == RobotState.TELEOP || Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) {
+    if (Constants.robotState == RobotState.TELEOP || Constants.robotState == RobotState.LOCK_TURN_TO_APRIL_TAG) {
 
-      if (Constants.robotState == RobotState.TELEOP_LOCK_TURN_TO_SPEAKER) { // override teleop turning to lock onto a speaker 
-        this.tSpeed = getLockHeadingToSpeakerTSpeed();
+      if (Constants.robotState == RobotState.LOCK_TURN_TO_APRIL_TAG) { // override teleop turning to lock onto a speaker 
+        this.tSpeed = getLockHeadingToAprilTagTSpeed();
       }
 
       // set module states
@@ -258,29 +218,25 @@ public class SwerveDrive extends SubsystemBase {
 
   // <-- limelight --> //
 
-  // public void updateLastOffsets() {
-  //   headingLockLastOffset = Math.toRadians(limelight.getXOffset());
-  // }
+  public void updateOffsets() {
+    headingLockOffset = Math.toRadians(limelight.getXOffset());
+  }
 
   // public void updateOdometryWithVision() {
   //   Translation2d pos = limelight.getTranslation2d();
-  //   if (limelight.hasTargets(pos)) { // LL can see tags
+  //   if (limelight.hasTargets()) { // LL can see tags
   //     resetPose(new Pose2d(pos, new Rotation2d(getHeading())));
   //   }
   // }
 
   // Requires that Constants.RobotState is TELEOP_DISABLE_TURN
-  public double getLockHeadingToSpeakerTSpeed() {
-    // double offsetRad = Math.toRadians(Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
-    // if (Math.abs(offsetRad - headingLockLastOffset) > Constants.Drivetrain.kHeadingLockDegreeRejectionTolerance) {
-    //   offsetRad = headingLockLastOffset;
-    // }
-    // double PIDOutput = speakerLockPIDController.calculate(offsetRad, 0.0);
+  public double getLockHeadingToAprilTagTSpeed() {
 
-    double PIDOutput = speakerLockPIDController.calculate(getHeading(), 210.0);
-    if (speakerLockPIDController.atSetpoint()) {
+    double PIDOutput = followAprilTagPIDController.calculate(headingLockOffset, 0.0);
+    if (followAprilTagPIDController.atSetpoint()) {
       PIDOutput = 0.0;
     }
+
     double limitedOutput = Util.minmax(PIDOutput, -Constants.Drivetrain.kHeadingLockPIDMaxOutput, Constants.Drivetrain.kHeadingLockPIDMaxOutput);
 
     SmartDashboard.putNumber("Speaker Lock Output [SD]", limitedOutput);
