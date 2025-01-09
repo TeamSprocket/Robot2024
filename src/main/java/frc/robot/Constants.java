@@ -135,9 +135,9 @@ public class Constants {
         public static final double kDriveCurrentLimit = 100;
 
         public static final InvertedValue FRONT_LEFT_D_IS_REVERSED = InvertedValue.CounterClockwise_Positive; // TODO: tune these :D
-        public static final InvertedValue FRONT_RIGHT_D_IS_REVERSED = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue FRONT_RIGHT_D_IS_REVERSED = InvertedValue.Clockwise_Positive;
         public static final InvertedValue BACK_LEFT_D_IS_REVERSED = InvertedValue.CounterClockwise_Positive;
-        public static final InvertedValue BACK_RIGHT_D_IS_REVERSED = InvertedValue.CounterClockwise_Positive;
+        public static final InvertedValue BACK_RIGHT_D_IS_REVERSED = InvertedValue.Clockwise_Positive;
         
         public static final InvertedValue FRONT_LEFT_T_IS_REVERSED = InvertedValue.CounterClockwise_Positive;
         public static final InvertedValue FRONT_RIGHT_T_IS_REVERSED = InvertedValue.CounterClockwise_Positive;
@@ -145,9 +145,9 @@ public class Constants {
         public static final InvertedValue BACK_RIGHT_T_IS_REVERSED = InvertedValue.CounterClockwise_Positive;
 
         // in rotations
-        public static double kCANCoderOffsetFrontLeft = -0.055908; // TODO: check these too
-        public static double kCANCoderOffsetFrontRight = -0.098389;
-        public static double kCANCoderOffsetBackLeft = -0.357178;
-        public static double kCANCoderOffsetBackRight = -0.013916; 
+        public static double kCANCoderOffsetFrontLeft = -0.335449; // TODO: check these too
+        public static double kCANCoderOffsetFrontRight = -0.4641;
+        public static double kCANCoderOffsetBackLeft = -0.3225;
+        public static double kCANCoderOffsetBackRight = 0.4912; 
     }
 }
