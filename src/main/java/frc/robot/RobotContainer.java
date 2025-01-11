@@ -4,21 +4,17 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import frc.robot.commands.macro.FollowAprilTag;
-import frc.robot.commands.persistent.*;
+import frc.robot.commands.persistent.DriveTeleop;
 import frc.robot.controls.Controller;
 // import frc.robot.commands.macro.*;
-import frc.robot.subsystems.*;
+import frc.robot.subsystems.SwerveDrive;
+import frc.robot.subsystems.Vision;
 
 public class RobotContainer {
 
@@ -27,7 +23,7 @@ public class RobotContainer {
 
   PowerDistribution pdh = new PowerDistribution();
 
-  Vision limelight;
+  Vision limelight = new Vision();
 
   SwerveDrive swerveDrive = new SwerveDrive(limelight);
 
@@ -70,6 +66,7 @@ public class RobotContainer {
     
     
     driver.getController().leftBumper().onTrue(new FollowAprilTag(swerveDrive));
+    driver.getController().rightBumper().onTrue(new InstantCommand(swerveDrive::zeroHeading));
 
   }
 

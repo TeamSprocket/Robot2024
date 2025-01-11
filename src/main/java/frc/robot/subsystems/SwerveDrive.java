@@ -15,9 +15,12 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotMap;
@@ -36,7 +39,8 @@ public class SwerveDrive extends SubsystemBase {
 
   Vision limelight;
 
-  private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
+  // private Pigeon2 gyro = new Pigeon2(RobotMap.Drivetrain.PIGEON_2);
+  ADIS16470_IMU gyro = new ADIS16470_IMU();
   SwerveDriveKinematics m_kinematics;
 
   StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Odometry [SD]", Pose2d.struct).publish(); // for advantage scope
@@ -152,7 +156,8 @@ public class SwerveDrive extends SubsystemBase {
    * @return Heading in radians [0, 2PI) 
    */
   public double getHeading() {
-    double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
+    double angle = Rotation2d.fromDegrees(gyro.getAngle()).getRadians();
+    // double angle = gyro.getRotation2d().plus(Rotation2d.fromDegrees(180)).getRadians(); 
     angle *= -1.0;
     return angle;
   }
@@ -170,7 +175,10 @@ public class SwerveDrive extends SubsystemBase {
   //------Zero Methods------
 
   public void zeroHeading() {
-    gyro.setYaw(0);
+    // gyro.setYaw(0);
+    gyro.setGyroAngleX(0);
+    gyro.setGyroAngleY(0);
+    gyro.setGyroAngleZ(0);
     targetHeadingRad = Math.PI;
   }
 
@@ -338,7 +346,7 @@ public class SwerveDrive extends SubsystemBase {
 
     SmartDashboard.putNumber("Target Heading (Deg) [SD]", Math.toDegrees(targetHeadingRad));
     SmartDashboard.putNumber("Heading (Deg) [SD]", Math.toDegrees(getHeading()));
-    SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
+    // SmartDashboard.putNumber("Gyro Yaw", gyro.getRotation2d().getDegrees());
   
     SmartDashboard.putNumber("Odometry X (m) [SD]", odometry.getPoseMeters().getX());
     SmartDashboard.putNumber("Odometry Y (m) [SD]", odometry.getPoseMeters().getY());
@@ -357,6 +365,8 @@ public class SwerveDrive extends SubsystemBase {
 
     SmartDashboard.putNumber("Heading Controller PID Output [SD]", tSpeed);
     SmartDashboard.putNumber("Speaker Offset Deg [VI]", Util.getSpeakerAngleOffset(odometry.getPoseMeters().getTranslation()));
+
+    SmartDashboard.putBoolean("Has Targets [VI]", limelight.hasTargets());
 
     // SmartDashboard.putNumber("front left drive velocity rps [SD]", frontLeft.getDriveVelocity());
     // SmartDashboard.putNumber("front right drive velocity rps [SD]", frontRight.getDriveVelocity());
