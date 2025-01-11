@@ -40,9 +40,9 @@ public class Shooter extends SubsystemBase {
   VelocityVoltage sVV = new VelocityVoltage(0);
 
   // Motors
-  TalonFX shooterTop = new TalonFX(RobotMap.Shooter.SHOOTER_TOP, "canivore");
-  TalonFX shooterBottom = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM, "canivore");
-  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER, "canivore");
+  TalonFX shooterTop = new TalonFX(RobotMap.Shooter.SHOOTER_TOP);
+  TalonFX shooterBottom = new TalonFX(RobotMap.Shooter.SHOOTER_BOTTOM);
+  TalonFX indexerMotor = new TalonFX(RobotMap.Shooter.INDEXER);
 
   DigitalInput beamBreak = new DigitalInput(RobotMap.Shooter.BEAM_BREAK);
   
@@ -56,7 +56,7 @@ public class Shooter extends SubsystemBase {
   double indexerMult = 1.0;
   double indexerInc = 0.0;
 
-  public Shooter(Supplier<Translation2d> botPoseSupplier, Supplier<Double> manualOutputAddSupplier, Supplier<Double> manualOutputMinusSupplier, Supplier<Translation3d> botTranslation3D) {
+  public Shooter() {
     Slot0Configs shooterSlot0 = new Slot0Configs()
       .withKS(0.22)
       .withKV(0.080)

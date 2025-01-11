@@ -24,12 +24,12 @@ import frc.util.Util;
 
 public class ShooterPivot extends SubsystemBase {
 /** Creates a new ShooterPivot. */
-  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST, "canivore");
+  TalonFX motor = new TalonFX(RobotMap.ShooterPivot.WRIST);
 
   double motorspeed = 0.0;
 
   Supplier<Double> joystickSupplier;
-  Supplier<Translation3d> botPoseSupplier;
+  // Supplier<Translation3d> botPoseSupplier;
 
   SendableChooser<ShooterPivotStates> selectShooterPivotState = new SendableChooser<ShooterPivotStates>();
 
@@ -57,7 +57,7 @@ public class ShooterPivot extends SubsystemBase {
    * @param joystickSupplier
    * @param botPoseSupplier
    */
-  public ShooterPivot(Supplier<Double> joystickSupplier, Supplier<Translation3d> botPoseSupplier) {
+  public ShooterPivot() {
 
     TalonFXConfiguration motorConfig = new TalonFXConfiguration();
 
@@ -81,8 +81,8 @@ public class ShooterPivot extends SubsystemBase {
     //init global variable 
     motionMagicVolt = new MotionMagicVoltage(0);
 
-    this.joystickSupplier = joystickSupplier;
-    this.botPoseSupplier = botPoseSupplier;
+    // this.joystickSupplier = joystickSupplier;
+    // this.botPoseSupplier = botPoseSupplier;
 
     //configures the motors
     motor.setInverted(Constants.ShooterPivot.kIsShooterPivotInverted);
@@ -174,7 +174,7 @@ public class ShooterPivot extends SubsystemBase {
 
   public void debug() {
     SmartDashboard.putNumber("Angle in Degrees [SP]", getShooterPivotAngle());
-    SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
+    // SmartDashboard.putNumber("Shot Target Angle [SP]", Util.getTargetShotAngleDeg(botPoseSupplier.get(), Util.getSpeakerTargetBasedOnAllianceColor()));
     SmartDashboard.putNumber("Position [SP]", motor.getPosition().getValueAsDouble());
     SmartDashboard.putString("State [SP]", state.toString());
   }
