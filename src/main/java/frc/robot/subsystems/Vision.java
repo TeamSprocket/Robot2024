@@ -1,50 +1,31 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
+import frc.robot.Constants;
 import frc.util.LimelightHelper;
+import frc.util.Util;
 
 public class Vision extends SubsystemBase {
 
-    StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault()
-    .getStructTopic("Robot Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
 
-    Pose2d lastPose = new Pose2d();
-    Pose2d robotPose = new Pose2d();
-    Pose2d trueRobotPose = new Pose2d();
-    double timestamp;
-    double chassisRotationSpeeds;
-    double lastXOffset;
+    private int[] blueReefAprilTag = {17, 18, 19, 20, 21, 22};
+    private int[] redReefAprilTag = {6, 7, 8, 9, 10, 11};
 
-    private PIDController pidHeadingLock = new PIDController(0.1, 0, 0.005);
-
-    CommandSwerveDrivetrain swerve;
-
-    public Vision(CommandSwerveDrivetrain swerve) {
-        this.swerve = swerve;
-        timestamp = 0;
-        pidHeadingLock.setTolerance(0.01);
-    }
+    public Vision() {}
 
     @Override
     public void periodic() {
-        chassisRotationSpeeds = pidHeadingLock.calculate(getXOffset(), 0);
+        publisher.set(getPose2d());
         debug();
-    }
-
-    public boolean isAligned() {
-        if (pidHeadingLock.atSetpoint()) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     /**
@@ -52,60 +33,76 @@ public class Vision extends SubsystemBase {
      */
     public Translation2d getTranslation2d() {
         LimelightHelper.PoseEstimate estimate;
-
-        if (LimelightHelper.getTV("limelight")) {
-            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
-            lastPose = estimate.pose;
-            
+        if (LimelightHelper.getTV("")) {
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("");
+            }
+            else {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("");
+            }
             return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
         } else {
-            return new Translation2d(lastPose.getX(), lastPose.getY());
+            return new Translation2d(0.0, 0.0);
         }
     }
 
-    public Pose2d getRobotPose() {
-        return trueRobotPose;
-    }
-    
-    public ChassisSpeeds getHeadingLockSpeed() {
-        return new ChassisSpeeds(0, 0, chassisRotationSpeeds);
+    public Pose2d getPose2d() {
+        LimelightHelper.PoseEstimate estimate;
+
+        if (LimelightHelper.getTV("")) {
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2("");
+            }
+            else {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2("");
+            }
+
+            return estimate.pose;
+        } else {
+            return new Pose2d();
+        }
     }
 
     public boolean hasTargets() {
-        return LimelightHelper.getTV("limelight");
+        return LimelightHelper.getTV("");
     }
 
-    public boolean hasTargets(Translation2d translation) {
-        if (translation.getX() != 0.0 && translation.getY() != 0.0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    /**
-     * @return Offset of limelight crosshair center to fiducials in DEGREES
-     */     
     public double getXOffset() {
-        if (LimelightHelper.getTV("limelight")) {
-            if (LimelightHelper.getFiducialID("limelight") == 7 || LimelightHelper.getFiducialID("limelight") == 4) {
-                lastXOffset = LimelightHelper.getTX("limelight");
-                return lastXOffset;
-            }
-            else {
-                return lastXOffset;
-            }
+        if (hasTargets()){
+            return LimelightHelper.getTX("");
         } else {
-            return lastXOffset;
+            return 0.0;
         }
     }
+
+    public double getYOffset() {
+        if (hasTargets()) {
+            return LimelightHelper.getTY("");
+        } else {
+            return 0.0;
+        }
+    }
+     
+    public boolean hasReefTargets(){
+        if(LimelightHelper.getTV("") ){
+            for (int reefID : redReefAprilTag) {
+                if (LimelightHelper.getFiducialID("") == reefID) return true;
+            }
+            for (int reefID : blueReefAprilTag) {
+                if (LimelightHelper.getFiducialID("") == reefID) return true;
+            }
+        } 
+        return false;
+    }
+    
 
     private void debug() {
-        SmartDashboard.putNumber("Robot Pose X [VI]", getTranslation2d().getX());
-        SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
-        SmartDashboard.putNumber("PID Heading Lock Output [VI]", chassisRotationSpeeds);
-        SmartDashboard.putNumber("X Offset [VI]", getXOffset());
+        // SmartDashboard.putNumber("Robot Pose X [VI]", getTranslation2d().getX());
+        // SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
+        // SmartDashboard.putBoolean("Vision Target [VI]", hasTargets());
+        // SmartDashboard.putNumber("TX Offset [VI]", getXOffset());
+        // SmartDashboard.putNumber("TY Offset [VI]", getYOffset());
+        SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
+     }
 
-        SmartDashboard.putBoolean("Swerve Align", isAligned());
-    }
 }

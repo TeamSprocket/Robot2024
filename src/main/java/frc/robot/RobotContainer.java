@@ -49,7 +49,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Elevator elevator = new Elevator();
 
-  private final Vision vision = new Vision(drivetrain);
+  private final Vision vision = new Vision();
   Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake, elevator);
 
   // ------- Swerve Generated -------
@@ -100,8 +100,6 @@ public class RobotContainer {
                                                                                 .andThen(superstructure.setState(SSStates.STOWED)))));
 
     NamedCommands.registerCommand("SpinupSubwoofer", new SequentialCommandGroup(new WaitCommand(0.2)
-                                                                                     .andThen(alignSwerveCommand().withTimeout(0.5))
-                                                                                     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
                                                                                      .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))));
     
     NamedCommands.registerCommand("ShootNote", new SequentialCommandGroup(new WaitCommand(0.5) // wait for intake to move in
@@ -124,7 +122,6 @@ public class RobotContainer {
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.resetGyro()));
-    driver.y().whileTrue(alignSwerveCommand());
     if (Utils.isSimulation()) {
       drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
     }
@@ -214,9 +211,5 @@ public class RobotContainer {
         )
       )
     );
-  }
-
-  public Command alignSwerveCommand() {
-    return drivetrain.applyRequest(() -> headingLock.withSpeeds(vision.getHeadingLockSpeed()));
   }
 }
