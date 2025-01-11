@@ -16,7 +16,7 @@ import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -52,7 +52,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Elevator elevator = new Elevator();
 
-  private final Vision vision = new Vision();
+  private final Vision limelight = new Vision();
   Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake, elevator);
 
   // ------- Swerve Generated -------
@@ -66,6 +66,8 @@ public class RobotContainer {
           .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+  private final SwerveRequest.ApplyRobotSpeeds align = new SwerveRequest.ApplyRobotSpeeds()
+    .withSpeeds(new ChassisSpeeds(0, 0, 0));
 
   // public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -129,6 +131,7 @@ public class RobotContainer {
     driver.b().whileTrue(drivetrain.applyRequest(() ->
         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
     ));
+    driver.x().whileTrue(drivetrain.applyRequest(() -> align.withSpeeds(new ChassisSpeeds(0.5, 0, 0))));
 
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
