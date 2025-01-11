@@ -5,10 +5,11 @@ import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+// import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.ClosedLoopOutputType;
+// import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+// import com.pathplanner.lib.util.PIDConstants;
+// import com.pathplanner.lib.util.ReplanningConfig;
+import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -377,12 +378,12 @@ public class Constants {
 
         public static final double kIntakeNoteSpeed = -0.3;
 
-        public static final HolonomicPathFollowerConfig kPathFollowerConfig = new HolonomicPathFollowerConfig(
-                new PIDConstants(kPTranslationPP, kITranslationPP, kDTranslationPP),
-                new PIDConstants(kPRotationPP, kIRotationPP, kDRotationPP),
-                kMaxDriveModuleSpeedMPS,
-                kModuleOffsetMeters,
-                new ReplanningConfig());
+        // public static final HolonomicPathFollowerConfig kPathFollowerConfig = new HolonomicPathFollowerConfig(
+        //         new PIDConstants(kPTranslationPP, kITranslationPP, kDTranslationPP),
+        //         new PIDConstants(kPRotationPP, kIRotationPP, kDRotationPP),
+        //         kMaxDriveModuleSpeedMPS,
+        //         kModuleOffsetMeters,
+        //         new ReplanningConfig());
 
         public static final boolean kIsFieldOriented = true;
 

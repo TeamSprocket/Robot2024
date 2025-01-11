@@ -150,7 +150,7 @@ public class Elevator extends SubsystemBase {
   public double getHeight() {
     var elevatorRotorSignal = motorLeft.getRotorPosition();
 
-    return Conversions.falconToMeters(elevatorRotorSignal.getValue(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
+    return Conversions.falconToMeters(elevatorRotorSignal.getValueAsDouble(), Constants.Elevator.kElevatorGearCircumM, Constants.Elevator.kElevatorGearRatio);
   }
 
   public boolean atGoal() {
