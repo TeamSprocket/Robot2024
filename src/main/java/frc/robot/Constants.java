@@ -10,6 +10,8 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 // import com.pathplanner.lib.util.PIDConstants;
 // import com.pathplanner.lib.util.ReplanningConfig;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants.ClosedLoopOutputType;
+import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -20,6 +22,7 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
 import frc.util.Conversions;
 import frc.util.PIDConst;
@@ -516,6 +519,15 @@ public class Constants {
         // This needs to be tuned to your individual robot
         public static final double kSlipCurrentA = 150.0;
 
+        public static final double kModuleOffsetMeters = 0.572;
+
+        public static final Translation2d[] moduleOffsets = {
+            new Translation2d(-kModuleOffsetMeters / 2, kModuleOffsetMeters / 2), // -, -
+            new Translation2d(-kModuleOffsetMeters / 2, -kModuleOffsetMeters / 2), // -, +
+            new Translation2d(kModuleOffsetMeters / 2, kModuleOffsetMeters / 2), // +, -
+            new Translation2d(kModuleOffsetMeters / 2, -kModuleOffsetMeters / 2)
+        };
+
         // Initial configs for the drive and steer motors and the CANcoder; these cannot be null.
         // Some configs will be overwritten; check the `with*InitialConfigs()` API documentation.
         public static final TalonFXConfiguration driveInitialConfigs = new TalonFXConfiguration();
@@ -560,6 +572,13 @@ public class Constants {
         // ------ Max -------
         public static double MaxSpeed = kSpeedAt12VoltsMps; // kSpeedAt12VoltsMps desired top speed
         public static double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+
+        public static RobotConfig robotConfig = new RobotConfig(
+            65.0, 
+            32.77, 
+            new ModuleConfig(0.038, 5, 1.0, DCMotor.getFalcon500Foc(4), 60, 1), 
+            moduleOffsets
+        );
     }
 
     public static final class Controller {
