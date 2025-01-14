@@ -1,6 +1,15 @@
 package frc.robot.subsystems;
 
+import java.util.List;
+
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -93,6 +102,70 @@ public class Vision extends SubsystemBase {
             }
         } 
         return false;
+    }
+
+    public PathPlannerPath getAlignPathLeft() {
+        double fiducialID = LimelightHelper.getFiducialID("");
+        Pose2d endpoint = new Pose2d();
+        switch ((int)fiducialID) {
+            case 17:
+                endpoint = Constants.Vision.poseAlignBlueLeft17;
+            case 18:
+                endpoint = Constants.Vision.poseAlignBlueLeft18;
+            case 19:
+                endpoint = Constants.Vision.poseAlignBlueLeft19;
+            case 20:
+                endpoint = Constants.Vision.poseAlignBlueLeft20;
+            case 21:
+                endpoint = Constants.Vision.poseAlignBlueLeft21;
+            case 22:
+                endpoint = Constants.Vision.poseAlignBlueLeft22;
+        }
+        
+
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            getPose2d(),
+            endpoint
+        );
+
+        return new PathPlannerPath(
+            waypoints,
+            new PathConstraints(4, 2, 4, 2),
+            null,
+            new GoalEndState(0.0, endpoint.getRotation())
+        );
+    }
+
+    public PathPlannerPath getAlignPathRight() {
+        double fiducialID = LimelightHelper.getFiducialID("");
+        Pose2d endpoint = new Pose2d();
+        switch ((int)fiducialID) {
+            case 17:
+                endpoint = Constants.Vision.poseAlignBlueRight17;
+            case 18:
+                endpoint = Constants.Vision.poseAlignBlueRight18;
+            case 19:
+                endpoint = Constants.Vision.poseAlignBlueRight19;
+            case 20:
+                endpoint = Constants.Vision.poseAlignBlueRight20;
+            case 21:
+                endpoint = Constants.Vision.poseAlignBlueRight21;
+            case 22:
+                endpoint = Constants.Vision.poseAlignBlueRight22;
+        }
+        
+
+        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            getPose2d(),
+            endpoint
+        );
+
+        return new PathPlannerPath(
+            waypoints, 
+            new PathConstraints(4, 2, 4, 2), 
+            null, 
+            new GoalEndState(0.0, endpoint.getRotation())
+        );
     }
     
 
