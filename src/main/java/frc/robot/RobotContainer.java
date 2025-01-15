@@ -92,9 +92,9 @@ public class RobotContainer {
     // SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
 
-  // public Command getAutonomousCommand() {
-    // return autonChooser.getSelected();
-  // }
+  public Command getAutonomousCommand() {
+    return autonChooser.getSelected();
+  }
 
    public void initNamedCommands() {
     NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(new WaitCommand(0.2)

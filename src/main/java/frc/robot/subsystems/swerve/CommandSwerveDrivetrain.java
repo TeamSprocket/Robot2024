@@ -8,6 +8,7 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.FollowPathCommand;
@@ -247,8 +248,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             return new FollowPathCommand(
                 path,
                 () -> this.getState().Pose, 
-                this::getRobotRelativeSpeeds, 
-                this::CommandSwerveDrivetrain,
+                this::getCurrentRobotChassisSpeeds, 
+                drive,
                 new PPHolonomicDriveController( 
                         new PIDConstants(5.0, 0.0, 0.0), 
                         new PIDConstants(5.0, 0.0, 0.0)
