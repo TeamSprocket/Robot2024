@@ -37,6 +37,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -153,6 +154,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         SwerveDrivetrainConstants drivetrainConstants,
         SwerveModuleConstants<?, ?, ?>... modules
     ) {
+        
         super(drivetrainConstants, modules);
         if (Utils.isSimulation()) {
             startSimThread();
@@ -304,7 +306,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     //         this);
     // }
 
-    private void configureAutoBuilder() {
+    public void configureAutoBuilder() {
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
@@ -338,14 +340,20 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     
     public Command followGeneratedPath(String side) {
-        PathPlannerPath path;
-        if (side.equals("left")) {
-            path = vision.getAlignPathLeft();
-        } else {
-            path = vision.getAlignPathRight();
+        if (vision.hasReefTargets()){
+            PathPlannerPath path;
+            if (side.equals("left")) {
+                path = vision.getAlignPathLeft();
+            } else {
+                path = vision.getAlignPathRight();
+            }
+            return new RunCommand(() -> AutoBuilder.followPath(path));
         }
-        return new RunCommand(() -> AutoBuilder.followPath(path));
+        else {
+            return new InstantCommand(() -> System.out.println("haha"));
+        }
     }
+
 
     
 

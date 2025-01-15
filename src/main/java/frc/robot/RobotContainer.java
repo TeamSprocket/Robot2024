@@ -75,9 +75,12 @@ public class RobotContainer {
   // public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
   public RobotContainer() {
+    
     configureBindings();
     initNamedCommands();
     initAutons();
+    drivetrain.configureAutoBuilder();
+    
   }
   
  public void initAutons() {
@@ -119,6 +122,7 @@ public class RobotContainer {
   }
 
   public void configureBindings() {
+    
     // --------------------=Driver=--------------------
 
     drivetrain.setDefaultCommand(
