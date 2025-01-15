@@ -2,6 +2,7 @@ package frc.robot.subsystems.swerve;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 import com.ctre.phoenix6.SignalLogger;
@@ -11,16 +12,23 @@ import com.ctre.phoenix6.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
+import com.pathplanner.lib.util.DriveFeedforwards;
+
 
 import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,6 +37,7 @@ import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
@@ -49,6 +58,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private double m_lastSimTime;
     SwerveDriveKinematics m_kinematics;
 
+    PIDConstants PP_PID_Translation = new PIDConstants(0.25, 0, 0); //0.25, 0, 0
+    PIDConstants PP_PID_Rotation = new PIDConstants(1.85, 0, 0.65); //1.85, 0, 0.65
+
     Vision vision = new Vision();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
@@ -62,6 +74,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveTranslation m_translationCharacterization = new SwerveRequest.SysIdSwerveTranslation();
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
+
+    private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
@@ -237,45 +251,102 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return new Rotation2d(Math.toRadians(getPigeon2().getAngle()));
     }
 
-    public Command followPath(String side) {
-        PathPlannerPath path;
-        try {
-            if (side.equals("left")) {
-                path = vision.getAlignPathLeft();
-            } else {
-                path = vision.getAlignPathRight();
-            }
-            return new FollowPathCommand(
-                path,
-                () -> this.getState().Pose, 
-                this::getCurrentRobotChassisSpeeds, 
-                drive,
-                new PPHolonomicDriveController( 
-                        new PIDConstants(5.0, 0.0, 0.0), 
-                        new PIDConstants(5.0, 0.0, 0.0)
-                ),
-                Constants.Drivetrain.robotConfig,
-                () -> {
-                    var alliance = DriverStation.getAlliance();
-                    if (alliance.isPresent()) {
-                        return alliance.get() == DriverStation.Alliance.Red;
-                    }
-                    return false;
-                }, 
-                this
+    // public Command followPath(String side) {
+    //     PathPlannerPath path;
+    //     try {
+    //         if (side.equals("left")) {
+    //             path = vision.getAlignPathLeft();
+    //         } else {
+    //             path = vision.getAlignPathRight();
+    //         }
+    //         BiConsumer<ChassisSpeeds, DriveFeedforwards> driveOutput = drive();
+            
+    //         return new FollowPathCommand(
+    //             path,
+    //             () -> this.getState().Pose, 
+    //             this::getCurrentRobotChassisSpeeds, 
+    //             this::getCurrentRobotChassisSpeeds,
+    //             new PPHolonomicDriveController( 
+    //                     new PIDConstants(5.0, 0.0, 0.0), 
+    //                     new PIDConstants(5.0, 0.0, 0.0)
+    //             ),
+    //             Constants.Drivetrain.robotConfig,
+    //             () -> {
+    //                 var alliance = DriverStation.getAlliance();
+    //                 if (alliance.isPresent()) {
+    //                     return alliance.get() == DriverStation.Alliance.Red;
+    //                 }
+    //                 return false;
+    //             }, 
+    //             this
                 
-            );
-        } catch (Exception e) {
-            DriverStation.reportError("Error: " + e.getMessage(), e.getStackTrace());
-            return Commands.none();
-        }
+    //         );
+    //     } catch (Exception e) {
+    //         DriverStation.reportError("Error: " + e.getMessage(), e.getStackTrace());
+    //         return Commands.none();
+    //     }
         
 
+    // }
+
+    // private void configurePathPlanner(){
+    //     double driveBaseRadius = 13.125; //meters is 0.3334, 13.125
+        
+    //     AutoBuilder.configureHolonomic(
+    //         () -> this.getState().Pose, 
+    //         this::seedFieldRelative, 
+    //         getCurrentRobotChassisSpeeds(), 
+    //         m_kinematics.toChassisSpeeds(getModuleStates()), 
+    //         new PPHolonomicDriveController(PP_PID_Translation, //Tune 
+    //                                         PP_PID_Rotation), 
+    //         Constants.Drivetrain.robotConfig,
+    //         () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red, 
+    //         this);
+    // }
+
+    private void configureAutoBuilder() {
+        try {
+            var config = RobotConfig.fromGUISettings();
+            AutoBuilder.configure(
+                () -> getState().Pose,   // Supplier of current robot pose
+                this::resetPose,         // Consumer for seeding pose against auto
+                () -> getState().Speeds, // Supplier of current robot speeds
+                // Consumer of ChassisSpeeds and feedforwards to drive the robot
+                (speeds, feedforwards) -> setControl(
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                ),
+                new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(2, 0, 0),
+                    // PID constants for rotation
+                    new PIDConstants(1, 0, 0)
+                ),
+                config,
+               
+                () -> DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Red,
+                this 
+            );
+        } catch (Exception ex) {
+            DriverStation.reportError("Failed to load PathPlanner config and configure AutoBuilder", ex.getStackTrace());
+        }
     }
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
+    
+    public Command followGeneratedPath(String side) {
+        PathPlannerPath path;
+        if (side.equals("left")) {
+            path = vision.getAlignPathLeft();
+        } else {
+            path = vision.getAlignPathRight();
+        }
+        return new RunCommand(() -> AutoBuilder.followPath(path));
+    }
+
     
 
     @Override

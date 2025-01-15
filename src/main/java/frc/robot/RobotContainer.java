@@ -36,6 +36,9 @@ import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.swerve.TunerConstants;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain.*;
+
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static edu.wpi.first.units.Units.*;
 
@@ -47,13 +50,13 @@ public class RobotContainer {
   private final TunerConstants tunerConst = new TunerConstants();
   public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-  private final ShooterPivot shooterPivot = new ShooterPivot();
-  private final Shooter shooter = new Shooter();
-  private final Intake intake = new Intake();
-  private final Elevator elevator = new Elevator();
+  // private final ShooterPivot shooterPivot = new ShooterPivot();
+  // private final Shooter shooter = new Shooter();
+  // private final Intake intake = new Intake();
+  // private final Elevator elevator = new Elevator();
 
   private final Vision limelight = new Vision();
-  Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake, elevator);
+  // Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake, elevator);
 
   // ------- Swerve Generated -------
 
@@ -92,27 +95,27 @@ public class RobotContainer {
     // SmartDashboard.putData("Auto Routine Selector", autonChooser);
   }
 
-  public Command getAutonomousCommand() {
-    return autonChooser.getSelected();
-  }
+  // public Command getAutonomousCommand() {
+  //   return autonChooser.getSelected();
+  // }
 
    public void initNamedCommands() {
-    NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(new WaitCommand(0.2)
-                                                                                .andThen(superstructure.setState(SSStates.INTAKE))
-                                                                                .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
-                                                                                .andThen(superstructure.setState(SSStates.STOWED))
-                                                                                // .andThen(new WaitCommand(0.2))
-                                                                                .andThen(superstructure.setState(SSStates.INTAKE_BACK)
-                                                                                .andThen(new WaitCommand(0.1))
-                                                                                .andThen(superstructure.setState(SSStates.STOWED)))));
+    // NamedCommands.registerCommand("IntakeNote", new SequentialCommandGroup(new WaitCommand(0.2)
+    //                                                                             .andThen(superstructure.setState(SSStates.INTAKE))
+    //                                                                             .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
+    //                                                                             .andThen(superstructure.setState(SSStates.STOWED))
+    //                                                                             // .andThen(new WaitCommand(0.2))
+    //                                                                             .andThen(superstructure.setState(SSStates.INTAKE_BACK)
+    //                                                                             .andThen(new WaitCommand(0.1))
+    //                                                                             .andThen(superstructure.setState(SSStates.STOWED)))));
 
-    NamedCommands.registerCommand("SpinupSubwoofer", new SequentialCommandGroup(new WaitCommand(0.2)
-                                                                                     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))));
+    // NamedCommands.registerCommand("SpinupSubwoofer", new SequentialCommandGroup(new WaitCommand(0.2)
+    //                                                                                  .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM))));
     
-    NamedCommands.registerCommand("ShootNote", new SequentialCommandGroup(new WaitCommand(0.5) // wait for intake to move in
-                                                                               .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())) // spit out note for 0.2
-                                                                               .andThen(new WaitCommand(0.5))
-                                                                               .andThen(superstructure.setState(SSStates.STOWED))));
+    // NamedCommands.registerCommand("ShootNote", new SequentialCommandGroup(new WaitCommand(0.5) // wait for intake to move in
+    //                                                                            .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker())) // spit out note for 0.2
+    //                                                                            .andThen(new WaitCommand(0.5))
+    //                                                                            .andThen(superstructure.setState(SSStates.STOWED))));
   }
 
   public void configureBindings() {
@@ -131,77 +134,79 @@ public class RobotContainer {
     driver.b().whileTrue(drivetrain.applyRequest(() ->
         point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
     ));
-    driver.x().whileTrue(drivetrain.applyRequest(() -> align.withSpeeds(new ChassisSpeeds(0.5, 0, 0))));
-
+  
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+    driver.x().onTrue(drivetrain.followGeneratedPath("left"));
+    driver.y().onTrue(drivetrain.followGeneratedPath("right"));
 
     // --------------------=operator=--------------------
 
     // ----- rumble controllers -----
-    new Trigger(() -> shooter.beamBroken()) // TODO: controllers are rumbling too much (might add something to make it stop)
-      .onTrue(rumbleControllers());
+  //   new Trigger(() -> shooter.beamBroken()) // TODO: controllers are rumbling too much (might add something to make it stop)
+  //     .onTrue(rumbleControllers());
 
-    new Trigger(operator.rightBumper())
-      .whileTrue(new WaitCommand(0.5)
-        .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker()))
-        .andThen(new WaitCommand(0.2))
-        .andThen(superstructure.setState(SSStates.STOWED))
-      );
+  //   new Trigger(operator.rightBumper())
+  //     .whileTrue(new WaitCommand(0.5)
+  //       .andThen(new InstantCommand(()-> shooter.setIndexerSpeedScoreSpeaker()))
+  //       .andThen(new WaitCommand(0.2))
+  //       .andThen(superstructure.setState(SSStates.STOWED))
+  //     );
       
-    new Trigger(operator.x())
-      .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+  //   new Trigger(operator.x())
+  //     .whileTrue(superstructure.setState(SSStates.WAIT_SPEAKER_SUBWOOFER))
+  //     .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    // new Trigger(operator.button(8))
-    //   .whileTrue(alignSwerveCommand().withTimeout(1)
-    //     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
-    //     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
-    // new Trigger(operator.button(8))
-    //   .whileFalse(superstructure.setState(SSStates.STOWED));
+  //   // new Trigger(operator.button(8))
+  //   //   .whileTrue(alignSwerveCommand().withTimeout(1)
+  //   //     .andThen(new WaitUntilCommand(() -> vision.isAligned()).withTimeout(1))
+  //   //     .andThen(superstructure.setState(SSStates.WAIT_SPEAKER_PODIUM)));
+  //   // new Trigger(operator.button(8))
+  //   //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    new Trigger(operator.y())
-      .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
-    new Trigger(operator.y())
-      .whileFalse(superstructure.setState(SSStates.STOWED));
+  //   new Trigger(operator.y())
+  //     .whileTrue(superstructure.setState(SSStates.EJECT_NOTE));
+  //   new Trigger(operator.y())
+  //     .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    // new Trigger(operator.y())
-    //   .whileTrue(superstructure.setState(SSStates.ELEVATORUP))
-    //   .whileFalse(superstructure.setState(SSStates.STOWED));
+  //   // new Trigger(operator.y())
+  //   //   .whileTrue(superstructure.setState(SSStates.ELEVATORUP))
+  //   //   .whileFalse(superstructure.setState(SSStates.STOWED));
 
-    // new Trigger(operator.b())
-      // .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
-      // .whileFalse(superstructure.setState(SSStates.STOWED));
-      // .whileTrue(superstructure.setState(SSStates.ELEVATORTEST));
+  //   // new Trigger(operator.b())
+  //     // .whileTrue(superstructure.setState(SSStates.CROSSFIELD))
+  //     // .whileFalse(superstructure.setState(SSStates.STOWED));
+  //     // .whileTrue(superstructure.setState(SSStates.ELEVATORTEST));
 
-    new Trigger(operator.a())
-      .whileTrue(superstructure.setState(SSStates.INTAKE)
-        .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
-        .andThen(superstructure.setState(SSStates.STOWED)));
+  //   new Trigger(operator.a())
+  //     .whileTrue(superstructure.setState(SSStates.INTAKE)
+  //       .andThen(new WaitUntilCommand(() -> shooter.beamBroken()))
+  //       .andThen(superstructure.setState(SSStates.STOWED)));
 
-    new Trigger(operator.a())
-      .onFalse(superstructure.setState(SSStates.INTAKE_BACK)
-        .andThen(new WaitCommand(0.1))
-        .andThen(superstructure.setState(SSStates.STOWED)));
-  }
+  //   new Trigger(operator.a())
+  //     .onFalse(superstructure.setState(SSStates.INTAKE_BACK)
+  //       .andThen(new WaitCommand(0.1))
+  //       .andThen(superstructure.setState(SSStates.STOWED)));
+  // }
   
-  public ShooterPivot getShooterPivot() {
-    return shooterPivot;
-  }
-  public Superstructure getSuperstructure() {
-    return superstructure;
-  }
-  public Elevator getElevator() {
-    return elevator;
-  }
+  // public ShooterPivot getShooterPivot() {
+  //   return shooterPivot;
+  // }
+  // public Superstructure getSuperstructure() {
+  //   return superstructure;
+  // }
+  // public Elevator getElevator() {
+  //   return elevator;
+  // }
   
-  public void clearPDHStickyFaults() {
-    pdh.clearStickyFaults();
-  }
-  public void zeroSuperstructurePositions() {
-    shooter.zeroPosition();
-    intake.zeroPosition();
-    shooterPivot.zeroPosition();
+  // public void clearPDHStickyFaults() {
+  //   pdh.clearStickyFaults();
+  // }
+  // public void zeroSuperstructurePositions() {
+  //   shooter.zeroPosition();
+  //   intake.zeroPosition();
+  //   shooterPivot.zeroPosition();
   }
 
   public Command rumbleControllers() {
