@@ -23,6 +23,7 @@ import frc.util.LimelightHelper;
 import frc.util.Util;
 
 public class Vision extends SubsystemBase {
+    String pathDebug = "ALERT HELP ERIC LIKES KIDS";
 
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Robot Pose", Pose2d.struct).publish();
 
@@ -128,12 +129,14 @@ public class Vision extends SubsystemBase {
             endpoint
         );
 
-        return new PathPlannerPath(
+        PathPlannerPath path = new PathPlannerPath(
             waypoints,
             new PathConstraints(4, 2, 4, 2),
             null,
             new GoalEndState(0.0, endpoint.getRotation())
         );
+        pathDebug = path.toString();
+        return path;
     }
 
     public PathPlannerPath getAlignPathRight() {
@@ -160,12 +163,15 @@ public class Vision extends SubsystemBase {
             endpoint
         );
 
-        return new PathPlannerPath(
+
+        PathPlannerPath path = new PathPlannerPath(
             waypoints, 
             new PathConstraints(4, 2, 4, 2), 
             null, 
             new GoalEndState(0.0, endpoint.getRotation())
         );
+        pathDebug = path.toString();
+        return path;
     }
     
 
@@ -176,6 +182,7 @@ public class Vision extends SubsystemBase {
         // SmartDashboard.putNumber("TX Offset [VI]", getXOffset());
         // SmartDashboard.putNumber("TY Offset [VI]", getYOffset());
         SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
+        SmartDashboard.putString("Path [VI]", pathDebug);
      }
 
 }

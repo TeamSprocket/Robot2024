@@ -340,17 +340,44 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     }
     
     public Command followGeneratedPath(String side) {
-        if (vision.hasReefTargets()){
-            PathPlannerPath path;
-            if (side.equals("left")) {
-                path = vision.getAlignPathLeft();
-            } else {
+        System.out.println("ENTERENTERENTERENTERENTERENTERENTERENTERENTER");
+        try{
+            if (vision.hasReefTargets() || true){
+                System.out.println("PASSEDPASSEDPASSEDPASSEDPASSEDPASSEDPASSEDPASSED");
+                PathPlannerPath path;
+                if (side.equals("left")) {
+                    path = vision.getAlignPathLeft();
+                } else {
+                    path = vision.getAlignPathRight();
+                }
                 path = vision.getAlignPathRight();
+                return new FollowPathCommand(
+                    path, 
+                    () -> getState().Pose, 
+                    () -> getState().Speeds, 
+                    (speeds, feedforwards) -> setControl(
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                    ), 
+                    new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(2, 0, 0),
+                    // PID constants for rotation
+                    new PIDConstants(1, 0, 0)
+                    ), 
+                    RobotConfig.fromGUISettings(), 
+                    () -> false, 
+                    this
+                );
             }
-            return new RunCommand(() -> AutoBuilder.followPath(path));
-        }
-        else {
-            return new InstantCommand(() -> System.out.println("haha"));
+            else {
+                System.out.println("FAILEDFAILEDFAILEDFAILEDFAILEDFAILEDFAILED");
+                return new InstantCommand(() -> System.out.println("haha"));
+                }
+        } catch (Exception e) {
+            DriverStation.reportError("Brokeeeeeeeeefefjeoifjoai gmoiajgmoisadjifoda noifpa" + e.getMessage(), e.getStackTrace());
+            return new InstantCommand(() -> System.out.println("Denielle likes toudching little kids " + e.getMessage()));
         }
     }
 

@@ -135,15 +135,15 @@ public class RobotContainer {
     );
 
     driver.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    driver.b().whileTrue(drivetrain.applyRequest(() ->
-        point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
-    ));
+    // driver.b().whileTrue(drivetrain.applyRequest(() ->
+    //     point.withModuleDirection(new Rotation2d(-driver.getLeftY(), -driver.getLeftX()))
+    // ));
   
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
-    driver.x().onTrue(drivetrain.followGeneratedPath("left"));
-    driver.y().onTrue(drivetrain.followGeneratedPath("right"));
+    driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
+    driver.y().whileTrue(drivetrain.followGeneratedPath("right"));
 
     // --------------------=operator=--------------------
 
