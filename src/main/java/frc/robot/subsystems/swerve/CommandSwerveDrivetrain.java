@@ -14,6 +14,7 @@ import com.ctre.phoenix6.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
@@ -380,8 +381,34 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             return new InstantCommand(() -> System.out.println("Denielle likes toudching little kids " + e.getMessage()));
         }
     }
-
-
+ public Command autopath(){
+    try{
+    PathPlannerPath apath = PathPlannerPath.fromPathFile("zak");
+    
+    return new FollowPathCommand(
+                    apath, 
+                    () -> getState().Pose, 
+                    () -> getState().Speeds, 
+                    (speeds, feedforwards) -> setControl(
+                    m_pathApplyRobotSpeeds.withSpeeds(speeds)
+                        .withWheelForceFeedforwardsX(feedforwards.robotRelativeForcesXNewtons())
+                        .withWheelForceFeedforwardsY(feedforwards.robotRelativeForcesYNewtons())
+                    ), 
+                    new PPHolonomicDriveController(
+                    // PID constants for translation
+                    new PIDConstants(0.06, 0, 0),
+                    // PID constants for rotation
+                    new PIDConstants(0, 0, 0)
+                    ), 
+                    RobotConfig.fromGUISettings(), 
+                    () -> false, 
+                    this
+                );
+    } catch (Exception e) {
+        DriverStation.reportError("Broken" + e.getMessage(), e.getStackTrace());
+            return new InstantCommand(() -> System.out.println("error" + e.getMessage()));
+    }
+ }
     
 
     @Override

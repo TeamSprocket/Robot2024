@@ -141,7 +141,7 @@ public class RobotContainer {
   
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
+    driver.leftTrigger().onTrue(drivetrain.autopath());
     driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
     driver.y().whileTrue(drivetrain.followGeneratedPath("right"));
 
