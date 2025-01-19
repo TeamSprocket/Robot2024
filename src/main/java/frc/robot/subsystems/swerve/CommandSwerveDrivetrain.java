@@ -396,9 +396,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                     ), 
                     new PPHolonomicDriveController(
                     // PID constants for translation
-                    new PIDConstants(0.06, 0, 0),
+                    new PIDConstants(7, 0, 0),
                     // PID constants for rotation
-                    new PIDConstants(0, 0, 0)
+                    new PIDConstants(3, 0, 0)
                     ), 
                     RobotConfig.fromGUISettings(), 
                     () -> false, 

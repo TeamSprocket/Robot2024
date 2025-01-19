@@ -37,7 +37,7 @@ import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.swerve.TunerConstants;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain.*;
-
+import frc.robot.subsystems.swerve.Telemetry;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import static edu.wpi.first.units.Units.*;
@@ -71,6 +71,8 @@ public class RobotContainer {
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
   private final SwerveRequest.ApplyRobotSpeeds align = new SwerveRequest.ApplyRobotSpeeds()
     .withSpeeds(new ChassisSpeeds(0, 0, 0));
+
+  private final Telemetry logger = new Telemetry(MaxSpeed);
 
   // public SendableChooser<Command> autonChooser = new SendableChooser<Command>();
 
@@ -144,6 +146,7 @@ public class RobotContainer {
     driver.leftTrigger().onTrue(drivetrain.autopath());
     driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
     driver.y().whileTrue(drivetrain.followGeneratedPath("right"));
+    drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------
 
