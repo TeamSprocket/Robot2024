@@ -63,7 +63,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     PIDConstants PP_PID_Translation = new PIDConstants(0.25, 0, 0); //0.25, 0, 0
     PIDConstants PP_PID_Rotation = new PIDConstants(1.85, 0, 0.65); //1.85, 0, 0.65
 
-    Vision vision = new Vision();
+    // Vision vision = new Vision();
 
     /* Blue alliance sees forward as 0 degrees (toward red alliance wall) */
     private static final Rotation2d kBlueAlliancePerspectiveRotation = Rotation2d.kZero;
@@ -338,6 +338,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     public ChassisSpeeds getCurrentRobotChassisSpeeds() {
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
+    public void updateOdometry(Pose2d pose) {
+        this.resetPose(pose);
     }
     
     // public Command followGeneratedPath(String side) {

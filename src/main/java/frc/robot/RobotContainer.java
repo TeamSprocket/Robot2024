@@ -55,7 +55,7 @@ public class RobotContainer {
   // private final Intake intake = new Intake();
   // private final Elevator elevator = new Elevator();
 
-  private final Vision limelight = new Vision();
+  private final Vision limelight = new Vision(drivetrain);
   // Superstructure superstructure = new Superstructure(shooterPivot, shooter, intake, elevator);
 
   // ------- Swerve Generated -------

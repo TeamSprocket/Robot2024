@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.util.LimelightHelper;
 import frc.util.Util;
 
@@ -32,7 +33,12 @@ public class Vision extends SubsystemBase {
     private int[] blueReefAprilTag = {17, 18, 19, 20, 21, 22};
     private int[] redReefAprilTag = {6, 7, 8, 9, 10, 11};
 
-    public Vision() {}
+    CommandSwerveDrivetrain drivetrain;
+
+    public Vision(CommandSwerveDrivetrain drive) {
+        drivetrain = drive;
+        updatePose();
+    }
 
     @Override
     public void periodic() {
@@ -217,6 +223,16 @@ public class Vision extends SubsystemBase {
         );
 
         return path;
+    }
+
+    public Pose2d updatePose() {
+        if (hasTargets()) {
+            Pose2d pose = getPose2d();
+            drivetrain.updateOdometry(pose);
+            return pose;
+        } else {
+            return getPose2d();
+        }
     }
     
 
