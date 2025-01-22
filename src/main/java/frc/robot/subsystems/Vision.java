@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -17,6 +18,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.util.LimelightHelper;
@@ -105,6 +107,40 @@ public class Vision extends SubsystemBase {
         return false;
     }
 
+    // public PathPlannerPath getAlignPathLeft() {
+    //     double fiducialID = LimelightHelper.getFiducialID("");
+    //     Pose2d endpoint = new Pose2d();
+    //     switch ((int)fiducialID) {
+    //         case 17:
+    //             endpoint = Constants.Vision.poseAlignBlueLeft17;
+    //         case 18:
+    //             endpoint = Constants.Vision.poseAlignBlueLeft18;
+    //         case 19:
+    //             endpoint = Constants.Vision.poseAlignBlueLeft19;
+    //         case 20:
+    //             endpoint = Constants.Vision.poseAlignBlueLeft20;
+    //         case 21:
+    //             endpoint = Constants.Vision.poseAlignBlueLeft21;
+    //         case 22:
+    //             endpoint = Constants.Vision.poseAlignBlueLeft22;
+    //     }
+        
+
+    //     List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+    //         getPose2d(),
+    //         endpoint
+    //     );
+
+    //     PathPlannerPath path = new PathPlannerPath(
+    //         waypoints,
+    //         new PathConstraints(4, 2, 4, 2),
+    //         null,
+    //         new GoalEndState(0.0, endpoint.getRotation())
+    //     );
+    //     pathDebug = path.toString();
+    //     return path;
+    // }
+
     public PathPlannerPath getAlignPathLeft() {
         double fiducialID = LimelightHelper.getFiducialID("");
         Pose2d endpoint = new Pose2d();
@@ -139,12 +175,13 @@ public class Vision extends SubsystemBase {
         return path;
     }
 
-    public PathPlannerPath getAlignPathRight() {
+    public Command getAlignPathRight() {
         double fiducialID = LimelightHelper.getFiducialID("");
         Pose2d endpoint = new Pose2d();
         switch ((int)fiducialID) {
             case 17:
-                endpoint = Constants.Vision.poseAlignBlueRight17;
+                // endpoint = Constants.Vision.poseAlignBlueRight17;
+                endpoint = Constants.Vision.testPose;
             case 18:
                 endpoint = Constants.Vision.poseAlignBlueRight18;
             case 19:
@@ -156,21 +193,29 @@ public class Vision extends SubsystemBase {
             case 22:
                 endpoint = Constants.Vision.poseAlignBlueRight22;
         }
+
         
 
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-            getPose2d(),
-            endpoint
-        );
+        // List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+        //     getPose2d(),
+        //     endpoint
+        // );
 
 
-        PathPlannerPath path = new PathPlannerPath(
-            waypoints, 
+        // PathPlannerPath path = new PathPlannerPath(
+        //     waypoints, 
+        //     new PathConstraints(4, 2, 4, 2), 
+        //     null, 
+        //     new GoalEndState(0.0, endpoint.getRotation())
+        // );
+        // pathDebug = path.toString();
+
+        Command path = AutoBuilder.pathfindToPose(
+            endpoint,
             new PathConstraints(4, 2, 4, 2), 
-            null, 
-            new GoalEndState(0.0, endpoint.getRotation())
+            0.0
         );
-        pathDebug = path.toString();
+
         return path;
     }
     

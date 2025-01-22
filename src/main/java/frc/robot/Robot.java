@@ -19,7 +19,7 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-
+    
     Timer.delay(0.5);
 
     DataLogManager.start();
