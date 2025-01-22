@@ -11,6 +11,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -35,6 +36,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Superstructure.SSStates;
 import frc.robot.subsystems.swerve.TunerConstants;
+import frc.util.LimelightHelper;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain.*;
 import frc.robot.subsystems.swerve.Telemetry;
@@ -84,6 +86,22 @@ public class RobotContainer {
     
     
   }
+
+  public Command getAlignPathRight() {
+        // double fiducialID = LimelightHelper.getFiducialID("");
+        Pose2d endpoint = new Pose2d();
+
+    
+        endpoint = Constants.Vision.testPose;
+
+        Command path = AutoBuilder.pathfindToPose(
+            endpoint,
+            new PathConstraints(4, 2, 4, 2), 
+            0.0
+        );
+
+        return path;
+    }
   
  public void initAutons() {
 
@@ -143,9 +161,9 @@ public class RobotContainer {
   
     // reset the field-centric heading on left bumper press
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-    // driver.leftTrigger().onTrue(drivetrain.autopath());
+    driver.leftTrigger().onTrue(drivetrain.autopath());
     // driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
-    driver.y().onTrue(limelight.getAlignPathRight());
+    driver.y().onTrue(getAlignPathRight());
     drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------
