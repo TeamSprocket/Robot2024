@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -19,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
@@ -38,6 +43,7 @@ public class Vision extends SubsystemBase {
     CommandSwerveDrivetrain drivetrain;
 
     Pose2d lastPose = new Pose2d();
+    Pose2d endpoint = new Pose2d();
 
     LimelightHelper.PoseEstimate estimate;
 
@@ -48,7 +54,7 @@ public class Vision extends SubsystemBase {
 
     @Override
     public void periodic() {
-        publisher.set(drivetrain.getAutoBuilderPose());
+        publisher.set(endpoint);
         debug();
         updatePose();
     }
@@ -149,35 +155,40 @@ public class Vision extends SubsystemBase {
         return path;
     }
 
-    public Command getAlignPathRight() {
+    public void updatePathRight() {
         double fiducialID = LimelightHelper.getFiducialID(name);
-        Pose2d endpoint = new Pose2d();
-        switch ((int)fiducialID) {
-            case 17:
-                endpoint = Constants.Vision.poseAlignBlueRight17;
-               
-            case 18:
-                endpoint = Constants.Vision.poseAlignBlueRight18;
-            case 19:
-                endpoint = Constants.Vision.poseAlignBlueRight19;
-            case 20:
-                endpoint = Constants.Vision.poseAlignBlueRight20;
-            case 21:
-                endpoint = Constants.Vision.poseAlignBlueRight21;
-            case 22:
-                endpoint = Constants.Vision.poseAlignBlueRight22;
+        
+        if (fiducialID == 17) endpoint = Constants.Vision.poseAlignBlueRight17;
+        if (fiducialID == 18) endpoint = Constants.Vision.poseAlignBlueRight18;
+        if (fiducialID == 19) endpoint = Constants.Vision.poseAlignBlueRight19;
+        if (fiducialID == 20) endpoint = Constants.Vision.poseAlignBlueRight20;
+        if (fiducialID == 21) endpoint = Constants.Vision.poseAlignBlueRight21;
+        if (fiducialID == 22) endpoint = Constants.Vision.poseAlignBlueRight22; 
+        else endpoint = drivetrain.getAutoBuilderPose();
+
+        endpoint = Constants.Vision.poseAlignBlueRight18;
+    }
+
+    public Command alignPathRight() {
+        try {
+            List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+                drivetrain.getState().Pose,
+                endpoint
+            );
+
+            PathPlannerPath path = new PathPlannerPath(
+                waypoints,
+                new PathConstraints(4, 2, 4, 2),
+                null,
+                new GoalEndState(0.0, endpoint.getRotation())
+            );
+
+            return AutoBuilder.followPath(path);
+        } 
+        catch (Exception e) {
+            System.out.println("ERROR ERROR ERROR ERROR ERROR ERROR" + e);
+            return new InstantCommand();
         }
-    
-        endpoint = Constants.Vision.testPose;
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXX:" + endpoint.getX());
-
-        Command path = AutoBuilder.pathfindToPose(
-            endpoint,
-            new PathConstraints(4, 2, 4, 2), 
-            0.0
-        );
-
-        return path;
     }
 
     public Pose2d updatePose() {
@@ -199,6 +210,7 @@ public class Vision extends SubsystemBase {
         // SmartDashboard.putNumber("TY Offset [VI]", getYOffset());
         SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
         SmartDashboard.putBoolean("Test Case [VI]", testCase);
+        SmartDashboard.putNumber("Fiducial ID [VI]", LimelightHelper.getFiducialID(name));
      }
 
 }
