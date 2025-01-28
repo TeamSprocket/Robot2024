@@ -3,6 +3,10 @@ package frc.robot.subsystems;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.FollowPathCommand;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.IdealStartingState;
 import com.pathplanner.lib.path.PathConstraints;
@@ -19,6 +23,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.swerve.CommandSwerveDrivetrain;
@@ -31,11 +36,9 @@ public class Vision extends SubsystemBase {
     private int[] blueReefAprilTag = {17, 18, 19, 20, 21, 22};
     private int[] redReefAprilTag = {6, 7, 8, 9, 10, 11};
 
-    boolean testCase = false;
+    CommandSwerveDrivetrain drivetrain;
 
     String name = "limelight-front";
-
-    CommandSwerveDrivetrain drivetrain;
 
     Pose2d lastPose = new Pose2d();
 
@@ -43,7 +46,6 @@ public class Vision extends SubsystemBase {
 
     public Vision(CommandSwerveDrivetrain drive) {
         drivetrain = drive;
-        
     }
 
     @Override
@@ -75,11 +77,8 @@ public class Vision extends SubsystemBase {
         if (LimelightHelper.getTV("limelight-front")) {
             estimate = LimelightHelper.getBotPoseEstimate_wpiBlue("limelight-front");
             lastPose = estimate.pose;
-            testCase = true;
-
             return estimate.pose;
         } else {
-            testCase = false;
             return lastPose;
         }
     }
@@ -155,21 +154,29 @@ public class Vision extends SubsystemBase {
         switch ((int)fiducialID) {
             case 17:
                 endpoint = Constants.Vision.poseAlignBlueRight17;
-               
+                break;
             case 18:
                 endpoint = Constants.Vision.poseAlignBlueRight18;
+                break;
             case 19:
                 endpoint = Constants.Vision.poseAlignBlueRight19;
+                break;
             case 20:
                 endpoint = Constants.Vision.poseAlignBlueRight20;
+                break;
             case 21:
                 endpoint = Constants.Vision.poseAlignBlueRight21;
+                break;
             case 22:
                 endpoint = Constants.Vision.poseAlignBlueRight22;
+                break;
+            default:
+                endpoint = drivetrain.getAutoBuilderPose();
+                break;
         }
     
-        endpoint = Constants.Vision.testPose;
-        System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXX:" + endpoint.getX());
+        // endpoint = Constants.Vision.testPose;
+        // System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXX:" + endpoint.getX());
 
         Command path = AutoBuilder.pathfindToPose(
             endpoint,
@@ -198,7 +205,6 @@ public class Vision extends SubsystemBase {
         // SmartDashboard.putNumber("TX Offset [VI]", getXOffset());
         // SmartDashboard.putNumber("TY Offset [VI]", getYOffset());
         SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
-        SmartDashboard.putBoolean("Test Case [VI]", testCase);
      }
 
 }
