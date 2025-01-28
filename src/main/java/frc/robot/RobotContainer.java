@@ -87,21 +87,21 @@ public class RobotContainer {
     
   }
 
-  // public Command getAlignPathRight() {
-  //       // double fiducialID = LimelightHelper.getFiducialID("");
-  //       Pose2d endpoint = new Pose2d();
+  public Command getAlignPathRight() {
+        // double fiducialID = LimelightHelper.getFiducialID("");
+        Pose2d endpoint = new Pose2d();
 
     
-  //       endpoint = Constants.Vision.testPose;
+        endpoint = Constants.Vision.testPose;
 
-  //       Command path = AutoBuilder.pathfindToPose(
-  //           endpoint,
-  //           new PathConstraints(4, 2, 4, 2), 
-  //           0.0
-  //       );
+        Command path = AutoBuilder.pathfindToPose(
+            endpoint,
+            new PathConstraints(4, 2, 4, 2), 
+            0.0
+        );
 
-  //       return path;
-  //   }
+        return path;
+    }
   
  public void initAutons() {
 
@@ -163,8 +163,7 @@ public class RobotContainer {
     driver.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
     // driver.leftTrigger().onTrue(drivetrain.autopath());
     // driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
-    driver.y().onTrue(new InstantCommand(() -> limelight.updatePathRight()));
-    driver.y().whileTrue(limelight.alignPathRight());
+    driver.y().onTrue(limelight.getAlignPathRight());
     drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------
