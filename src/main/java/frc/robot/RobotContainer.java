@@ -92,7 +92,7 @@ public class RobotContainer {
         Pose2d endpoint = new Pose2d();
 
     
-        endpoint = Constants.Vision.testPose;
+        // endpoint = Constants.Vision.testPose;
 
         Command path = AutoBuilder.pathfindToPose(
             endpoint,
@@ -164,6 +164,8 @@ public class RobotContainer {
     // driver.leftTrigger().onTrue(drivetrain.autopath());
     // driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
     driver.y().onTrue(limelight.getAlignPathRight());
+    
+    driver.x().onTrue(limelight.getAlignPathLeft());
     drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------

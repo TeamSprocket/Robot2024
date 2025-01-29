@@ -36,6 +36,8 @@ public class Vision extends SubsystemBase {
     private int[] blueReefAprilTag = {17, 18, 19, 20, 21, 22};
     private int[] redReefAprilTag = {6, 7, 8, 9, 10, 11};
 
+    String currentPath = "none";
+
     CommandSwerveDrivetrain drivetrain;
 
     String name = "limelight-front";
@@ -43,6 +45,14 @@ public class Vision extends SubsystemBase {
     Pose2d lastPose = new Pose2d();
 
     LimelightHelper.PoseEstimate estimate;
+
+    Pose2d endpointL = new Pose2d();
+    Pose2d endpointR = new Pose2d();
+
+    Command pathL;
+    Command pathR;
+
+    double fiducialID;
 
     public Vision(CommandSwerveDrivetrain drive) {
         drivetrain = drive;
@@ -115,76 +125,81 @@ public class Vision extends SubsystemBase {
         return false;
     }
 
-    public PathPlannerPath getAlignPathLeft() {
-        double fiducialID = LimelightHelper.getFiducialID(name);
-        Pose2d endpoint = new Pose2d();
+    public Command getAlignPathLeft() {
+        System.out.println("LERFT LERFT LERFT LERFT LERFT LERFT LERFT LERFT LERFT LERFT");
+        fiducialID = LimelightHelper.getFiducialID(name);
+        endpointL = new Pose2d();
         switch ((int)fiducialID) {
             case 17:
-                endpoint = Constants.Vision.poseAlignBlueLeft17;
-            case 18:
-                endpoint = Constants.Vision.poseAlignBlueLeft18;
-            case 19:
-                endpoint = Constants.Vision.poseAlignBlueLeft19;
-            case 20:
-                endpoint = Constants.Vision.poseAlignBlueLeft20;
-            case 21:
-                endpoint = Constants.Vision.poseAlignBlueLeft21;
-            case 22:
-                endpoint = Constants.Vision.poseAlignBlueLeft22;
-        }
-        
-
-        List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
-            getPose2d(),
-            endpoint
-        );
-
-        PathPlannerPath path = new PathPlannerPath(
-            waypoints,
-            new PathConstraints(4, 2, 4, 2),
-            null,
-            new GoalEndState(0.0, endpoint.getRotation())
-        );
-        return path;
-    }
-
-    public Command getAlignPathRight() {
-        double fiducialID = LimelightHelper.getFiducialID(name);
-        Pose2d endpoint = new Pose2d();
-        switch ((int)fiducialID) {
-            case 17:
-                endpoint = Constants.Vision.poseAlignBlueRight17;
+                endpointL = Constants.Vision.poseAlignBlueLeft17;
                 break;
             case 18:
-                endpoint = Constants.Vision.poseAlignBlueRight18;
+                endpointL = Constants.Vision.poseAlignBlueLeft18;
                 break;
             case 19:
-                endpoint = Constants.Vision.poseAlignBlueRight19;
+                endpointL = Constants.Vision.poseAlignBlueLeft19;
                 break;
             case 20:
-                endpoint = Constants.Vision.poseAlignBlueRight20;
+                endpointL = Constants.Vision.poseAlignBlueLeft20;
                 break;
             case 21:
-                endpoint = Constants.Vision.poseAlignBlueRight21;
+                endpointL = Constants.Vision.poseAlignBlueLeft21;
                 break;
             case 22:
-                endpoint = Constants.Vision.poseAlignBlueRight22;
+                endpointL = Constants.Vision.poseAlignBlueLeft22;
                 break;
-            default:
-                endpoint = drivetrain.getAutoBuilderPose();
+            case -1:
+                endpointL = drivetrain.getAutoBuilderPose();
                 break;
         }
     
-        // endpoint = Constants.Vision.testPose;
-        // System.out.println("XXXXXXXXXXXXXXXXXXXXXXXXXXX:" + endpoint.getX());
 
-        Command path = AutoBuilder.pathfindToPose(
-            endpoint,
-            new PathConstraints(4, 2, 4, 2), 
+        pathL = AutoBuilder.pathfindToPose(
+            endpointL,
+            new PathConstraints(3, 2, 4, 2), 
             0.0
         );
 
-        return path;
+        currentPath = "left";
+
+        return pathL;
+    }
+
+    public Command getAlignPathRight() {
+        System.out.println("RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT");
+        fiducialID = LimelightHelper.getFiducialID(name);
+        endpointR = new Pose2d();
+        switch ((int)fiducialID) {
+            case 17:
+                endpointR = Constants.Vision.poseAlignBlueRight17;
+                break;
+            case 18:
+                endpointR = Constants.Vision.poseAlignBlueRight18;
+                break;
+            case 19:
+                endpointR = Constants.Vision.poseAlignBlueRight19;
+                break;
+            case 20:
+                endpointR = Constants.Vision.poseAlignBlueRight20;
+                break;
+            case 21:
+                endpointR = Constants.Vision.poseAlignBlueRight21;
+                break;
+            case 22:
+                endpointR = Constants.Vision.poseAlignBlueRight22;
+                break;
+            case -1:
+                endpointR = drivetrain.getAutoBuilderPose();
+                break;
+        }
+
+        pathR = AutoBuilder.pathfindToPose(
+            endpointR,
+            new PathConstraints(3, 2, 4, 2), 
+            0.0
+        );
+
+        return pathR;
     }
 
     public Pose2d updatePose() {
@@ -205,6 +220,11 @@ public class Vision extends SubsystemBase {
         // SmartDashboard.putNumber("TX Offset [VI]", getXOffset());
         // SmartDashboard.putNumber("TY Offset [VI]", getYOffset());
         SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
+        SmartDashboard.putNumber("FUDICIAL ID", LimelightHelper.getFiducialID(name));
+        SmartDashboard.putNumber("END XL",endpointL.getX());
+        SmartDashboard.putNumber("END YL",endpointL.getY());
+        SmartDashboard.putNumber("END XR",endpointR.getX());
+        SmartDashboard.putNumber("END YR",endpointR.getY());
      }
 
 }

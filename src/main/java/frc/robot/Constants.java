@@ -291,7 +291,7 @@ public class Constants {
         public static final Pose2d poseAlignBlueRight21 = new Pose2d(6.0, 4.2, Rotation2d.fromDegrees(180));
         public static final Pose2d poseAlignBlueLeft22 = new Pose2d(5.125, 2.675, Rotation2d.fromDegrees(120));
         public static final Pose2d poseAlignBlueRight22 = new Pose2d(5.45, 2.86, Rotation2d.fromDegrees(120));
-        public static final Pose2d testPose = new Pose2d(4, 0, Rotation2d.fromDegrees(0));
+        // public static final Pose2d testPose = new Pose2d(4, 0, Rotation2d.fromDegrees(0));
         
 
 
