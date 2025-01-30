@@ -56,6 +56,7 @@ public class Vision extends SubsystemBase {
 
     double distToAprilLeft = 0.0;
     double distToAprilRight = 0.0;
+    boolean updateFirst = true;
 
     double fiducialID;
 
@@ -67,7 +68,13 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         publisher.set(drivetrain.getAutoBuilderPose());
         debug();
-        updatePose();
+        if (hasTargets() && updateFirst) {
+            updatePose();
+            updateFirst = false;
+        } else if (!hasTargets() && !updateFirst) {
+            updateFirst = true;
+        }
+        
     }
 
     /**
@@ -133,6 +140,7 @@ public class Vision extends SubsystemBase {
     // TEST LATER
 
     public Command getAlignCommand() {
+        
         fiducialID = LimelightHelper.getFiducialID(name);
         endpoint = new Pose2d();
         switch ((int)fiducialID) {
@@ -187,7 +195,7 @@ public class Vision extends SubsystemBase {
     // TEST LATER ^^
 
     public Command getAlignPathLeft() {
-        // updatePose();
+        updatePose();
         fiducialID = LimelightHelper.getFiducialID(name);
         endpointL = new Pose2d();
         switch ((int)fiducialID) {
@@ -225,7 +233,7 @@ public class Vision extends SubsystemBase {
     }
 
     public Command getAlignPathRight() {
-        // updatePose();
+        updatePose();
         fiducialID = LimelightHelper.getFiducialID(name);
         endpointR = new Pose2d();
         switch ((int)fiducialID) {
