@@ -164,8 +164,10 @@ public class RobotContainer {
     // driver.leftTrigger().onTrue(drivetrain.autopath());
     // driver.x().whileTrue(drivetrain.followGeneratedPath("left"));
     driver.y().onTrue(limelight.getAlignPathRight());
-    
     driver.x().onTrue(limelight.getAlignPathLeft());
+
+    driver.b().onTrue(limelight.getAlignCommand()); // TODO: TEST LATER
+
     drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------

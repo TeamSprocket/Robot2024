@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import java.util.List;
 
+import com.fasterxml.jackson.databind.node.POJONode;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.FollowPathCommand;
 import com.pathplanner.lib.config.PIDConstants;
@@ -15,6 +16,7 @@ import com.pathplanner.lib.path.Waypoint;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -36,8 +38,6 @@ public class Vision extends SubsystemBase {
     private int[] blueReefAprilTag = {17, 18, 19, 20, 21, 22};
     private int[] redReefAprilTag = {6, 7, 8, 9, 10, 11};
 
-    String currentPath = "none";
-
     CommandSwerveDrivetrain drivetrain;
 
     String name = "limelight-front";
@@ -48,9 +48,14 @@ public class Vision extends SubsystemBase {
 
     Pose2d endpointL = new Pose2d();
     Pose2d endpointR = new Pose2d();
+    Pose2d endpoint = new Pose2d();
 
     Command pathL;
     Command pathR;
+    Command path;
+
+    double distToAprilLeft = 0.0;
+    double distToAprilRight = 0.0;
 
     double fiducialID;
 
@@ -125,8 +130,64 @@ public class Vision extends SubsystemBase {
         return false;
     }
 
+    // TEST LATER
+
+    public Command getAlignCommand() {
+        fiducialID = LimelightHelper.getFiducialID(name);
+        endpoint = new Pose2d();
+        switch ((int)fiducialID) {
+            case 17:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft17, Constants.Vision.poseAlignBlueLeft17);
+                break;
+            case 18:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft18, Constants.Vision.poseAlignBlueLeft18);
+                break;
+            case 19:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft19, Constants.Vision.poseAlignBlueLeft19);
+                break;
+            case 20:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft20, Constants.Vision.poseAlignBlueLeft20);
+                break;
+            case 21:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft21, Constants.Vision.poseAlignBlueLeft21);
+                break;
+            case 22:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft22, Constants.Vision.poseAlignBlueLeft22);
+                break;
+            case -1:
+                endpoint = drivetrain.getAutoBuilderPose();
+                break;
+        }
+
+        path = AutoBuilder.pathfindToPose(
+            endpoint,
+            new PathConstraints(3, 2, 4, 2), 
+            0.0
+        );
+
+        return path;
+    }
+
+    public Pose2d getClosestEndpoint(Pose2d endpointLeft, Pose2d endpointRight) {
+        Transform2d transformToAprilTagLeft = new Transform2d(drivetrain.getAutoBuilderPose(), endpointLeft);
+        Transform2d transformToAprilTagRight = new Transform2d(drivetrain.getAutoBuilderPose(), endpointRight);
+
+        distToAprilLeft = Math.hypot(transformToAprilTagLeft.getX(), transformToAprilTagLeft.getY());
+        distToAprilRight = Math.hypot(transformToAprilTagRight.getX(), transformToAprilTagRight.getY());
+
+        if (distToAprilLeft > distToAprilRight) {
+            return endpointRight;
+        } else if (distToAprilLeft < distToAprilRight) {
+            return endpointLeft;
+        } else {
+            return endpointLeft;
+        }
+    }
+
+    // TEST LATER ^^
+
     public Command getAlignPathLeft() {
-        System.out.println("LERFT LERFT LERFT LERFT LERFT LERFT LERFT LERFT LERFT LERFT");
+        // updatePose();
         fiducialID = LimelightHelper.getFiducialID(name);
         endpointL = new Pose2d();
         switch ((int)fiducialID) {
@@ -160,13 +221,11 @@ public class Vision extends SubsystemBase {
             0.0
         );
 
-        currentPath = "left";
-
         return pathL;
     }
 
     public Command getAlignPathRight() {
-        System.out.println("RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT RIGHT");
+        // updatePose();
         fiducialID = LimelightHelper.getFiducialID(name);
         endpointR = new Pose2d();
         switch ((int)fiducialID) {
@@ -214,17 +273,14 @@ public class Vision extends SubsystemBase {
     
 
     private void debug() {
-        // SmartDashboard.putNumber("Robot Pose X [VI]", getTranslation2d().getX());
-        // SmartDashboard.putNumber("Robot Pose Y [VI]", getTranslation2d().getY());
-        // SmartDashboard.putBoolean("Vision Target [VI]", hasTargets());
-        // SmartDashboard.putNumber("TX Offset [VI]", getXOffset());
-        // SmartDashboard.putNumber("TY Offset [VI]", getYOffset());
         SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
         SmartDashboard.putNumber("FUDICIAL ID", LimelightHelper.getFiducialID(name));
         SmartDashboard.putNumber("END XL",endpointL.getX());
         SmartDashboard.putNumber("END YL",endpointL.getY());
         SmartDashboard.putNumber("END XR",endpointR.getX());
         SmartDashboard.putNumber("END YR",endpointR.getY());
+        SmartDashboard.putNumber("dist to left", distToAprilLeft);
+        SmartDashboard.putNumber("dist to right", distToAprilRight);
      }
 
 }
