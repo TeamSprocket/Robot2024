@@ -76,9 +76,9 @@ public class Vision extends SubsystemBase {
         //     updateFirst = true;
         // }
 
-        if (getDistToTarget() < 1) { // if the april tag is less than one meter away, update the pose by adding a vision measurement
+        // if (getDistToTarget() < 1) { // if the april tag is less than one meter away, update the pose by adding a vision measurement
             updatePose();
-        }
+        // }
         
     }
 
