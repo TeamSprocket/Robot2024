@@ -344,8 +344,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return m_kinematics.toChassisSpeeds(getState().ModuleStates);
     }
 
-    public void updateOdometry(Pose2d pose) {
-        this.resetPose(pose);
+    public void updateOdometry(Pose2d pose, double timestamp) {
+        // this.resetPose(pose);
+        this.addVisionMeasurement(pose, timestamp); // try using this instead of reset pose to prevent jitter
     }
     
     // public Command followGeneratedPath(String side) {

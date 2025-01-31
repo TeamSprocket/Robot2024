@@ -43,6 +43,7 @@ public class Vision extends SubsystemBase {
     String name = "limelight-front";
 
     Pose2d lastPose = new Pose2d();
+    double lastTimeStamp = 0.0;
 
     LimelightHelper.PoseEstimate estimate;
 
@@ -68,131 +69,18 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         publisher.set(drivetrain.getAutoBuilderPose());
         debug();
-        if (hasTargets() && updateFirst) {
+        // if (hasTargets() && updateFirst) {
+        //     updatePose();
+        //     updateFirst = false;
+        // } else if (!hasTargets() && !updateFirst) {
+        //     updateFirst = true;
+        // }
+
+        if (getDistToTarget() < 1) { // if the april tag is less than one meter away, update the pose by adding a vision measurement
             updatePose();
-            updateFirst = false;
-        } else if (!hasTargets() && !updateFirst) {
-            updateFirst = true;
         }
         
     }
-
-    /**
-     * @return {xCoord, yCoord, timestamp}
-     */
-    public Translation2d getTranslation2d() {
-        LimelightHelper.PoseEstimate estimate;
-        if (LimelightHelper.getTV(name)) {
-            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2(name);
-            }
-            else {
-                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2(name);
-            }
-            return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
-        } else {
-            return new Translation2d(0.0, 0.0);
-        }
-    }
-
-    public Pose2d getPose2d() {
-        if (LimelightHelper.getTV("limelight-front")) {
-            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue("limelight-front");
-            lastPose = estimate.pose;
-            return estimate.pose;
-        } else {
-            return lastPose;
-        }
-    }
-
-    public boolean hasTargets() {
-        return LimelightHelper.getTV(name);
-    }
-
-    public double getXOffset() {
-        if (hasTargets()){
-            return LimelightHelper.getTX(name);
-        } else {
-            return 0.0;
-        }
-    }
-
-    public double getYOffset() {
-        if (hasTargets()) {
-            return LimelightHelper.getTY(name);
-        } else {
-            return 0.0;
-        }
-    }
-     
-    public boolean hasReefTargets(){
-        if(LimelightHelper.getTV(name) ){
-            for (int reefID : redReefAprilTag) {
-                if (LimelightHelper.getFiducialID(name) == reefID) return true;
-            }
-            for (int reefID : blueReefAprilTag) {
-                if (LimelightHelper.getFiducialID(name) == reefID) return true;
-            }
-        } 
-        return false;
-    }
-
-    // TEST LATER
-
-    public Command getAlignCommand() {
-        
-        fiducialID = LimelightHelper.getFiducialID(name);
-        endpoint = new Pose2d();
-        switch ((int)fiducialID) {
-            case 17:
-                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft17, Constants.Vision.poseAlignBlueLeft17);
-                break;
-            case 18:
-                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft18, Constants.Vision.poseAlignBlueLeft18);
-                break;
-            case 19:
-                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft19, Constants.Vision.poseAlignBlueLeft19);
-                break;
-            case 20:
-                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft20, Constants.Vision.poseAlignBlueLeft20);
-                break;
-            case 21:
-                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft21, Constants.Vision.poseAlignBlueLeft21);
-                break;
-            case 22:
-                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft22, Constants.Vision.poseAlignBlueLeft22);
-                break;
-            case -1:
-                endpoint = drivetrain.getAutoBuilderPose();
-                break;
-        }
-
-        path = AutoBuilder.pathfindToPose(
-            endpoint,
-            new PathConstraints(3, 2, 4, 2), 
-            0.0
-        );
-
-        return path;
-    }
-
-    public Pose2d getClosestEndpoint(Pose2d endpointLeft, Pose2d endpointRight) {
-        Transform2d transformToAprilTagLeft = new Transform2d(drivetrain.getAutoBuilderPose(), endpointLeft);
-        Transform2d transformToAprilTagRight = new Transform2d(drivetrain.getAutoBuilderPose(), endpointRight);
-
-        distToAprilLeft = Math.hypot(transformToAprilTagLeft.getX(), transformToAprilTagLeft.getY());
-        distToAprilRight = Math.hypot(transformToAprilTagRight.getX(), transformToAprilTagRight.getY());
-
-        if (distToAprilLeft > distToAprilRight) {
-            return endpointRight;
-        } else if (distToAprilLeft < distToAprilRight) {
-            return endpointLeft;
-        } else {
-            return endpointLeft;
-        }
-    }
-
-    // TEST LATER ^^
 
     public Command getAlignPathLeft() {
         updatePose();
@@ -269,17 +157,135 @@ public class Vision extends SubsystemBase {
         return pathR;
     }
 
+    /**
+     * @return {xCoord, yCoord, timestamp}
+     */
+    public Translation2d getTranslation2d() {
+        LimelightHelper.PoseEstimate estimate;
+        if (LimelightHelper.getTV(name)) {
+            if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Blue) {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiBlue_MegaTag2(name);
+            }
+            else {
+                estimate = LimelightHelper.getBotPoseEstimate_wpiRed_MegaTag2(name);
+            }
+            return new Translation2d(estimate.pose.getX(), estimate.pose.getY());
+        } else {
+            return new Translation2d(0.0, 0.0);
+        }
+    }
+
+    public Pose2d getPose2d() {
+        if (LimelightHelper.getTV(name)) {
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue(name);
+            lastPose = estimate.pose;
+            return estimate.pose;
+        } else {
+            return lastPose;
+        }
+    }
+
+    public double getTimeStamp() {
+        if (LimelightHelper.getTV(name)) {
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue(name);
+            lastTimeStamp = estimate.timestampSeconds;
+            return estimate.timestampSeconds;
+        } else {
+            return lastTimeStamp;
+        }
+    }
+
+    public double getDistToTarget() {
+        if (LimelightHelper.getTV(name)) {
+            double dist = (0.3048 - Constants.Vision.kLimelightHeightMeters) / Math.tan(LimelightHelper.getTY(name)); // tan(vertical angle) = height of robot to apriltag / distance to april tag
+            return dist;
+        } else {
+            return 1.5; // if there is no target return a value greater than 1 so pose doesn't update
+        }
+    }
+
+    public boolean hasTargets() {
+        return LimelightHelper.getTV(name);
+    }
+     
+    public boolean hasReefTargets(){
+        if(LimelightHelper.getTV(name) ){
+            for (int reefID : redReefAprilTag) {
+                if (LimelightHelper.getFiducialID(name) == reefID) return true;
+            }
+            for (int reefID : blueReefAprilTag) {
+                if (LimelightHelper.getFiducialID(name) == reefID) return true;
+            }
+        } 
+        return false;
+    }
+
     public Pose2d updatePose() {
         if (hasTargets()) {
             Pose2d pose = getPose2d();
-            drivetrain.updateOdometry(pose);
+            drivetrain.updateOdometry(pose, getTimeStamp());
             return pose;
         } else {
             return getPose2d();
         }
     }
-    
 
+    // TEST LATER
+
+    public Command getAlignCommand() {
+        
+        fiducialID = LimelightHelper.getFiducialID(name);
+        endpoint = new Pose2d();
+        switch ((int)fiducialID) {
+            case 17:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft17, Constants.Vision.poseAlignBlueLeft17);
+                break;
+            case 18:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft18, Constants.Vision.poseAlignBlueLeft18);
+                break;
+            case 19:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft19, Constants.Vision.poseAlignBlueLeft19);
+                break;
+            case 20:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft20, Constants.Vision.poseAlignBlueLeft20);
+                break;
+            case 21:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft21, Constants.Vision.poseAlignBlueLeft21);
+                break;
+            case 22:
+                endpoint = getClosestEndpoint(Constants.Vision.poseAlignBlueLeft22, Constants.Vision.poseAlignBlueLeft22);
+                break;
+            case -1:
+                endpoint = drivetrain.getAutoBuilderPose();
+                break;
+        }
+
+        path = AutoBuilder.pathfindToPose(
+            endpoint,
+            new PathConstraints(3, 2, 4, 2), 
+            0.0
+        );
+
+        return path;
+    }
+
+    public Pose2d getClosestEndpoint(Pose2d endpointLeft, Pose2d endpointRight) {
+        Transform2d transformToAprilTagLeft = new Transform2d(drivetrain.getAutoBuilderPose(), endpointLeft);
+        Transform2d transformToAprilTagRight = new Transform2d(drivetrain.getAutoBuilderPose(), endpointRight);
+
+        distToAprilLeft = Math.hypot(transformToAprilTagLeft.getX(), transformToAprilTagLeft.getY());
+        distToAprilRight = Math.hypot(transformToAprilTagRight.getX(), transformToAprilTagRight.getY());
+
+        if (distToAprilLeft > distToAprilRight) {
+            return endpointRight;
+        } else if (distToAprilLeft < distToAprilRight) {
+            return endpointLeft;
+        } else {
+            return endpointLeft;
+        }
+    }
+
+    
     private void debug() {
         SmartDashboard.putBoolean("Has Reef Target [VI]", hasReefTargets());
         SmartDashboard.putNumber("FUDICIAL ID", LimelightHelper.getFiducialID(name));

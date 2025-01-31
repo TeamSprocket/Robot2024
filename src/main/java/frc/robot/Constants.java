@@ -268,7 +268,7 @@ public class Constants {
         public static final Translation3d targetPointRed = new Translation3d(0.0, 2.563, 0); //2.663
         
         public static final double kLimelightPitchAngleDegrees = 5.0;
-        public static final double kLimelightHeightMeters = 0.534;
+        public static final double kLimelightHeightMeters = 0; // TODO
 
         public static final double kAcceptableVolatilityThreshold = 0.2;
 
