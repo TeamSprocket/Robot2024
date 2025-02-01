@@ -79,6 +79,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
 
     private final SwerveRequest.ApplyRobotSpeeds m_pathApplyRobotSpeeds = new SwerveRequest.ApplyRobotSpeeds();
 
+    public Pose2d alignRobotPose = new Pose2d();
+
     /* SysId routine for characterizing translation. This is used to find PID gains for the drive motors. */
     private final SysIdRoutine m_sysIdRoutineTranslation = new SysIdRoutine(
         new SysIdRoutine.Config(
@@ -254,6 +256,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         return new Rotation2d(Math.toRadians(getPigeon2().getAngle()));
     }
 
+    public Pose2d getAlignPose2d() {
+        return this.alignRobotPose;
+    }
+
     // public Command followPath(String side) {
     //     PathPlannerPath path;
     //     try {
@@ -311,7 +317,7 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         try {
             var config = RobotConfig.fromGUISettings();
             AutoBuilder.configure(
-                () -> getState().Pose,   // Supplier of current robot pose
+                () -> getAlignPose2d(),   // Supplier of current robot pose
                 this::resetPose,         // Consumer for seeding pose against auto
                 () -> getState().Speeds, // Supplier of current robot speeds
                 // Consumer of ChassisSpeeds and feedforwards to drive the robot
@@ -347,6 +353,10 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     public void updateOdometry(Pose2d pose, double timestamp) {
         // this.resetPose(pose);
         this.addVisionMeasurement(pose, timestamp); // try using this instead of reset pose to prevent jitter
+    }
+
+    public void resetTeleopPose(Pose2d pose) {
+        this.resetPose(pose);
     }
     
     // public Command followGeneratedPath(String side) {

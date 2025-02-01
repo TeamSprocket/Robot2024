@@ -166,8 +166,6 @@ public class RobotContainer {
     driver.y().onTrue(limelight.getAlignPathRight());
     driver.x().onTrue(limelight.getAlignPathLeft());
 
-    driver.b().onTrue(limelight.getAlignCommand()); // TODO: TEST LATER
-
     drivetrain.registerTelemetry(logger::telemeterize);
 
     // --------------------=operator=--------------------
@@ -255,5 +253,9 @@ public class RobotContainer {
         )
       )
     );
+  }
+
+  public Vision getVision() {
+    return limelight;
   }
 }

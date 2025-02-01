@@ -35,6 +35,13 @@ import frc.util.Util;
 public class Vision extends SubsystemBase {
     StructPublisher<Pose2d> publisher = NetworkTableInstance.getDefault().getStructTopic("Endpoint", Pose2d.struct).publish();
 
+    public enum VisionStates {
+        NONE,
+        ALIGN
+    }
+
+    public VisionStates visionStates = VisionStates.NONE;
+
     private int[] blueReefAprilTag = {17, 18, 19, 20, 21, 22};
     private int[] redReefAprilTag = {6, 7, 8, 9, 10, 11};
 
@@ -50,6 +57,8 @@ public class Vision extends SubsystemBase {
     Pose2d endpointL = new Pose2d();
     Pose2d endpointR = new Pose2d();
     Pose2d endpoint = new Pose2d();
+
+    Pose2d robotPose = new Pose2d();
 
     Command pathL;
     Command pathR;
@@ -69,17 +78,15 @@ public class Vision extends SubsystemBase {
     public void periodic() {
         publisher.set(drivetrain.getAutoBuilderPose());
         debug();
-        // if (hasTargets() && updateFirst) {
-        //     updatePose();
-        //     updateFirst = false;
-        // } else if (!hasTargets() && !updateFirst) {
-        //     updateFirst = true;
-        // }
 
-        // if (getDistToTarget() < 1) { // if the april tag is less than one meter away, update the pose by adding a vision measurement
-            updatePose();
-        // }
-        
+        updateAlignPose();
+
+        if (hasTargets() && updateFirst) {
+            resetPose();
+            updateFirst = false;
+        } else if (!hasTargets() && !updateFirst) {
+            updateFirst = true;
+        }
     }
 
     public Command getAlignPathLeft() {
@@ -113,7 +120,7 @@ public class Vision extends SubsystemBase {
 
         pathL = AutoBuilder.pathfindToPose(
             endpointL,
-            new PathConstraints(3, 2, 4, 2), 
+            new PathConstraints(4, 3, 4, 2), 
             0.0
         );
 
@@ -150,7 +157,7 @@ public class Vision extends SubsystemBase {
 
         pathR = AutoBuilder.pathfindToPose(
             endpointR,
-            new PathConstraints(3, 2, 4, 2), 
+            new PathConstraints(4, 3, 4, 2), 
             0.0
         );
 
@@ -182,6 +189,15 @@ public class Vision extends SubsystemBase {
             return estimate.pose;
         } else {
             return lastPose;
+        }
+    }
+
+    public void updateAlignPose() {
+        if (LimelightHelper.getTV(name)) {
+            estimate = LimelightHelper.getBotPoseEstimate_wpiBlue(name);
+            drivetrain.alignRobotPose = estimate.pose;
+        } else {
+            drivetrain.alignRobotPose = drivetrain.getAutoBuilderPose();
         }
     }
 
@@ -226,7 +242,17 @@ public class Vision extends SubsystemBase {
             drivetrain.updateOdometry(pose, getTimeStamp());
             return pose;
         } else {
-            return getPose2d();
+            return drivetrain.getAutoBuilderPose();
+        }
+    }
+
+    public Pose2d resetPose() {
+        if (hasTargets()) {
+            Pose2d pose = getPose2d();
+            drivetrain.resetTeleopPose(pose);
+            return pose;
+        } else {
+            return drivetrain.getAutoBuilderPose();
         }
     }
 
